@@ -276,41 +276,42 @@ clean_sys() {
 # 显示主菜单
 main_menu() {
     echo -e "${blue}
-    _  _ ____  _ _ _    _ ____ _  _ 
-    |_/  |___  | | |    | |  | |\ | 
-    | \_ |___ _| | |___ | |__| | \| 
-                               
-    QiQTools 一键脚本工具 v0.0.1
-    (支持Ubuntu/Debian/CentOS/Alpine系统)
-    -- 输入${yellow}qiq${blue}可快速启动此脚本 --
-    ------------------------
-    ${green} 1.${plain} 系统信息查询
-    ${green} 2.${plain} 系统更新
-    ${green} 3.${plain} 系统清理
-    ${green} 4.${plain} 常用工具 ▶
-    ${green} 5.${plain} BBR管理 ▶
-    ${green} 6.${plain} Docker管理 ▶
-    ${green} 7.${plain} WARP管理 ▶ 解锁ChatGPT Netflix
-    ${green} 8.${plain} 测试脚本合集 ▶
-    ${green} 9.${plain} 甲骨文云脚本合集 ▶
-    ${green}10.${blue} LDNMP建站 ▶${plain}
-    ${green}11.${plain} 面板工具 ▶
-    ${green}12.${plain} 我的工作区 ▶
-    ${green}13.${plain} 系统工具 ▶
-    ${green}14.${plain} VPS集群控制 ▶ ${blue}Beta${plain}
-    ------------------------
-    ${green}00.${plain} 脚本更新
-    ------------------------
-    ${green} 0.${plain} 退出脚本
-    ------------------------
-    "
+ _  _ ____  _ _ _    _ ____ _  _ 
+ |_/  |___  | | |    | |  | |\ | 
+ | \_ |___ _| | |___ | |__| | \| 
+                            
+ QiQTools 一键脚本工具 v0.0.1
+ (支持Ubuntu/Debian/CentOS/Alpine系统)
+ -- 输入 ${yellow}qiq ${blue}可快速启动此脚本 --
+ ------------------------
+ ${green} 1.${plain} 系统信息查询
+ ${green} 2.${plain} 系统更新
+ ${green} 3.${plain} 系统清理
+ ${green} 4.${plain} 常用工具 ▶
+ ${green} 5.${plain} BBR管理 ▶
+ ${green} 6.${plain} Docker管理 ▶
+ ${green} 7.${plain} WARP管理 ▶ 解锁ChatGPT Netflix
+ ${green} 8.${plain} 测试脚本合集 ▶
+ ${green} 9.${plain} 甲骨文云脚本合集 ▶
+ ${green}10.${blue} LDNMP建站 ▶${plain}
+ ${green}11.${plain} 面板工具 ▶
+ ${green}12.${plain} 我的工作区 ▶
+ ${green}13.${plain} 系统工具 ▶
+ ${green}14.${plain} VPS集群控制 ▶ ${blue}Beta${plain}
+ ------------------------
+ ${green}00.${plain} 脚本更新
+ ------------------------
+ ${green} 0.${plain} 退出脚本
+ ------------------------
+"
 }
 
 while true; do 
 clear 
 main_menu
 
-read -p "请输入你的选择: " choice
+# read -p "请输入你的选择: " choice
+echo && read -ep "请输入选择: " choice
 
 case $choice in
   1)
