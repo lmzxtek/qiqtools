@@ -90,7 +90,7 @@ elif [[ x"${release}" == x"debian" ]]; then
     fi
 fi
 
-
+# 显示系统信息
 show_info() {
     
     clear
@@ -208,13 +208,14 @@ show_info() {
     echo
 }
 
+# 显示主菜单
 main_menu() {
     echo -e "\033[96m_  _ ____  _ _ _    _ ____ _  _ "
     echo "|_/  |___  | | |    | |  | |\ | "
     echo "| \_ |___ _| | |___ | |__| | \| "
     echo "                                "
-    echo -e "\033[96m科技lion一键脚本工具 v2.2.6 （支持Ubuntu/Debian/CentOS/Alpine系统）\033[0m"
-    echo -e "\033[96m-输入\033[93mk\033[96m可快速启动此脚本-\033[0m"
+    echo -e "\033[96mQiQTools一键脚本工具 v0.0.1 （支持Ubuntu/Debian/CentOS/Alpine系统）\033[0m"
+    echo -e "\033[96m-输入\033[93mqiq\033[96m可快速启动此脚本-\033[0m"
     echo "------------------------"
     echo "1. 系统信息查询"
     echo "2. 系统更新"
@@ -237,5 +238,6 @@ main_menu() {
     echo "------------------------"
 }
 
-# show_info
 main_menu
+
+show_info
