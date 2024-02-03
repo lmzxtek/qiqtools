@@ -1,29 +1,11 @@
 #!/bin/bash
 
-#========================================================
-#   System Required: CentOS 7+ / Debian 8+ / Ubuntu 16+ / Alpine 3+ /
-#     Arch 仅测试了一次，如有问题带截图反馈 dysf888@pm.me
-#   Description: 哪吒监控安装脚本
-#   Github: https://github.com/naiba/nezha
-#========================================================
-
-# 设置脚本的快捷命令为 `qiq`
-ln -sf ~/qiqtools.sh /usr/local/bin/qiq
-
 red='\033[0;31m'
 green='\033[0;32m'
 yellow='\033[0;33m'
 plain='\033[0m'
 
-# export PATH=$PATH:/usr/local/bin
-
 cur_dir=$(pwd)
-
-
-ip_address() {
-ipv4_address=$(curl -s ipv4.ip.sb)
-ipv6_address=$(curl -s --max-time 1 ipv6.ip.sb)
-}
 
 # check root
 [[ $EUID -ne 0 ]] && echo -e "${red}错误：${plain} 必须使用root用户运行此脚本！\n" && exit 1
@@ -90,7 +72,6 @@ elif [[ x"${release}" == x"debian" ]]; then
         echo -e "${red}请使用 Debian 8 或更高版本的系统！${plain}\n" && exit 1
     fi
 fi
-
 
 install_base() {
     if [[ x"${release}" == x"centos" ]]; then
