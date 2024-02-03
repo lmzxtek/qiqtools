@@ -19,7 +19,6 @@ plain='\033[0m'
 
 cur_dir=$(pwd)
 
-
 ip_address() {
 ipv4_address=$(curl -s ipv4.ip.sb)
 ipv6_address=$(curl -s --max-time 1 ipv6.ip.sb)
@@ -92,141 +91,151 @@ elif [[ x"${release}" == x"debian" ]]; then
 fi
 
 
-install_base() {
-    if [[ x"${release}" == x"centos" ]]; then
-        yum install epel-release -y
-        yum install wget curl unzip tar crontabs socat -y
+show_info() {
+    
+    clear
+    # 函数: 获取IPv4和IPv6地址
+    ip_address
+
+    if [ "$(uname -m)" == "x86_64" ]; then
+      cpu_info=$(cat /proc/cpuinfo | grep 'model name' | uniq | sed -e 's/model name[[:space:]]*: //')
     else
-        apt update -y
-        apt install wget curl unzip tar cron socat -y
+      cpu_info=$(lscpu | grep 'BIOS Model name' | awk -F': ' '{print $2}' | sed 's/^[ \t]*//')
     fi
+
+    cpu_usage=$(top -bn1 | grep 'Cpu(s)' | awk '{print $2 + $4}')
+    cpu_usage_percent=$(printf "%.2f" "$cpu_usage")%
+
+    cpu_cores=$(nproc)
+
+    mem_info=$(free -b | awk 'NR==2{printf "%.2f/%.2f MB (%.2f%%)", $3/1024/1024, $2/1024/1024, $3*100/$2}')
+
+    disk_info=$(df -h | awk '$NF=="/"{printf "%s/%s (%s)", $3, $2, $5}')
+
+    country=$(curl -s ipinfo.io/country)
+    city=$(curl -s ipinfo.io/city)
+
+    isp_info=$(curl -s ipinfo.io/org)
+
+    cpu_arch=$(uname -m)
+
+    hostname=$(hostname)
+
+    kernel_version=$(uname -r)
+
+    congestion_algorithm=$(sysctl -n net.ipv4.tcp_congestion_control)
+    queue_algorithm=$(sysctl -n net.core.default_qdisc)
+
+    # 尝试使用 lsb_release 获取系统信息
+    os_info=$(lsb_release -ds 2>/dev/null)
+
+    # 如果 lsb_release 命令失败，则尝试其他方法
+    if [ -z "$os_info" ]; then
+      # 检查常见的发行文件
+      if [ -f "/etc/os-release" ]; then
+        os_info=$(source /etc/os-release && echo "$PRETTY_NAME")
+      elif [ -f "/etc/debian_version" ]; then
+        os_info="Debian $(cat /etc/debian_version)"
+      elif [ -f "/etc/redhat-release" ]; then
+        os_info=$(cat /etc/redhat-release)
+      else
+        os_info="Unknown"
+      fi
+    fi
+
+    output=$(awk 'BEGIN { rx_total = 0; tx_total = 0 }
+        NR > 2 { rx_total += $2; tx_total += $10 }
+        END {
+            rx_units = "Bytes";
+            tx_units = "Bytes";
+            if (rx_total > 1024) { rx_total /= 1024; rx_units = "KB"; }
+            if (rx_total > 1024) { rx_total /= 1024; rx_units = "MB"; }
+            if (rx_total > 1024) { rx_total /= 1024; rx_units = "GB"; }
+
+            if (tx_total > 1024) { tx_total /= 1024; tx_units = "KB"; }
+            if (tx_total > 1024) { tx_total /= 1024; tx_units = "MB"; }
+            if (tx_total > 1024) { tx_total /= 1024; tx_units = "GB"; }
+
+            printf("总接收: %.2f %s\n总发送: %.2f %s\n", rx_total, rx_units, tx_total, tx_units);
+        }' /proc/net/dev)
+
+
+    current_time=$(date "+%Y-%m-%d %I:%M %p")
+
+
+    swap_used=$(free -m | awk 'NR==3{print $3}')
+    swap_total=$(free -m | awk 'NR==3{print $2}')
+
+    if [ "$swap_total" -eq 0 ]; then
+        swap_percentage=0
+    else
+        swap_percentage=$((swap_used * 100 / swap_total))
+    fi
+
+    swap_info="${swap_used}MB/${swap_total}MB (${swap_percentage}%)"
+
+    runtime=$(cat /proc/uptime | awk -F. '{run_days=int($1 / 86400);run_hours=int(($1 % 86400) / 3600);run_minutes=int(($1 % 3600) / 60); if (run_days > 0) printf("%d天 ", run_days); if (run_hours > 0) printf("%d时 ", run_hours); printf("%d分\n", run_minutes)}')
+
+    echo ""
+    echo "系统信息查询"
+    echo "------------------------"
+    echo "主机名: $hostname"
+    echo "运营商: $isp_info"
+    echo "------------------------"
+    echo "系统版本: $os_info"
+    echo "Linux版本: $kernel_version"
+    echo "------------------------"
+    echo "CPU架构: $cpu_arch"
+    echo "CPU型号: $cpu_info"
+    echo "CPU核心数: $cpu_cores"
+    echo "------------------------"
+    echo "CPU占用: $cpu_usage_percent"
+    echo "物理内存: $mem_info"
+    echo "虚拟内存: $swap_info"
+    echo "硬盘占用: $disk_info"
+    echo "------------------------"
+    echo "$output"
+    echo "------------------------"
+    echo "网络拥堵算法: $congestion_algorithm $queue_algorithm"
+    echo "------------------------"
+    echo "公网IPv4地址: $ipv4_address"
+    echo "公网IPv6地址: $ipv6_address"
+    echo "------------------------"
+    echo "地理位置: $country $city"
+    echo "系统时间: $current_time"
+    echo "------------------------"
+    echo "系统运行时长: $runtime"
+    echo
 }
 
-# 0: running, 1: not running, 2: not installed
-check_status() {
-    if [[ ! -f /etc/systemd/system/XrayR.service ]]; then
-        return 2
-    fi
-    temp=$(systemctl status XrayR | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1)
-    if [[ x"${temp}" == x"running" ]]; then
-        return 0
-    else
-        return 1
-    fi
+main_menu() {
+    echo -e "\033[96m_  _ ____  _ _ _    _ ____ _  _ "
+    echo "|_/  |___  | | |    | |  | |\ | "
+    echo "| \_ |___ _| | |___ | |__| | \| "
+    echo "                                "
+    echo -e "\033[96m科技lion一键脚本工具 v2.2.6 （支持Ubuntu/Debian/CentOS/Alpine系统）\033[0m"
+    echo -e "\033[96m-输入\033[93mk\033[96m可快速启动此脚本-\033[0m"
+    echo "------------------------"
+    echo "1. 系统信息查询"
+    echo "2. 系统更新"
+    echo "3. 系统清理"
+    echo "4. 常用工具 ▶"
+    echo "5. BBR管理 ▶"
+    echo "6. Docker管理 ▶ "
+    echo "7. WARP管理 ▶ 解锁ChatGPT Netflix"
+    echo "8. 测试脚本合集 ▶ "
+    echo "9. 甲骨文云脚本合集 ▶ "
+    echo -e "\033[33m10. LDNMP建站 ▶ \033[0m"
+    echo "11. 面板工具 ▶ "
+    echo "12. 我的工作区 ▶ "
+    echo "13. 系统工具 ▶ "
+    echo -e "14. VPS集群控制 ▶ \033[36mBeta\033[0m"
+    echo "------------------------"
+    echo "00. 脚本更新"
+    echo "------------------------"
+    echo "0. 退出脚本"
+    echo "------------------------"
 }
 
-install_acme() {
-    curl https://get.acme.sh | sh
-}
-
-install_XrayR() {
-    if [[ -e /usr/local/XrayR/ ]]; then
-        rm /usr/local/XrayR/ -rf
-    fi
-
-    mkdir /usr/local/XrayR/ -p
-	cd /usr/local/XrayR/
-
-    if  [ $# == 0 ] ;then
-        last_version=$(curl -Ls "https://api.github.com/repos/wyx2685/XrayR/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-        if [[ ! -n "$last_version" ]]; then
-            echo -e "${red}检测 XrayR 版本失败，可能是超出 Github API 限制，请稍后再试，或手动指定 XrayR 版本安装${plain}"
-            exit 1
-        fi
-        echo -e "检测到 XrayR 最新版本：${last_version}，开始安装"
-        wget -q -N --no-check-certificate -O /usr/local/XrayR/XrayR-linux.zip https://github.com/wyx2685/XrayR/releases/download/${last_version}/XrayR-linux-${arch}.zip
-        if [[ $? -ne 0 ]]; then
-            echo -e "${red}下载 XrayR 失败，请确保你的服务器能够下载 Github 的文件${plain}"
-            exit 1
-        fi
-    else
-        if [[ $1 == v* ]]; then
-            last_version=$1
-	else
-	    last_version="v"$1
-	fi
-        url="https://github.com/wyx2685/XrayR/releases/download/${last_version}/XrayR-linux-${arch}.zip"
-        echo -e "开始安装 XrayR ${last_version}"
-        wget -q -N --no-check-certificate -O /usr/local/XrayR/XrayR-linux.zip ${url}
-        if [[ $? -ne 0 ]]; then
-            echo -e "${red}下载 XrayR ${last_version} 失败，请确保此版本存在${plain}"
-            exit 1
-        fi
-    fi
-
-    unzip XrayR-linux.zip
-    rm XrayR-linux.zip -f
-    chmod +x XrayR
-    mkdir /etc/XrayR/ -p
-    rm /etc/systemd/system/XrayR.service -f
-    file="https://github.com/wyx2685/XrayR-release/raw/master/XrayR.service"
-    wget -q -N --no-check-certificate -O /etc/systemd/system/XrayR.service ${file}
-    #cp -f XrayR.service /etc/systemd/system/
-    systemctl daemon-reload
-    systemctl stop XrayR
-    systemctl enable XrayR
-    echo -e "${green}XrayR ${last_version}${plain} 安装完成，已设置开机自启"
-    cp geoip.dat /etc/XrayR/
-    cp geosite.dat /etc/XrayR/ 
-
-    if [[ ! -f /etc/XrayR/config.yml ]]; then
-        cp config.yml /etc/XrayR/
-        echo -e ""
-        echo -e "全新安装，请先参看教程：https://github.com/XrayR-project/XrayR，配置必要的内容"
-    else
-        systemctl start XrayR
-        sleep 2
-        check_status
-        echo -e ""
-        if [[ $? == 0 ]]; then
-            echo -e "${green}XrayR 重启成功${plain}"
-        else
-            echo -e "${red}XrayR 可能启动失败，请稍后使用 XrayR log 查看日志信息，若无法启动，则可能更改了配置格式，请前往 wiki 查看：https://github.com/XrayR-project/XrayR/wiki${plain}"
-        fi
-    fi
-
-    if [[ ! -f /etc/XrayR/dns.json ]]; then
-        cp dns.json /etc/XrayR/
-    fi
-    if [[ ! -f /etc/XrayR/route.json ]]; then
-        cp route.json /etc/XrayR/
-    fi
-    if [[ ! -f /etc/XrayR/custom_outbound.json ]]; then
-        cp custom_outbound.json /etc/XrayR/
-    fi
-    if [[ ! -f /etc/XrayR/custom_inbound.json ]]; then
-        cp custom_inbound.json /etc/XrayR/
-    fi
-    if [[ ! -f /etc/XrayR/rulelist ]]; then
-        cp rulelist /etc/XrayR/
-    fi
-    curl -o /usr/bin/XrayR -Ls https://raw.githubusercontent.com/wyx2685/XrayR-release/master/XrayR.sh
-    chmod +x /usr/bin/XrayR
-    ln -s /usr/bin/XrayR /usr/bin/xrayr # 小写兼容
-    chmod +x /usr/bin/xrayr
-    cd $cur_dir
-    rm -f install.sh
-    echo -e ""
-    echo "XrayR 管理脚本使用方法 (兼容使用xrayr执行，大小写不敏感): "
-    echo "------------------------------------------"
-    echo "XrayR                    - 显示管理菜单 (功能更多)"
-    echo "XrayR start              - 启动 XrayR"
-    echo "XrayR stop               - 停止 XrayR"
-    echo "XrayR restart            - 重启 XrayR"
-    echo "XrayR status             - 查看 XrayR 状态"
-    echo "XrayR enable             - 设置 XrayR 开机自启"
-    echo "XrayR disable            - 取消 XrayR 开机自启"
-    echo "XrayR log                - 查看 XrayR 日志"
-    echo "XrayR update             - 更新 XrayR"
-    echo "XrayR update x.x.x       - 更新 XrayR 指定版本"
-    echo "XrayR config             - 显示配置文件内容"
-    echo "XrayR install            - 安装 XrayR"
-    echo "XrayR uninstall          - 卸载 XrayR"
-    echo "XrayR version            - 查看 XrayR 版本"
-    echo "------------------------------------------"
-}
-
-echo -e "${green}开始安装${plain}"
-install_base
-# install_acme
-install_XrayR $1
+# show_info
+main_menu
