@@ -93,7 +93,7 @@ fi
 # 显示系统信息
 show_info() {
     
-    clear
+    # clear
     # 函数: 获取IPv4和IPv6地址
     ip_address
 
@@ -208,6 +208,70 @@ show_info() {
     echo
 }
 
+# 更新系统
+update_apps() {
+    
+    # Update system on Debian-based systems
+    if [ -f "/etc/debian_version" ]; then
+        apt update -y && DEBIAN_FRONTEND=noninteractive apt full-upgrade -y
+    fi
+
+    # Update system on Red Hat-based systems
+    if [ -f "/etc/redhat-release" ]; then
+        yum -y update
+    fi
+
+    # Update system on Alpine Linux
+    if [ -f "/etc/alpine-release" ]; then
+        apk update && apk upgrade
+    fi
+}
+
+# 清理系统
+clean_sys() {
+    
+    clean_debian() {
+        apt autoremove --purge -y
+        apt clean -y
+        apt autoclean -y
+        apt remove --purge $(dpkg -l | awk '/^rc/ {print $2}') -y
+        journalctl --rotate
+        journalctl --vacuum-time=1s
+        journalctl --vacuum-size=50M
+        apt remove --purge $(dpkg -l | awk '/^ii linux-(image|headers)-[^ ]+/{print $2}' | grep -v $(uname -r | sed 's/-.*//') | xargs) -y
+    }
+
+    clean_redhat() {
+        yum autoremove -y
+        yum clean all
+        journalctl --rotate
+        journalctl --vacuum-time=1s
+        journalctl --vacuum-size=50M
+        yum remove $(rpm -q kernel | grep -v $(uname -r)) -y
+    }
+
+    clean_alpine() {
+        apk del --purge $(apk info --installed | awk '{print $1}' | grep -v $(apk info --available | awk '{print $1}'))
+        apk autoremove
+        apk cache clean
+        rm -rf /var/log/*
+        rm -rf /var/cache/apk/*
+
+    }
+
+    # Main script
+    if [ -f "/etc/debian_version" ]; then
+        # Debian-based systems
+        clean_debian
+    elif [ -f "/etc/redhat-release" ]; then
+        # Red Hat-based systems
+        clean_redhat
+    elif [ -f "/etc/alpine-release" ]; then
+        # Alpine Linux
+        clean_alpine
+    fi
+}
+
 # 显示主菜单
 main_menu() {
     echo -e "\033[96m_  _ ____  _ _ _    _ ____ _  _ "
@@ -238,6 +302,44 @@ main_menu() {
     echo "------------------------"
 }
 
+while true; do 
+clear 
 main_menu
 
-show_info
+read -p "请输入你的选择: " choice
+
+case $choice in
+  1)
+    clear
+    show_info
+    ;;
+  2)
+    clear
+    update_apps
+    ;;
+  3)
+    clear
+    clean_sys
+    ;;
+  00)
+    # cd ~
+    # curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/update_log.sh && chmod +x update_log.sh && ./update_log.sh
+    # rm update_log.sh
+    # echo ""
+    # curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/kejilion.sh && chmod +x kejilion.sh
+    # echo "脚本已更新到最新版本！"
+    # break_end
+    # kejilion
+    ;;
+
+  0)
+    clear
+    exit
+    ;;
+
+  *)
+    echo "无效的输入!"
+    ;;
+esac
+    break_end
+done
