@@ -13,6 +13,7 @@ ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 red='\033[0;31m'
 green='\033[0;32m'
 yellow='\033[0;33m'
+blue='\033[96m'
 plain='\033[0m'
 
 # export PATH=$PATH:/usr/local/bin
@@ -274,33 +275,35 @@ clean_sys() {
 
 # 显示主菜单
 main_menu() {
-    echo -e "\033[96m_  _ ____  _ _ _    _ ____ _  _ "
-    echo "|_/  |___  | | |    | |  | |\ | "
-    echo "| \_ |___ _| | |___ | |__| | \| "
-    echo "                                "
-    echo -e "\033[96mQiQTools一键脚本工具 v0.0.1 "
-    echo -e "(支持Ubuntu/Debian/CentOS/Alpine系统)\033[0m"
-    echo -e "\033[96m-输入\033[93mqiq\033[96m可快速启动此脚本-\033[0m"
-    echo "------------------------"
-    echo " 1. 系统信息查询"
-    echo " 2. 系统更新"
-    echo " 3. 系统清理"
-    echo " 4. 常用工具 ▶"
-    echo " 5. BBR管理 ▶"
-    echo " 6. Docker管理 ▶ "
-    echo " 7. WARP管理 ▶ 解锁ChatGPT Netflix"
-    echo " 8. 测试脚本合集 ▶ "
-    echo " 9. 甲骨文云脚本合集 ▶ "
-    echo -e "\033[33m10. LDNMP建站 ▶ \033[0m"
-    echo "11. 面板工具 ▶ "
-    echo "12. 我的工作区 ▶ "
-    echo "13. 系统工具 ▶ "
-    echo -e "14. VPS集群控制 ▶ \033[36mBeta\033[0m"
-    echo "------------------------"
-    echo "00. 脚本更新"
-    echo "------------------------"
-    echo "0. 退出脚本"
-    echo "------------------------"
+    echo -e "${blue}
+    _  _ ____  _ _ _    _ ____ _  _ 
+    |_/  |___  | | |    | |  | |\ | 
+    | \_ |___ _| | |___ | |__| | \| 
+                               
+    QiQTools 一键脚本工具 v0.0.1
+    (支持Ubuntu/Debian/CentOS/Alpine系统)
+    -- 输入${yellow}qiq${blue}可快速启动此脚本 --
+    ------------------------
+    ${green} 1.${plain} 系统信息查询
+    ${green} 2.${plain} 系统更新
+    ${green} 3.${plain} 系统清理
+    ${green} 4.${plain} 常用工具 ▶
+    ${green} 5.${plain} BBR管理 ▶
+    ${green} 6.${plain} Docker管理 ▶
+    ${green} 7.${plain} WARP管理 ▶ 解锁ChatGPT Netflix
+    ${green} 8.${plain} 测试脚本合集 ▶
+    ${green} 9.${plain} 甲骨文云脚本合集 ▶
+    ${green}10.${blue} LDNMP建站 ▶${plain}
+    ${green}11.${plain} 面板工具 ▶
+    ${green}12.${plain} 我的工作区 ▶
+    ${green}13.${plain} 系统工具 ▶
+    ${green}14.${plain} VPS集群控制 ▶ ${blue}Beta${plain}
+    ------------------------
+    ${green}00.${plain} 脚本更新
+    ------------------------
+    ${green} 0.${plain} 退出脚本
+    ------------------------
+    "
 }
 
 while true; do 
