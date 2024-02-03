@@ -16,6 +16,14 @@ yellow='\033[0;33m'
 blue='\033[96m'
 plain='\033[0m'
 
+# 自定义字体彩色，read 函数
+warning() { echo -e "\033[31m\033[01m$*\033[0m"; }  # 红色
+error() { echo -e "\033[31m\033[01m$*\033[0m" && exit 1; } # 红色
+info() { echo -e "\033[32m\033[01m$*\033[0m"; }   # 绿色
+hint() { echo -e "\033[33m\033[01m$*\033[0m"; }   # 黄色
+reading() { read -rp "$(info "$1")" "$2"; }
+text() { grep -q '\$' <<< "${E[$*]}" && eval echo "\$(eval echo "\${${L}[$*]}")" || eval echo "\${${L}[$*]}"; }
+
 # export PATH=$PATH:/usr/local/bin
 
 cur_dir=$(pwd)
@@ -228,38 +236,38 @@ update_apps() {
     fi
 }
 
+
+clean_debian() {
+    apt autoremove --purge -y
+    apt clean -y
+    apt autoclean -y
+    apt remove --purge $(dpkg -l | awk '/^rc/ {print $2}') -y
+    journalctl --rotate
+    journalctl --vacuum-time=1s
+    journalctl --vacuum-size=50M
+    apt remove --purge $(dpkg -l | awk '/^ii linux-(image|headers)-[^ ]+/{print $2}' | grep -v $(uname -r | sed 's/-.*//') | xargs) -y
+}
+
+clean_redhat() {
+    yum autoremove -y
+    yum clean all
+    journalctl --rotate
+    journalctl --vacuum-time=1s
+    journalctl --vacuum-size=50M
+    yum remove $(rpm -q kernel | grep -v $(uname -r)) -y
+}
+
+clean_alpine() {
+    apk del --purge $(apk info --installed | awk '{print $1}' | grep -v $(apk info --available | awk '{print $1}'))
+    apk autoremove
+    apk cache clean
+    rm -rf /var/log/*
+    rm -rf /var/cache/apk/*
+
+}
+
 # 清理系统
 clean_sys() {
-    
-    clean_debian() {
-        apt autoremove --purge -y
-        apt clean -y
-        apt autoclean -y
-        apt remove --purge $(dpkg -l | awk '/^rc/ {print $2}') -y
-        journalctl --rotate
-        journalctl --vacuum-time=1s
-        journalctl --vacuum-size=50M
-        apt remove --purge $(dpkg -l | awk '/^ii linux-(image|headers)-[^ ]+/{print $2}' | grep -v $(uname -r | sed 's/-.*//') | xargs) -y
-    }
-
-    clean_redhat() {
-        yum autoremove -y
-        yum clean all
-        journalctl --rotate
-        journalctl --vacuum-time=1s
-        journalctl --vacuum-size=50M
-        yum remove $(rpm -q kernel | grep -v $(uname -r)) -y
-    }
-
-    clean_alpine() {
-        apk del --purge $(apk info --installed | awk '{print $1}' | grep -v $(apk info --available | awk '{print $1}'))
-        apk autoremove
-        apk cache clean
-        rm -rf /var/log/*
-        rm -rf /var/cache/apk/*
-
-    }
-
     # Main script
     if [ -f "/etc/debian_version" ]; then
         # Debian-based systems
@@ -283,7 +291,7 @@ echo -e "${blue}
  QiQTools 一键脚本工具 v0.0.1
  (支持Ubuntu/Debian/CentOS/Alpine系统)
  -- 输入 ${yellow}qiq ${blue}可快速启动此脚本 --
- ------------------------
+ -------------------------------
  ${green} 1.${plain} 系统信息查询
  ${green} 2.${plain} 系统更新
  ${green} 3.${plain} 系统清理
@@ -298,14 +306,15 @@ echo -e "${blue}
  ${green}12.${plain} 我的工作区 ▶
  ${green}13.${plain} 系统工具 ▶
  ${green}14.${plain} VPS集群控制 ▶ ${blue}Beta${plain}
- ------------------------
+ -------------------------------
  ${green}00.${plain} 脚本更新
- ------------------------
+ -------------------------------
  ${green} 0.${plain} 退出脚本
- ------------------------
+ -------------------------------
 "
 }
 
+# Main Loops for the scripts
 while true; do 
 clear 
 main_menu
