@@ -637,7 +637,7 @@ ${green} 4.${plain} Ubuntu 22.04
 ${green} 5.${plain} Ubuntu 20.04
 ${green} 6.${plain} CentOS 7.9
 ${green} 7.${plain} Alpine 3.19
-${green} 8.${plain} Windows 11${pink}Beta${plain}
+${green} 8.${plain} Windows 11 ${pink}Beta${plain}
 -------------------------------
 "
 }
@@ -659,14 +659,47 @@ dd_system_run() {
     reading "请选择要重装的系统: " sys_choice
 
     case "$sys_choice" in
-      1) xitong="-d 12" && dd_xitong_1 && exit && reboot ;;
-      2) xitong="-d 11" && dd_xitong_1 && reboot && exit ;;
-      3) xitong="-d 10" && dd_xitong_1 && reboot && exit ;;
-      4) dd_xitong_2 && bash InstallNET.sh -ubuntu && reboot && exit ;;
-      5) xitong="-u 20.04" && dd_xitong_1 && reboot && exit ;;
-      6) dd_xitong_2 && bash InstallNET.sh -centos 7 && reboot && exit ;;
-      7) dd_xitong_2 && bash InstallNET.sh -alpine   && reboot && exit ;;
-      8) dd_xitong_2 && bash InstallNET.sh -windows  && reboot && exit ;;
+      1) 
+        xitong="-d 12" 
+        dd_xitong_1 
+        exit 
+        reboot 
+        ;;
+      2) 
+        xitong="-d 11" 
+        dd_xitong_1 
+        reboot 
+        exit ;;
+      3) 
+        xitong="-d 10" 
+        dd_xitong_1 
+        reboot 
+        exit ;;
+      4) 
+        dd_xitong_2 
+        bash InstallNET.sh -ubuntu 
+        reboot 
+        exit ;;
+      5) 
+        xitong="-u 20.04" 
+        dd_xitong_1 
+        reboot 
+        exit ;;
+      6) 
+        dd_xitong_2 
+        bash InstallNET.sh -centos 7 
+        reboot 
+        exit ;;
+      7) 
+        dd_xitong_2 
+        bash InstallNET.sh -alpine   
+        reboot 
+        exit ;;
+      8) 
+        dd_xitong_2 
+        bash InstallNET.sh -windows  
+        reboot 
+        exit ;;
       *) echo "无效的选择，请重新输入。" && break_end ;;
     esac    
   done
@@ -734,7 +767,7 @@ system_tools_run() {
       6) clear && change_ssh_port ;;
       7) clear && change_dns ;;
       8) 
-        clear && echo "请备份数据，将为你重装系统，预计花费15分钟。\n${white}感谢MollyLau和MoeClub的脚本支持！${plain}"
+        clear && echo -e "请备份数据，将为你重装系统，预计花费15分钟。\n${white}感谢MollyLau和MoeClub的脚本支持！${plain}"
         reading "确定继续吗？(Y/N): " choice
         case "$choice" in
           [Yy]) dd_system_run ;;
