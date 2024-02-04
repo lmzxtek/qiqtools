@@ -1195,21 +1195,21 @@ panel_tools_menu() {
 echo -e "
 ▶ 面板工具
 -------------------------------
-${green} 1.${plain} 宝塔面板(官方版)               ${green} 2.${plain} aaPanel(宝塔国际版)
-${green} 3.${plain} 1Panel(新一代管理面板)         ${green} 4.${plain} NginxProxyManager(Nginx可视化面板)
-${green} 5.${plain} AList(多存储文件列表程序       ${green} 6.${plain} Ubuntu远程桌面网页版
-${green} 7.${plain} 哪吒探针(VPS监控面板)          ${green} 8.${plain} QB离线BT(磁力下载面板)
-${green} 9.${plain} Poste.io(邮件服务器程序)       ${green}10.${plain} RocketChat(多人在线聊天系统)
-${green}11.${plain} VScode网页版                   ${green}12.${plain} Memos网页备忘录
-${green}13.${plain} AuroPanel(极光面板)            ${green}14.${plain} X-UI(@alireza0)
-${green}15.${plain} X-UI(@FranzKafkaYu)            ${green}16.${plain} X-UI(@rwkgyg)
-${green}17.${plain} 3X-UI(@mhsanaei)               ${green}18.${plain} XBoard
-${green}19.${plain} XRayR                          ${green}20.${plain} SSPanel
-${green}21.${plain} V2Board(wyz2685)               ${green}22.${plain} LotusBoard
-${green}23.${plain} ProxyBoard                     ${green}24.${plain} v2rayA
-${green}25.${plain} Daed                           ${green}26.${plain} YACD
-${green}26.${plain} Hiddify                        ${green}28.${plain} ClashDashBoard
-${green}29.${plain} IT-Tools                       ${green}30.${plain} Next Terminal
+${green} 1.${plain} 宝塔面板(官方版)               
+${green} 2.${plain} aaPanel(宝塔国际版)
+${green} 3.${plain} 1Panel(新一代管理面板)         
+${green} 4.${plain} NginxProxyManager(Nginx可视化面板)
+${green} 5.${plain} AList(多存储文件列表程序       
+${green} 6.${plain} Ubuntu远程桌面网页版
+${green} 7.${plain} 哪吒探针(VPS监控面板)          
+${green} 8.${plain} QB离线BT(磁力下载面板)
+${green} 9.${plain} Poste.io(邮件服务器程序)       
+${green}10.${plain} RocketChat(多人在线聊天系统)
+${green}12.${plain} Memos网页备忘录
+${green}13.${plain} AuroPanel(极光面板)          
+${green}29.${plain} IT-Tools                       
+${green}30.${plain} Next Terminal
+${green}30.${plain} VScode Server
 -------------------------------
 ${green}99.${plain} 重启服务器    ${green} 0.${plain} 返回主菜单
 -------------------------------
@@ -1464,13 +1464,11 @@ other_tools_menu() {
 echo -e "
 ▶ 其他工具
 -------------------------------
-${green} 1.${plain} RustDesk Server        
+${green} 1.${plain} RustDesk Server
 ${green} 2.${plain} Python
 ${green} 3.${plain} Conda
 -------------------------------
-${green}99.${plain} 重启服务器
--------------------------------
-${green} 0.${plain} 返回主菜单
+${green}99.${plain} 重启服务器    ${green} 0.${plain} 返回主菜单
 -------------------------------
 "
 }
@@ -1478,7 +1476,7 @@ ${green} 0.${plain} 返回主菜单
 other_tools_run() {
   while true; do
     clear && dd_system_menu
-    reading "请选择要重装的系统: " sys_choice
+    reading "请选择要部署的服务: " sys_choice
 
   done 
 }
@@ -1487,22 +1485,41 @@ warp_tools_menu() {
 echo -e "
 ▶ 节点管理
 -------------------------------
-${green} 1.${plain} Warp+
-${green} 2.${plain} SingBox
-${green} 3.${plain} X-UI
+${green} 1.${plain} Warp(@fscarmen)                    ${green}11.${plain} V2Ray(@233boy)
+${green} 2.${plain} Warp(@hamid-gh98)                  ${green}12.${plain} V2Ray-Agent(@mack-a)
+${green} 3.${plain} Warp(@Misaka-blog)                 ${green}13.${plain} XRay(@233boy)
+${green} 4.${plain} SingBox(@fscarmen)                 ${green}14.${plain} Hysteria2(@Misaka)
+${green} 5.${plain} SingBox(@ygkkk)                    ${green}15.${plain} TUIC5(@Misaka)
+${green} 6.${plain} ArgoX(@fscarmen)                   ${green}16.${plain} mianyang()
 -------------------------------
-${green}99.${plain} 重启服务器
+${green}21.${plain} 3X-UI(@mhsanaei)                   ${green}31.${plain} Hiddify
+${green}22.${plain} X-UI(@alireza0)                    ${green}32.${plain} V2RayA
+${green}23.${plain} X-UI(@FranzKafkaYu)                ${green}33.${plain} Daed
+${green}24.${plain} X-UI(@rwkgyg)                      ${green}34.${plain} Daed-Docker
 -------------------------------
-${green} 0.${plain} 返回主菜单
+${green}41.${plain} XBoard                             ${green}44.${plain} LotusBoard
+${green}42.${plain} V2Board                            ${green}45.${plain} SSPanel
+${green}43.${plain} V2Board(wyx2685)                   ${green}46.${plain} Proxypanel
+-------------------------------
+${green}51.${plain} XRayR(@XrayR-project)              ${green}61.${plain} Set Github(For IPv6 VPS)
+${green}52.${plain} XRayR(@wyx2685)                    ${green}62.${plain} Cloudflare Select IP
+${green}53.${plain} XRayR-Docker(@XrayR-project)       ${green}63.${plain} Cloudflare Select CDN
+${green}54.${plain} Bodhi(Hysteria2 to V2board)        ${green}64.${plain} YACD
+${green}55.${plain} V2bX(Hysteria2 to V2board)         ${green}65.${plain} ClashDashBoard
+-------------------------------
+${green}91.${plain} Show IP       ${green}94.${plain} Check-OpenAI  
+${green}92.${plain} Show IPv4     ${green}95.${plain} Cloudflare(IPv4)    
+${green}93.${plain} Show IPv6     ${green}96.${plain} Cloudflare(IPv6)
+-------------------------------
+${green}99.${plain} 重启服务器     ${green} 0.${plain} 返回主菜单
 -------------------------------
 "
-
 }
 
 warp_tools_run() {
   while true; do
     clear && dd_system_menu
-    reading "请选择要重装的系统: " sys_choice
+    reading "请选择服务代码: " sys_choice
     
   done 
 
@@ -1527,7 +1544,12 @@ ${green} 0.${plain} 返回主菜单
 docker_run() {
   while true; do
     clear && dd_system_menu
-    reading "请选择要重装的系统: " sys_choice
+    reading "请选择: " choice
+    case $choice in
+      0) exit ;;
+      *) echo "无效的输入!" ;;
+    esac  
+    break_end
     
   done 
 
