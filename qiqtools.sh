@@ -1214,7 +1214,7 @@ ${green}29.${plain} IT-Tools
 ${green}30.${plain} Next Terminal
 ${green}30.${plain} VScode Server
 -------------------------------
-${green}99.${plain} 重启服务器    ${green} 0.${plain} 返回主菜单
+${green} 0.${plain} 返回主菜单
 -------------------------------
 "
 }
@@ -1471,7 +1471,7 @@ ${green} 1.${plain} RustDesk Server
 ${green} 2.${plain} Python
 ${green} 3.${plain} Conda
 -------------------------------
-${green}99.${plain} 重启服务器    ${green} 0.${plain} 返回主菜单
+${green} 0.${plain} 返回主菜单
 -------------------------------
 "
 }
@@ -1479,9 +1479,19 @@ ${green}99.${plain} 重启服务器    ${green} 0.${plain} 返回主菜单
 other_tools_run() {
   while true; do
     clear && other_tools_menu
-    reading "请选择要部署的服务: " choice
+    reading "请选择代码: " choice
 
     case $choice in
+      1) clear && install wget && wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
+      2) clear && install_python ;;
+      3) 
+        clear 
+        if [[ $(uname -m | grep 'arm') != "" ]]; then 
+          wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-aarch64.sh && bash Miniconda3-latest-Linux-aarch64.sh
+        else
+          wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && bash Miniconda3-latest-Linux-x86_64.sh 
+        fi 
+        ;;
       0) qiqtools ;;
       *) echo "无效的输入!" ;;
     esac  
@@ -1527,7 +1537,7 @@ ${green} 0.${plain} 返回主菜单
 warp_tools_run() {
   while true; do
     clear && warp_tools_menu
-    reading "请选择服务代码: " choice
+    reading "请选择代码: " choice
     
     case $choice in
       1) clear && install wget && wget -N https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh && bash menu.sh [option] [lisence/url/token] ;;
