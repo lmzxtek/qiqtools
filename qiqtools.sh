@@ -667,6 +667,8 @@ ${green}64.${plain} Windows 2019             ${green}61.${plain} Windows 11 ${pi
 ${green}65.${plain} Windows 2016             ${green}62.${plain} Windows 10 
 ${green}66.${plain} Windows 2012             ${green}63.${plain} Windows 2022
 -------------------------------
+${green} 0.${plain} 返回系统工具菜单
+-------------------------------
 ${green}PS:${plain} Default password: 
 ${green}   ${blue}   Linux: ${yellow}LeitboGi0ro
 ${green}   ${blue} Windows: ${yellow}Teddysun.com ${plain}(minumum Disk is 15G)
@@ -810,6 +812,7 @@ dd_system_run() {
         reboot 
         exit ;;
       #============================== 
+      0) system_tools_run && exit ;;
       *) echo "无效的选择，请重新输入。" && break_end ;;
     esac    
   done
@@ -1479,7 +1482,7 @@ other_tools_run() {
     reading "请选择要部署的服务: " choice
 
     case $choice in
-      0) exit ;;
+      0) qiqtools ;;
       *) echo "无效的输入!" ;;
     esac  
     break_end
@@ -1527,7 +1530,7 @@ warp_tools_run() {
     reading "请选择服务代码: " choice
     
     case $choice in
-      0) exit ;;
+      0) qiqtools ;;
       *) echo "无效的输入!" ;;
     esac  
     break_end
@@ -1557,7 +1560,7 @@ docker_run() {
     reading "请选择: " choice
 
     case $choice in
-      0) exit ;;
+      0) qiqtools ;;
       *) echo "无效的输入!" ;;
     esac  
     break_end
