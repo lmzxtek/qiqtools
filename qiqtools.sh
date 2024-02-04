@@ -427,13 +427,13 @@ ${green} 1.${plain} curl   下载工具
 ${green} 2.${plain} wget   下载工具
 ${green} 3.${plain} sudo   超级管理权限工具
 ${green} 4.${plain} socat  通信连接工具 （申请域名证书必备）
-${green} 5.${plain} htop   系统监控工具
-${green} 6.${plain} iftop  网络流量监控工具
-${green} 7.${plain} unzip  ZIP压缩解压工具
-${green} 8.${plain} tar    GZ压缩解压工具
-${green} 9.${plain} tmux   多路后台运行工具
-${green}10.${plain} ffmpeg 视频编码直播推流工具
-${green}11.${plain} btop   现代化监控工具
+${green} 5.${plain} unzip  ZIP压缩解压工具
+${green} 6.${plain} tar    GZ压缩解压工具
+${green} 7.${plain} tmux   多路后台运行工具
+${green} 8.${plain} ffmpeg 视频编码直播推流工具
+${green} 9.${plain} htop   系统监控工具
+${green}10.${plain} btop   现代化监控工具
+${green}11.${plain} iftop  网络流量监控工具
 ${green}12.${plain} ranger 文件管理工具
 ${green}13.${plain} gdu    磁盘占用查看工具
 ${green}14.${plain} fzf    全局搜索工具
@@ -449,7 +449,6 @@ ${green} 0.${plain} 返回主菜单
 "
 }
 
-
 common_apps_run() {
   while true; do 
     clear
@@ -457,16 +456,29 @@ common_apps_run() {
     read -p "请输入你的选择: " sub_choice
 
     case $sub_choice in
-      1)
-        clear && install curl
-        clear && echo "工具已安装，使用方法如下：" && curl --help
-        ;;
-      0)
-        qiqtools
-        ;;
-      *)
-        echo "无效的输入!"
-        ;;
+      1) clear && install curl   && clear && echo "工具已安装，使用方法如下：" && curl  --help ;;
+      2) clear && install wget   && clear && echo "工具已安装，使用方法如下：" && wget  --help ;;
+      3) clear && install sudo   && clear && echo "工具已安装，使用方法如下：" && sudo  --help ;;
+      4) clear && install socat  && clear && echo "工具已安装，使用方法如下：" && socat --h    ;;
+      5) clear && install unzip  && clear && echo "工具已安装，使用方法如下：" && unzip ;;
+      6) clear && install tar    && clear && echo "工具已安装，使用方法如下：" && tar    --help ;;
+      7) clear && install tmux   && clear && echo "工具已安装，使用方法如下：" && tmux   --help ;;
+      8) clear && install ffmpeg && clear && echo "工具已安装，使用方法如下：" && ffmpeg --help ;;
+      9) clear && install htop   && clear && htop  ;;
+     10) clear && install btop   && clear && btop  ;;
+     11) clear && install iftop  && clear && iftop ;;
+     12) clear && install ranger && cd / && clear && ranger && cd ~ ;;
+     13) clear && install gdu    && cd / && clear && gdu    && cd ~ ;;
+     14) clear && install fzf    && cd / && clear && fzf    && cd ~ ;;
+     
+     31) clear && install curl wget sudo socat htop iftop unzip tar tmux ffmpeg btop ranger gdu fzf cmatrix sl bastet nsnake ninvaders ;;
+     32) clear && remove htop iftop unzip tmux ffmpeg btop ranger gdu fzf cmatrix sl bastet nsnake ninvaders ;;
+ 
+     41) clear && reading "请输入安装的工具名(wget curl): " installname && install $installname ;;
+     42) clear && reading "请输入卸载的工具名(htop ufw): "  removename  && remove  $removename  ;;
+     
+      0) qiqtools ;;
+      *) echo "无效的输入!" ;;
     esac
     break_end
   done
@@ -475,17 +487,14 @@ common_apps_run() {
 
 # Main Loops for the scripts
 while true; do 
-  clear && main_menu
-
-  # read -p "请输入你的选择: " choice
+  clear && main_menu 
   reading "请输入你的选择: " choice
-  # echo && read -ep "请输入选择: " choice
 
   case $choice in
-    1) clear && get_sysinfo && show_info ;;
-    2) clear && update_and_upgrade ;;
-    3) clear && clean_sys ;;
-    4) common_apps_run ;;
+     1) clear && get_sysinfo && show_info ;;
+     2) clear && update_and_upgrade ;;
+     3) clear && clean_sys ;;
+     4) common_apps_run ;;
     00)
       cd ~
       # curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/update_log.sh && chmod +x update_log.sh && ./update_log.sh
@@ -498,8 +507,8 @@ while true; do
       # exit 
       ;;
 
-    0) exit ;;
-    *) echo "无效的输入!" ;;
+     0) exit ;;
+     *) echo "无效的输入!" ;;
   esac  
   break_end
 done
