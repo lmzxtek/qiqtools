@@ -1113,16 +1113,16 @@ ${green} 3.${plain} 1Panel(新一代管理面板)         ${green} 4.${plain} Ng
 ${green} 5.${plain} AList(多存储文件列表程序       ${green} 6.${plain} Ubuntu远程桌面网页版
 ${green} 7.${plain} 哪吒探针(VPS监控面板)          ${green} 8.${plain} QB离线BT(磁力下载面板)
 ${green} 9.${plain} Poste.io(邮件服务器程序)       ${green}10.${plain} RocketChat(多人在线聊天系统)
-${green}11.${plain} VScode网页版                  ${green}12.${plain} Memos网页备忘录
-${green}13.${plain} AuroPanel(极光面板)           ${green}14.${plain} X-UI(@alireza0)
-${green}15.${plain} X-UI(@FranzKafkaYu)          ${green}16.${plain} X-UI(@rwkgyg)
-${green}17.${plain} 3X-UI(@mhsanaei)             ${green}18.${plain} XBoard
-${green}19.${plain} XRayR                        ${green}20.${plain} SSPanel
-${green}21.${plain} V2Board(wyz2685)             ${green}22.${plain} LotusBoard
-${green}23.${plain} ProxyBoard                   ${green}24.${plain} v2rayA
-${green}25.${plain} Daed                         ${green}26.${plain} YACD
-${green}26.${plain} Hiddify                      ${green}28.${plain} ClashDashBoard
-${green}29.${plain} IT-Tools                     ${green}30.${plain} Next Terminal
+${green}11.${plain} VScode网页版                   ${green}12.${plain} Memos网页备忘录
+${green}13.${plain} AuroPanel(极光面板)            ${green}14.${plain} X-UI(@alireza0)
+${green}15.${plain} X-UI(@FranzKafkaYu)            ${green}16.${plain} X-UI(@rwkgyg)
+${green}17.${plain} 3X-UI(@mhsanaei)               ${green}18.${plain} XBoard
+${green}19.${plain} XRayR                          ${green}20.${plain} SSPanel
+${green}21.${plain} V2Board(wyz2685)               ${green}22.${plain} LotusBoard
+${green}23.${plain} ProxyBoard                     ${green}24.${plain} v2rayA
+${green}25.${plain} Daed                           ${green}26.${plain} YACD
+${green}26.${plain} Hiddify                        ${green}28.${plain} ClashDashBoard
+${green}29.${plain} IT-Tools                       ${green}30.${plain} Next Terminal
 -------------------------------
 ${green}99.${plain} 重启服务器
 -------------------------------
