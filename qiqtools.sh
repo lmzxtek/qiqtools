@@ -1106,14 +1106,14 @@ system_tools_run() {
 
 # 显示主菜单
 main_menu() {
-echo -e "${blue}
-${blue} __   _  __   ___ ____ ____ _   __
-${blue}|  |  | |  |   |  |  | |  | |  |__
-${blue}|__|_ | |__|_  |  |__| |__| |__ __|
+echo -e "
+${cyan} __   _  __   ___ ____ ____ _   __
+${cyan}|  |  | |  |   |  |  | |  | |  |__
+${cyan}|__|_ | |__|_  |  |__| |__| |__ __|
 
 ${plain}QiQTools 一键脚本工具 v0.0.1
 ${plain}(支持Ubuntu/Debian/CentOS/Alpine系统)
-${plain}-- 输入 ${yellow}qiq ${blue}可快速启动此脚本 --
+${plain}-- 输入${yellow}qiq ${plain}可快速启动此脚本 --
 -------------------------------
 ${green} 1.${plain} 系统信息查询
 ${green} 2.${plain} 系统更新
