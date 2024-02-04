@@ -411,8 +411,8 @@ ${green}26.${plain} 俄罗斯方块小游戏
 ${green}27.${plain} 贪吃蛇小游戏
 ${green}28.${plain} 太空入侵者小游戏
 -------------------------------
-${green}31.${plain} 全部安装      ${green}41.${plain} 安装指定工具
-${green}32.${plain} 全部卸载      ${green}42.${plain} 卸载指定工具
+${green}31.${plain} 全部安装    ${green}41.${plain} 安装指定工具
+${green}32.${plain} 全部卸载    ${green}42.${plain} 卸载指定工具
 -------------------------------
 ${green} 0.${plain} 返回主菜单
 -------------------------------
@@ -634,14 +634,25 @@ change_dns() {
 
 }
 
+
 # 重装系统
+dd_xitong_1() {
+  reading "请输入你重装后的密码: " vpspasswd
+  install wget
+  bash <(wget --no-check-certificate -qO- 'https://raw.githubusercontent.com/MoeClub/Note/master/InstallNET.sh') $xitong -v 64 -p $vpspasswd -port 22
+}
+
+dd_xitong_2() {
+  install wget
+  wget --no-check-certificate -qO InstallNET.sh 'https://raw.githubusercontent.com/leitbogioro/Tools/master/Linux_reinstall/InstallNET.sh' && chmod a+x InstallNET.sh
+}
+
 dd_system_menu() {
 echo -e "
 ▶ 可选系统菜单
 -------------------------------
-${green} 1.${plain} CentOS 9
-${green} 2.${plain} CentOS 8
-${green} 3.${plain} CentOS 7
+${green} 1.${plain} CentOS 9                 ${green} 3.${plain} CentOS 7
+${green} 2.${plain} CentOS 8                 
 -------------------------------
 ${green}11.${plain} Debian 12                ${green}21.${plain} Ubuntu 24.04 ${red}(Not Avaliable)
 ${green}12.${plain} Debian 11                ${green}22.${plain} Ubuntu 22.04
@@ -652,29 +663,15 @@ ${green}32.${plain} Alpine 3.19              ${green}42.${plain} AlmaLinux
 ${green}33.${plain} Alpine 3.18              ${green}43.${plain} RockyLinux
 ${green}34.${plain} Alpine 3.17              ${green}44.${plain} Fedora 39
 -------------------------------
-${green}61.${plain} Windows 11 ${pink}Beta${plain}
-${green}62.${plain} Windows 10 
-${green}63.${plain} Windows 2022
-${green}64.${plain} Windows 2019
-${green}65.${plain} Windows 2016
-${green}66.${plain} Windows 2012
+${green}64.${plain} Windows 2019             ${green}61.${plain} Windows 11 ${pink}Beta${plain}
+${green}65.${plain} Windows 2016             ${green}62.${plain} Windows 10 
+${green}66.${plain} Windows 2012             ${green}63.${plain} Windows 2022
 -------------------------------
 ${green}PS:${plain} Default password: 
-${green}   ${blue}   Linux: ${red}LeitboGi0ro
-${green}   ${blue} Windows: ${red}Teddysun.com ${plain}(minumum Disk is 15G)
+${green}   ${blue}   Linux: ${yellow}LeitboGi0ro
+${green}   ${blue} Windows: ${yellow}Teddysun.com ${plain}(minumum Disk is 15G)
 -------------------------------
 "
-}
-
-dd_xitong_1() {
-  reading "请输入你重装后的密码: " vpspasswd
-  install wget
-  bash <(wget --no-check-certificate -qO- 'https://raw.githubusercontent.com/MoeClub/Note/master/InstallNET.sh') $xitong -v 64 -p $vpspasswd -port 22
-}
-
-dd_xitong_2() {
-  install wget
-  wget --no-check-certificate -qO InstallNET.sh 'https://raw.githubusercontent.com/leitbogioro/Tools/master/Linux_reinstall/InstallNET.sh' && chmod a+x InstallNET.sh
 }
 
 dd_system_run() {
@@ -1130,7 +1127,7 @@ ${green} 8.${plain} 禁用ROOT账户创建新账户        ${green}17.${plain} �
 ${green} 9.${plain} 切换优先ipv4/ipv6             ${green}18.${plain} 用户/密码生成器
 ${green}10.${plain} 查看端口占用状态              ${green}19.${plain} 定时任务管理
 -------------------------------
-${green}99.${plain} 重启服务器                   ${green} 0.${plain} 返回主菜单
+${green}99.${plain} 重启服务器    ${green} 0.${plain} 返回主菜单
 -------------------------------
 "
 }
@@ -1214,7 +1211,7 @@ ${green}25.${plain} Daed                           ${green}26.${plain} YACD
 ${green}26.${plain} Hiddify                        ${green}28.${plain} ClashDashBoard
 ${green}29.${plain} IT-Tools                       ${green}30.${plain} Next Terminal
 -------------------------------
-${green}99.${plain} 重启服务器                      ${green} 0.${plain} 返回主菜单
+${green}99.${plain} 重启服务器    ${green} 0.${plain} 返回主菜单
 -------------------------------
 "
 }
