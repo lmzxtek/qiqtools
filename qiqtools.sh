@@ -1103,6 +1103,49 @@ system_tools_run() {
   done
 }
 
+# 面板工具菜单
+panel_tools_menu() {
+echo -e "
+▶ 面板工具
+-------------------------------
+${green} 1.${plain} 宝塔面板(官方版)               ${green} 2.${plain} aaPanel(宝塔国际版)
+${green} 3.${plain} 1Panel(新一代管理面板)         ${green} 4.${plain} NginxProxyManager(Nginx可视化面板)
+${green} 5.${plain} AList(多存储文件列表程序       ${green} 6.${plain} Ubuntu远程桌面网页版
+${green} 7.${plain} 哪吒探针(VPS监控面板)          ${green} 8.${plain} QB离线BT(磁力下载面板)
+${green} 9.${plain} Poste.io(邮件服务器程序)       ${green}10.${plain} RocketChat(多人在线聊天系统)
+${green}11.${plain} VScode网页版                  ${green}12.${plain} Memos网页备忘录
+${green}13.${plain} AuroPanel(极光面板)           ${green}14.${plain} X-UI(@alireza0)
+${green}15.${plain} X-UI(@FranzKafkaYu)          ${green}16.${plain} X-UI(@rwkgyg)
+${green}17.${plain} 3X-UI(@mhsanaei)             ${green}18.${plain} XBoard
+${green}19.${plain} XRayR                        ${green}20.${plain} SSPanel
+${green}21.${plain} V2Board(wyz2685)             ${green}22.${plain} LotusBoard
+${green}23.${plain} ProxyBoard                   ${green}24.${plain} v2rayA
+${green}25.${plain} Daed                         ${green}26.${plain} YACD
+${green}26.${plain} Hiddify                      ${green}28.${plain} ClashDashBoard
+${green}29.${plain} IT-Tools                     ${green}30.${plain} Next Terminal
+-------------------------------
+${green}99.${plain} 重启服务器
+-------------------------------
+${green} 0.${plain} 返回主菜单
+-------------------------------
+"
+}
+
+# 面板工具
+panel_tools_run(){
+  while true; do
+    clear && panel_tools_menu
+    read -p "请输入你的选择: " sub_choice
+
+    case $sub_choice in
+      1) ;;
+      0) qiqtools ;;
+      *) echo "无效的输入!" ;;
+    esac
+    break_end
+  done
+
+}
 
 # 显示主菜单
 main_menu() {
@@ -1120,14 +1163,14 @@ ${green} 2.${plain} 系统更新
 ${green} 3.${plain} 系统清理
 ${green} 4.${plain} 常用工具 ▶
 ${green} 5.${plain} 系统工具 ▶
-${green} 6.${plain} Docker管理 ▶
-${green} 7.${plain} WARP管理 ▶ 解锁ChatGPT Netflix
-${green} 8.${plain} 测试脚本合集 ▶
-${green} 9.${plain} 甲骨文云脚本合集 ▶
+${green} 6.${plain} 面板工具 ▶
+${green} 7.${plain} 其他工具 ▶
+${green} 8.${plain} Docker管理 ▶
+${green} 9.${plain} WARP管理 ▶ 解锁ChatGPT Netflix
 ${green}10.${blue} LDNMP建站 ▶${plain}
-${green}11.${plain} 面板工具 ▶
-${green}12.${plain} 我的工作区 ▶
-${green}13.${plain} 系统工具 ▶
+${green}11.${plain} 测试脚本合集 ▶
+${green}12.${plain} 甲骨文云脚本合集 ▶
+${green}13.${plain} 我的工作区 ▶
 ${green}14.${plain} VPS集群控制 ▶ ${blue}Beta${plain}
 -------------------------------
 ${green}00.${plain} 脚本更新
@@ -1149,6 +1192,15 @@ while true; do
      3) clear && clean_sys ;;
      4) common_apps_run  ;;
      5) system_tools_run ;;
+     6) panel_tools_run  ;;
+     7) clear && echo -e "Todo: ... " ;;
+     8) clear && echo -e "Todo: ... " ;;
+     9) clear && echo -e "Todo: ... " ;;
+    10) clear && echo -e "Todo: ... " ;;
+    11) clear && echo -e "Todo: ... " ;;
+    12) clear && echo -e "Todo: ... " ;;
+    13) clear && echo -e "Todo: ... " ;;
+    14) clear && echo -e "Todo: ... " ;;
 
     00)
       cd ~
