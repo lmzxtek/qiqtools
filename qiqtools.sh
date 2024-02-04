@@ -312,7 +312,7 @@ set_docker_cmd(){
 # 显示主菜单
 main_menu() {
 echo -e "${blue}
-__   _  __   ___ ____ ____ _   __
+ __   _  __   ___ ____ ____ _   __
 |  |  | |  |   |  |  | |  | |  |__
 |__|_ | |__|_  |  |__| |__| |__ __|
                         
@@ -400,17 +400,17 @@ while true; do
       clear
       get_sysinfo
       show_info
-      break_end
+      # break_end
       ;;
     2)
       clear
       update_and_upgrade
-      break_end
+      # break_end
       ;;
     3)
       clear
       clean_sys
-      break_end
+      # break_end
       ;;
     4)
       while true; do 
