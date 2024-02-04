@@ -17,11 +17,11 @@ ln -sf ~/qiqtools.sh /usr/local/bin/qiq
    red='\033[0;31m'
  green='\033[0;32m'
 yellow='\033[0;33m'
- blue2='\033[0;34m'
+  blue='\033[0;34m'
   pink='\033[0;35m'
   cyan='\033[0;36m'
  white='\033[0;37m'
-  blue='\033[96m'
+ blue2='\033[96m'
   bold='\033[01m'
  plain='\033[0m'
 
@@ -1107,13 +1107,13 @@ system_tools_run() {
 # 显示主菜单
 main_menu() {
 echo -e "${blue}
- __   _  __   ___ ____ ____ _   __
-|  |  | |  |   |  |  | |  | |  |__
-|__|_ | |__|_  |  |__| |__| |__ __|
-                        
-QiQTools 一键脚本工具 v0.0.1
-(支持Ubuntu/Debian/CentOS/Alpine系统)
--- 输入 ${yellow}qiq ${blue}可快速启动此脚本 --
+${blue} __   _  __   ___ ____ ____ _   __
+${blue}|  |  | |  |   |  |  | |  | |  |__
+${blue}|__|_ | |__|_  |  |__| |__| |__ __|
+
+${plain}QiQTools 一键脚本工具 v0.0.1
+${plain}(支持Ubuntu/Debian/CentOS/Alpine系统)
+${plain}-- 输入 ${yellow}qiq ${blue}可快速启动此脚本 --
 -------------------------------
 ${green} 1.${plain} 系统信息查询
 ${green} 2.${plain} 系统更新
