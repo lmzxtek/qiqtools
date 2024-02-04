@@ -642,25 +642,18 @@ dd_system_menu() {
 echo -e "
 ▶ 可选系统菜单
 -------------------------------
-${green} 1.${plain} Ubuntu 22.04
-${green} 2.${plain} Ubuntu 20.04
-${green} 3.${plain} Debian 12
-${green} 4.${plain} Debian 11
-${green} 5.${plain} Debian 10
+${green} 1.${plain} CentOS 9
+${green} 2.${plain} CentOS 8
+${green} 3.${plain} CentOS 7
 -------------------------------
-${green}11.${plain} CentOS 9
-${green}12.${plain} CentOS 8
-${green}13.${plain} CentOS 7
+${green}11.${plain} Debian 12                ${green}21.${plain} Ubuntu 24.04 ${red}(Not Avaliable)
+${green}12.${plain} Debian 11                ${green}22.${plain} Ubuntu 22.04
+${green}13.${plain} Debian 10                ${green}23.${plain} Ubuntu 20.04
 -------------------------------
-${green}21.${plain} Alpine Edge
-${green}22.${plain} Alpine 3.19
-${green}23.${plain} Alpine 3.18
-${green}24.${plain} Alpine 3.17
--------------------------------
-${green}31.${plain} Kali Rolling
-${green}32.${plain} AlmaLinux
-${green}33.${plain} RockyLinux
-${green}34.${plain} Fedora 39
+${green}31.${plain} Alpine Edge              ${green}41.${plain} Kali Rolling
+${green}32.${plain} Alpine 3.19              ${green}42.${plain} AlmaLinux
+${green}33.${plain} Alpine 3.18              ${green}43.${plain} RockyLinux
+${green}34.${plain} Alpine 3.17              ${green}44.${plain} Fedora 39
 -------------------------------
 ${green}61.${plain} Windows 11 ${pink}Beta${plain}
 ${green}62.${plain} Windows 10 
@@ -1130,25 +1123,15 @@ echo -e "
 -------------------------------
 ${green} 1.${plain} 设置脚本启动快捷键
 -------------------------------
-${green} 2.${plain} 修改ROOT密码
-${green} 3.${plain} 开启ROOT密码登录模式
-${green} 4.${plain} 安装Python最新版
-${green} 5.${plain} 开放所有端口
-${green} 6.${plain} 修改SSH连接端口
-${green} 7.${plain} 优化DNS地址
-${green} 8.${plain} 一键重装系统
-${green} 9.${plain} 禁用ROOT账户创建新账户
-${green}10.${plain} 切换优先ipv4/ipv6
-${green}11.${plain} 查看端口占用状态
-${green}12.${plain} 修改虚拟内存大小
-${green}13.${plain} 用户管理
-${green}14.${plain} 用户/密码生成器
-${green}15.${plain} 系统时区调整
-${green}16.${plain} 开启BBR3加速
-${green}17.${plain} 防火墙高级管理器
-${green}18.${plain} 修改主机名
-${green}19.${plain} 切换系统更新源
-${green}20.${plain} 定时任务管理
+${green} 2.${plain} 修改ROOT密码                ${green}11.${plain} 修改虚拟内存大小
+${green} 3.${plain} 开启ROOT密码登录模式         ${green}17.${plain} 修改主机名
+${green} 4.${plain} 开放所有端口                 ${green}18.${plain} 切换系统更新源
+${green} 5.${plain} 修改SSH连接端口              ${green}14.${plain} 系统时区调整
+${green} 6.${plain} 优化DNS地址                  ${green}15.${plain} 开启BBR3加速
+${green} 7.${plain} 一键重装系统                  ${green}16.${plain} 防火墙高级管理器
+${green} 8.${plain} 禁用ROOT账户创建新账户         ${green}12.${plain} 用户管理
+${green} 9.${plain} 切换优先ipv4/ipv6             ${green}13.${plain} 用户/密码生成器
+${green}10.${plain} 查看端口占用状态               ${green}19.${plain} 定时任务管理
 -------------------------------
 ${green}99.${plain} 重启服务器
 -------------------------------
@@ -1180,11 +1163,11 @@ system_tools_run() {
              *) echo "无效的选择，请输入 Y 或 N。" ;;
         esac
         ;;
-      4) clear && install_python ;;
-      5) clear && iptables_open && remove iptables-persistent ufw firewalld iptables-services > /dev/null 2>&1 && echo "端口已全部开放" ;;
-      6) clear && change_ssh_port ;;
-      7) clear && change_dns ;;
-      8) 
+      # 4) clear && install_python ;;
+      4) clear && iptables_open && remove iptables-persistent ufw firewalld iptables-services > /dev/null 2>&1 && echo "端口已全部开放" ;;
+      5) clear && change_ssh_port ;;
+      6) clear && change_dns ;;
+      7) 
         clear && echo -e "请备份数据，将为你重装系统，预计花费15分钟。\n${white}感谢MollyLau和MoeClub的脚本支持！${plain}"
         reading "确定继续吗？(Y/N): " choice
         case "$choice" in
@@ -1193,17 +1176,18 @@ system_tools_run() {
              *) echo "无效的选择，请输入 Y 或 N。" ;;
         esac
         ;;
-      9) clear && banroot_with_new_user ;;
-     10) clear && alter_ipv4_ipv6 ;;
-     11) clear && ss -tulnape ;;
-     12) clear && set_swap ;;
-     13) clear && echo "Todo: ..." ;;
+      8) clear && banroot_with_new_user ;;
+      9) clear && alter_ipv4_ipv6 ;;
+     10) clear && ss -tulnape ;;
+     11) clear && set_swap ;;
+     12) clear && change_sys_name  ;;
+     13) clear && alter_sourcelist ;;
      14) clear && echo "Todo: ..." ;;
      15) clear && echo "Todo: ..." ;;
      16) clear && echo "Todo: ..." ;;
      17) clear && echo "Todo: ..." ;;
-     18) clear && change_sys_name  ;;
-     19) clear && alter_sourcelist ;;
+     18) clear && echo "Todo: ..." ;;
+     19) clear && echo "Todo: ..." ;;
      20) clear && echo "Todo: ..." ;;
 
      99) clear && echo "正在重启服务器，即将断开SSH连接" && reboot ;;
