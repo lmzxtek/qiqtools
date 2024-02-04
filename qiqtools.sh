@@ -482,25 +482,10 @@ while true; do
   # echo && read -ep "请输入选择: " choice
 
   case $choice in
-    1)
-      clear
-      get_sysinfo
-      show_info
-      # break_end
-      ;;
-    2)
-      clear
-      update_and_upgrade
-      # break_end
-      ;;
-    3)
-      clear
-      clean_sys
-      # break_end
-      ;;
-    4)
-      common_apps_run
-      ;;
+    1) clear && get_sysinfo && show_info ;;
+    2) clear && update_and_upgrade ;;
+    3) clear && clean_sys ;;
+    4) common_apps_run ;;
     00)
       cd ~
       # curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/update_log.sh && chmod +x update_log.sh && ./update_log.sh
@@ -513,14 +498,8 @@ while true; do
       # exit 
       ;;
 
-    0)
-      # clear
-      exit
-      ;;
-
-    *)
-      echo "无效的输入!"
-      ;;
+    0) exit ;;
+    *) echo "无效的输入!" ;;
   esac  
   break_end
 done
