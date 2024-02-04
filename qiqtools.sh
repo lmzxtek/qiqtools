@@ -438,6 +438,13 @@ ${green}12.${plain} ranger 文件管理工具
 ${green}13.${plain} gdu    磁盘占用查看工具
 ${green}14.${plain} fzf    全局搜索工具
 -------------------------------
+${green}21.${plain} cmatrix 黑客帝国屏保
+${green}22.${plain} sl 跑火车屏保
+-------------------------------
+${green}26.${plain} 俄罗斯方块小游戏
+${green}27.${plain} 贪吃蛇小游戏
+${green}28.${plain} 太空入侵者小游戏
+-------------------------------
 ${green}31.${plain} 全部安装
 ${green}32.${plain} 全部卸载
 -------------------------------
@@ -456,11 +463,11 @@ common_apps_run() {
     read -p "请输入你的选择: " sub_choice
 
     case $sub_choice in
-      1) clear && install curl   && clear && echo "工具已安装，使用方法如下：" && curl  --help ;;
-      2) clear && install wget   && clear && echo "工具已安装，使用方法如下：" && wget  --help ;;
-      3) clear && install sudo   && clear && echo "工具已安装，使用方法如下：" && sudo  --help ;;
-      4) clear && install socat  && clear && echo "工具已安装，使用方法如下：" && socat --h    ;;
-      5) clear && install unzip  && clear && echo "工具已安装，使用方法如下：" && unzip ;;
+      1) clear && install curl   && clear && echo "工具已安装，使用方法如下：" && curl   --help ;;
+      2) clear && install wget   && clear && echo "工具已安装，使用方法如下：" && wget   --help ;;
+      3) clear && install sudo   && clear && echo "工具已安装，使用方法如下：" && sudo   --help ;;
+      4) clear && install socat  && clear && echo "工具已安装，使用方法如下：" && socat  --h    ;;
+      5) clear && install unzip  && clear && echo "工具已安装，使用方法如下：" && unzip  ;;
       6) clear && install tar    && clear && echo "工具已安装，使用方法如下：" && tar    --help ;;
       7) clear && install tmux   && clear && echo "工具已安装，使用方法如下：" && tmux   --help ;;
       8) clear && install ffmpeg && clear && echo "工具已安装，使用方法如下：" && ffmpeg --help ;;
@@ -471,12 +478,19 @@ common_apps_run() {
      13) clear && install gdu    && cd / && clear && gdu    && cd ~ ;;
      14) clear && install fzf    && cd / && clear && fzf    && cd ~ ;;
      
+     21) clear && install cmatrix   && clear && cmatrix ;;
+     22) clear && install sl        && clear && /usr/games/sl ;;
+     
+     26) clear && install bastet    && clear && /usr/games/bastet ;;
+     27) clear && install nsnake    && clear && /usr/games/nsnake ;;
+     28) clear && install ninvaders && clear && /usr/games/ninvaders ;;
+
      31) clear && install curl wget sudo socat htop iftop unzip tar tmux ffmpeg btop ranger gdu fzf cmatrix sl bastet nsnake ninvaders ;;
      32) clear && remove htop iftop unzip tmux ffmpeg btop ranger gdu fzf cmatrix sl bastet nsnake ninvaders ;;
  
      41) clear && reading "请输入安装的工具名(wget curl): " installname && install $installname ;;
      42) clear && reading "请输入卸载的工具名(htop ufw): "  removename  && remove  $removename  ;;
-     
+
       0) qiqtools ;;
       *) echo "无效的输入!" ;;
     esac
