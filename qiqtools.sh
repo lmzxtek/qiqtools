@@ -1502,7 +1502,11 @@ ${green} 0.${plain} 返回主菜单
 }
 
 other_tools_run() {
+  while true; do
+    clear && dd_system_menu
+    reading "请选择要重装的系统: " sys_choice
 
+  done 
 }
 
 warp_tools_menu() {
@@ -1522,6 +1526,11 @@ ${green} 0.${plain} 返回主菜单
 }
 
 warp_tools_run() {
+  while true; do
+    clear && dd_system_menu
+    reading "请选择要重装的系统: " sys_choice
+    
+  done 
 
 }
 
@@ -1542,6 +1551,11 @@ ${green} 0.${plain} 返回主菜单
 }
 
 docker_run() {
+  while true; do
+    clear && dd_system_menu
+    reading "请选择要重装的系统: " sys_choice
+    
+  done 
 
 }
 
