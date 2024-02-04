@@ -76,7 +76,6 @@ install_dependency() {
   clear && install curl wget socat unzip tar 
 }
 
-
 remove() {
     if [ $# -eq 0 ]; then
         echo "未提供软件包参数!"
@@ -544,6 +543,19 @@ install_python() {
 
 }
 
+iptables_open() {
+    iptables -P INPUT ACCEPT
+    iptables -P FORWARD ACCEPT
+    iptables -P OUTPUT ACCEPT
+    iptables -F
+
+    ip6tables -P INPUT ACCEPT
+    ip6tables -P FORWARD ACCEPT
+    ip6tables -P OUTPUT ACCEPT
+    ip6tables -F
+
+}
+
 # 修改系统SSH连接端口
 change_ssh_port() {
   #!/bin/bash
@@ -592,9 +604,9 @@ change_dns() {
     if [ "$choice" == "y" ]; then
         # 定义DNS地址
         cloudflare_ipv4="1.1.1.1"
-        google_ipv4="8.8.8.8"
+            google_ipv4="8.8.8.8"
         cloudflare_ipv6="2606:4700:4700::1111"
-        google_ipv6="2001:4860:4860::8888"
+            google_ipv6="2001:4860:4860::8888"
 
         # 检查机器是否有IPv6地址
         ipv6_available=0
@@ -705,6 +717,301 @@ dd_system_run() {
   done
 }
 
+banroot_with_new_user() {
+  install sudo
+
+  # 提示用户输入新用户名
+  reading "请输入新用户名: " new_username
+
+  # 创建新用户并设置密码
+  sudo useradd -m -s /bin/bash "$new_username"
+  sudo passwd "$new_username"
+
+  # 赋予新用户sudo权限
+  echo "$new_username ALL=(ALL:ALL) ALL" | sudo tee -a /etc/sudoers
+
+  # 禁用ROOT用户登录
+  sudo passwd -l root
+
+  echo "操作已完成。"
+  
+}
+
+alter_ipv4_ipv6() {
+  ipv6_disabled=$(sysctl -n net.ipv6.conf.all.disable_ipv6)
+
+  echo ""
+  if [ "$ipv6_disabled" -eq 1 ]; then
+      echo "当前网络优先级设置: IPv4 优先"
+  else
+      echo "当前网络优先级设置: IPv6 优先"
+  fi
+  echo "------------------------"
+
+  echo ""
+  echo "切换的网络优先级"
+  echo "------------------------"
+  echo "1. IPv4 优先          2. IPv6 优先"
+  echo "------------------------"
+  read -p "选择优先的网络: " choice
+
+  case $choice in
+      1)
+          sysctl -w net.ipv6.conf.all.disable_ipv6=1 > /dev/null 2>&1
+          echo "已切换为 IPv4 优先"
+          ;;
+      2)
+          sysctl -w net.ipv6.conf.all.disable_ipv6=0 > /dev/null 2>&1
+          echo "已切换为 IPv6 优先"
+          ;;
+      *)
+          echo "无效的选择"
+          ;;
+
+  esac
+  
+}
+
+# 设置系统虚拟内存
+set_swap() {
+  if [ "$EUID" -ne 0 ]; then
+    echo "请以 root 权限运行此脚本。"
+    exit 1
+  fi
+
+  clear
+  # 获取当前交换空间信息
+   swap_used=$(free -m | awk 'NR==3{print $3}')
+  swap_total=$(free -m | awk 'NR==3{print $2}')
+
+  if [ "$swap_total" -eq 0 ]; then
+    swap_percentage=0
+  else
+    swap_percentage=$((swap_used * 100 / swap_total))
+  fi
+
+  swap_info="${swap_used}MB/${swap_total}MB (${swap_percentage}%)"
+
+  echo "当前虚拟内存: $swap_info"
+
+  read -p "是否调整大小?(Y/N): " choice
+
+  case "$choice" in
+    [Yy])
+      # 输入新的虚拟内存大小
+      read -p "请输入虚拟内存大小MB: " new_swap
+
+      # 获取当前系统中所有的 swap 分区
+      swap_partitions=$(grep -E '^/dev/' /proc/swaps | awk '{print $1}')
+
+      # 遍历并删除所有的 swap 分区
+      for partition in $swap_partitions; do
+        swapoff "$partition"
+        wipefs -a "$partition"  # 清除文件系统标识符
+        mkswap -f "$partition"
+        echo "已删除并重新创建 swap 分区: $partition"
+      done
+
+      # 确保 /swapfile 不再被使用
+      swapoff /swapfile
+
+      # 删除旧的 /swapfile
+      rm -f /swapfile
+
+      # 创建新的 swap 分区
+      dd if=/dev/zero of=/swapfile bs=1M count=$new_swap
+      chmod 600 /swapfile
+      mkswap /swapfile
+      swapon /swapfile
+
+      if [ -f /etc/alpine-release ]; then
+          echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
+          echo "nohup swapon /swapfile" >> /etc/local.d/swap.start
+          chmod +x /etc/local.d/swap.start
+          rc-update add local
+      else
+          echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
+      fi
+
+      echo "虚拟内存大小已调整为${new_swap}MB"
+      ;;
+    [Nn])
+      echo "已取消"
+      ;;
+    *)
+      echo "无效的选择，请输入 Y 或 N。"
+      ;;
+  esac
+  
+}
+
+# 修改系统名
+change_sys_name(){
+  current_hostname=$(hostname)
+
+  echo "当前主机名: $current_hostname"
+
+  # 询问用户是否要更改主机名
+  read -p "是否要更改主机名？(y/n): " answer
+
+  if [ "$answer" == "y" ]; then
+      # 获取新的主机名
+      read -p "请输入新的主机名: " new_hostname
+
+      # 更改主机名
+      if [ -n "$new_hostname" ]; then
+          # 根据发行版选择相应的命令
+          if [ -f /etc/debian_version ]; then
+              # Debian 或 Ubuntu
+              hostnamectl set-hostname "$new_hostname"
+              sed -i "s/$current_hostname/$new_hostname/g" /etc/hostname
+          elif [ -f /etc/redhat-release ]; then
+              # CentOS
+              hostnamectl set-hostname "$new_hostname"
+              sed -i "s/$current_hostname/$new_hostname/g" /etc/hostname
+          else
+              echo "未知的发行版，无法更改主机名。"
+              exit 1
+          fi
+
+          # 重启生效
+          systemctl restart systemd-hostnamed
+          echo "主机名已更改为: $new_hostname"
+      else
+          echo "无效的主机名。未更改主机名。"
+          exit 1
+      fi
+  else
+      echo "未更改主机名。"
+  fi
+
+}
+
+# 修改系统安装源
+alter_sourcelist(){
+  # 获取系统信息
+  source /etc/os-release
+
+  # 定义 Ubuntu 更新源
+  aliyun_ubuntu_source="http://mirrors.aliyun.com/ubuntu/"
+  official_ubuntu_source="http://archive.ubuntu.com/ubuntu/"
+  initial_ubuntu_source=""
+
+  # 定义 Debian 更新源
+  aliyun_debian_source="http://mirrors.aliyun.com/debian/"
+  official_debian_source="http://deb.debian.org/debian/"
+  initial_debian_source=""
+
+  # 定义 CentOS 更新源
+  aliyun_centos_source="http://mirrors.aliyun.com/centos/"
+  official_centos_source="http://mirror.centos.org/centos/"
+  initial_centos_source=""
+
+  # 获取当前更新源并设置初始源
+  case "$ID" in
+      ubuntu) initial_ubuntu_source=$(grep -E '^deb ' /etc/apt/sources.list | head -n 1 | awk '{print $2}') ;;
+      debian) initial_debian_source=$(grep -E '^deb ' /etc/apt/sources.list | head -n 1 | awk '{print $2}') ;;
+      centos) initial_centos_source=$(awk -F= '/^baseurl=/ {print $2}' /etc/yum.repos.d/CentOS-Base.repo | head -n 1 | tr -d ' ') ;;
+           *) echo "未知系统，无法执行切换源脚本" && exit 1 ;;
+  esac
+
+  # 备份当前源
+  backup_sources() {
+      case "$ID" in
+          ubuntu) cp /etc/apt/sources.list /etc/apt/sources.list.bak ;;
+          debian) cp /etc/apt/sources.list /etc/apt/sources.list.bak ;;
+          centos)
+              if [ ! -f /etc/yum.repos.d/CentOS-Base.repo.bak ]; then
+                  cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
+              else
+                  echo "备份已存在，无需重复备份"
+              fi
+              ;;
+          *) echo "未知系统，无法执行备份操作" && exit 1 ;;
+      esac
+      echo "已备份当前更新源为 /etc/apt/sources.list.bak 或 /etc/yum.repos.d/CentOS-Base.repo.bak"
+  }
+
+  # 还原初始更新源
+  restore_initial_source() {
+      case "$ID" in
+          ubuntu) cp /etc/apt/sources.list.bak /etc/apt/sources.list ;;
+          debian) cp /etc/apt/sources.list.bak /etc/apt/sources.list ;;
+          centos) cp /etc/yum.repos.d/CentOS-Base.repo.bak /etc/yum.repos.d/CentOS-Base.repo ;;
+               *) echo "未知系统，无法执行还原操作" && exit 1 ;;
+      esac
+      echo "已还原初始更新源"
+  }
+
+  # 函数：切换更新源
+  switch_source() {
+      case "$ID" in
+          ubuntu) sed -i 's|'"$initial_ubuntu_source"'|'"$1"'|g' /etc/apt/sources.list ;;
+          debian) sed -i 's|'"$initial_debian_source"'|'"$1"'|g' /etc/apt/sources.list ;;
+          centos) sed -i "s|^baseurl=.*$|baseurl=$1|g" /etc/yum.repos.d/CentOS-Base.repo ;;
+               *) echo "未知系统，无法执行切换操作" && exit 1 ;;
+      esac
+  }
+
+  # 主菜单
+  while true; do
+      clear
+      case "$ID" in
+          ubuntu) echo -e "Ubuntu 更新源切换脚本\n------------------------" ;;
+          debian) echo -e "Debian 更新源切换脚本\n------------------------" ;;
+          centos) echo -e "CentOS 更新源切换脚本\n------------------------" ;;
+               *) echo "未知系统，无法执行脚本" && exit 1 ;;
+      esac
+
+      echo "1. 切换到阿里云源"
+      echo "2. 切换到官方源"
+      echo "------------------------"
+      echo "3. 备份当前更新源"
+      echo "4. 还原初始更新源"
+      echo "------------------------"
+      echo "0. 返回上一级"
+      echo "------------------------"
+      read -p "请选择操作: " choice
+
+      case $choice in
+          1)
+              backup_sources
+              case "$ID" in
+                  ubuntu) switch_source $aliyun_ubuntu_source ;;
+                  debian) switch_source $aliyun_debian_source ;;
+                  centos) switch_source $aliyun_centos_source ;;
+                       *) echo "未知系统，无法执行切换操作" && exit 1 ;;
+              esac
+              echo "已切换到阿里云源"
+              ;;
+          2)
+              backup_sources
+              case "$ID" in
+                  ubuntu) switch_source $official_ubuntu_source ;;
+                  debian) switch_source $official_debian_source ;;
+                  centos) switch_source $official_centos_source ;;
+                       *) echo "未知系统，无法执行切换操作" && exit 1 ;;
+              esac
+              echo "已切换到官方源"
+              ;;
+          3)
+              backup_sources
+              case "$ID" in
+                  ubuntu) switch_source $initial_ubuntu_source ;;
+                  debian) switch_source $initial_debian_source ;;
+                  centos) switch_source $initial_centos_source ;;
+                       *) echo "未知系统，无法执行切换操作" && exit 1 ;;
+              esac
+              echo "已切换到初始更新源"
+              ;;
+          4) restore_initial_source ;;
+          0) break ;;
+          *) echo "无效的选择，请重新输入" ;;
+      esac
+      break_end
+  done
+}
+
 # 系统常用工具
 system_tools_menu() {
 echo -e "
@@ -775,10 +1082,20 @@ system_tools_run() {
              *) echo "无效的选择，请输入 Y 或 N。" ;;
         esac
         ;;
-        
-     41) clear && reading "请输入安装的工具名(wget curl): " installname && install $installname ;;
-     42) clear && reading "请输入卸载的工具名(htop ufw): "  removename  && remove  $removename  ;;
+      9) clear && banroot_with_new_user ;;
+     10) clear && alter_ipv4_ipv6 ;;
+     11) clear && ss -tulnape ;;
+     12) clear && set_swap ;;
+     13) clear && echo "Todo: ..." ;;
+     14) clear && echo "Todo: ..." ;;
+     15) clear && echo "Todo: ..." ;;
+     16) clear && echo "Todo: ..." ;;
+     17) clear && echo "Todo: ..." ;;
+     18) clear && change_sys_name  ;;
+     19) clear && alter_sourcelist ;;
+     20) clear && echo "Todo: ..." ;;
 
+     99) clear && echo "正在重启服务器，即将断开SSH连接" && reboot ;;
       0) qiqtools ;;
       *) echo "无效的输入!" ;;
     esac
