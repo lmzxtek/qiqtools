@@ -798,7 +798,7 @@ while true; do
      2) clear && update_and_upgrade ;;
      3) clear && clean_sys ;;
      4) common_apps_run  ;;
-     4) system_tools_run ;;
+     5) system_tools_run ;;
 
     00)
       cd ~
