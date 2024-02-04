@@ -1580,20 +1580,20 @@ ${plain}QiQTools 一键脚本工具 v0.0.1
 ${plain}(支持Ubuntu/Debian/CentOS/Alpine系统)
 ${plain}-- 输入${yellow}qiq ${plain}可快速启动此脚本 --
 -------------------------------
-${green} 1.${plain} 系统信息查询
-${green} 2.${plain} 系统更新
-${green} 3.${plain} 系统清理
-${green} 4.${plain} 常用工具 ▶
-${green} 5.${plain} 系统工具 ▶
-${green} 6.${plain} 面板工具 ▶
-${green} 7.${plain} 其他工具 ▶
-${green} 8.${plain} 节点管理 ▶ Warp X-ui XrayR
-${green} 9.${plain} Docker管理 ▶
-${green}10.${blue} LDNMP建站 ▶${plain}
-${green}11.${plain} 测试脚本合集 ▶
-${green}12.${plain} 甲骨文云脚本合集 ▶
-${green}13.${plain} 我的工作区 ▶
-${green}14.${plain} VPS集群控制 ▶ ${blue}Beta${plain}
+${green} 1${white}.${plain} 系统信息查询
+${green} 2${white}.${plain} 系统更新
+${green} 3${white}.${plain} 系统清理
+${green} 4${white}.${plain} 常用工具 ▶
+${green} 5${white}.${plain} 系统工具 ▶
+${green} 6${white}.${plain} 面板工具 ▶
+${green} 7${white}.${plain} 其他工具 ▶
+${green} 8${white}.${plain} 节点管理 ▶ ${yellow}Warp X-ui XrayR
+${green} 9${white}.${plain} Docker管理 ▶
+${green}10${white}.${blue} LDNMP建站 ▶${plain}
+${green}11${white}.${plain} 测试脚本合集 ▶
+${green}12${white}.${plain} 甲骨文云脚本合集 ▶
+${green}13${white}.${plain} 我的工作区 ▶
+${green}14${white}.${plain} VPS集群控制 ▶ ${blue}Beta${plain}
 -------------------------------
 ${green}00.${plain} 脚本更新       ${green} 0.${plain} 退出脚本
 -------------------------------
