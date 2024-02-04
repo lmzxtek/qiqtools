@@ -350,6 +350,7 @@ break_end() {
       clear
 }
 
+# run qiq and exit 
 qiqtools() {
     qiq
     exit
@@ -386,6 +387,28 @@ ${green} 0.${plain} 返回主菜单
 "
 }
 
+common_apps_run() {
+  while true; do 
+    clear
+    common_apps_menu
+    read -p "请输入你的选择: " sub_choice
+
+    case $sub_choice in
+      1)
+        clear && install curl
+        clear && echo "工具已安装，使用方法如下：" && curl --help
+        ;;
+      0)
+        qiqtools
+        ;;
+      *)
+        echo "无效的输入!"
+        ;;
+    esac
+    break_end
+  done
+}
+
 
 # Main Loops for the scripts
 while true; do 
@@ -413,36 +436,18 @@ while true; do
       # break_end
       ;;
     4)
-      while true; do 
-        clear
-        common_apps_menu 
-
-        read -p "请输入你的选择: " sub_choice
-        case $sub_choice in
-        1)
-            clear && install curl
-            clear && echo "工具已安装，使用方法如下：" && curl --help
-            ;;
-        0)
-            qiqtools
-            ;;
-        *)
-            echo "无效的输入!"
-            ;;
-        esac
-        break_end
-        # qiqtools
-      done
+      common_apps_run
       ;;
     00)
-      # cd ~
+      cd ~
       # curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/update_log.sh && chmod +x update_log.sh && ./update_log.sh
       # rm update_log.sh
-      # echo ""
-      # curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/kejilion.sh && chmod +x kejilion.sh
-      # echo "脚本已更新到最新版本！"
-      break_end
-      qiqtools
+      echo ""
+      curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && chmod +x kejilion.sh
+      echo "脚本已更新到最新版本！"
+      # break_end
+      # qiqtools
+      # exit 
       ;;
 
     0)
@@ -453,7 +458,6 @@ while true; do
     *)
       echo "无效的输入!"
       ;;
-  esac
-  
+  esac  
   break_end
 done
