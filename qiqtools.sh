@@ -2,31 +2,40 @@
 
 #========================================================
 #   System Required: CentOS 7+ / Debian 8+ / Ubuntu 16+ / Alpine 3+ /
-#     Arch 仅测试了一次，如有问题带截图反馈 dysf888@pm.me
-#   Description: 哪吒监控安装脚本
-#   Github: https://github.com/naiba/nezha
+#   Description: QiQ一键安装脚本
+#   Gitlab: https://gitlab.com/lmzxtek/qiqtools
+#   
+#   一键安装命令如下：
+#   $> curl -sS -O https://sub.lmzxtek.top/qiqtools.sh && chmod +x qiqtools.sh && ./qiqtools.sh
+#   $> curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && chmod +x qiqtools.sh && ./qiqtools.sh
 #========================================================
 
 # 设置脚本的快捷命令为 `qiq`
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
-red='\033[0;31m'
-green='\033[0;32m'
+ black='\033[0;30m'
+   red='\033[0;31m'
+ green='\033[0;32m'
 yellow='\033[0;33m'
-blue='\033[96m'
-plain='\033[0m'
+ blue2='\033[0;34m'
+  pink='\033[0;35m'
+  cyan='\033[0;36m'
+ white='\033[0;37m'
+  blue='\033[96m'
+  bold='\033[01m'
+ plain='\033[0m'
 
 # 自定义字体彩色，read 函数
-warning() { echo -e "\033[31m\033[01m$*\033[0m"; }  # 红色
-error() { echo -e "\033[31m\033[01m$*\033[0m" && exit 1; } # 红色
-info() { echo -e "\033[32m\033[01m$*\033[0m"; }   # 绿色
-hint() { echo -e "\033[33m\033[01m$*\033[0m"; }   # 黄色
+warning() { echo -e "${red}$*${plain}"; }                  # 红色
+error()   { echo -e "${red}${bold}$*${plain}" && exit 1; } # 红色粗体
+info()    { echo -e "${green}${bold}$*${plain}"; }         # 绿色粗体
+hint()    { echo -e "${yellow}${bold}$*${plain}"; }        # 黄色粗体
 
 reading() { read -rp "$(info "$1")" "$2"; }
 text() { grep -q '\$' <<< "${E[$*]}" && eval echo "\$(eval echo "\${${L}[$*]}")" || eval echo "\${${L}[$*]}"; }
 
 break_end() {
-      echo -e "${green}操作完成${plain}\n 按任意键继续..."
+      echo -e "${green} 操作完成 ${plain}\n 按任意键继续..."
       read -n 1 -s -r -p ""
       echo ""
       clear
@@ -468,7 +477,8 @@ common_apps_run() {
 while true; do 
   clear && main_menu
 
-  read -p "请输入你的选择: " choice
+  # read -p "请输入你的选择: " choice
+  reading "请输入你的选择: " choice
   # echo && read -ep "请输入选择: " choice
 
   case $choice in
