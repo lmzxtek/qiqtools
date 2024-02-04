@@ -21,6 +21,7 @@ warning() { echo -e "\033[31m\033[01m$*\033[0m"; }  # 红色
 error() { echo -e "\033[31m\033[01m$*\033[0m" && exit 1; } # 红色
 info() { echo -e "\033[32m\033[01m$*\033[0m"; }   # 绿色
 hint() { echo -e "\033[33m\033[01m$*\033[0m"; }   # 黄色
+
 reading() { read -rp "$(info "$1")" "$2"; }
 text() { grep -q '\$' <<< "${E[$*]}" && eval echo "\$(eval echo "\${${L}[$*]}")" || eval echo "\${${L}[$*]}"; }
 
@@ -33,76 +34,82 @@ ipv4_address=$(curl -s ipv4.ip.sb)
 ipv6_address=$(curl -s --max-time 1 ipv6.ip.sb)
 }
 
-# check root
-[[ $EUID -ne 0 ]] && echo -e "${red}错误：${plain} 必须使用root用户运行此脚本！\n" && exit 1
+check_root() {
+    # check root
+    [[ $EUID -ne 0 ]] && echo -e "${red}错误：${plain} 必须使用root用户运行此脚本！\n" && exit 1
+}
 
-# check os
-if [[ -f /etc/redhat-release ]]; then
-    release="centos"
-elif cat /etc/issue | grep -Eqi "debian"; then
-    release="debian"
-elif cat /etc/issue | grep -Eqi "ubuntu"; then
-    release="ubuntu"
-elif cat /etc/issue | grep -Eqi "centos|red hat|redhat"; then
-    release="centos"
-elif cat /proc/version | grep -Eqi "debian"; then
-    release="debian"
-elif cat /proc/version | grep -Eqi "ubuntu"; then
-    release="ubuntu"
-elif cat /proc/version | grep -Eqi "centos|red hat|redhat"; then
-    release="centos"
-else
-    echo -e "${red}未检测到系统版本，请联系脚本作者！${plain}\n" && exit 1
-fi
-
-arch=$(arch)
-
-if [[ $arch == "x86_64" || $arch == "x64" || $arch == "amd64" ]]; then
-    arch="64"
-elif [[ $arch == "aarch64" || $arch == "arm64" ]]; then
-    arch="arm64-v8a"
-elif [[ $arch == "s390x" ]]; then
-    arch="s390x"
-else
-    arch="64"
-    echo -e "${red}检测架构失败，使用默认架构: ${arch}${plain}"
-fi
-
-echo "架构: ${arch}"
-
-if [ "$(getconf WORD_BIT)" != '32' ] && [ "$(getconf LONG_BIT)" != '64' ] ; then
-    echo "本软件不支持 32 位系统(x86)，请使用 64 位系统(x86_64)，如果检测有误，请联系作者"
-    exit 2
-fi
-
-os_version=""
-
-# os version
-if [[ -f /etc/os-release ]]; then
-    os_version=$(awk -F'[= ."]' '/VERSION_ID/{print $3}' /etc/os-release)
-fi
-if [[ -z "$os_version" && -f /etc/lsb-release ]]; then
-    os_version=$(awk -F'[= ."]+' '/DISTRIB_RELEASE/{print $2}' /etc/lsb-release)
-fi
-
-if [[ x"${release}" == x"centos" ]]; then
-    if [[ ${os_version} -le 6 ]]; then
-        echo -e "${red}请使用 CentOS 7 或更高版本的系统！${plain}\n" && exit 1
+check_os() {
+    # check os
+    if [[ -f /etc/redhat-release ]]; then
+        release="centos"
+    elif cat /etc/issue | grep -Eqi "debian"; then
+        release="debian"
+    elif cat /etc/issue | grep -Eqi "ubuntu"; then
+        release="ubuntu"
+    elif cat /etc/issue | grep -Eqi "centos|red hat|redhat"; then
+        release="centos"
+    elif cat /proc/version | grep -Eqi "debian"; then
+        release="debian"
+    elif cat /proc/version | grep -Eqi "ubuntu"; then
+        release="ubuntu"
+    elif cat /proc/version | grep -Eqi "centos|red hat|redhat"; then
+        release="centos"
+    else
+        echo -e "${red}未检测到系统版本，请联系脚本作者！${plain}\n" && exit 1
     fi
-elif [[ x"${release}" == x"ubuntu" ]]; then
-    if [[ ${os_version} -lt 16 ]]; then
-        echo -e "${red}请使用 Ubuntu 16 或更高版本的系统！${plain}\n" && exit 1
-    fi
-elif [[ x"${release}" == x"debian" ]]; then
-    if [[ ${os_version} -lt 8 ]]; then
-        echo -e "${red}请使用 Debian 8 或更高版本的系统！${plain}\n" && exit 1
-    fi
-fi
+}
 
-# 显示系统信息
-show_info() {
-    
-    # clear
+get_arch(){
+    arch=$(arch)
+
+    if [[ $arch == "x86_64" || $arch == "x64" || $arch == "amd64" ]]; then
+        arch="64"
+    elif [[ $arch == "aarch64" || $arch == "arm64" ]]; then
+        arch="arm64-v8a"
+    elif [[ $arch == "s390x" ]]; then
+        arch="s390x"
+    else
+        arch="64"
+        echo -e "${red}检测架构失败，使用默认架构: ${arch}${plain}"
+    fi
+
+    # echo "架构: ${arch}"
+
+    # if [ "$(getconf WORD_BIT)" != '32' ] && [ "$(getconf LONG_BIT)" != '64' ] ; then
+    #     echo "本软件不支持 32 位系统(x86)，请使用 64 位系统(x86_64)，如果检测有误，请联系作者"
+    #     exit 2
+    # fi
+}
+
+get_os_version() {
+    os_version=""
+
+    # os version
+    if [[ -f /etc/os-release ]]; then
+        os_version=$(awk -F'[= ."]' '/VERSION_ID/{print $3}' /etc/os-release)
+    fi
+    if [[ -z "$os_version" && -f /etc/lsb-release ]]; then
+        os_version=$(awk -F'[= ."]+' '/DISTRIB_RELEASE/{print $2}' /etc/lsb-release)
+    fi
+
+    if [[ x"${release}" == x"centos" ]]; then
+        if [[ ${os_version} -le 6 ]]; then
+            echo -e "${red}请使用 CentOS 7 或更高版本的系统！${plain}\n" && exit 1
+        fi
+    elif [[ x"${release}" == x"ubuntu" ]]; then
+        if [[ ${os_version} -lt 16 ]]; then
+            echo -e "${red}请使用 Ubuntu 16 或更高版本的系统！${plain}\n" && exit 1
+        fi
+    elif [[ x"${release}" == x"debian" ]]; then
+        if [[ ${os_version} -lt 8 ]]; then
+            echo -e "${red}请使用 Debian 8 或更高版本的系统！${plain}\n" && exit 1
+        fi
+    fi
+}
+
+# 获取系统信息
+get_sysinfo(){
     # 函数: 获取IPv4和IPv6地址
     ip_address
 
@@ -185,40 +192,44 @@ show_info() {
 
     runtime=$(cat /proc/uptime | awk -F. '{run_days=int($1 / 86400);run_hours=int(($1 % 86400) / 3600);run_minutes=int(($1 % 3600) / 60); if (run_days > 0) printf("%d天 ", run_days); if (run_hours > 0) printf("%d时 ", run_hours); printf("%d分\n", run_minutes)}')
 
-    echo ""
-    echo "系统信息查询"
-    echo "------------------------"
-    echo "主机名: $hostname"
-    echo "运营商: $isp_info"
-    echo "------------------------"
-    echo "系统版本: $os_info"
-    echo "Linux版本: $kernel_version"
-    echo "------------------------"
-    echo "CPU架构: $cpu_arch"
-    echo "CPU型号: $cpu_info"
-    echo "CPU核心数: $cpu_cores"
-    echo "------------------------"
-    echo "CPU占用: $cpu_usage_percent"
-    echo "物理内存: $mem_info"
-    echo "虚拟内存: $swap_info"
-    echo "硬盘占用: $disk_info"
-    echo "------------------------"
-    echo "$output"
-    echo "------------------------"
-    echo "网络拥堵算法: $congestion_algorithm $queue_algorithm"
-    echo "------------------------"
-    echo "公网IPv4地址: $ipv4_address"
-    echo "公网IPv6地址: $ipv6_address"
-    echo "------------------------"
-    echo "地理位置: $country $city"
-    echo "系统时间: $current_time"
-    echo "------------------------"
-    echo "系统运行时长: $runtime"
-    echo
+}
+
+# 显示系统信息
+show_info() {
+    echo -e "${plain}
+系统信息查询
+------------------------
+   主机名: $hostname
+   运营商: $isp_info
+------------------------
+ 系统版本: $os_info
+Linux版本: $kernel_version
+------------------------
+  CPU架构: $cpu_arch
+  CPU型号: $cpu_info
+CPU核心数: $cpu_cores
+------------------------
+  CPU占用: $cpu_usage_percent
+ 物理内存: $mem_info
+ 虚拟内存: $swap_info
+ 硬盘占用: $disk_info
+------------------------
+$output
+------------------------
+网络拥堵算法: $congestion_algorithm $queue_algorithm
+------------------------
+公网IPv4地址: $ipv4_address
+公网IPv6地址: $ipv6_address
+------------------------
+    地理位置: $country $city
+    系统时间: $current_time
+------------------------
+系统运行时长: $runtime
+"
 }
 
 # 更新系统
-update_apps() {
+update_and_upgrade() {
     
     # Update system on Debian-based systems
     if [ -f "/etc/debian_version" ]; then
@@ -281,41 +292,103 @@ clean_sys() {
     fi
 }
 
+
+# 定义安装 Docker 的函数
+install_docker() {
+    if ! command -v docker &>/dev/null; then
+        curl -fsSL https://get.docker.com | sh && ln -s /usr/libexec/docker/cli-plugins/docker-compose /usr/local/bin
+        systemctl start docker
+        systemctl enable docker
+    else
+        echo "Docker 已经安装"
+    fi
+}
+
+# 设置docker-compose快捷命令，默认为dcc
+set_docker_cmd(){
+    chmod a+x /usr/local/bin/docker-compose && rm -rf `which dcc` && ln -s /usr/local/bin/docker-compose /usr/bin/dcc
+}
+
 # 显示主菜单
 main_menu() {
 echo -e "${blue}
-  __   _  __   ___ ____ ____ _   __
- |  |  | |  |   |  |  | |  | |  |__
- |__|_ | |__|_  |  |__| |__| |__ __|
-                            
- QiQTools 一键脚本工具 v0.0.1
- (支持Ubuntu/Debian/CentOS/Alpine系统)
- -- 输入 ${yellow}qiq ${blue}可快速启动此脚本 --
- -------------------------------
- ${green} 1.${plain} 系统信息查询
- ${green} 2.${plain} 系统更新
- ${green} 3.${plain} 系统清理
- ${green} 4.${plain} 常用工具 ▶
- ${green} 5.${plain} BBR管理 ▶
- ${green} 6.${plain} Docker管理 ▶
- ${green} 7.${plain} WARP管理 ▶ 解锁ChatGPT Netflix
- ${green} 8.${plain} 测试脚本合集 ▶
- ${green} 9.${plain} 甲骨文云脚本合集 ▶
- ${green}10.${blue} LDNMP建站 ▶${plain}
- ${green}11.${plain} 面板工具 ▶
- ${green}12.${plain} 我的工作区 ▶
- ${green}13.${plain} 系统工具 ▶
- ${green}14.${plain} VPS集群控制 ▶ ${blue}Beta${plain}
- -------------------------------
- ${green}00.${plain} 脚本更新
- -------------------------------
- ${green} 0.${plain} 退出脚本
- -------------------------------
+__   _  __   ___ ____ ____ _   __
+|  |  | |  |   |  |  | |  | |  |__
+|__|_ | |__|_  |  |__| |__| |__ __|
+                        
+QiQTools 一键脚本工具 v0.0.1
+(支持Ubuntu/Debian/CentOS/Alpine系统)
+-- 输入 ${yellow}qiq ${blue}可快速启动此脚本 --
+-------------------------------
+${green} 1.${plain} 系统信息查询
+${green} 2.${plain} 系统更新
+${green} 3.${plain} 系统清理
+${green} 4.${plain} 常用工具 ▶
+${green} 5.${plain} BBR管理 ▶
+${green} 6.${plain} Docker管理 ▶
+${green} 7.${plain} WARP管理 ▶ 解锁ChatGPT Netflix
+${green} 8.${plain} 测试脚本合集 ▶
+${green} 9.${plain} 甲骨文云脚本合集 ▶
+${green}10.${blue} LDNMP建站 ▶${plain}
+${green}11.${plain} 面板工具 ▶
+${green}12.${plain} 我的工作区 ▶
+${green}13.${plain} 系统工具 ▶
+${green}14.${plain} VPS集群控制 ▶ ${blue}Beta${plain}
+-------------------------------
+${green}00.${plain} 脚本更新
+-------------------------------
+${green} 0.${plain} 退出脚本
+-------------------------------
 "
 }
 
+break_end() {
+      echo -e "\033[0;32m操作完成\033[0m"
+      echo "按任意键继续..."
+      read -n 1 -s -r -p ""
+      echo ""
+      clear
+}
+
+qiqtools() {
+    qiq
+    exit
+}
+
+# 安装常用工具
+common_apps_menu() {
+echo -e "
+▶ 安装常用工具
+-------------------------------
+${green} 1.${plain} curl 下载工具
+${green} 2.${plain} wget 下载工具
+${green} 3.${plain} sudo 超级管理权限工具
+${green} 4.${plain} socat 通信连接工具 （申请域名证书必备）
+${green} 5.${plain} htop 系统监控工具
+${green} 6.${plain} iftop 网络流量监控工具
+${green} 7.${plain} unzip ZIP压缩解压工具
+${green} 8.${plain} tar GZ压缩解压工具
+${green} 9.${plain} tmux 多路后台运行工具
+${green}10.${plain} ffmpeg 视频编码直播推流工具
+${green}11.${plain} btop 现代化监控工具
+${green}12.${plain} ranger 文件管理工具
+${green}13.${plain} gdu 磁盘占用查看工具
+${green}14.${plain} fzf 全局搜索工具
+-------------------------------
+${green}31.${plain} 全部安装
+${green}32.${plain} 全部卸载
+-------------------------------
+${green}41.${plain} 安装指定工具
+${green}42.${plain} 卸载指定工具
+-------------------------------
+${green} 0.${plain} 返回主菜单
+-------------------------------
+"
+}
+
+
 # Main Loops for the scripts
-while true; do 
+while [true]; do 
 clear 
 main_menu
 
@@ -325,15 +398,40 @@ echo && read -ep "请输入选择: " choice
 case $choice in
   1)
     clear
+    get_sysinfo
     show_info
+    break_end
     ;;
   2)
     clear
-    update_apps
+    update_and_upgrade
+    break_end
     ;;
   3)
     clear
     clean_sys
+    break_end
+    ;;
+  4)
+  while [true]; do 
+    clear
+    common_apps_menu 
+
+    read -p "请输入你的选择: " sub_choice
+    case $sub_choice in
+    1)
+        clear && install curl
+        clear && echo "工具已安装，使用方法如下：" && curl --help
+        ;;
+    0)
+        qiqtools
+        ;;
+    *)
+        echo "无效的输入!"
+        ;;
+    esac
+    break_end
+    # qiqtools
     ;;
   00)
     # cd ~
@@ -342,8 +440,8 @@ case $choice in
     # echo ""
     # curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/kejilion.sh && chmod +x kejilion.sh
     # echo "脚本已更新到最新版本！"
-    # break_end
-    # kejilion
+    break_end
+    qiqtools
     ;;
 
   0)

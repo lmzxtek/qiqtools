@@ -2,9 +2,11 @@
 
 ## 一键安装命令
 
-对于FinalShell，可以添加常用命令到下方的工作区中。
+对于FinalShell，可以添加常用命令到下方的常用命令面板中。
 
 ```shell
+curl -sS -O https://sub.lmzxtek.top/qiqtools.sh && chmod +x qiqtools.sh && ./qiqtools.sh
+
 curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && chmod +x qiqtools.sh && ./qiqtools.sh
 ```
 
