@@ -1475,7 +1475,7 @@ ${green}99.${plain} 重启服务器    ${green} 0.${plain} 返回主菜单
 
 other_tools_run() {
   while true; do
-    clear && dd_system_menu
+    clear && other_tools_menu
     reading "请选择要部署的服务: " choice
 
     case $choice in
@@ -1523,7 +1523,7 @@ ${green}99.${plain} 重启服务器     ${green} 0.${plain} 返回主菜单
 
 warp_tools_run() {
   while true; do
-    clear && dd_system_menu
+    clear && warp_tools_menu
     reading "请选择服务代码: " choice
     
     case $choice in
@@ -1553,7 +1553,7 @@ ${green} 0.${plain} 返回主菜单
 
 docker_run() {
   while true; do
-    clear && dd_system_menu
+    clear && docker_menu
     reading "请选择: " choice
 
     case $choice in
@@ -1584,7 +1584,7 @@ ${green} 4.${plain} 常用工具 ▶
 ${green} 5.${plain} 系统工具 ▶
 ${green} 6.${plain} 面板工具 ▶
 ${green} 7.${plain} 其他工具 ▶
-${green} 8.${plain} 节点管理 ▶ Warp Singbox Hysteria2 Tuic5
+${green} 8.${plain} 节点管理 ▶ Warp X-ui XrayR
 ${green} 9.${plain} Docker管理 ▶
 ${green}10.${blue} LDNMP建站 ▶${plain}
 ${green}11.${plain} 测试脚本合集 ▶
