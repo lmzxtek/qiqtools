@@ -1123,15 +1123,15 @@ echo -e "
 -------------------------------
 ${green} 1.${plain} 设置脚本启动快捷键
 -------------------------------
-${green} 2.${plain} 修改ROOT密码                ${green}11.${plain} 修改虚拟内存大小
-${green} 3.${plain} 开启ROOT密码登录模式         ${green}17.${plain} 修改主机名
-${green} 4.${plain} 开放所有端口                 ${green}18.${plain} 切换系统更新源
-${green} 5.${plain} 修改SSH连接端口              ${green}14.${plain} 系统时区调整
-${green} 6.${plain} 优化DNS地址                  ${green}15.${plain} 开启BBR3加速
+${green} 2.${plain} 修改ROOT密码                  ${green}11.${plain} 修改虚拟内存大小
+${green} 3.${plain} 开启ROOT密码登录模式          ${green}12.${plain} 修改主机名
+${green} 4.${plain} 开放所有端口                  ${green}13.${plain} 切换系统更新源
+${green} 5.${plain} 修改SSH连接端口               ${green}14.${plain} 系统时区调整
+${green} 6.${plain} 优化DNS地址                   ${green}15.${plain} 开启BBR3加速
 ${green} 7.${plain} 一键重装系统                  ${green}16.${plain} 防火墙高级管理器
-${green} 8.${plain} 禁用ROOT账户创建新账户         ${green}12.${plain} 用户管理
-${green} 9.${plain} 切换优先ipv4/ipv6             ${green}13.${plain} 用户/密码生成器
-${green}10.${plain} 查看端口占用状态               ${green}19.${plain} 定时任务管理
+${green} 8.${plain} 禁用ROOT账户创建新账户        ${green}17.${plain} 用户管理
+${green} 9.${plain} 切换优先ipv4/ipv6             ${green}18.${plain} 用户/密码生成器
+${green}10.${plain} 查看端口占用状态              ${green}19.${plain} 定时任务管理
 -------------------------------
 ${green}99.${plain} 重启服务器
 -------------------------------
