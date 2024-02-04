@@ -1493,12 +1493,12 @@ warp_tools_menu() {
 echo -e "
 ▶ 节点管理
 -------------------------------
-${green} 1.${plain} Warp(@fscarmen)                    ${green}11.${plain} V2Ray(@233boy)
-${green} 2.${plain} Warp(@hamid-gh98)                  ${green}12.${plain} V2Ray-Agent(@mack-a)
-${green} 3.${plain} Warp(@Misaka-blog)                 ${green}13.${plain} XRay(@233boy)
-${green} 4.${plain} SingBox(@fscarmen)                 ${green}14.${plain} Hysteria2(@Misaka)
+${green} 1.${plain} Warp(@fscarmen)                    ${green}11.${plain} XRay(@233boy)
+${green} 2.${plain} Warp(@hamid-gh98)                  ${green}12.${plain} V2Ray(@233boy)
+${green} 3.${plain} Warp(@Misaka-blog)                 ${green}13.${plain} V2Ray-Agent(@mack-a)
+${green} 4.${plain} ArgoX(@fscarmen)                   ${green}14.${plain} Hysteria2(@Misaka)
 ${green} 5.${plain} SingBox(@ygkkk)                    ${green}15.${plain} TUIC5(@Misaka)
-${green} 6.${plain} ArgoX(@fscarmen)                   ${green}16.${plain} mianyang()
+${green} 6.${plain} SingBox(@fscarmen)                 ${green}16.${plain} mianyang()
 -------------------------------
 ${green}21.${plain} 3X-UI(@mhsanaei)                   ${green}31.${plain} Hiddify
 ${green}22.${plain} X-UI(@alireza0)                    ${green}32.${plain} V2RayA
@@ -1530,6 +1530,49 @@ warp_tools_run() {
     reading "请选择服务代码: " choice
     
     case $choice in
+      1) clear && install wget && wget -N https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh && bash menu.sh [option] [lisence/url/token] ;;
+      2) clear && bash <(curl -sSL https://raw.githubusercontent.com/hamid-gh98/x-ui-scripts/main/install_warp_proxy.sh) ;;
+      3) clear && wget -N https://gitlab.com/Misaka-blog/warp-script/-/raw/main/warp.sh && bash warp.sh ;;
+      4) clear && bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/argox/main/argox.sh)  ;;
+      5) clear && bash <(curl -Ls https://gitlab.com/rwkgyg/sing-box-yg/raw/main/sb.sh)  ;;
+      6) clear && bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/sing-box/main/sing-box.sh) ;;
+
+     11) clear && bash <(wget -qO- -o- https://github.com/233boy/Xray/raw/main/install.sh) ;;
+     12) clear && bash <(wget -qO- -o- https://git.io/v2ray.sh) ;;
+     13) clear && wget -P /root -N --no-check-certificate "https://raw.githubusercontent.com/mack-a/v2ray-agent/master/install.sh" && chmod 700 /root/install.sh && /root/install.sh ;;
+     14) clear && wget -N --no-check-certificate https://raw.githubusercontent.com/Misaka-blog/hysteria-install/main/hy2/hysteria.sh && bash hysteria.sh ;;
+     15) clear && wget -N --no-check-certificate https://gitlab.com/Misaka-blog/tuic-script/-/raw/main/tuic.sh && bash tuic.sh ;;
+     16) clear && bash <(curl -fsSL https://github.com/vveg26/sing-box-reality-hysteria2/raw/main/beta.sh) ;;
+
+     21) clear && bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh) ;;
+     22) clear && bash <(curl -Ls https://raw.githubusercontent.com/alireza0/x-ui/master/install.sh) ;;
+     23) clear && bash <(curl -Ls https://raw.githubusercontent.com/FranzKafkaYu/x-ui/master/install.sh) ;;
+     24) clear && bash <(curl -Ls https://gitlab.com/rwkgyg/x-ui-yg/raw/main/install.sh)  ;;
+
+     31) clear && bash -c "$(curl -Lfo- https://raw.githubusercontent.com/hiddify/hiddify-config/main/common/download_install.sh)" ;;
+     32) clear && echo -e "\n Todo: ... \n" ;;
+     33) clear && sh -c "$(curl -sL https://github.com/daeuniverse/dae-installer/raw/main/installer.sh)" @ update-geoip update-geosite ;;
+     34) clear && docker run -d --privileged --network=host --pid=host --restart=unless-stopped  -v /sys:/sys  -v /etc/daed:/etc/daed --name=daed ghcr.io/daeuniverse/daed:latest ;;
+
+     51) clear && wget -N https://raw.githubusercontent.com/XrayR-project/XrayR-release/master/install.sh && bash install.sh && cd /etc/XrayR ;;
+     52) clear && wget -N https://raw.githubusercontent.com/wyx2685/XrayR-release/master/install.sh && bash install.sh ;;
+     53) clear && cd ~ && git clone https://github.com/XrayR-project/XrayR-release xrayr && cd xrayr ;;
+     54) clear && cd ~ && git clone https://github.com/lotusnetwork/bodhi-docker.git && cd bodhi-docker ;;
+     55) clear && wget -N https://raw.githubusercontent.com/wyx2685/V2bX-script/master/install.sh && bash install.sh ;;
+
+     61) clear && echo -e "nameserver 2001:67c:2b0::4\nnameserver 2001:67c:2b0::6" > /etc/resolv.conf ;;
+     62) clear && cd ~ && curl -sSL https://gitlab.com/rwkgyg/CFwarp/raw/main/point/cfip.sh -o cfip.sh && chmod +x cfip.sh && bash cfip.sh ;;
+     63) clear && cd ~ && curl -sSL https://gitlab.com/rwkgyg/CFwarp/raw/main/point/CFcdnym.sh -o CFcdnym.sh && chmod +x CFcdnym.sh && bash CFcdnym.sh ;;
+     64) clear && docker run -p 1234:80 -d --name yacd --rm ghcr.io/haishanh/yacd:master ;;
+     65) clear && echo -e "\n Todo: ... \n" ;;
+
+     91) clear && curl ip.sb  ;;
+     92) clear && ip addr | grep "inet " ;;
+     93) clear && ip addr | grep "inet6" ;;
+     94) clear && bash <(curl -Ls https://cdn.jsdelivr.net/gh/missuo/OpenAI-Checker/openai.sh) ;;
+     95) clear && curl -s4m5 https://www.cloudflare.com/cdn-cgi/trace ;;
+     96) clear && curl -s6m5 https://www.cloudflare.com/cdn-cgi/trace ;;
+
       0) qiqtools ;;
       *) echo "无效的输入!" ;;
     esac  
