@@ -1476,8 +1476,13 @@ ${green}99.${plain} 重启服务器    ${green} 0.${plain} 返回主菜单
 other_tools_run() {
   while true; do
     clear && dd_system_menu
-    reading "请选择要部署的服务: " sys_choice
+    reading "请选择要部署的服务: " choice
 
+    case $choice in
+      0) exit ;;
+      *) echo "无效的输入!" ;;
+    esac  
+    break_end
   done 
 }
 
@@ -1519,8 +1524,13 @@ ${green}99.${plain} 重启服务器     ${green} 0.${plain} 返回主菜单
 warp_tools_run() {
   while true; do
     clear && dd_system_menu
-    reading "请选择服务代码: " sys_choice
+    reading "请选择服务代码: " choice
     
+    case $choice in
+      0) exit ;;
+      *) echo "无效的输入!" ;;
+    esac  
+    break_end
   done 
 
 }
@@ -1545,6 +1555,7 @@ docker_run() {
   while true; do
     clear && dd_system_menu
     reading "请选择: " choice
+
     case $choice in
       0) exit ;;
       *) echo "无效的输入!" ;;
