@@ -361,20 +361,20 @@ common_apps_menu() {
 echo -e "
 ▶ 安装常用工具
 -------------------------------
-${green} 1.${plain} curl 下载工具
-${green} 2.${plain} wget 下载工具
-${green} 3.${plain} sudo 超级管理权限工具
-${green} 4.${plain} socat 通信连接工具 （申请域名证书必备）
-${green} 5.${plain} htop 系统监控工具
-${green} 6.${plain} iftop 网络流量监控工具
-${green} 7.${plain} unzip ZIP压缩解压工具
-${green} 8.${plain} tar GZ压缩解压工具
-${green} 9.${plain} tmux 多路后台运行工具
+${green} 1.${plain} curl   下载工具
+${green} 2.${plain} wget   下载工具
+${green} 3.${plain} sudo   超级管理权限工具
+${green} 4.${plain} socat  通信连接工具 （申请域名证书必备）
+${green} 5.${plain} htop   系统监控工具
+${green} 6.${plain} iftop  网络流量监控工具
+${green} 7.${plain} unzip  ZIP压缩解压工具
+${green} 8.${plain} tar    GZ压缩解压工具
+${green} 9.${plain} tmux   多路后台运行工具
 ${green}10.${plain} ffmpeg 视频编码直播推流工具
-${green}11.${plain} btop 现代化监控工具
+${green}11.${plain} btop   现代化监控工具
 ${green}12.${plain} ranger 文件管理工具
-${green}13.${plain} gdu 磁盘占用查看工具
-${green}14.${plain} fzf 全局搜索工具
+${green}13.${plain} gdu    磁盘占用查看工具
+${green}14.${plain} fzf    全局搜索工具
 -------------------------------
 ${green}31.${plain} 全部安装
 ${green}32.${plain} 全部卸载
@@ -385,6 +385,59 @@ ${green}42.${plain} 卸载指定工具
 ${green} 0.${plain} 返回主菜单
 -------------------------------
 "
+}
+
+
+# 安装应用程序
+install() {
+    if [ $# -eq 0 ]; then
+        echo "未提供软件包参数!"
+        return 1
+    fi
+
+    for package in "$@"; do
+        if ! command -v "$package" &>/dev/null; then
+            if command -v apt &>/dev/null; then
+                apt update -y && apt install -y "$package"
+            elif command -v yum &>/dev/null; then
+                yum -y update && yum -y install "$package"
+            elif command -v apk &>/dev/null; then
+                apk update && apk add "$package"
+            else
+                echo "未知的包管理器!"
+                return 1
+            fi
+        fi
+    done
+
+    return 0
+}
+
+install_dependency() { 
+  clear && install curl wget socat unzip tar 
+}
+
+
+remove() {
+    if [ $# -eq 0 ]; then
+        echo "未提供软件包参数!"
+        return 1
+    fi
+
+    for package in "$@"; do
+        if command -v apt &>/dev/null; then
+            apt purge -y "$package"
+        elif command -v yum &>/dev/null; then
+            yum remove -y "$package"
+        elif command -v apk &>/dev/null; then
+            apk del "$package"
+        else
+            echo "未知的包管理器!"
+            return 1
+        fi
+    done
+
+    return 0
 }
 
 common_apps_run() {
