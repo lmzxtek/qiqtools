@@ -1493,15 +1493,15 @@ warp_tools_menu() {
 echo -e "
 ▶ 节点管理
 -------------------------------
-${green} 1.${plain} Warp(@fscarmen)                    ${green}11.${plain} XRay(@233boy)
+${green} 1.${plain} ${yellow}Warp(@fscarmen)                    ${green}11.${plain} XRay(@233boy)
 ${green} 2.${plain} Warp(@hamid-gh98)                  ${green}12.${plain} V2Ray(@233boy)
 ${green} 3.${plain} Warp(@Misaka-blog)                 ${green}13.${plain} V2Ray-Agent(@mack-a)
 ${green} 4.${plain} ArgoX(@fscarmen)                   ${green}14.${plain} Hysteria2(@Misaka)
-${green} 5.${plain} SingBox(@ygkkk)                    ${green}15.${plain} TUIC5(@Misaka)
-${green} 6.${plain} SingBox(@fscarmen)                 ${green}16.${plain} mianyang()
+${green} 5.${plain} ${blue}SingBox(@ygkkk)                    ${green}15.${plain} TUIC5(@Misaka)
+${green} 6.${plain} ${yellow}SingBox(@fscarmen)                 ${green}16.${plain} mianyang()
 -------------------------------
-${green}21.${plain} 3X-UI(@mhsanaei)                   ${green}31.${plain} Hiddify
-${green}22.${plain} X-UI(@alireza0)                    ${green}32.${plain} V2RayA
+${green}21.${plain} ${blue}3X-UI(@mhsanaei)                   ${green}31.${plain} Hiddify
+${green}22.${plain} ${yellow}X-UI(@alireza0)                    ${green}32.${plain} V2RayA
 ${green}23.${plain} X-UI(@FranzKafkaYu)                ${green}33.${plain} Daed
 ${green}24.${plain} X-UI(@rwkgyg)                      ${green}34.${plain} Daed-Docker
 -------------------------------
