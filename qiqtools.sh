@@ -367,20 +367,26 @@ clean_sys() {
 }
 
 
-# 定义安装 Docker 的函数
-install_docker() {
-    if ! command -v docker &>/dev/null; then
+install_add_docker() {
+    if [ -f "/etc/alpine-release" ]; then
+        apk update
+        apk add docker docker-compose
+        rc-update add docker default
+        service docker start
+    else
         curl -fsSL https://get.docker.com | sh && ln -s /usr/libexec/docker/cli-plugins/docker-compose /usr/local/bin
         systemctl start docker
         systemctl enable docker
-    else
-        echo "Docker 已经安装"
     fi
 }
 
-# 设置docker-compose快捷命令，默认为dcc
-set_docker_cmd(){
-    chmod a+x /usr/local/bin/docker-compose && rm -rf `which dcc` && ln -s /usr/local/bin/docker-compose /usr/bin/dcc
+# 定义安装 Docker 的函数
+install_docker() {
+    if ! command -v docker &>/dev/null; then
+        install_add_docker
+    else
+        echo "Docker 已经安装"
+    fi
 }
 
 
@@ -1595,16 +1601,21 @@ docker_menu() {
 echo -e "
 ▶ 容器管理
 -------------------------------
-${green} 1.${plain} Docker安装        
-${green} 2.${plain} Docker容器
-${green} 3.${plain} Docker镜像
+${green} 1.${plain} Docker环境安装
+${green} 2.${plain} Docker环境卸载
+${green} 3.${plain} Docker查看状态
+${green} 4.${plain} Docker清理
+-------------------------------        
+${green} 5.${plain} Docker容器管理 ▶  
+${green} 6.${plain} Docker镜像管理 ▶  
+${green} 7.${plain} Docker网络管理 ▶  
+${green} 8.${plain} Docker卷管理  ▶
 -------------------------------
-${green}99.${plain} 重启服务器
+${green} 9.${plain} 设置docker-compose快捷键[默认为: ${yellow}dcc${plain}]
 -------------------------------
 ${green} 0.${plain} 返回主菜单
 -------------------------------
 "
-
 }
 
 docker_run() {
@@ -1613,11 +1624,55 @@ docker_run() {
     reading "请选择: " choice
 
     case $choice in
+      1) clear && install_add_docker ;;
+      2) 
+        clear
+        read -p "确定卸载docker环境吗？(Y/N): " choice
+        case "$choice" in
+          [Yy])
+            docker rm $(docker ps -a -q) && docker rmi $(docker images -q) && docker network prune
+            remove docker docker-ce docker-compose > /dev/null 2>&1
+            ;;
+          [Nn])
+            ;;
+          *)
+            echo "无效的选择，请输入 Y 或 N。"
+            ;;
+        esac
+        ;;
+      3) 
+        clear
+        echo "Dcoker版本"
+        docker --version
+        docker-compose --version
+        echo ""
+        echo "Dcoker镜像列表"
+        docker image ls
+        echo ""
+        echo "Dcoker容器列表"
+        docker ps -a
+        echo ""
+        echo "Dcoker卷列表"
+        docker volume ls
+        echo ""
+        echo "Dcoker网络列表"
+        docker network ls
+        echo ""
+        ;;
+      4)
+        clear
+        read -p "确定清理无用的镜像容器网络吗？(Y/N): " choice
+        case "$choice" in
+          [Yy]) docker system prune -af --volumes ;;
+          [Nn]) ;;
+          *) echo "无效的选择，请输入 Y 或 N。" ;;
+        esac
+        ;;
+      9) clear && chmod a+x /usr/local/bin/docker-compose && rm -rf `which dcc` && ln -s /usr/local/bin/docker-compose /usr/bin/dcc ;;
       0) qiqtools ;;
       *) echo "无效的输入!" ;;
     esac  
-    break_end
-    
+    break_end    
   done 
 
 }
