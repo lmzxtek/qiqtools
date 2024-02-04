@@ -412,11 +412,10 @@ common_apps_run() {
 
 # Main Loops for the scripts
 while true; do 
-  clear 
-  main_menu
+  clear && main_menu
 
-  # read -p "请输入你的选择: " choice
-  echo && read -ep "请输入选择: " choice
+  read -p "请输入你的选择: " choice
+  # echo && read -ep "请输入选择: " choice
 
   case $choice in
     1)
@@ -451,7 +450,7 @@ while true; do
       ;;
 
     0)
-      clear
+      # clear
       exit
       ;;
 
