@@ -642,14 +642,36 @@ dd_system_menu() {
 echo -e "
 ▶ 可选系统菜单
 -------------------------------
-${green} 1.${plain} Debian 12
-${green} 2.${plain} Debian 11
-${green} 3.${plain} Debian 10
-${green} 4.${plain} Ubuntu 22.04
-${green} 5.${plain} Ubuntu 20.04
-${green} 6.${plain} CentOS 7.9
-${green} 7.${plain} Alpine 3.19
-${green} 8.${plain} Windows 11 ${pink}Beta${plain}
+${green} 1.${plain} Ubuntu 22.04
+${green} 2.${plain} Ubuntu 20.04
+${green} 3.${plain} Debian 12
+${green} 4.${plain} Debian 11
+${green} 5.${plain} Debian 10
+-------------------------------
+${green}11.${plain} CentOS 9
+${green}12.${plain} CentOS 8
+${green}13.${plain} CentOS 7
+-------------------------------
+${green}21.${plain} Alpine Edge
+${green}22.${plain} Alpine 3.19
+${green}23.${plain} Alpine 3.18
+${green}24.${plain} Alpine 3.17
+-------------------------------
+${green}31.${plain} Kali Rolling
+${green}32.${plain} AlmaLinux
+${green}33.${plain} RockyLinux
+${green}34.${plain} Fedora 39
+-------------------------------
+${green}61.${plain} Windows 11 ${pink}Beta${plain}
+${green}62.${plain} Windows 10 
+${green}63.${plain} Windows 2022
+${green}64.${plain} Windows 2019
+${green}65.${plain} Windows 2016
+${green}66.${plain} Windows 2012
+-------------------------------
+${green}PS:${plain} Default password: 
+${green}   ${blue}   Linux: ${red}LeitboGi0ro
+${green}   ${blue} Windows: ${red}Teddysun.com ${plain}(minumum Disk is 15G)
 -------------------------------
 "
 }
@@ -670,48 +692,137 @@ dd_system_run() {
     clear && dd_system_menu
     reading "请选择要重装的系统: " sys_choice
 
+    dd_xitong_2 
+
     case "$sys_choice" in
       1) 
-        xitong="-d 12" 
-        dd_xitong_1 
-        exit 
-        reboot 
-        ;;
-      2) 
-        xitong="-d 11" 
-        dd_xitong_1 
-        reboot 
-        exit ;;
-      3) 
-        xitong="-d 10" 
-        dd_xitong_1 
-        reboot 
-        exit ;;
-      4) 
-        dd_xitong_2 
+        # dd_xitong_2 
         bash InstallNET.sh -ubuntu 
+        # bash InstallNET.sh -ubuntu 22.04
         reboot 
         exit ;;
+        
+      2) 
+        bash InstallNET.sh -ubuntu 20.04
+        # bash InstallNET.sh -ubuntu 18.04
+        # bash InstallNET.sh -ubuntu 16.04
+        reboot 
+        exit ;;
+        # xitong="-u 20.04" 
+        # dd_xitong_1 
+        # reboot 
+        # exit ;;
+      3) 
+        bash InstallNET.sh -debian
+        # bash InstallNET.sh -debian 12
+        reboot 
+        exit ;;
+        # xitong="-d 12" 
+        # dd_xitong_1 
+        # exit 
+        # reboot 
+        # ;;
+      4) 
+        bash InstallNET.sh -debian 11
+        reboot 
+        exit ;;
+        # xitong="-d 11" 
+        # dd_xitong_1 
+        # reboot 
+        # exit ;;
       5) 
-        xitong="-u 20.04" 
-        dd_xitong_1 
+        bash InstallNET.sh -debian 10
         reboot 
         exit ;;
-      6) 
-        dd_xitong_2 
-        bash InstallNET.sh -centos 7 
+        # xitong="-d 10" 
+        # dd_xitong_1 
+        # reboot 
+        # exit ;;
+      #============================== 
+      11) 
+        bash InstallNET.sh -centos 9
         reboot 
         exit ;;
-      7) 
-        dd_xitong_2 
-        bash InstallNET.sh -alpine   
+      12) 
+        bash InstallNET.sh -centos 8
         reboot 
         exit ;;
-      8) 
-        dd_xitong_2 
-        bash InstallNET.sh -windows  
+      13) 
+        bash InstallNET.sh -centos 7
         reboot 
         exit ;;
+      #============================== 
+      21) 
+        bash InstallNET.sh -alpine
+        # bash InstallNET.sh -alpine edge
+        bash InstallNET.sh -alpine 3.19
+        bash InstallNET.sh -alpine 3.18
+        reboot 
+        exit ;;
+      22) 
+        bash InstallNET.sh -alpine 3.19
+        reboot 
+        exit ;;
+      23) 
+        bash InstallNET.sh -alpine 3.18
+        reboot 
+        exit ;;
+      24) 
+        bash InstallNET.sh -alpine 3.17
+        reboot 
+        exit ;;
+      #============================== 
+      31) 
+        bash InstallNET.sh -kali   
+        # bash InstallNET.sh -kali rolling   
+        # bash InstallNET.sh -kali dev   
+        # bash InstallNET.sh -kali experimental   
+        reboot 
+        exit ;;
+      32) 
+        bash InstallNET.sh -almalinux 9
+        # bash InstallNET.sh -almalinux 8   
+        reboot 
+        exit ;;
+      33) 
+        bash InstallNET.sh -rockylinux 9
+        # bash InstallNET.sh -rockylinux 8   
+        reboot 
+        exit ;;
+      34) 
+        bash InstallNET.sh -fedro 39
+        # bash InstallNET.sh -fedro 38   
+        reboot 
+        exit ;;
+      #============================== 
+      61) 
+        bash InstallNET.sh -windows 11
+        # bash InstallNET.sh -windows 11 -lang "en"
+        # bash InstallNET.sh -windows 11 -lang "cn"
+        # bash InstallNET.sh -windows 11 -lang "jp" -port "22[1~65535]" -pwd "PssWord" -hostname "win11"
+        reboot 
+        exit ;;
+      62) 
+        bash InstallNET.sh -windows 10
+        reboot 
+        exit ;;
+      63) 
+        bash InstallNET.sh -windows 2022
+        reboot 
+        exit ;;
+      64) 
+        bash InstallNET.sh -windows 2019
+        reboot 
+        exit ;;
+      65) 
+        bash InstallNET.sh -windows 2016
+        reboot 
+        exit ;;
+      66) 
+        bash InstallNET.sh -windows 2012
+        reboot 
+        exit ;;
+      #============================== 
       *) echo "无效的选择，请重新输入。" && break_end ;;
     esac    
   done
@@ -1131,6 +1242,214 @@ ${green} 0.${plain} 返回主菜单
 "
 }
 
+install_panel_baota_cn() {
+  if [ -f "/etc/init.d/bt" ] && [ -d "/www/server/panel" ]; then
+      clear
+      echo "宝塔面板已安装，应用操作"
+      echo ""
+      echo "------------------------"
+      echo "1. 管理宝塔面板           2. 卸载宝塔面板"
+      echo "------------------------"
+      echo "0. 返回上一级选单"
+      echo "------------------------"
+      read -p "请输入你的选择: " sub_choice
+
+      case $sub_choice in
+          1) clear && bt ;;
+          2) clear && curl -o bt-uninstall.sh http://download.bt.cn/install/bt-uninstall.sh > /dev/null 2>&1 && chmod +x bt-uninstall.sh && ./bt-uninstall.sh ;;
+          0) break  ;;
+          *) break  ;;
+      esac
+  else
+      clear
+      echo "安装提示"
+      echo "如果您已经安装了其他面板工具或者LDNMP建站环境，建议先卸载，再安装宝塔面板！"
+      echo "会根据系统自动安装，支持Debian，Ubuntu，Centos"
+      echo "官网介绍: https://www.bt.cn/new/index.html"
+      echo ""
+
+      # 获取当前系统类型
+      get_system_type() {
+          if [ -f /etc/os-release ]; then
+              . /etc/os-release
+              if [ "$ID" == "centos" ]; then
+                  echo "centos"
+              elif [ "$ID" == "ubuntu" ]; then
+                  echo "ubuntu"
+              elif [ "$ID" == "debian" ]; then
+                  echo "debian"
+              else
+                  echo "unknown"
+              fi
+          else
+              echo "unknown"
+          fi
+      }
+
+      system_type=$(get_system_type)
+
+      if [ "$system_type" == "unknown" ]; then
+          echo "不支持的操作系统类型"
+      else
+          read -p "确定安装宝塔吗？(Y/N): " choice
+          case "$choice" in
+              [Yy])
+                  iptables_open
+                  install wget
+                  if [ "$system_type" == "centos" ]; then
+                      yum install -y wget && wget -O install.sh https://download.bt.cn/install/install_6.0.sh && sh install.sh ed8484bec
+                  elif [ "$system_type" == "ubuntu" ]; then
+                      wget -O install.sh https://download.bt.cn/install/install-ubuntu_6.0.sh && bash install.sh ed8484bec
+                  elif [ "$system_type" == "debian" ]; then
+                      wget -O install.sh https://download.bt.cn/install/install-ubuntu_6.0.sh && bash install.sh ed8484bec
+                  fi
+                  ;;
+              [Nn]) ;;
+                 *) ;;
+          esac
+      fi
+  fi
+
+}
+
+install_panel_baota_aa(){
+  if [ -f "/etc/init.d/bt" ] && [ -d "/www/server/panel" ]; then
+      clear
+      echo "aaPanel已安装，应用操作"
+      echo ""
+      echo "------------------------"
+      echo "1. 管理aaPanel           2. 卸载aaPanel"
+      echo "------------------------"
+      echo "0. 返回上一级选单"
+      echo "------------------------"
+      read -p "请输入你的选择: " sub_choice
+
+      case $sub_choice in
+          1) clear && bt ;;
+          2) clear && curl -o bt-uninstall.sh http://download.bt.cn/install/bt-uninstall.sh > /dev/null 2>&1 && chmod +x bt-uninstall.sh && ./bt-uninstall.sh ;;
+          0) break ;;
+          *) break ;;
+      esac
+  else
+      clear
+      echo "安装提示"
+      echo "如果您已经安装了其他面板工具或者LDNMP建站环境，建议先卸载，再安装aaPanel！"
+      echo "会根据系统自动安装，支持Debian，Ubuntu，Centos"
+      echo "官网介绍: https://www.aapanel.com/new/index.html"
+      echo ""
+
+      # 获取当前系统类型
+      get_system_type() {
+          if [ -f /etc/os-release ]; then
+              . /etc/os-release
+              if [ "$ID" == "centos" ]; then
+                  echo "centos"
+              elif [ "$ID" == "ubuntu" ]; then
+                  echo "ubuntu"
+              elif [ "$ID" == "debian" ]; then
+                  echo "debian"
+              else
+                  echo "unknown"
+              fi
+          else
+              echo "unknown"
+          fi
+      }
+
+      system_type=$(get_system_type)
+
+      if [ "$system_type" == "unknown" ]; then
+          echo "不支持的操作系统类型"
+      else
+          read -p "确定安装aaPanel吗？(Y/N): " choice
+          case "$choice" in
+              [Yy])
+                  iptables_open
+                  install wget
+                  if [ "$system_type" == "centos" ]; then
+                      yum install -y wget && wget -O install.sh http://www.aapanel.com/script/install_6.0_en.sh && bash install.sh aapanel
+                  elif [ "$system_type" == "ubuntu" ]; then
+                      wget -O install.sh http://www.aapanel.com/script/install-ubuntu_6.0_en.sh && bash install.sh aapanel
+                  elif [ "$system_type" == "debian" ]; then
+                      wget -O install.sh http://www.aapanel.com/script/install-ubuntu_6.0_en.sh && bash install.sh aapanel
+                  fi
+                  ;;
+              [Nn]) ;;
+                 *) ;;
+          esac
+      fi
+  fi
+
+}
+
+install_pannel_1panel() {
+  if command -v 1pctl &> /dev/null; then
+      clear
+      echo "1Panel已安装，应用操作"
+      echo ""
+      echo "------------------------"
+      echo "1. 查看1Panel信息           2. 卸载1Panel"
+      echo "------------------------"
+      echo "0. 返回上一级选单"
+      echo "------------------------"
+      read -p "请输入你的选择: " sub_choice
+
+      case $sub_choice in
+          1) clear && 1pctl user-info && 1pctl update password ;;
+          2) clear && 1pctl uninstall ;;
+          0) break ;;
+          *) break ;;
+      esac
+  else
+      clear
+      echo "安装提示"
+      echo "如果您已经安装了其他面板工具或者LDNMP建站环境，建议先卸载，再安装1Panel！"
+      echo "会根据系统自动安装，支持Debian，Ubuntu，Centos"
+      echo "官网介绍: https://1panel.cn/"
+      echo ""
+      # 获取当前系统类型
+      get_system_type() {
+        if [ -f /etc/os-release ]; then
+          . /etc/os-release
+          if [ "$ID" == "centos" ]; then
+            echo "centos"
+          elif [ "$ID" == "ubuntu" ]; then
+            echo "ubuntu"
+          elif [ "$ID" == "debian" ]; then
+            echo "debian"
+          else
+            echo "unknown"
+          fi
+        else
+          echo "unknown"
+        fi
+      }
+
+      system_type=$(get_system_type)
+
+      if [ "$system_type" == "unknown" ]; then
+        echo "不支持的操作系统类型"
+      else
+        read -p "确定安装1Panel吗？(Y/N): " choice
+        case "$choice" in
+          [Yy])
+            iptables_open
+            install_docker
+            if [ "$system_type" == "centos" ]; then
+              curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && sh quick_start.sh
+            elif [ "$system_type" == "ubuntu" ]; then
+              curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && bash quick_start.sh
+            elif [ "$system_type" == "debian" ]; then
+              curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && bash quick_start.sh
+            fi
+            ;;
+          [Nn]) ;;
+             *) ;;
+        esac
+      fi
+  fi
+}
+
 # 面板工具
 panel_tools_run(){
   while true; do
@@ -1138,12 +1457,91 @@ panel_tools_run(){
     read -p "请输入你的选择: " sub_choice
 
     case $sub_choice in
-      1) ;;
+      1) clear && install_panel_baota_cn ;;
+      2) clear && install_panel_baota_aa ;;
+      3) clear && install_pannel_1panel  ;;
+      4) clear && echo -e "\nTodo: ... \n"  ;;
+      5) clear && echo -e "\nTodo: ... \n"  ;;
+      6) clear && echo -e "\nTodo: ... \n"  ;;
+      7) clear && echo -e "\nTodo: ... \n"  ;;
+      8) clear && echo -e "\nTodo: ... \n"  ;;
+      9) clear && echo -e "\nTodo: ... \n"  ;;
+     10) clear && echo -e "\nTodo: ... \n"  ;;
+     11) clear && echo -e "\nTodo: ... \n"  ;;
+     12) clear && echo -e "\nTodo: ... \n"  ;;
+     13) clear && echo -e "\nTodo: ... \n"  ;;
+     14) clear && echo -e "\nTodo: ... \n"  ;;
+     15) clear && echo -e "\nTodo: ... \n"  ;;
+     16) clear && echo -e "\nTodo: ... \n"  ;;
+     17) clear && echo -e "\nTodo: ... \n"  ;;
+     18) clear && echo -e "\nTodo: ... \n"  ;;
+     19) clear && echo -e "\nTodo: ... \n"  ;;
+     20) clear && echo -e "\nTodo: ... \n"  ;;
       0) qiqtools ;;
+     99) echo -e "重新启动系统，SSH连接将断开..." && reboot && exit ;;
       *) echo "无效的输入!" ;;
     esac
     break_end
   done
+
+}
+
+other_tools_menu() {
+echo -e "
+▶ 其他工具
+-------------------------------
+${green} 1.${plain} RustDesk Server        
+${green} 2.${plain} Python
+${green} 3.${plain} Conda
+-------------------------------
+${green}99.${plain} 重启服务器
+-------------------------------
+${green} 0.${plain} 返回主菜单
+-------------------------------
+"
+}
+
+other_tools_run() {
+
+}
+
+warp_tools_menu() {
+echo -e "
+▶ 节点管理
+-------------------------------
+${green} 1.${plain} Warp+
+${green} 2.${plain} SingBox
+${green} 3.${plain} X-UI
+-------------------------------
+${green}99.${plain} 重启服务器
+-------------------------------
+${green} 0.${plain} 返回主菜单
+-------------------------------
+"
+
+}
+
+warp_tools_run() {
+
+}
+
+docker_menu() {
+echo -e "
+▶ 容器管理
+-------------------------------
+${green} 1.${plain} Docker安装        
+${green} 2.${plain} Docker容器
+${green} 3.${plain} Docker镜像
+-------------------------------
+${green}99.${plain} 重启服务器
+-------------------------------
+${green} 0.${plain} 返回主菜单
+-------------------------------
+"
+
+}
+
+docker_run() {
 
 }
 
@@ -1165,8 +1563,8 @@ ${green} 4.${plain} 常用工具 ▶
 ${green} 5.${plain} 系统工具 ▶
 ${green} 6.${plain} 面板工具 ▶
 ${green} 7.${plain} 其他工具 ▶
-${green} 8.${plain} Docker管理 ▶
-${green} 9.${plain} WARP管理 ▶ 解锁ChatGPT Netflix
+${green} 8.${plain} 节点管理 ▶ Warp Singbox Hysteria2 Tuic5
+${green} 9.${plain} Docker管理 ▶
 ${green}10.${blue} LDNMP建站 ▶${plain}
 ${green}11.${plain} 测试脚本合集 ▶
 ${green}12.${plain} 甲骨文云脚本合集 ▶
@@ -1193,14 +1591,14 @@ while true; do
      4) common_apps_run  ;;
      5) system_tools_run ;;
      6) panel_tools_run  ;;
-     7) clear && echo -e "Todo: ... " ;;
-     8) clear && echo -e "Todo: ... " ;;
-     9) clear && echo -e "Todo: ... " ;;
-    10) clear && echo -e "Todo: ... " ;;
-    11) clear && echo -e "Todo: ... " ;;
-    12) clear && echo -e "Todo: ... " ;;
-    13) clear && echo -e "Todo: ... " ;;
-    14) clear && echo -e "Todo: ... " ;;
+     7) other_tools_run  ;;
+     8) warp_tools_run   ;;
+     9) docker_run ;;
+    10) clear && echo -e "\nTodo: ... \n" ;;
+    11) clear && echo -e "\nTodo: ... \n" ;;
+    12) clear && echo -e "\nTodo: ... \n" ;;
+    13) clear && echo -e "\nTodo: ... \n" ;;
+    14) clear && echo -e "\nTodo: ... \n" ;;
 
     00)
       cd ~
