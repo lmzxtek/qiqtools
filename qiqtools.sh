@@ -1587,7 +1587,7 @@ ${green} 4${white}.${plain} 常用工具 ▶
 ${green} 5${white}.${plain} 系统工具 ▶
 ${green} 6${white}.${plain} 面板工具 ▶
 ${green} 7${white}.${plain} 其他工具 ▶
-${green} 8${white}.${plain} 节点管理 ▶ ${yellow}Warp X-ui XrayR
+${green} 8${white}.${plain} 节点管理 ▶ ${yellow}Warp ${blue}X-ui ${cyan}XrayR
 ${green} 9${white}.${plain} Docker管理 ▶
 ${green}10${white}.${blue} LDNMP建站 ▶${plain}
 ${green}11${white}.${plain} 测试脚本合集 ▶
