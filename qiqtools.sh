@@ -1594,7 +1594,7 @@ while true; do
       # curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/update_log.sh && chmod +x update_log.sh && ./update_log.sh
       # rm update_log.sh
       echo ""
-      curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && chmod +x kejilion.sh
+      curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && chmod +x qiqtools.sh
       echo "脚本已更新到最新版本！"
       break_end
       qiqtools
