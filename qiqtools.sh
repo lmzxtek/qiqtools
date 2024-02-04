@@ -413,25 +413,26 @@ case $choice in
     break_end
     ;;
   4)
-  while [true]; do 
-    clear
-    common_apps_menu 
+    while [true]; do 
+      clear
+      common_apps_menu 
 
-    read -p "请输入你的选择: " sub_choice
-    case $sub_choice in
-    1)
-        clear && install curl
-        clear && echo "工具已安装，使用方法如下：" && curl --help
-        ;;
-    0)
-        qiqtools
-        ;;
-    *)
-        echo "无效的输入!"
-        ;;
-    esac
-    break_end
-    # qiqtools
+      read -p "请输入你的选择: " sub_choice
+      case $sub_choice in
+      1)
+          clear && install curl
+          clear && echo "工具已安装，使用方法如下：" && curl --help
+          ;;
+      0)
+          qiqtools
+          ;;
+      *)
+          echo "无效的输入!"
+          ;;
+      esac
+      break_end
+      # qiqtools
+    done
     ;;
   00)
     # cd ~
