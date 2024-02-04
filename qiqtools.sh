@@ -516,11 +516,9 @@ while true; do
       echo ""
       curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && chmod +x kejilion.sh
       echo "脚本已更新到最新版本！"
-      # break_end
-      # qiqtools
-      # exit 
+      break_end
+      qiqtools
       ;;
-
      0) exit ;;
      *) echo "无效的输入!" ;;
   esac  
