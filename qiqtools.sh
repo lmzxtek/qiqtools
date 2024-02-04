@@ -388,71 +388,72 @@ ${green} 0.${plain} 返回主菜单
 
 
 # Main Loops for the scripts
-while [true]; do 
-clear 
-main_menu
+while true; do 
+  clear 
+  main_menu
 
-# read -p "请输入你的选择: " choice
-echo && read -ep "请输入选择: " choice
+  # read -p "请输入你的选择: " choice
+  echo && read -ep "请输入选择: " choice
 
-case $choice in
-  1)
-    clear
-    get_sysinfo
-    show_info
-    break_end
-    ;;
-  2)
-    clear
-    update_and_upgrade
-    break_end
-    ;;
-  3)
-    clear
-    clean_sys
-    break_end
-    ;;
-  4)
-    while [true]; do 
+  case $choice in
+    1)
       clear
-      common_apps_menu 
-
-      read -p "请输入你的选择: " sub_choice
-      case $sub_choice in
-      1)
-          clear && install curl
-          clear && echo "工具已安装，使用方法如下：" && curl --help
-          ;;
-      0)
-          qiqtools
-          ;;
-      *)
-          echo "无效的输入!"
-          ;;
-      esac
+      get_sysinfo
+      show_info
       break_end
-      # qiqtools
-    done
-    ;;
-  00)
-    # cd ~
-    # curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/update_log.sh && chmod +x update_log.sh && ./update_log.sh
-    # rm update_log.sh
-    # echo ""
-    # curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/kejilion.sh && chmod +x kejilion.sh
-    # echo "脚本已更新到最新版本！"
-    break_end
-    qiqtools
-    ;;
+      ;;
+    2)
+      clear
+      update_and_upgrade
+      break_end
+      ;;
+    3)
+      clear
+      clean_sys
+      break_end
+      ;;
+    4)
+      while true; do 
+        clear
+        common_apps_menu 
 
-  0)
-    clear
-    exit
-    ;;
+        read -p "请输入你的选择: " sub_choice
+        case $sub_choice in
+        1)
+            clear && install curl
+            clear && echo "工具已安装，使用方法如下：" && curl --help
+            ;;
+        0)
+            qiqtools
+            ;;
+        *)
+            echo "无效的输入!"
+            ;;
+        esac
+        break_end
+        # qiqtools
+      done
+      ;;
+    00)
+      # cd ~
+      # curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/update_log.sh && chmod +x update_log.sh && ./update_log.sh
+      # rm update_log.sh
+      # echo ""
+      # curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/kejilion.sh && chmod +x kejilion.sh
+      # echo "脚本已更新到最新版本！"
+      break_end
+      qiqtools
+      ;;
 
-  *)
-    echo "无效的输入!"
-    ;;
-esac
-    break_end
+    0)
+      clear
+      exit
+      ;;
+
+    *)
+      echo "无效的输入!"
+      ;;
+  esac
+  
+  break_end
 done
