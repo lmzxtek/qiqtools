@@ -1509,17 +1509,17 @@ ${green}41.${plain} XBoard                             ${green}44.${plain} Lotus
 ${green}42.${plain} V2Board                            ${green}45.${plain} SSPanel
 ${green}43.${plain} V2Board(wyx2685)                   ${green}46.${plain} Proxypanel
 -------------------------------
-${green}51.${plain} XRayR(@XrayR-project)              ${green}61.${plain} Set Github(For IPv6 VPS)
+${green}51.${plain} ${yellow}XRayR(@XrayR-project)              ${green}61.${plain} Set Github(For IPv6 VPS)
 ${green}52.${plain} XRayR(@wyx2685)                    ${green}62.${plain} Cloudflare Select IP
 ${green}53.${plain} XRayR-Docker(@XrayR-project)       ${green}63.${plain} Cloudflare Select CDN
-${green}54.${plain} Bodhi(Hysteria2 to V2board)        ${green}64.${plain} YACD
-${green}55.${plain} V2bX(Hysteria2 to V2board)         ${green}65.${plain} ClashDashBoard
+${green}54.${plain} ${blue}Bodhi(Hysteria2 to V2board)        ${green}64.${plain} YACD(Yet another Clash Dashboard)
+${green}55.${plain} ${yellow}V2bX(Vless&Trojan to V2board)         ${green}65.${plain} ClashDashBoard
 -------------------------------
 ${green}91.${plain} Show IP       ${green}94.${plain} Check-OpenAI  
 ${green}92.${plain} Show IPv4     ${green}95.${plain} Cloudflare(IPv4)    
 ${green}93.${plain} Show IPv6     ${green}96.${plain} Cloudflare(IPv6)
 -------------------------------
-${green}99.${plain} 重启服务器     ${green} 0.${plain} 返回主菜单
+${green} 0.${plain} 返回主菜单
 -------------------------------
 "
 }
@@ -1619,7 +1619,7 @@ ${cyan} __   _  __   ___ ____ ____ _   __
 ${cyan}|  |  | |  |   |  |  | |  | |  |__
 ${cyan}|__|_ | |__|_  |  |__| |__| |__ __|
 
-${plain}QiQTools 一键脚本工具 v0.0.1
+${plain}QiQTools 一键脚本工具 v0.0.2
 ${plain}(支持Ubuntu/Debian/CentOS/Alpine系统)
 ${plain}-- 输入${yellow}qiq ${plain}可快速启动此脚本 --
 -------------------------------
@@ -1638,7 +1638,9 @@ ${green}12${white}.${plain} 甲骨文云脚本合集 ▶
 ${green}13${white}.${plain} 我的工作区 ▶
 ${green}14${white}.${plain} VPS集群控制 ▶ ${blue}Beta${plain}
 -------------------------------
-${green}00.${plain} 脚本更新       ${green} 0.${plain} 退出脚本
+${green}00.${plain} 脚本更新       ${green}99.${plain} 重启系统
+-------------------------------
+${green} 0.${plain} 退出脚本
 -------------------------------
 "
 }
@@ -1675,6 +1677,7 @@ while true; do
       break_end
       qiqtools
       ;;
+    99) clear && echo "正在重启服务器，即将断开SSH连接" && reboot  ;;
      0) exit ;;
      *) echo "无效的输入!" ;;
   esac  
