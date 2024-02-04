@@ -384,39 +384,6 @@ set_docker_cmd(){
     chmod a+x /usr/local/bin/docker-compose && rm -rf `which dcc` && ln -s /usr/local/bin/docker-compose /usr/bin/dcc
 }
 
-# 显示主菜单
-main_menu() {
-echo -e "${blue}
- __   _  __   ___ ____ ____ _   __
-|  |  | |  |   |  |  | |  | |  |__
-|__|_ | |__|_  |  |__| |__| |__ __|
-                        
-QiQTools 一键脚本工具 v0.0.1
-(支持Ubuntu/Debian/CentOS/Alpine系统)
--- 输入 ${yellow}qiq ${blue}可快速启动此脚本 --
--------------------------------
-${green} 1.${plain} 系统信息查询
-${green} 2.${plain} 系统更新
-${green} 3.${plain} 系统清理
-${green} 4.${plain} 常用工具 ▶
-${green} 5.${plain} BBR管理 ▶
-${green} 6.${plain} Docker管理 ▶
-${green} 7.${plain} WARP管理 ▶ 解锁ChatGPT Netflix
-${green} 8.${plain} 测试脚本合集 ▶
-${green} 9.${plain} 甲骨文云脚本合集 ▶
-${green}10.${blue} LDNMP建站 ▶${plain}
-${green}11.${plain} 面板工具 ▶
-${green}12.${plain} 我的工作区 ▶
-${green}13.${plain} 系统工具 ▶
-${green}14.${plain} VPS集群控制 ▶ ${blue}Beta${plain}
--------------------------------
-${green}00.${plain} 脚本更新
--------------------------------
-${green} 0.${plain} 退出脚本
--------------------------------
-"
-}
-
 
 # 安装常用工具
 common_apps_menu() {
@@ -458,9 +425,8 @@ ${green} 0.${plain} 返回主菜单
 
 common_apps_run() {
   while true; do 
-    clear
-    common_apps_menu
-    read -p "请输入你的选择: " sub_choice
+    clear && common_apps_menu
+    reading "请输入你的选择: " sub_choice
 
     case $sub_choice in
       1) clear && install curl   && clear && echo "工具已安装，使用方法如下：" && curl   --help ;;
@@ -499,6 +465,329 @@ common_apps_run() {
 }
 
 
+# 安装最新版本的python
+install_python() {
+  # 系统检测
+  OS=$(cat /etc/os-release | grep -o -E "Debian|Ubuntu|CentOS" | head -n 1)
+
+  if [[ $OS == "Debian" || $OS == "Ubuntu" || $OS == "CentOS" ]]; then
+      echo -e "检测到你的系统是 ${YELLOW}${OS}${NC}"
+  else
+      echo -e "${RED}很抱歉，你的系统不受支持！${NC}"
+      exit 1
+  fi
+
+  # 检测安装Python3的版本
+  VERSION=$(python3 -V 2>&1 | awk '{print $2}')
+
+  # 获取最新Python3版本
+  PY_VERSION=$(curl -s https://www.python.org/ | grep "downloads/release" | grep -o 'Python [0-9.]*' | grep -o '[0-9.]*')
+
+  # 卸载Python3旧版本
+  if [[ $VERSION == "3"* ]]; then
+      echo -e "${YELLOW}你的Python3版本是${NC}${RED}${VERSION}${NC}，${YELLOW}最新版本是${NC}${RED}${PY_VERSION}${NC}"
+      read -p "是否确认升级最新版Python3？默认不升级 [y/N]: " CONFIRM
+      if [[ $CONFIRM == "y" ]]; then
+          if [[ $OS == "CentOS" ]]; then
+              echo ""
+              rm-rf /usr/local/python3* >/dev/null 2>&1
+          else
+              apt --purge remove python3 python3-pip -y
+              rm-rf /usr/local/python3*
+          fi
+      else
+          echo -e "${YELLOW}已取消升级Python3${NC}"
+          exit 1
+      fi
+  else
+      echo -e "${RED}检测到没有安装Python3。${NC}"
+      read -p "是否确认安装最新版Python3？默认安装 [Y/n]: " CONFIRM
+      if [[ $CONFIRM != "n" ]]; then
+          echo -e "${GREEN}开始安装最新版Python3...${NC}"
+      else
+          echo -e "${YELLOW}已取消安装Python3${NC}"
+          exit 1
+      fi
+  fi
+
+  # 安装相关依赖
+  if [[ $OS == "CentOS" ]]; then
+      yum update
+      yum groupinstall -y "development tools"
+      yum install wget openssl-devel bzip2-devel libffi-devel zlib-devel -y
+  else
+      apt update
+      apt install wget build-essential libreadline-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev -y
+  fi
+
+  # 安装python3
+  cd /root/
+  wget https://www.python.org/ftp/python/${PY_VERSION}/Python-"$PY_VERSION".tgz
+  tar -zxf Python-${PY_VERSION}.tgz
+  cd Python-${PY_VERSION}
+  ./configure --prefix=/usr/local/python3
+  make -j $(nproc)
+  make install
+  if [ $? -eq 0 ];then
+      rm -f /usr/local/bin/python3*
+      rm -f /usr/local/bin/pip3*
+      ln -sf /usr/local/python3/bin/python3 /usr/bin/python3
+      ln -sf /usr/local/python3/bin/pip3 /usr/bin/pip3
+      clear
+      echo -e "${YELLOW}Python3安装${GREEN}成功，${NC}版本为: ${NC}${GREEN}${PY_VERSION}${NC}"
+  else
+      clear
+      echo -e "${RED}Python3安装失败！${NC}"
+      exit 1
+  fi
+  cd /root/ && rm -rf Python-${PY_VERSION}.tgz && rm -rf Python-${PY_VERSION}
+
+}
+
+# 修改系统SSH连接端口
+change_ssh_port() {
+  #!/bin/bash
+
+  # 去掉 #Port 的注释
+  sed -i 's/#Port/Port/' /etc/ssh/sshd_config
+
+  # 读取当前的 SSH 端口号
+  current_port=$(grep -E '^ *Port [0-9]+' /etc/ssh/sshd_config | awk '{print $2}')
+
+  # 打印当前的 SSH 端口号
+  echo "当前的 SSH 端口号是: $current_port"
+
+  echo "------------------------"
+
+  # 提示用户输入新的 SSH 端口号
+  read -p "请输入新的 SSH 端口号: " new_port
+
+  # 备份 SSH 配置文件
+  cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
+
+  # 替换 SSH 配置文件中的端口号
+  sed -i "s/Port [0-9]\+/Port $new_port/g" /etc/ssh/sshd_config
+
+  # 重启 SSH 服务
+  service sshd restart
+
+  echo "SSH 端口已修改为: $new_port"
+
+  clear
+  iptables_open
+  remove iptables-persistent ufw firewalld iptables-services > /dev/null 2>&1
+
+}
+
+# 修改系统的DNS
+change_dns() {
+    echo "当前DNS地址"
+    echo "------------------------"
+    cat /etc/resolv.conf
+    echo "------------------------"
+    echo ""
+    # 询问用户是否要优化DNS设置
+    read -p "是否要设置为Cloudflare和Google的DNS地址？(y/n): " choice
+
+    if [ "$choice" == "y" ]; then
+        # 定义DNS地址
+        cloudflare_ipv4="1.1.1.1"
+        google_ipv4="8.8.8.8"
+        cloudflare_ipv6="2606:4700:4700::1111"
+        google_ipv6="2001:4860:4860::8888"
+
+        # 检查机器是否有IPv6地址
+        ipv6_available=0
+        if [[ $(ip -6 addr | grep -c "inet6") -gt 0 ]]; then
+            ipv6_available=1
+        fi
+
+        # 设置DNS地址为Cloudflare和Google（IPv4和IPv6）
+        echo "设置DNS为Cloudflare和Google"
+
+        # 设置IPv4地址
+        echo "nameserver $cloudflare_ipv4" > /etc/resolv.conf
+        echo "nameserver $google_ipv4" >> /etc/resolv.conf
+
+        # 如果有IPv6地址，则设置IPv6地址
+        if [[ $ipv6_available -eq 1 ]]; then
+            echo "nameserver $cloudflare_ipv6" >> /etc/resolv.conf
+            echo "nameserver $google_ipv6" >> /etc/resolv.conf
+        fi
+
+        echo "DNS地址已更新"
+        echo "------------------------"
+        cat /etc/resolv.conf
+        echo "------------------------"
+    else
+        echo "DNS设置未更改"
+    fi
+
+}
+
+# 重装系统
+dd_system_menu() {
+echo -e "
+▶ 可选系统菜单
+-------------------------------
+${green} 1.${plain} Debian 12
+${green} 2.${plain} Debian 11
+${green} 3.${plain} Debian 10
+${green} 4.${plain} Ubuntu 22.04
+${green} 5.${plain} Ubuntu 20.04
+${green} 6.${plain} CentOS 7.9
+${green} 7.${plain} Alpine 3.19
+${green} 8.${plain} Windows 11${pink}Beta${plain}
+-------------------------------
+"
+}
+
+dd_xitong_1() {
+  reading "请输入你重装后的密码: " vpspasswd
+  install wget
+  bash <(wget --no-check-certificate -qO- 'https://raw.githubusercontent.com/MoeClub/Note/master/InstallNET.sh') $xitong -v 64 -p $vpspasswd -port 22
+}
+
+dd_xitong_2() {
+  install wget
+  wget --no-check-certificate -qO InstallNET.sh 'https://raw.githubusercontent.com/leitbogioro/Tools/master/Linux_reinstall/InstallNET.sh' && chmod a+x InstallNET.sh
+}
+
+dd_system_run() {
+  while true; do
+    clear && dd_system_menu
+    reading "请选择要重装的系统: " sys_choice
+
+    case "$sys_choice" in
+      1) xitong="-d 12" && dd_xitong_1 && exit && reboot ;;
+      2) xitong="-d 11" && dd_xitong_1 && reboot && exit ;;
+      3) xitong="-d 10" && dd_xitong_1 && reboot && exit ;;
+      4) dd_xitong_2 && bash InstallNET.sh -ubuntu && reboot && exit ;;
+      5) xitong="-u 20.04" && dd_xitong_1 && reboot && exit ;;
+      6) dd_xitong_2 && bash InstallNET.sh -centos 7 && reboot && exit ;;
+      7) dd_xitong_2 && bash InstallNET.sh -alpine   && reboot && exit ;;
+      8) dd_xitong_2 && bash InstallNET.sh -windows  && reboot && exit ;;
+      *) echo "无效的选择，请重新输入。" && break_end ;;
+    esac    
+  done
+}
+
+# 系统常用工具
+system_tools_menu() {
+echo -e "
+▶ 系统工具
+-------------------------------
+${green} 1.${plain} 设置脚本启动快捷键
+-------------------------------
+${green} 2.${plain} 修改ROOT密码
+${green} 3.${plain} 开启ROOT密码登录模式
+${green} 4.${plain} 安装Python最新版
+${green} 5.${plain} 开放所有端口
+${green} 6.${plain} 修改SSH连接端口
+${green} 7.${plain} 优化DNS地址
+${green} 8.${plain} 一键重装系统
+${green} 9.${plain} 禁用ROOT账户创建新账户
+${green}10.${plain} 切换优先ipv4/ipv6
+${green}11.${plain} 查看端口占用状态
+${green}12.${plain} 修改虚拟内存大小
+${green}13.${plain} 用户管理
+${green}14.${plain} 用户/密码生成器
+${green}15.${plain} 系统时区调整
+${green}16.${plain} 开启BBR3加速
+${green}17.${plain} 防火墙高级管理器
+${green}18.${plain} 修改主机名
+${green}19.${plain} 切换系统更新源
+${green}20.${plain} 定时任务管理
+-------------------------------
+${green}99.${plain} 重启服务器
+-------------------------------
+${green} 0.${plain} 返回主菜单
+-------------------------------
+"
+}
+
+system_tools_run() {
+  while true; do 
+    clear && system_tools_menu
+    reading "请输入你的选择: " sub_choice
+
+    case $sub_choice in
+      1) clear && reading "请输入你的快捷按键: " kuaijiejian && echo "alias $kuaijiejian='~/kejilion.sh'" >> ~/.bashrc && source ~/.bashrc && echo "快捷键已设置" ;;
+      2) clear && echo "设置你的ROOT密码" && passwd ;;
+      3) 
+        clear && echo "设置你的ROOT密码" && passwd
+
+        sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin yes/g' /etc/ssh/sshd_config;
+        sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/g' /etc/ssh/sshd_config;
+        service sshd restart
+        echo "ROOT登录设置完毕！"
+
+        reading "需要重启服务器吗？(Y/N): " choice
+        case "$choice" in
+          [Yy]) reboot ;;
+          [Nn]) echo "已取消" ;;
+             *) echo "无效的选择，请输入 Y 或 N。" ;;
+        esac
+        ;;
+      4) clear && install_python ;;
+      5) clear && iptables_open && remove iptables-persistent ufw firewalld iptables-services > /dev/null 2>&1 && echo "端口已全部开放" ;;
+      6) clear && change_ssh_port ;;
+      7) clear && change_dns ;;
+      8) 
+        clear && echo "请备份数据，将为你重装系统，预计花费15分钟。\n${white}感谢MollyLau和MoeClub的脚本支持！${plain}"
+        reading "确定继续吗？(Y/N): " choice
+        case "$choice" in
+          [Yy]) dd_system_run ;;
+          [Nn]) echo "已取消" ;;
+             *) echo "无效的选择，请输入 Y 或 N。" ;;
+        esac
+        ;;
+        
+     41) clear && reading "请输入安装的工具名(wget curl): " installname && install $installname ;;
+     42) clear && reading "请输入卸载的工具名(htop ufw): "  removename  && remove  $removename  ;;
+
+      0) qiqtools ;;
+      *) echo "无效的输入!" ;;
+    esac
+    break_end
+  done
+}
+
+
+# 显示主菜单
+main_menu() {
+echo -e "${blue}
+ __   _  __   ___ ____ ____ _   __
+|  |  | |  |   |  |  | |  | |  |__
+|__|_ | |__|_  |  |__| |__| |__ __|
+                        
+QiQTools 一键脚本工具 v0.0.1
+(支持Ubuntu/Debian/CentOS/Alpine系统)
+-- 输入 ${yellow}qiq ${blue}可快速启动此脚本 --
+-------------------------------
+${green} 1.${plain} 系统信息查询
+${green} 2.${plain} 系统更新
+${green} 3.${plain} 系统清理
+${green} 4.${plain} 常用工具 ▶
+${green} 5.${plain} 系统工具 ▶
+${green} 6.${plain} Docker管理 ▶
+${green} 7.${plain} WARP管理 ▶ 解锁ChatGPT Netflix
+${green} 8.${plain} 测试脚本合集 ▶
+${green} 9.${plain} 甲骨文云脚本合集 ▶
+${green}10.${blue} LDNMP建站 ▶${plain}
+${green}11.${plain} 面板工具 ▶
+${green}12.${plain} 我的工作区 ▶
+${green}13.${plain} 系统工具 ▶
+${green}14.${plain} VPS集群控制 ▶ ${blue}Beta${plain}
+-------------------------------
+${green}00.${plain} 脚本更新
+-------------------------------
+${green} 0.${plain} 退出脚本
+-------------------------------
+"
+}
+
+
 # Main Loops for the scripts
 while true; do 
   clear && main_menu 
@@ -508,7 +797,9 @@ while true; do
      1) clear && get_sysinfo && show_info ;;
      2) clear && update_and_upgrade ;;
      3) clear && clean_sys ;;
-     4) common_apps_run ;;
+     4) common_apps_run  ;;
+     4) system_tools_run ;;
+
     00)
       cd ~
       # curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/update_log.sh && chmod +x update_log.sh && ./update_log.sh

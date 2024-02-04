@@ -103,17 +103,27 @@ check_port() {
     fi
 }
 
-
-# 定义安装 Docker 的函数
-install_docker() {
-    if ! command -v docker &>/dev/null; then
+install_add_docker() {
+    if [ -f "/etc/alpine-release" ]; then
+        apk update
+        apk add docker docker-compose
+        rc-update add docker default
+        service docker start
+    else
         curl -fsSL https://get.docker.com | sh && ln -s /usr/libexec/docker/cli-plugins/docker-compose /usr/local/bin
         systemctl start docker
         systemctl enable docker
+    fi
+}
+
+install_docker() {
+    if ! command -v docker &>/dev/null; then
+        install_add_docker
     else
         echo "Docker 已经安装"
     fi
 }
+
 
 iptables_open() {
     iptables -P INPUT ACCEPT
@@ -453,7 +463,7 @@ echo -e "\033[96m_  _ ____  _ _ _    _ ____ _  _ "
 echo "|_/  |___  | | |    | |  | |\ | "
 echo "| \_ |___ _| | |___ | |__| | \| "
 echo "                                "
-echo -e "\033[96m科技lion一键脚本工具 v2.2.6 （支持Ubuntu/Debian/CentOS/Alpine系统）\033[0m"
+echo -e "\033[96m科技lion一键脚本工具 v2.2.8 （支持Ubuntu/Debian/CentOS/Alpine系统）\033[0m"
 echo -e "\033[96m-输入\033[93mk\033[96m可快速启动此脚本-\033[0m"
 echo "------------------------"
 echo "1. 系统信息查询"
@@ -469,7 +479,8 @@ echo -e "\033[33m10. LDNMP建站 ▶ \033[0m"
 echo "11. 面板工具 ▶ "
 echo "12. 我的工作区 ▶ "
 echo "13. 系统工具 ▶ "
-echo -e "14. VPS集群控制 ▶ \033[36mBeta\033[0m"
+echo "14. VPS集群控制 ▶ "
+echo -e "\033[92m15. 幻兽帕鲁私服脚本 ▶\033[0m"
 echo "------------------------"
 echo "00. 脚本更新"
 echo "------------------------"
@@ -489,8 +500,14 @@ case $choice in
       cpu_info=$(lscpu | grep 'BIOS Model name' | awk -F': ' '{print $2}' | sed 's/^[ \t]*//')
     fi
 
-    cpu_usage=$(top -bn1 | grep 'Cpu(s)' | awk '{print $2 + $4}')
-    cpu_usage_percent=$(printf "%.2f" "$cpu_usage")%
+    if [ -f /etc/alpine-release ]; then
+        # Alpine Linux 使用以下命令获取 CPU 使用率
+        cpu_usage_percent=$(top -bn1 | grep '^CPU' | awk '{print " "$4}' | cut -c 1-2)
+    else
+        # 其他系统使用以下命令获取 CPU 使用率
+        cpu_usage_percent=$(top -bn1 | grep "Cpu(s)" | awk '{print " "$2}')
+    fi
+
 
     cpu_cores=$(nproc)
 
@@ -575,7 +592,7 @@ case $choice in
     echo "CPU型号: $cpu_info"
     echo "CPU核心数: $cpu_cores"
     echo "------------------------"
-    echo "CPU占用: $cpu_usage_percent"
+    echo "CPU占用: $cpu_usage_percent%"
     echo "物理内存: $mem_info"
     echo "虚拟内存: $swap_info"
     echo "硬盘占用: $disk_info"
@@ -899,21 +916,7 @@ case $choice in
       case $sub_choice in
           1)
             clear
-
-            if [ -f "/etc/alpine-release" ]; then
-                apk update
-                apk add docker
-                rc-update add docker default
-                service docker start
-                curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-                chmod +x /usr/local/bin/docker-compose
-
-            else
-
-                curl -fsSL https://get.docker.com | sh && ln -s /usr/libexec/docker/cli-plugins/docker-compose /usr/local/bin
-                systemctl start docker
-                systemctl enable docker
-            fi
+            install_add_docker
 
               ;;
           2)
@@ -1225,8 +1228,7 @@ case $choice in
               case "$choice" in
                 [Yy])
                   docker rm $(docker ps -a -q) && docker rmi $(docker images -q) && docker network prune
-                  remove docker docker-ce > /dev/null 2>&1
-                  rm -rf /var/lib/docker
+                  remove docker docker-ce docker-compose > /dev/null 2>&1
                   ;;
                 [Nn])
                   ;;
@@ -1793,7 +1795,7 @@ case $choice in
       add_yuming
       install_ssltls
 
-      docker run -d --name halo --restart always --network web_default -p 8010:8090 -v /home/web/html/$yuming/.halo2:/root/.halo2 halohub/halo:2.9
+      docker run -d --name halo --restart always --network web_default -p 8010:8090 -v /home/web/html/$yuming/.halo2:/root/.halo2 halohub/halo:2.11
       duankou=8010
       reverse_proxy
 
@@ -1849,7 +1851,7 @@ case $choice in
       wget -O /home/web/conf.d/default.conf https://raw.githubusercontent.com/kejilion/nginx/main/default10.conf
       default_server_ssl
       docker rm -f nginx >/dev/null 2>&1
-      docker rmi nginx >/dev/null 2>&1
+      docker rmi nginx nginx:alpine >/dev/null 2>&1
       docker run -d --name nginx --restart always -p 80:80 -p 443:443 -p 443:443/udp -v /home/web/nginx.conf:/etc/nginx/nginx.conf -v /home/web/conf.d:/etc/nginx/conf.d -v /home/web/certs:/etc/nginx/certs -v /home/web/html:/var/www/html -v /home/web/log/nginx:/var/log/nginx nginx:alpine
 
       clear
@@ -5216,6 +5218,12 @@ EOF
     done
 
     ;;
+
+  15)
+    cd ~
+    curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/palworld.sh && chmod +x palworld.sh && ./palworld.sh
+    ;;
+
 
   00)
     cd ~
