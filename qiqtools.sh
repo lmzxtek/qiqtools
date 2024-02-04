@@ -25,6 +25,72 @@ hint() { echo -e "\033[33m\033[01m$*\033[0m"; }   # 黄色
 reading() { read -rp "$(info "$1")" "$2"; }
 text() { grep -q '\$' <<< "${E[$*]}" && eval echo "\$(eval echo "\${${L}[$*]}")" || eval echo "\${${L}[$*]}"; }
 
+break_end() {
+      echo -e "${green}操作完成${plain}\n 按任意键继续..."
+      read -n 1 -s -r -p ""
+      echo ""
+      clear
+}
+
+# run qiq and exit 
+qiqtools() {
+    qiq
+    exit
+}
+
+# 安装应用程序
+install() {
+    if [ $# -eq 0 ]; then
+        echo "未提供软件包参数!"
+        return 1
+    fi
+
+    for package in "$@"; do
+        if ! command -v "$package" &>/dev/null; then
+            if command -v apt &>/dev/null; then
+                apt update -y && apt install -y "$package"
+            elif command -v yum &>/dev/null; then
+                yum -y update && yum -y install "$package"
+            elif command -v apk &>/dev/null; then
+                apk update && apk add "$package"
+            else
+                echo "未知的包管理器!"
+                return 1
+            fi
+        fi
+    done
+
+    return 0
+}
+
+install_dependency() { 
+  clear && install curl wget socat unzip tar 
+}
+
+
+remove() {
+    if [ $# -eq 0 ]; then
+        echo "未提供软件包参数!"
+        return 1
+    fi
+
+    for package in "$@"; do
+        if command -v apt &>/dev/null; then
+            apt purge -y "$package"
+        elif command -v yum &>/dev/null; then
+            yum remove -y "$package"
+        elif command -v apk &>/dev/null; then
+            apk del "$package"
+        else
+            echo "未知的包管理器!"
+            return 1
+        fi
+    done
+
+    return 0
+}
+
+
 # export PATH=$PATH:/usr/local/bin
 
 cur_dir=$(pwd)
@@ -342,19 +408,6 @@ ${green} 0.${plain} 退出脚本
 "
 }
 
-break_end() {
-      echo -e "\033[0;32m操作完成\033[0m"
-      echo "按任意键继续..."
-      read -n 1 -s -r -p ""
-      echo ""
-      clear
-}
-
-# run qiq and exit 
-qiqtools() {
-    qiq
-    exit
-}
 
 # 安装常用工具
 common_apps_menu() {
@@ -387,58 +440,6 @@ ${green} 0.${plain} 返回主菜单
 "
 }
 
-
-# 安装应用程序
-install() {
-    if [ $# -eq 0 ]; then
-        echo "未提供软件包参数!"
-        return 1
-    fi
-
-    for package in "$@"; do
-        if ! command -v "$package" &>/dev/null; then
-            if command -v apt &>/dev/null; then
-                apt update -y && apt install -y "$package"
-            elif command -v yum &>/dev/null; then
-                yum -y update && yum -y install "$package"
-            elif command -v apk &>/dev/null; then
-                apk update && apk add "$package"
-            else
-                echo "未知的包管理器!"
-                return 1
-            fi
-        fi
-    done
-
-    return 0
-}
-
-install_dependency() { 
-  clear && install curl wget socat unzip tar 
-}
-
-
-remove() {
-    if [ $# -eq 0 ]; then
-        echo "未提供软件包参数!"
-        return 1
-    fi
-
-    for package in "$@"; do
-        if command -v apt &>/dev/null; then
-            apt purge -y "$package"
-        elif command -v yum &>/dev/null; then
-            yum remove -y "$package"
-        elif command -v apk &>/dev/null; then
-            apk del "$package"
-        else
-            echo "未知的包管理器!"
-            return 1
-        fi
-    done
-
-    return 0
-}
 
 common_apps_run() {
   while true; do 
