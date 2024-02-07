@@ -698,8 +698,8 @@ dd_system_run() {
         
       22) 
         # dd_xitong_2 
-        bash InstallNET.sh -ubuntu 
-        # bash InstallNET.sh -ubuntu 22.04
+        # bash InstallNET.sh -ubuntu 
+        bash InstallNET.sh -ubuntu 22.04
         reboot 
         exit ;;
       23) 
@@ -1689,7 +1689,7 @@ ${cyan} __   _  __   ___ ____ ____ _   __
 ${cyan}|  |  | |  |   |  |  | |  | |  |__
 ${cyan}|__|_ | |__|_  |  |__| |__| |__ __|
 
-${plain}QiQTools 一键脚本工具 v0.0.2
+${plain}QiQTools 一键脚本工具 v0.0.3
 ${plain}(支持Ubuntu/Debian/CentOS/Alpine系统)
 ${plain}-- 输入${yellow}qiq ${plain}可快速启动此脚本 --
 -------------------------------
