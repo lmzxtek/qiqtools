@@ -713,8 +713,8 @@ dd_system_run() {
         # reboot 
         # exit ;;
       11) 
-        bash InstallNET.sh -debian
-        # bash InstallNET.sh -debian 12
+        # bash InstallNET.sh -debian
+        bash InstallNET.sh -debian 12
         reboot 
         exit ;;
         # xitong="-d 12" 
@@ -753,8 +753,8 @@ dd_system_run() {
         exit ;;
       #============================== 
       31) 
-        bash InstallNET.sh -alpine
-        # bash InstallNET.sh -alpine edge
+        # bash InstallNET.sh -alpine
+        bash InstallNET.sh -alpine edge
         bash InstallNET.sh -alpine 3.19
         bash InstallNET.sh -alpine 3.18
         reboot 
