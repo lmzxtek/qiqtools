@@ -690,14 +690,19 @@ dd_system_run() {
     dd_xitong_2 
 
     case "$sys_choice" in
-      1) 
+      21) 
         # dd_xitong_2 
-        bash InstallNET.sh -ubuntu 
-        # bash InstallNET.sh -ubuntu 22.04
+        bash InstallNET.sh -ubuntu 24.04
         reboot 
         exit ;;
         
-      2) 
+      22) 
+        # dd_xitong_2 
+        # bash InstallNET.sh -ubuntu 
+        bash InstallNET.sh -ubuntu 22.04
+        reboot 
+        exit ;;
+      23) 
         bash InstallNET.sh -ubuntu 20.04
         # bash InstallNET.sh -ubuntu 18.04
         # bash InstallNET.sh -ubuntu 16.04
@@ -707,9 +712,9 @@ dd_system_run() {
         # dd_xitong_1 
         # reboot 
         # exit ;;
-      3) 
-        bash InstallNET.sh -debian
-        # bash InstallNET.sh -debian 12
+      11) 
+        # bash InstallNET.sh -debian
+        bash InstallNET.sh -debian 12
         reboot 
         exit ;;
         # xitong="-d 12" 
@@ -717,7 +722,7 @@ dd_system_run() {
         # exit 
         # reboot 
         # ;;
-      4) 
+      12) 
         bash InstallNET.sh -debian 11
         reboot 
         exit ;;
@@ -725,7 +730,7 @@ dd_system_run() {
         # dd_xitong_1 
         # reboot 
         # exit ;;
-      5) 
+      13) 
         bash InstallNET.sh -debian 10
         reboot 
         exit ;;
@@ -734,57 +739,57 @@ dd_system_run() {
         # reboot 
         # exit ;;
       #============================== 
-      11) 
+      1) 
         bash InstallNET.sh -centos 9
         reboot 
         exit ;;
-      12) 
+      2) 
         bash InstallNET.sh -centos 8
         reboot 
         exit ;;
-      13) 
+      3) 
         bash InstallNET.sh -centos 7
         reboot 
         exit ;;
       #============================== 
-      21) 
-        bash InstallNET.sh -alpine
-        # bash InstallNET.sh -alpine edge
+      31) 
+        # bash InstallNET.sh -alpine
+        bash InstallNET.sh -alpine edge
         bash InstallNET.sh -alpine 3.19
         bash InstallNET.sh -alpine 3.18
         reboot 
         exit ;;
-      22) 
+      32) 
         bash InstallNET.sh -alpine 3.19
         reboot 
         exit ;;
-      23) 
+      33) 
         bash InstallNET.sh -alpine 3.18
         reboot 
         exit ;;
-      24) 
+      34) 
         bash InstallNET.sh -alpine 3.17
         reboot 
         exit ;;
       #============================== 
-      31) 
+      41) 
         bash InstallNET.sh -kali   
         # bash InstallNET.sh -kali rolling   
         # bash InstallNET.sh -kali dev   
         # bash InstallNET.sh -kali experimental   
         reboot 
         exit ;;
-      32) 
+      42) 
         bash InstallNET.sh -almalinux 9
         # bash InstallNET.sh -almalinux 8   
         reboot 
         exit ;;
-      33) 
+      43) 
         bash InstallNET.sh -rockylinux 9
         # bash InstallNET.sh -rockylinux 8   
         reboot 
         exit ;;
-      34) 
+      44) 
         bash InstallNET.sh -fedro 39
         # bash InstallNET.sh -fedro 38   
         reboot 
@@ -1687,7 +1692,7 @@ ${cyan} __   _  __   ___ ____ ____ _   __
 ${cyan}|  |  | |  |   |  |  | |  | |  |__
 ${cyan}|__|_ | |__|_  |  |__| |__| |__ __|
 
-${plain}QiQTools 一键脚本工具 v0.0.2
+${plain}QiQTools 一键脚本工具 v0.0.3
 ${plain}(支持Ubuntu/Debian/CentOS/Alpine系统)
 ${plain}-- 输入${yellow}qiq ${plain}可快速启动此脚本 --
 -------------------------------
