@@ -463,7 +463,7 @@ echo -e "\033[96m_  _ ____  _ _ _    _ ____ _  _ "
 echo "|_/  |___  | | |    | |  | |\ | "
 echo "| \_ |___ _| | |___ | |__| | \| "
 echo "                                "
-echo -e "\033[96m科技lion一键脚本工具 v2.2.8 （支持Ubuntu/Debian/CentOS/Alpine系统）\033[0m"
+echo -e "\033[96m科技lion一键脚本工具 v2.3 （支持Ubuntu/Debian/CentOS/Alpine系统）\033[0m"
 echo -e "\033[96m-输入\033[93mk\033[96m可快速启动此脚本-\033[0m"
 echo "------------------------"
 echo "1. 系统信息查询"
@@ -480,7 +480,8 @@ echo "11. 面板工具 ▶ "
 echo "12. 我的工作区 ▶ "
 echo "13. 系统工具 ▶ "
 echo "14. VPS集群控制 ▶ "
-echo -e "\033[92m15. 幻兽帕鲁私服脚本 ▶\033[0m"
+echo "------------------------"
+echo "p. 幻兽帕鲁开服脚本 ▶"
 echo "------------------------"
 echo "00. 脚本更新"
 echo "------------------------"
@@ -2397,7 +2398,7 @@ case $choice in
       echo "25. Nextcloud网盘                       26. QD-Today定时任务管理框架"
       echo "27. Dockge容器堆栈管理面板              28. LibreSpeed测速工具"
       echo "29. searxng聚合搜索站                   30. PhotoPrism私有相册系统"
-      echo "31. StirlingPDF工具大全"
+      echo "31. StirlingPDF工具大全                 32. drawio免费的在线图表软件"
       echo "------------------------"
       echo "0. 返回主菜单"
       echo "------------------------"
@@ -3570,6 +3571,19 @@ case $choice in
             docker_app
               ;;
 
+          32)
+            docker_name="drawio"
+            docker_img="jgraph/drawio"
+            docker_port=7080
+            docker_rum="docker run -d --restart=always --name drawio -p 7080:8080 -v /home/docker/drawio:/var/lib/drawio jgraph/drawio"
+            docker_describe="这是一个强大图表绘制软件。思维导图，拓扑图，流程图，都能画"
+            docker_url="官网介绍: https://www.drawio.com/"
+            docker_use=""
+            docker_passwd=""
+            docker_app
+              ;;
+
+
           0)
               kejilion
               ;;
@@ -4707,6 +4721,10 @@ EOF
                       # CentOS
                       hostnamectl set-hostname "$new_hostname"
                       sed -i "s/$current_hostname/$new_hostname/g" /etc/hostname
+                  elif [ -f /etc/alpine-release ]; then
+                      # alpine
+                      echo "$new_hostname" > /etc/hostname
+                      /etc/init.d/hostname restart
                   else
                       echo "未知的发行版，无法更改主机名。"
                       exit 1
@@ -5219,9 +5237,10 @@ EOF
 
     ;;
 
-  15)
+  p)
     cd ~
     curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/palworld.sh && chmod +x palworld.sh && ./palworld.sh
+    exit
     ;;
 
 

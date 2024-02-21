@@ -1216,9 +1216,10 @@ ${green} 9.${plain} Poste.io(邮件服务器程序)
 ${green}10.${plain} RocketChat(多人在线聊天系统)
 ${green}12.${plain} Memos网页备忘录
 ${green}13.${plain} AuroPanel(极光面板)          
-${green}29.${plain} IT-Tools                       
-${green}30.${plain} Next Terminal
-${green}30.${plain} VScode Server
+${green}14.${plain} IT-Tools                       
+${green}15.${plain} Next Terminal
+${green}16.${plain} VScode Server
+${green}17.${plain} ChatGPT-Next-Web
 -------------------------------
 ${green} 0.${plain} 返回主菜单
 -------------------------------
@@ -1473,9 +1474,10 @@ other_tools_menu() {
 echo -e "
 ▶ 其他工具
 -------------------------------
-${green} 1.${plain} RustDesk Server
-${green} 2.${plain} Python
-${green} 3.${plain} Conda
+${green} 1.${plain} Python
+${green} 2.${plain} Conda
+${green} 3.${plain} RustDesk Server
+${green} 4.${plain} ChatGPT-Next-Web
 -------------------------------
 ${green} 0.${plain} 返回主菜单
 -------------------------------
@@ -1488,9 +1490,8 @@ other_tools_run() {
     reading "请选择代码: " choice
 
     case $choice in
-      1) clear && install wget && wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
-      2) clear && install_python ;;
-      3) 
+      1) clear && install_python ;;
+      2) 
         clear 
         if [[ $(uname -m | grep 'arm') != "" ]]; then 
           wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-aarch64.sh && bash Miniconda3-latest-Linux-aarch64.sh
@@ -1498,6 +1499,8 @@ other_tools_run() {
           wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && bash Miniconda3-latest-Linux-x86_64.sh 
         fi 
         ;;
+      3) clear && install wget && wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
+      4) clear && install curl && bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh) ;;
       0) qiqtools ;;
       *) echo "无效的输入!" ;;
     esac  
