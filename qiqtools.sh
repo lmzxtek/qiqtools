@@ -1521,7 +1521,7 @@ ${green} 1.${plain} ${yellow}Warp(@fscarmen)                    ${green}11.${pla
 ${green} 2.${plain} Warp(@hamid-gh98)                  ${green}12.${plain} V2Ray(@233boy)
 ${green} 3.${plain} Warp(@Misaka-blog)                 ${green}13.${plain} V2Ray-Agent(@mack-a)
 ${green} 4.${plain} ArgoX(@fscarmen)                   ${green}14.${plain} Hysteria2(@Misaka)
-${green} 5.${plain} ${blue}SingBox四合一(@ygkkk)            ${green}15.${plain} TUIC5(@Misaka)
+${green} 5.${plain} ${blue}SingBox四合一(@ygkkk)              ${green}15.${plain} TUIC5(@Misaka)
 ${green} 6.${plain} ${yellow}SingBox全家桶(@fscarmen)           ${green}16.${plain} mianyang()
 ${green} 7.${plain} ${yellow}SingBox-Argox(@fscarmen)           
 ${green} 8.${plain} ${yellow}Argox(@fscarmen) 
@@ -1539,7 +1539,7 @@ ${green}51.${plain} ${yellow}XRayR(@XrayR-project)              ${green}61.${pla
 ${green}52.${plain} XRayR(@wyx2685)                    ${green}62.${plain} Cloudflare Select IP
 ${green}53.${plain} XRayR-Docker(@XrayR-project)       ${green}63.${plain} Cloudflare Select CDN
 ${green}54.${plain} ${blue}Bodhi(Hysteria2 to V2board)        ${green}64.${plain} YACD(Yet another Clash Dashboard)
-${green}55.${plain} ${yellow}V2bX(Vless&Trojan to V2board)         ${green}65.${plain} ClashDashBoard
+${green}55.${plain} ${yellow}V2bX(Vless&Trojan to V2board)      ${green}65.${plain} ClashDashBoard
 -------------------------------
 ${green}91.${plain} Show IP       ${green}94.${plain} Check-OpenAI  
 ${green}92.${plain} Show IPv4     ${green}95.${plain} Cloudflare(IPv4)    
