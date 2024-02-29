@@ -1521,8 +1521,10 @@ ${green} 1.${plain} ${yellow}Warp(@fscarmen)                    ${green}11.${pla
 ${green} 2.${plain} Warp(@hamid-gh98)                  ${green}12.${plain} V2Ray(@233boy)
 ${green} 3.${plain} Warp(@Misaka-blog)                 ${green}13.${plain} V2Ray-Agent(@mack-a)
 ${green} 4.${plain} ArgoX(@fscarmen)                   ${green}14.${plain} Hysteria2(@Misaka)
-${green} 5.${plain} ${blue}SingBox(@ygkkk)                    ${green}15.${plain} TUIC5(@Misaka)
-${green} 6.${plain} ${yellow}SingBox(@fscarmen)                 ${green}16.${plain} mianyang()
+${green} 5.${plain} ${blue}SingBox四合一(@ygkkk)                ${green}15.${plain} TUIC5(@Misaka)
+${green} 6.${plain} ${yellow}SingBox全家桶(@fscarmen)           ${green}16.${plain} mianyang()
+${green} 7.${plain} ${yellow}SingBox-Argox(@fscarmen)           ${green}16.${plain} mianyang()
+${green} 8.${plain} ${yellow}Argox(@fscarmen) 
 -------------------------------
 ${green}21.${plain} ${blue}3X-UI(@mhsanaei)                   ${green}31.${plain} Hiddify
 ${green}22.${plain} ${yellow}X-UI(@alireza0)                    ${green}32.${plain} V2RayA
@@ -1560,6 +1562,8 @@ warp_tools_run() {
       4) clear && bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/argox/main/argox.sh)  ;;
       5) clear && bash <(curl -Ls https://gitlab.com/rwkgyg/sing-box-yg/raw/main/sb.sh)  ;;
       6) clear && bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/sing-box/main/sing-box.sh) ;;
+      7) clear && bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/sba/main/sba.sh) ;;
+      8) clear && bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/argox/main/argox.sh) ;;
 
      11) clear && bash <(wget -qO- -o- https://github.com/233boy/Xray/raw/main/install.sh) ;;
      12) clear && bash <(wget -qO- -o- https://git.io/v2ray.sh) ;;
@@ -1692,7 +1696,7 @@ ${cyan} __   _  __   ___ ____ ____ _   __
 ${cyan}|  |  | |  |   |  |  | |  | |  |__
 ${cyan}|__|_ | |__|_  |  |__| |__| |__ __|
 
-${plain}QiQTools 一键脚本工具 v0.0.4
+${plain}QiQTools 一键脚本工具 v0.0.5
 ${plain}(支持Ubuntu/Debian/CentOS/Alpine系统)
 ${plain}-- 输入${yellow}qiq ${plain}可快速启动此脚本 --
 -------------------------------
