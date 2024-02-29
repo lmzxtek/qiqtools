@@ -1516,7 +1516,7 @@ other_tools_run() {
 warp_tools_menu() {
 echo -e "
 ▶ 节点管理
--------------------------------
+${plain}-------------------------------
 ${green} 1.${plain} ${yellow}Warp(@fscarmen)                    ${green}11.${plain} XRay(@233boy)
 ${green} 2.${plain} Warp(@hamid-gh98)                  ${green}12.${plain} V2Ray(@233boy)
 ${green} 3.${plain} Warp(@Misaka-blog)                 ${green}13.${plain} V2Ray-Agent(@mack-a)
@@ -1524,28 +1524,28 @@ ${green} 4.${plain} ArgoX(@fscarmen)                   ${green}14.${plain} Hyste
 ${green} 5.${plain} ${blue}SingBox四合一(@ygkkk)              ${green}15.${plain} TUIC5(@Misaka)
 ${green} 6.${plain} ${yellow}SingBox全家桶(@fscarmen)           ${green}16.${plain} mianyang()
 ${green} 7.${plain} ${yellow}SingBox-Argox(@fscarmen)           
--------------------------------
+${plain}-------------------------------
 ${green}21.${plain} ${blue}3X-UI(@mhsanaei)                   ${green}31.${plain} Hiddify
 ${green}22.${plain} ${yellow}X-UI(@alireza0)                    ${green}32.${plain} V2RayA
 ${green}23.${plain} X-UI(@FranzKafkaYu)                ${green}33.${plain} Daed
 ${green}24.${plain} X-UI(@rwkgyg)                      ${green}34.${plain} Daed-Docker
--------------------------------
+${plain}-------------------------------
 ${green}41.${plain} XBoard                             ${green}44.${plain} LotusBoard
 ${green}42.${plain} V2Board                            ${green}45.${plain} SSPanel
 ${green}43.${plain} V2Board(wyx2685)                   ${green}46.${plain} Proxypanel
--------------------------------
+${plain}-------------------------------
 ${green}51.${plain} ${yellow}XRayR(@XrayR-project)              ${green}61.${plain} Set Github(For IPv6 VPS)
 ${green}52.${plain} XRayR(@wyx2685)                    ${green}62.${plain} Cloudflare Select IP
 ${green}53.${plain} XRayR-Docker(@XrayR-project)       ${green}63.${plain} Cloudflare Select CDN
 ${green}54.${plain} ${blue}Bodhi(Hysteria2 to V2board)        ${green}64.${plain} YACD(Yet another Clash Dashboard)
 ${green}55.${plain} ${yellow}V2bX(Vless&Trojan to V2board)      ${green}65.${plain} ClashDashBoard
--------------------------------
+${plain}-------------------------------
 ${green}91.${plain} Show IP       ${green}94.${plain} Check-OpenAI  
 ${green}92.${plain} Show IPv4     ${green}95.${plain} Cloudflare(IPv4)    
 ${green}93.${plain} Show IPv6     ${green}96.${plain} Cloudflare(IPv6)
 -------------------------------
 ${green} 0.${plain} 返回主菜单
--------------------------------
+${plain}-------------------------------
 "
 }
 
