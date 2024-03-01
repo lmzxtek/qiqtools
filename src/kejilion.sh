@@ -455,6 +455,23 @@ cluster_python3() {
     python3 ~/cluster/$py_task
 }
 
+tmux_run() {
+    # Check if the session already exists
+    tmux has-session -t $SESSION_NAME 2>/dev/null
+    # $? is a special variable that holds the exit status of the last executed command
+    if [ $? != 0 ]; then
+      # Session doesn't exist, create a new one
+      tmux new -s $SESSION_NAME
+    else
+      # Session exists, attach to it
+      tmux attach-session -t $SESSION_NAME
+    fi
+}
+
+
+
+
+
 
 while true; do
 clear
@@ -463,7 +480,7 @@ echo -e "\033[96m_  _ ____  _ _ _    _ ____ _  _ "
 echo "|_/  |___  | | |    | |  | |\ | "
 echo "| \_ |___ _| | |___ | |__| | \| "
 echo "                                "
-echo -e "\033[96m科技lion一键脚本工具 v2.3 （支持Ubuntu/Debian/CentOS/Alpine系统）\033[0m"
+echo -e "\033[96m科技lion一键脚本工具 v2.3.2 （支持Ubuntu/Debian/CentOS/Alpine系统）\033[0m"
 echo -e "\033[96m-输入\033[93mk\033[96m可快速启动此脚本-\033[0m"
 echo "------------------------"
 echo "1. 系统信息查询"
@@ -886,10 +903,54 @@ case $choice in
 
   5)
     clear
-    install wget
-    wget --no-check-certificate -O tcpx.sh https://raw.githubusercontent.com/ylx2016/Linux-NetSpeed/master/tcpx.sh
-    chmod +x tcpx.sh
-    ./tcpx.sh
+    if [ -f "/etc/alpine-release" ]; then
+        while true; do
+              clear
+              congestion_algorithm=$(sysctl -n net.ipv4.tcp_congestion_control)
+              queue_algorithm=$(sysctl -n net.core.default_qdisc)
+              echo "当前TCP阻塞算法: $congestion_algorithm $queue_algorithm"
+
+              echo ""
+              echo "BBR管理"
+              echo "------------------------"
+              echo "1. 开启BBRv3              2. 关闭BBRv3（会重启）"
+              echo "------------------------"
+              echo "0. 返回上一级选单"
+              echo "------------------------"
+              read -p "请输入你的选择: " sub_choice
+
+              case $sub_choice in
+                  1)
+                    cat > /etc/sysctl.conf << EOF
+net.core.default_qdisc=fq_pie
+net.ipv4.tcp_congestion_control=bbr
+EOF
+                    sysctl -p
+
+                      ;;
+                  2)
+                    sed -i '/net.core.default_qdisc=fq_pie/d' /etc/sysctl.conf
+                    sed -i '/net.ipv4.tcp_congestion_control=bbr/d' /etc/sysctl.conf
+                    sysctl -p
+                    reboot
+                      ;;
+                  0)
+                      break  # 跳出循环，退出菜单
+                      ;;
+
+                  *)
+                      break  # 跳出循环，退出菜单
+                      ;;
+
+              esac
+        done
+    else
+        install wget
+        wget --no-check-certificate -O tcpx.sh https://raw.githubusercontent.com/ylx2016/Linux-NetSpeed/master/tcpx.sh
+        chmod +x tcpx.sh
+        ./tcpx.sh
+    fi
+
     ;;
 
   6)
@@ -2089,6 +2150,7 @@ case $choice in
       read -p "输入远程服务器IP: " useip
       read -p "输入远程服务器密码: " usepasswd
 
+      cd ~
       wget -O ${useip}_beifen.sh https://raw.githubusercontent.com/kejilion/sh/main/beifen.sh > /dev/null 2>&1
       chmod +x ${useip}_beifen.sh
 
@@ -3611,8 +3673,13 @@ case $choice in
       echo "3. 3号工作区"
       echo "4. 4号工作区"
       echo "5. 5号工作区"
+      echo "6. 6号工作区"
+      echo "7. 7号工作区"
+      echo "8. 8号工作区"
+      echo "9. 9号工作区"
+      echo "10. 10号工作区"
       echo "------------------------"
-      echo "8. 工作区状态"
+      echo "99. 工作区状态"
       echo "------------------------"
       echo "b. 卸载工作区"
       echo "------------------------"
@@ -3633,85 +3700,56 @@ case $choice in
           1)
               clear
               SESSION_NAME="work1"
+              tmux_run
 
-              # Check if the session already exists
-              tmux has-session -t $SESSION_NAME 2>/dev/null
-
-              # $? is a special variable that holds the exit status of the last executed command
-              if [ $? != 0 ]; then
-                # Session doesn't exist, create a new one
-                tmux new -s $SESSION_NAME
-              else
-                # Session exists, attach to it
-                tmux attach-session -t $SESSION_NAME
-              fi
               ;;
           2)
               clear
               SESSION_NAME="work2"
-
-              # Check if the session already exists
-              tmux has-session -t $SESSION_NAME 2>/dev/null
-
-              # $? is a special variable that holds the exit status of the last executed command
-              if [ $? != 0 ]; then
-                # Session doesn't exist, create a new one
-                tmux new -s $SESSION_NAME
-              else
-                # Session exists, attach to it
-                tmux attach-session -t $SESSION_NAME
-              fi
+              tmux_run
               ;;
           3)
               clear
               SESSION_NAME="work3"
-
-              # Check if the session already exists
-              tmux has-session -t $SESSION_NAME 2>/dev/null
-
-              # $? is a special variable that holds the exit status of the last executed command
-              if [ $? != 0 ]; then
-                # Session doesn't exist, create a new one
-                tmux new -s $SESSION_NAME
-              else
-                # Session exists, attach to it
-                tmux attach-session -t $SESSION_NAME
-              fi
+              tmux_run
               ;;
           4)
               clear
               SESSION_NAME="work4"
-
-              # Check if the session already exists
-              tmux has-session -t $SESSION_NAME 2>/dev/null
-
-              # $? is a special variable that holds the exit status of the last executed command
-              if [ $? != 0 ]; then
-                # Session doesn't exist, create a new one
-                tmux new -s $SESSION_NAME
-              else
-                # Session exists, attach to it
-                tmux attach-session -t $SESSION_NAME
-              fi
+              tmux_run
               ;;
           5)
               clear
               SESSION_NAME="work5"
-
-              # Check if the session already exists
-              tmux has-session -t $SESSION_NAME 2>/dev/null
-
-              # $? is a special variable that holds the exit status of the last executed command
-              if [ $? != 0 ]; then
-                # Session doesn't exist, create a new one
-                tmux new -s $SESSION_NAME
-              else
-                # Session exists, attach to it
-                tmux attach-session -t $SESSION_NAME
-              fi
+              tmux_run
+              ;;
+          6)
+              clear
+              SESSION_NAME="work6"
+              tmux_run
+              ;;
+          7)
+              clear
+              SESSION_NAME="work7"
+              tmux_run
+              ;;
+          8)
+              clear
+              SESSION_NAME="work8"
+              tmux_run
+              ;;
+          9)
+              clear
+              SESSION_NAME="work9"
+              tmux_run
+              ;;
+          10)
+              clear
+              SESSION_NAME="work10"
+              tmux_run
               ;;
 
-          8)
+          99)
               clear
               tmux list-sessions
               ;;
@@ -3974,11 +4012,22 @@ case $choice in
           8)
           dd_xitong_1() {
             read -p "请输入你重装后的密码: " vpspasswd
+            echo "任意键继续，重装后初始用户名: root  初始密码: $vpspasswd  初始端口: 22"
+            read -n 1 -s -r -p ""
             install wget
             bash <(wget --no-check-certificate -qO- 'https://raw.githubusercontent.com/MoeClub/Note/master/InstallNET.sh') $xitong -v 64 -p $vpspasswd -port 22
           }
 
           dd_xitong_2() {
+            echo "任意键继续，重装后初始用户名: root  初始密码: LeitboGi0ro  初始端口: 22"
+            read -n 1 -s -r -p ""
+            install wget
+            wget --no-check-certificate -qO InstallNET.sh 'https://raw.githubusercontent.com/leitbogioro/Tools/master/Linux_reinstall/InstallNET.sh' && chmod a+x InstallNET.sh
+          }
+
+          dd_xitong_3() {
+            echo "任意键继续，重装后初始用户名: Administrator  初始密码: Teddysun.com  初始端口: 3389"
+            read -n 1 -s -r -p ""
             install wget
             wget --no-check-certificate -qO InstallNET.sh 'https://raw.githubusercontent.com/leitbogioro/Tools/master/Linux_reinstall/InstallNET.sh' && chmod a+x InstallNET.sh
           }
@@ -3992,14 +4041,28 @@ case $choice in
             [Yy])
               while true; do
 
+                echo "------------------------"
                 echo "1. Debian 12"
                 echo "2. Debian 11"
                 echo "3. Debian 10"
-                echo "4. Ubuntu 22.04"
-                echo "5. Ubuntu 20.04"
-                echo "6. CentOS 7.9"
-                echo "7. Alpine 3.19"
-                echo -e "8. Windows 11 \033[36mBeta\033[0m"
+                echo "4. Debian 9"
+                echo "------------------------"
+                echo "11. Ubuntu 24.04"
+                echo "12. Ubuntu 22.04"
+                echo "13. Ubuntu 20.04"
+                echo "14. Ubuntu 18.04"
+                echo "------------------------"
+                echo "21. CentOS 9"
+                echo "22. CentOS 8"
+                echo "23. CentOS 7"
+                echo "------------------------"
+                echo "31. Alpine 3.19"
+                echo "------------------------"
+                echo "41. Windows 11"
+                echo "42. Windows 10"
+                echo "43. Windows Server 2022"
+                echo "44. Windows Server 2019"
+                echo "44. Windows Server 2016"
                 echo "------------------------"
                 read -p "请选择要重装的系统: " sys_choice
 
@@ -4024,40 +4087,108 @@ case $choice in
                     reboot
                     exit
                     ;;
-
                   4)
-                    dd_xitong_2
-                    bash InstallNET.sh -ubuntu
-                    reboot
-                    exit
-                    ;;
-
-                  5)
-                    xitong="-u 20.04"
+                    xitong="-d 9"
                     dd_xitong_1
                     reboot
                     exit
                     ;;
 
-                  6)
+                  11)
+                    dd_xitong_2
+                    bash InstallNET.sh -ubuntu 24.04
+                    reboot
+                    exit
+                    ;;
+                  12)
+                    dd_xitong_2
+                    bash InstallNET.sh -ubuntu 22.04
+                    reboot
+                    exit
+                    ;;
+
+                  13)
+                    xitong="-u 20.04"
+                    dd_xitong_1
+                    reboot
+                    exit
+                    ;;
+                  14)
+                    xitong="-u 18.04"
+                    dd_xitong_1
+                    reboot
+                    exit
+                    ;;
+
+
+                  21)
+                    dd_xitong_2
+                    bash InstallNET.sh -centos 9
+                    reboot
+                    exit
+                    ;;
+
+
+                  22)
+                    dd_xitong_2
+                    bash InstallNET.sh -centos 8
+                    reboot
+                    exit
+                    ;;
+
+                  23)
                     dd_xitong_2
                     bash InstallNET.sh -centos 7
                     reboot
                     exit
                     ;;
-                  7)
+
+
+
+                  31)
                     dd_xitong_2
                     bash InstallNET.sh -alpine
                     reboot
                     exit
                     ;;
 
-                  8)
-                    dd_xitong_2
-                    bash InstallNET.sh -windows
+
+
+                  41)
+                    dd_xitong_3
+                    bash InstallNET.sh -windows 11 -lang "cn"
                     reboot
                     exit
                     ;;
+
+                  42)
+                    dd_xitong_3
+                    bash InstallNET.sh -windows 10 -lang "cn"
+                    reboot
+                    exit
+                    ;;
+
+                  43)
+                    dd_xitong_3
+                    bash InstallNET.sh -windows 2022 -lang "cn"
+                    reboot
+                    exit
+                    ;;
+
+                  44)
+                    dd_xitong_3
+                    bash InstallNET.sh -windows 2019 -lang "cn"
+                    reboot
+                    exit
+                    ;;
+
+                  45)
+                    dd_xitong_3
+                    bash InstallNET.sh -windows 2016 -lang "cn"
+                    reboot
+                    exit
+                    ;;
+
 
                   *)
                     echo "无效的选择，请重新输入。"

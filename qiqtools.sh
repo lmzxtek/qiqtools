@@ -1124,6 +1124,92 @@ alter_sourcelist(){
   done
 }
 
+timezone_menu(){
+echo -e "
+▶ 时区切换
+${plain}-->> 亚洲 <<-----------------------------
+${green} 1.${plain} 中国上海时间              ${green} 2.${plain} 中国香港时间
+${green} 3.${plain} 日本东京时间              ${green} 4.${plain} 韩国首尔时间
+${green} 5.${plain} 新加坡时间                ${green} 6.${plain} 中国香港时间
+${green} 7.${plain} 阿联酋迪拜时间            ${green} 8.${plain} 澳大利亚悉尼时间
+${plain}-->> 欧洲 <<-----------------------------
+${green}11.${plain} 英国伦敦时间              ${green}12.${plain} 法国巴黎时间
+${green}13.${plain} 德国柏林时间              ${green}14.${plain} 俄罗斯莫斯科时间
+${green}15.${plain} 荷兰尤特赖赫特时间        ${green}16.${plain} 西班牙马德里时间
+${plain}-->> 美洲 <<-----------------------------
+${green}21.${plain} 美国西部时间              ${green}22.${plain} 美国东部时间
+${green}23.${plain} 加拿大时间               ${green}24.${plain} 墨西哥时间
+${green}25.${plain} 巴西时间                 ${green}26.${plain} 阿根廷时间
+${plain}-------------------------------
+${green} 0.${plain} 返回上级菜单
+${plain}-------------------------------
+"
+}
+
+# 修改系统时区
+alter_timezone(){
+  while true; do
+      echo "系统时间信息"
+
+      # 获取当前系统时区
+      current_timezone=$(timedatectl show --property=Timezone --value)
+
+      # 获取当前系统时间
+      current_time=$(date +"%Y-%m-%d %H:%M:%S")
+
+      # 显示时区和时间
+      echo "当前系统时区：$current_timezone"
+      echo "当前系统时间：$current_time"
+
+      # echo ""
+      # echo "时区切换"
+      # echo "亚洲------------------------"
+      # echo "1. 中国上海时间              2. 中国香港时间"
+      # echo "3. 日本东京时间              4. 韩国首尔时间"
+      # echo "5. 新加坡时间                6. 印度加尔各答时间"
+      # echo "7. 阿联酋迪拜时间            8. 澳大利亚悉尼时间"
+      # echo "欧洲------------------------"
+      # echo "11. 英国伦敦时间             12. 法国巴黎时间"
+      # echo "13. 德国柏林时间             14. 俄罗斯莫斯科时间"
+      # echo "15. 荷兰尤特赖赫特时间       16. 西班牙马德里时间"
+      # echo "美洲------------------------"
+      # echo "21. 美国西部时间             22. 美国东部时间"
+      # echo "23. 加拿大时间               24. 墨西哥时间"
+      # echo "25. 巴西时间                 26. 阿根廷时间"
+      # echo "------------------------"
+      # echo "0. 返回上一级选单"
+      # echo "------------------------"
+
+      timezone_menu
+      read -p "请输入你的选择: " sub_choice
+
+      case $sub_choice in
+           1) timedatectl set-timezone Asia/Shanghai ;;
+           2) timedatectl set-timezone Asia/Hong_Kong ;;
+           3) timedatectl set-timezone Asia/Tokyo ;;
+           4) timedatectl set-timezone Asia/Seoul ;;
+           5) timedatectl set-timezone Asia/Singapore ;;
+           6) timedatectl set-timezone Asia/Kolkata ;;
+           7) timedatectl set-timezone Asia/Dubai ;;
+           8) timedatectl set-timezone Australia/Sydney ;;
+          11) timedatectl set-timezone Europe/London ;;
+          12) timedatectl set-timezone Europe/Paris ;;
+          13) timedatectl set-timezone Europe/Berlin ;;
+          14) timedatectl set-timezone Europe/Moscow ;;
+          15) timedatectl set-timezone Europe/Amsterdam ;;
+          16) timedatectl set-timezone Europe/Madrid ;;
+          21) timedatectl set-timezone America/Los_Angeles ;;
+          22) timedatectl set-timezone America/New_York ;;
+          23) timedatectl set-timezone America/Vancouver ;;
+          24) timedatectl set-timezone America/Mexico_City ;;
+          25) timedatectl set-timezone America/Sao_Paulo ;;
+          26) timedatectl set-timezone America/Argentina/Buenos_Aires ;;
+          0) break ;; # 跳出循环，退出菜单
+          *) break ;; # 跳出循环，退出菜单
+      esac
+  done
+}
+
 # 系统常用工具
 system_tools_menu() {
 echo -e "
@@ -1188,7 +1274,7 @@ system_tools_run() {
      11) clear && set_swap ;;
      12) clear && change_sys_name  ;;
      13) clear && alter_sourcelist ;;
-     14) clear && echo "Todo: ..." ;;
+     14) clear && alter_timezone ;;
      15) clear && echo "Todo: ..." ;;
      16) clear && echo "Todo: ..." ;;
      17) clear && echo "Todo: ..." ;;
@@ -1697,7 +1783,7 @@ ${cyan} __   _  __   ___ ____ ____ _   __
 ${cyan}|  |  | |  |   |  |  | |  | |  |__
 ${cyan}|__|_ | |__|_  |  |__| |__| |__ __|
 
-${plain}QiQTools 一键脚本工具 v0.0.6
+${plain}QiQTools 一键脚本工具 v0.0.7
 ${plain}(支持Ubuntu/Debian/CentOS/Alpine系统)
 ${plain}-- 输入${yellow}qiq ${plain}可快速启动此脚本 --
 -------------------------------
@@ -1710,11 +1796,10 @@ ${green} 6${white}.${plain} 面板工具 ▶
 ${green} 7${white}.${plain} 其他工具 ▶
 ${green} 8${white}.${plain} 节点管理 ▶ ${yellow}Warp ${blue}X-ui ${cyan}XrayR
 ${green} 9${white}.${plain} Docker管理 ▶
-${green}10${white}.${blue} LDNMP建站 ▶${plain}
-${green}11${white}.${plain} 测试脚本合集 ▶
-${green}12${white}.${plain} 甲骨文云脚本合集 ▶
+${green}10${white}.${plain} 测试脚本合集 ▶
+${green}11${white}.${plain} 甲骨文云脚本合集 ▶
+${green}12${white}.${blue} LDNMP建站 ▶${plain}
 ${green}13${white}.${plain} 我的工作区 ▶
-${green}14${white}.${plain} VPS集群控制 ▶ ${blue}Beta${plain}
 -------------------------------
 ${green}00.${plain} 脚本更新       ${green}99.${plain} 重启系统
 -------------------------------
@@ -1743,7 +1828,7 @@ while true; do
     11) clear && echo -e "\nTodo: ... \n" ;;
     12) clear && echo -e "\nTodo: ... \n" ;;
     13) clear && echo -e "\nTodo: ... \n" ;;
-    14) clear && echo -e "\nTodo: ... \n" ;;
+    # 14) clear && echo -e "\nTodo: ... \n" ;; # VPS集群控制
 
     00)
       cd ~
