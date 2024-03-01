@@ -13,6 +13,10 @@
 # 设置脚本的快捷命令为 `qiq`
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
+#==== 脚本版本号 ===========
+script_version = v0.0.8
+#==========================
+
  black='\033[0;30m'
    red='\033[0;31m'
  green='\033[0;32m'
@@ -1892,7 +1896,7 @@ ${cyan} __   _  __   ___ ____ ____ _   __
 ${cyan}|  |  | |  |   |  |  | |  | |  |__
 ${cyan}|__|_ | |__|_  |  |__| |__| |__ __|
 
-${plain}QiQTools 一键脚本工具 v0.0.7
+${plain}QiQTools 一键脚本工具 ${script_version}
 ${plain}(支持Ubuntu/Debian/CentOS/Alpine系统)
 ${plain}-- 输入${yellow}qiq ${plain}可快速启动此脚本 --
 -------------------------------
