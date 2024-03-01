@@ -1909,10 +1909,10 @@ ${green} 6${white}.${plain} 面板工具 ▶
 ${green} 7${white}.${plain} 其他工具 ▶
 ${green} 8${white}.${plain} 节点管理 ▶ ${yellow}Warp ${blue}X-ui ${cyan}XrayR
 ${green} 9${white}.${plain} Docker管理 ▶
-${green}10${white}.${plain} 测试脚本合集 ▶
-${green}11${white}.${plain} 甲骨文云脚本合集 ▶
-${green}12${white}.${blue} LDNMP建站 ▶${plain}
-${green}13${white}.${plain} 我的工作区 ▶
+${green}10${white}.${plain} 测试脚本合集 ▶ (Todo...)
+${green}11${white}.${plain} 甲骨文云脚本合集 ▶ (Todo...)
+${green}12${white}.${blue} LDNMP建站 ▶${plain} (Todo...)
+${green}13${white}.${plain} 我的工作区 ▶ (Todo...)
 -------------------------------
 ${green}00.${plain} 脚本更新       ${green}99.${plain} 重启系统
 -------------------------------
@@ -1923,6 +1923,7 @@ ${green} 0.${plain} 退出脚本
 
 
 # Main Loops for the scripts
+main_loop(){
 while true; do 
   clear && main_menu 
   reading "请输入你的选择: " choice
@@ -1959,3 +1960,6 @@ while true; do
   esac  
   break_end
 done
+}
+
+main_loop
