@@ -1889,6 +1889,18 @@ docker_run() {
 
 }
 
+# 脚本更新
+script_update(){
+  cd ~
+  # curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/update_log.sh && chmod +x update_log.sh && ./update_log.sh
+  # rm update_log.sh
+  echo ""
+  curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && chmod +x qiqtools.sh
+  echo "脚本已更新到最新版本！"
+  break_end
+  qiqtools
+}
+
 # 显示主菜单
 main_menu() {
 echo -e "
@@ -1944,16 +1956,16 @@ while true; do
     13) clear && echo -e "\nTodo: ... \n" ;;
     # 14) clear && echo -e "\nTodo: ... \n" ;; # VPS集群控制
 
-    00)
-      cd ~
-      # curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/update_log.sh && chmod +x update_log.sh && ./update_log.sh
-      # rm update_log.sh
-      echo ""
-      curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && chmod +x qiqtools.sh
-      echo "脚本已更新到最新版本！"
-      break_end
-      qiqtools
-      ;;
+    00) script_update ;;
+      # cd ~
+      # # curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/update_log.sh && chmod +x update_log.sh && ./update_log.sh
+      # # rm update_log.sh
+      # echo ""
+      # curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && chmod +x qiqtools.sh
+      # echo "脚本已更新到最新版本！"
+      # break_end
+      # qiqtools
+      # ;;
     99) clear && echo "正在重启服务器，即将断开SSH连接" && reboot  ;;
      0) exit ;;
      *) echo "无效的输入!" ;;
