@@ -1483,60 +1483,88 @@ EOF
 
 
       ;;
-    [Nn])
-      echo "已取消"
-      ;;
-    *)
-      echo "无效的选择，请输入 Y 或 N。"
-      ;;
+    [Nn]) echo "已取消" ;;
+    *) echo "无效的选择，请输入 Y 或 N。" ;;
   esac
 fi
 
 }
 
+# 用户管理
 user_manage(){
-  # 获取当前主机名
-  current_hostname=$(hostname)
+  # clear && install sudo && clear 
+  # 显示所有用户、用户权限、用户组和是否在sudoers中
+  echo "用户列表"
+  echo "----------------------------------------------------------------------------"
+  printf "%-24s %-34s %-20s %-10s\n" "用户名" "用户权限" "用户组" "sudo权限"
+  while IFS=: read -r username _ userid groupid _ _ homedir shell; do
+      groups=$(groups "$username" | cut -d : -f 2)
+      sudo_status=$(sudo -n -lU "$username" 2>/dev/null | grep -q '(ALL : ALL)' && echo "Yes" || echo "No")
+      printf "%-20s %-30s %-20s %-10s\n" "$username" "$homedir" "$groups" "$sudo_status"
+  done < /etc/passwd
 
-  echo "当前主机名: $current_hostname"
 
-  # 询问用户是否要更改主机名
-  read -p "是否要更改主机名？(y/n): " answer
+    echo ""
+    echo "账户操作"
+    echo "------------------------"
+    echo "1. 创建普通账户             2. 创建高级账户"
+    echo "------------------------"
+    echo "3. 赋予最高权限             4. 取消最高权限"
+    echo "------------------------"
+    echo "5. 删除账号"
+    echo "------------------------"
+    echo "0. 返回上一级选单"
+    echo "------------------------"
+    read -p "请输入你的选择: " sub_choice
 
-  if [ "$answer" == "y" ]; then
-      # 获取新的主机名
-      read -p "请输入新的主机名: " new_hostname
+    case $sub_choice in
+        1)
+          # 提示用户输入新用户名
+          read -p "请输入新用户名: " new_username
 
-      # 更改主机名
-      if [ -n "$new_hostname" ]; then
-          # 根据发行版选择相应的命令
-          if [ -f /etc/debian_version ]; then
-              # Debian 或 Ubuntu
-              hostnamectl set-hostname "$new_hostname"
-              sed -i "s/$current_hostname/$new_hostname/g" /etc/hostname
-          elif [ -f /etc/redhat-release ]; then
-              # CentOS
-              hostnamectl set-hostname "$new_hostname"
-              sed -i "s/$current_hostname/$new_hostname/g" /etc/hostname
-          elif [ -f /etc/alpine-release ]; then
-              # alpine
-              echo "$new_hostname" > /etc/hostname
-              /etc/init.d/hostname restart
-          else
-              echo "未知的发行版，无法更改主机名。"
-              exit 1
-          fi
+          # 创建新用户并设置密码
+          sudo useradd -m -s /bin/bash "$new_username"
+          sudo passwd "$new_username"
 
-          # 重启生效
-          systemctl restart systemd-hostnamed
-          echo "主机名已更改为: $new_hostname"
-      else
-          echo "无效的主机名。未更改主机名。"
-          exit 1
-      fi
-  else
-      echo "未更改主机名。"
-  fi
+          echo "操作已完成。"
+            ;;
+
+        2)
+          # 提示用户输入新用户名
+          read -p "请输入新用户名: " new_username
+
+          # 创建新用户并设置密码
+          sudo useradd -m -s /bin/bash "$new_username"
+          sudo passwd "$new_username"
+
+          # 赋予新用户sudo权限
+          echo "$new_username ALL=(ALL:ALL) ALL" | sudo tee -a /etc/sudoers
+
+          echo "操作已完成。"
+
+            ;;
+        3)
+          read -p "请输入用户名: " username
+          # 赋予新用户sudo权限
+          echo "$username ALL=(ALL:ALL) ALL" | sudo tee -a /etc/sudoers
+            ;;
+        4)
+          read -p "请输入用户名: " username
+          # 从sudoers文件中移除用户的sudo权限
+          sudo sed -i "/^$username\sALL=(ALL:ALL)\sALL/d" /etc/sudoers
+
+            ;;
+        5)
+          read -p "请输入要删除的用户名: " username
+          # 删除用户及其主目录
+          sudo userdel -r "$username"
+            ;;
+
+        0) break ;; # 跳出循环，退出菜单
+        *) break ;; # 跳出循环，退出菜单
+    esac
+done
+
 }
 
 # 用户名和密码管理
@@ -1629,13 +1657,8 @@ cron_manage(){
               read -p "请输入需要删除任务的关键字: " kquest
               crontab -l | grep -v "$kquest" | crontab -
               ;;
-          0)
-              break  # 跳出循环，退出菜单
-              ;;
-
-          *)
-              break  # 跳出循环，退出菜单
-              ;;
+          0) break ;; # 跳出循环，退出菜单
+          *) break ;; # 跳出循环，退出菜单
       esac
   done
 }
@@ -1935,19 +1958,19 @@ echo -e "
 -------------------------------
 ${green} 1.${plain} 宝塔面板(官方版)               
 ${green} 2.${plain} aaPanel(宝塔国际版)
-${green} 3.${plain} 1Panel(新一代管理面板)         
-${green} 4.${plain} NginxProxyManager(Nginx可视化面板)
-${green} 5.${plain} AList(多存储文件列表程序       
-${green} 6.${plain} Ubuntu远程桌面网页版
-${green} 7.${plain} 哪吒探针(VPS监控面板)          
-${green} 8.${plain} QB离线BT(磁力下载面板)
-${green} 9.${plain} Poste.io(邮件服务器程序)       
-${green}10.${plain} RocketChat(多人在线聊天系统)
-${green}12.${plain} Memos网页备忘录
-${green}13.${plain} AuroPanel(极光面板)          
-${green}14.${plain} IT-Tools                       
-${green}15.${plain} Next Terminal
-${green}16.${plain} VScode Server
+${green} 3.${plain} 1Panel(新一代管理面板) (Todo...)
+${green} 4.${plain} NginxProxyManager(Nginx可视化面板) (Todo...)
+${green} 5.${plain} AList(多存储文件列表程序)(Todo...)
+${green} 6.${plain} Ubuntu远程桌面网页版 (Todo...)
+${green} 7.${plain} 哪吒探针(VPS监控面板) (Todo...)
+${green} 8.${plain} QB离线BT(磁力下载面板) (Todo...)
+${green} 9.${plain} Poste.io(邮件服务器程序) (Todo...)
+${green}10.${plain} RocketChat(多人在线聊天系统) (Todo...)
+${green}12.${plain} Memos网页备忘录 (Todo...)
+${green}13.${plain} AuroPanel(极光面板) (Todo...)
+${green}14.${plain} IT-Tools (Todo...)
+${green}15.${plain} Next Terminal (Todo...)
+${green}16.${plain} VScode Server (Todo...)
 -------------------------------
 ${green} 0.${plain} 返回主菜单
 -------------------------------
