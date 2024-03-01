@@ -1896,7 +1896,8 @@ ${cyan} __   _  __   ___ ____ ____ _   __
 ${cyan}|  |  | |  |   |  |  | |  | |  |__
 ${cyan}|__|_ | |__|_  |  |__| |__| |__ __|
 
-${plain}QiQTools 一键脚本工具 $script_version$'plain}(支持Ubuntu/Debian/CentOS/Alpine系统)
+${plain}QiQTools 一键脚本工具 $script_version
+${plain}(支持Ubuntu/Debian/CentOS/Alpine系统)
 ${plain}-- 输入${yellow}qiq ${plain}可快速启动此脚本 --
 -------------------------------
 ${green} 1${white}.${plain} 系统信息查询
