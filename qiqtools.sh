@@ -1132,10 +1132,12 @@ ${green} 1.${plain} 中国上海时间              ${green} 2.${plain} 中国�
 ${green} 3.${plain} 日本东京时间              ${green} 4.${plain} 韩国首尔时间
 ${green} 5.${plain} 新加坡时间                ${green} 6.${plain} 中国香港时间
 ${green} 7.${plain} 阿联酋迪拜时间            ${green} 8.${plain} 澳大利亚悉尼时间
+
 ${plain}-->> 欧洲 <<-----------------------------
 ${green}11.${plain} 英国伦敦时间              ${green}12.${plain} 法国巴黎时间
 ${green}13.${plain} 德国柏林时间              ${green}14.${plain} 俄罗斯莫斯科时间
 ${green}15.${plain} 荷兰尤特赖赫特时间        ${green}16.${plain} 西班牙马德里时间
+
 ${plain}-->> 美洲 <<-----------------------------
 ${green}21.${plain} 美国西部时间              ${green}22.${plain} 美国东部时间
 ${green}23.${plain} 加拿大时间               ${green}24.${plain} 墨西哥时间
@@ -1160,25 +1162,6 @@ alter_timezone(){
       # 显示时区和时间
       echo "当前系统时区：$current_timezone"
       echo "当前系统时间：$current_time"
-
-      # echo ""
-      # echo "时区切换"
-      # echo "亚洲------------------------"
-      # echo "1. 中国上海时间              2. 中国香港时间"
-      # echo "3. 日本东京时间              4. 韩国首尔时间"
-      # echo "5. 新加坡时间                6. 印度加尔各答时间"
-      # echo "7. 阿联酋迪拜时间            8. 澳大利亚悉尼时间"
-      # echo "欧洲------------------------"
-      # echo "11. 英国伦敦时间             12. 法国巴黎时间"
-      # echo "13. 德国柏林时间             14. 俄罗斯莫斯科时间"
-      # echo "15. 荷兰尤特赖赫特时间       16. 西班牙马德里时间"
-      # echo "美洲------------------------"
-      # echo "21. 美国西部时间             22. 美国东部时间"
-      # echo "23. 加拿大时间               24. 墨西哥时间"
-      # echo "25. 巴西时间                 26. 阿根廷时间"
-      # echo "------------------------"
-      # echo "0. 返回上一级选单"
-      # echo "------------------------"
 
       timezone_menu
       read -p "请输入你的选择: " sub_choice
@@ -1208,6 +1191,132 @@ alter_timezone(){
           *) break ;; # 跳出循环，退出菜单
       esac
   done
+}
+
+# 管理BBRv3
+bbrv3_install(){
+  if dpkg -l | grep -q 'linux-xanmod'; then
+    while true; do
+          clear
+          kernel_version=$(uname -r)
+          echo "您已安装xanmod的BBRv3内核"
+          echo "当前内核版本: $kernel_version"
+
+          echo ""
+          echo "内核管理"
+          echo "------------------------"
+          echo "1. 更新BBRv3内核              2. 卸载BBRv3内核"
+          echo "------------------------"
+          echo "0. 返回上一级选单"
+          echo "------------------------"
+          read -p "请输入你的选择: " sub_choice
+
+          case $sub_choice in
+              1)
+                apt purge -y 'linux-*xanmod1*'
+                update-grub
+
+                # wget -qO - https://dl.xanmod.org/archive.key | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
+                wget -qO - https://raw.githubusercontent.com/kejilion/sh/main/archive.key | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
+
+                # 步骤3：添加存储库
+                echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' | tee /etc/apt/sources.list.d/xanmod-release.list
+
+                # version=$(wget -q https://dl.xanmod.org/check_x86-64_psabi.sh && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
+                version=$(wget -q https://raw.githubusercontent.com/kejilion/sh/main/check_x86-64_psabi.sh && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
+
+                apt update -y
+                apt install -y linux-xanmod-x64v$version
+
+                echo "XanMod内核已更新。重启后生效"
+                rm -f /etc/apt/sources.list.d/xanmod-release.list
+                rm -f check_x86-64_psabi.sh*
+
+                reboot
+
+                  ;;
+              2)
+                apt purge -y 'linux-*xanmod1*'
+                update-grub
+                echo "XanMod内核已卸载。重启后生效"
+                reboot
+                  ;;
+              0)
+                  break  # 跳出循环，退出菜单
+                  ;;
+
+              *)
+                  break  # 跳出循环，退出菜单
+                  ;;
+
+          esac
+    done
+else
+
+  clear
+  echo "请备份数据，将为你升级Linux内核开启BBR3"
+  echo "官网介绍: https://xanmod.org/"
+  echo "------------------------------------------------"
+  echo "仅支持Debian/Ubuntu 仅支持x86_64架构"
+  echo "VPS是512M内存的，请提前添加1G虚拟内存，防止因内存不足失联！"
+  echo "------------------------------------------------"
+  read -p "确定继续吗？(Y/N): " choice
+
+  case "$choice" in
+    [Yy])
+    if [ -r /etc/os-release ]; then
+        . /etc/os-release
+        if [ "$ID" != "debian" ] && [ "$ID" != "ubuntu" ]; then
+            echo "当前环境不支持，仅支持Debian和Ubuntu系统"
+            break
+        fi
+    else
+        echo "无法确定操作系统类型"
+        break
+    fi
+
+    # 检查系统架构
+    arch=$(dpkg --print-architecture)
+    if [ "$arch" != "amd64" ]; then
+      echo "当前环境不支持，仅支持x86_64架构"
+      break
+    fi
+
+    install wget gnupg
+
+    # wget -qO - https://dl.xanmod.org/archive.key | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
+    wget -qO - https://raw.githubusercontent.com/kejilion/sh/main/archive.key | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
+
+    # 步骤3：添加存储库
+    echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' | tee /etc/apt/sources.list.d/xanmod-release.list
+
+    # version=$(wget -q https://dl.xanmod.org/check_x86-64_psabi.sh && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
+    version=$(wget -q https://raw.githubusercontent.com/kejilion/sh/main/check_x86-64_psabi.sh && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
+
+    apt update -y
+    apt install -y linux-xanmod-x64v$version
+
+    # 步骤5：启用BBR3
+    cat > /etc/sysctl.conf << EOF
+net.core.default_qdisc=fq_pie
+net.ipv4.tcp_congestion_control=bbr
+EOF
+    sysctl -p
+    echo "XanMod内核安装并BBR3启用成功。重启后生效"
+    rm -f /etc/apt/sources.list.d/xanmod-release.list
+    rm -f check_x86-64_psabi.sh*
+    reboot
+
+      ;;
+    [Nn])
+      echo "已取消"
+      ;;
+    *)
+      echo "无效的选择，请输入 Y 或 N。"
+      ;;
+  esac
+fi
+
 }
 
 # 系统常用工具
@@ -1275,7 +1384,7 @@ system_tools_run() {
      12) clear && change_sys_name  ;;
      13) clear && alter_sourcelist ;;
      14) clear && alter_timezone ;;
-     15) clear && echo "Todo: ..." ;;
+     15) clear && bbrv3_install ;;
      16) clear && echo "Todo: ..." ;;
      17) clear && echo "Todo: ..." ;;
      18) clear && echo "Todo: ..." ;;
@@ -1288,33 +1397,6 @@ system_tools_run() {
     esac
     break_end
   done
-}
-
-# 面板工具菜单
-panel_tools_menu() {
-echo -e "
-▶ 面板工具
--------------------------------
-${green} 1.${plain} 宝塔面板(官方版)               
-${green} 2.${plain} aaPanel(宝塔国际版)
-${green} 3.${plain} 1Panel(新一代管理面板)         
-${green} 4.${plain} NginxProxyManager(Nginx可视化面板)
-${green} 5.${plain} AList(多存储文件列表程序       
-${green} 6.${plain} Ubuntu远程桌面网页版
-${green} 7.${plain} 哪吒探针(VPS监控面板)          
-${green} 8.${plain} QB离线BT(磁力下载面板)
-${green} 9.${plain} Poste.io(邮件服务器程序)       
-${green}10.${plain} RocketChat(多人在线聊天系统)
-${green}12.${plain} Memos网页备忘录
-${green}13.${plain} AuroPanel(极光面板)          
-${green}14.${plain} IT-Tools                       
-${green}15.${plain} Next Terminal
-${green}16.${plain} VScode Server
-${green}17.${plain} ChatGPT-Next-Web
--------------------------------
-${green} 0.${plain} 返回主菜单
--------------------------------
-"
 }
 
 install_panel_baota_cn() {
@@ -1523,6 +1605,33 @@ install_pannel_1panel() {
         esac
       fi
   fi
+}
+
+# 面板工具菜单
+panel_tools_menu() {
+echo -e "
+▶ 面板工具
+-------------------------------
+${green} 1.${plain} 宝塔面板(官方版)               
+${green} 2.${plain} aaPanel(宝塔国际版)
+${green} 3.${plain} 1Panel(新一代管理面板)         
+${green} 4.${plain} NginxProxyManager(Nginx可视化面板)
+${green} 5.${plain} AList(多存储文件列表程序       
+${green} 6.${plain} Ubuntu远程桌面网页版
+${green} 7.${plain} 哪吒探针(VPS监控面板)          
+${green} 8.${plain} QB离线BT(磁力下载面板)
+${green} 9.${plain} Poste.io(邮件服务器程序)       
+${green}10.${plain} RocketChat(多人在线聊天系统)
+${green}12.${plain} Memos网页备忘录
+${green}13.${plain} AuroPanel(极光面板)          
+${green}14.${plain} IT-Tools                       
+${green}15.${plain} Next Terminal
+${green}16.${plain} VScode Server
+${green}17.${plain} ChatGPT-Next-Web
+-------------------------------
+${green} 0.${plain} 返回主菜单
+-------------------------------
+"
 }
 
 # 面板工具
