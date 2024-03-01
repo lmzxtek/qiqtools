@@ -1492,79 +1492,79 @@ fi
 
 # 用户管理
 user_manage(){
-  # clear && install sudo && clear 
-  # 显示所有用户、用户权限、用户组和是否在sudoers中
-  echo "用户列表"
-  echo "----------------------------------------------------------------------------"
-  printf "%-24s %-34s %-20s %-10s\n" "用户名" "用户权限" "用户组" "sudo权限"
-  while IFS=: read -r username _ userid groupid _ _ homedir shell; do
-      groups=$(groups "$username" | cut -d : -f 2)
-      sudo_status=$(sudo -n -lU "$username" 2>/dev/null | grep -q '(ALL : ALL)' && echo "Yes" || echo "No")
-      printf "%-20s %-30s %-20s %-10s\n" "$username" "$homedir" "$groups" "$sudo_status"
-  done < /etc/passwd
+  while true; do
+    # clear && install sudo && clear 
+    # 显示所有用户、用户权限、用户组和是否在sudoers中
+    echo "用户列表"
+    echo "----------------------------------------------------------------------------"
+    printf "%-24s %-34s %-20s %-10s\n" "用户名" "用户权限" "用户组" "sudo权限"
+    while IFS=: read -r username _ userid groupid _ _ homedir shell; do
+        groups=$(groups "$username" | cut -d : -f 2)
+        sudo_status=$(sudo -n -lU "$username" 2>/dev/null | grep -q '(ALL : ALL)' && echo "Yes" || echo "No")
+        printf "%-20s %-30s %-20s %-10s\n" "$username" "$homedir" "$groups" "$sudo_status"
+    done < /etc/passwd
 
 
-    echo ""
-    echo "账户操作"
-    echo "------------------------"
-    echo "1. 创建普通账户             2. 创建高级账户"
-    echo "------------------------"
-    echo "3. 赋予最高权限             4. 取消最高权限"
-    echo "------------------------"
-    echo "5. 删除账号"
-    echo "------------------------"
-    echo "0. 返回上一级选单"
-    echo "------------------------"
-    read -p "请输入你的选择: " sub_choice
+      echo ""
+      echo "账户操作"
+      echo "------------------------"
+      echo "1. 创建普通账户             2. 创建高级账户"
+      echo "------------------------"
+      echo "3. 赋予最高权限             4. 取消最高权限"
+      echo "------------------------"
+      echo "5. 删除账号"
+      echo "------------------------"
+      echo "0. 返回上一级选单"
+      echo "------------------------"
+      read -p "请输入你的选择: " sub_choice
 
-    case $sub_choice in
-        1)
-          # 提示用户输入新用户名
-          read -p "请输入新用户名: " new_username
+      case $sub_choice in
+          1)
+            # 提示用户输入新用户名
+            read -p "请输入新用户名: " new_username
 
-          # 创建新用户并设置密码
-          sudo useradd -m -s /bin/bash "$new_username"
-          sudo passwd "$new_username"
+            # 创建新用户并设置密码
+            sudo useradd -m -s /bin/bash "$new_username"
+            sudo passwd "$new_username"
 
-          echo "操作已完成。"
-            ;;
+            echo "操作已完成。"
+              ;;
 
-        2)
-          # 提示用户输入新用户名
-          read -p "请输入新用户名: " new_username
+          2)
+            # 提示用户输入新用户名
+            read -p "请输入新用户名: " new_username
 
-          # 创建新用户并设置密码
-          sudo useradd -m -s /bin/bash "$new_username"
-          sudo passwd "$new_username"
+            # 创建新用户并设置密码
+            sudo useradd -m -s /bin/bash "$new_username"
+            sudo passwd "$new_username"
 
-          # 赋予新用户sudo权限
-          echo "$new_username ALL=(ALL:ALL) ALL" | sudo tee -a /etc/sudoers
+            # 赋予新用户sudo权限
+            echo "$new_username ALL=(ALL:ALL) ALL" | sudo tee -a /etc/sudoers
 
-          echo "操作已完成。"
+            echo "操作已完成。"
 
-            ;;
-        3)
-          read -p "请输入用户名: " username
-          # 赋予新用户sudo权限
-          echo "$username ALL=(ALL:ALL) ALL" | sudo tee -a /etc/sudoers
-            ;;
-        4)
-          read -p "请输入用户名: " username
-          # 从sudoers文件中移除用户的sudo权限
-          sudo sed -i "/^$username\sALL=(ALL:ALL)\sALL/d" /etc/sudoers
+              ;;
+          3)
+            read -p "请输入用户名: " username
+            # 赋予新用户sudo权限
+            echo "$username ALL=(ALL:ALL) ALL" | sudo tee -a /etc/sudoers
+              ;;
+          4)
+            read -p "请输入用户名: " username
+            # 从sudoers文件中移除用户的sudo权限
+            sudo sed -i "/^$username\sALL=(ALL:ALL)\sALL/d" /etc/sudoers
 
-            ;;
-        5)
-          read -p "请输入要删除的用户名: " username
-          # 删除用户及其主目录
-          sudo userdel -r "$username"
-            ;;
+              ;;
+          5)
+            read -p "请输入要删除的用户名: " username
+            # 删除用户及其主目录
+            sudo userdel -r "$username"
+              ;;
 
-        0) break ;; # 跳出循环，退出菜单
-        *) break ;; # 跳出循环，退出菜单
-    esac
-done
-
+          0) break ;; # 跳出循环，退出菜单
+          *) break ;; # 跳出循环，退出菜单
+      esac
+  done
 }
 
 # 用户名和密码管理
