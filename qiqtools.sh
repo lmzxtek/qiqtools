@@ -1529,6 +1529,7 @@ ${green}21.${plain} ${blue}3X-UI(@mhsanaei)                   ${green}31.${plain
 ${green}22.${plain} ${yellow}X-UI(@alireza0)                    ${green}32.${plain} V2RayA
 ${green}23.${plain} X-UI(@FranzKafkaYu)                ${green}33.${plain} Daed
 ${green}24.${plain} X-UI(@rwkgyg)                      ${green}34.${plain} Daed-Docker
+${green}25.${plain} S-UI(@alireza0)
 ${plain}-------------------------------
 ${green}41.${plain} XBoard                             ${green}44.${plain} LotusBoard
 ${green}42.${plain} V2Board                            ${green}45.${plain} SSPanel
@@ -1575,6 +1576,7 @@ warp_tools_run() {
      22) clear && bash <(curl -Ls https://raw.githubusercontent.com/alireza0/x-ui/master/install.sh) ;;
      23) clear && bash <(curl -Ls https://raw.githubusercontent.com/FranzKafkaYu/x-ui/master/install.sh) ;;
      24) clear && bash <(curl -Ls https://gitlab.com/rwkgyg/x-ui-yg/raw/main/install.sh)  ;;
+     25) clear && bash <(curl -Ls https://raw.githubusercontent.com/alireza0/s-ui/master/install.sh)  ;;
 
      31) clear && bash -c "$(curl -Lfo- https://raw.githubusercontent.com/hiddify/hiddify-config/main/common/download_install.sh)" ;;
      32) clear && echo -e "\n Todo: ... \n" ;;
@@ -1695,7 +1697,7 @@ ${cyan} __   _  __   ___ ____ ____ _   __
 ${cyan}|  |  | |  |   |  |  | |  | |  |__
 ${cyan}|__|_ | |__|_  |  |__| |__| |__ __|
 
-${plain}QiQTools 一键脚本工具 v0.0.5
+${plain}QiQTools 一键脚本工具 v0.0.6
 ${plain}(支持Ubuntu/Debian/CentOS/Alpine系统)
 ${plain}-- 输入${yellow}qiq ${plain}可快速启动此脚本 --
 -------------------------------
