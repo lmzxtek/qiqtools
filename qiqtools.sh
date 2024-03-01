@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.1.0
+script_version=v0.1.1
 #==========================
 
  black='\033[0;30m'
@@ -1323,6 +1323,323 @@ fi
 
 }
 
+# 防火墙管理
+firewall_manage(){
+  if dpkg -l | grep -q iptables-persistent; then
+    while true; do
+          clear
+          echo "防火墙已安装"
+          echo "------------------------"
+          iptables -L INPUT
+
+          echo ""
+          echo "防火墙管理"
+          echo "------------------------"
+          echo "1. 开放指定端口              2. 关闭指定端口"
+          echo "3. 开放所有端口              4. 关闭所有端口"
+          echo "------------------------"
+          echo "5. IP白名单                  6. IP黑名单"
+          echo "7. 清除指定IP"
+          echo "------------------------"
+          echo "9. 卸载防火墙"
+          echo "------------------------"
+          echo "0. 返回上一级选单"
+          echo "------------------------"
+          read -p "请输入你的选择: " sub_choice
+
+          case $sub_choice in
+              1)
+              read -p "请输入开放的端口号: " o_port
+              sed -i "/COMMIT/i -A INPUT -p tcp --dport $o_port -j ACCEPT" /etc/iptables/rules.v4
+              sed -i "/COMMIT/i -A INPUT -p udp --dport $o_port -j ACCEPT" /etc/iptables/rules.v4
+              iptables-restore < /etc/iptables/rules.v4
+
+                  ;;
+              2)
+              read -p "请输入关闭的端口号: " c_port
+              sed -i "/--dport $c_port/d" /etc/iptables/rules.v4
+              iptables-restore < /etc/iptables/rules.v4
+                ;;
+
+              3)
+              current_port=$(grep -E '^ *Port [0-9]+' /etc/ssh/sshd_config | awk '{print $2}')
+
+              cat > /etc/iptables/rules.v4 << EOF
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A FORWARD -i lo -j ACCEPT
+-A INPUT -p tcp --dport $current_port -j ACCEPT
+COMMIT
+EOF
+              iptables-restore < /etc/iptables/rules.v4
+
+                  ;;
+              4)
+              current_port=$(grep -E '^ *Port [0-9]+' /etc/ssh/sshd_config | awk '{print $2}')
+
+              cat > /etc/iptables/rules.v4 << EOF
+*filter
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A FORWARD -i lo -j ACCEPT
+-A INPUT -p tcp --dport $current_port -j ACCEPT
+COMMIT
+EOF
+              iptables-restore < /etc/iptables/rules.v4
+
+                  ;;
+
+              5)
+              read -p "请输入放行的IP: " o_ip
+              sed -i "/COMMIT/i -A INPUT -s $o_ip -j ACCEPT" /etc/iptables/rules.v4
+              iptables-restore < /etc/iptables/rules.v4
+
+                  ;;
+
+              6)
+              read -p "请输入封锁的IP: " c_ip
+              sed -i "/COMMIT/i -A INPUT -s $c_ip -j DROP" /etc/iptables/rules.v4
+              iptables-restore < /etc/iptables/rules.v4
+                  ;;
+
+              7)
+              read -p "请输入清除的IP: " d_ip
+              sed -i "/-A INPUT -s $d_ip/d" /etc/iptables/rules.v4
+              iptables-restore < /etc/iptables/rules.v4
+                  ;;
+
+              9)
+              remove iptables-persistent
+              rm /etc/iptables/rules.v4
+              break
+              # echo "防火墙已卸载，重启生效"
+              # reboot
+                  ;;
+
+              0)
+                  break  # 跳出循环，退出菜单
+                  ;;
+
+              *)
+                  break  # 跳出循环，退出菜单
+                  ;;
+
+          esac
+    done
+else
+
+  clear
+  echo "将为你安装防火墙，该防火墙仅支持Debian/Ubuntu"
+  echo "------------------------------------------------"
+  read -p "确定继续吗？(Y/N): " choice
+
+  case "$choice" in
+    [Yy])
+    if [ -r /etc/os-release ]; then
+        . /etc/os-release
+        if [ "$ID" != "debian" ] && [ "$ID" != "ubuntu" ]; then
+            echo "当前环境不支持，仅支持Debian和Ubuntu系统"
+            break
+        fi
+    else
+        echo "无法确定操作系统类型"
+        break
+    fi
+
+  clear
+  iptables_open
+  remove iptables-persistent ufw
+  rm /etc/iptables/rules.v4
+
+  apt update -y && apt install -y iptables-persistent
+
+  current_port=$(grep -E '^ *Port [0-9]+' /etc/ssh/sshd_config | awk '{print $2}')
+
+  cat > /etc/iptables/rules.v4 << EOF
+*filter
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A FORWARD -i lo -j ACCEPT
+-A INPUT -p tcp --dport $current_port -j ACCEPT
+COMMIT
+EOF
+
+  iptables-restore < /etc/iptables/rules.v4
+  systemctl enable netfilter-persistent
+  echo "防火墙安装完成"
+
+
+      ;;
+    [Nn])
+      echo "已取消"
+      ;;
+    *)
+      echo "无效的选择，请输入 Y 或 N。"
+      ;;
+  esac
+fi
+
+}
+
+user_manage(){
+  # 获取当前主机名
+  current_hostname=$(hostname)
+
+  echo "当前主机名: $current_hostname"
+
+  # 询问用户是否要更改主机名
+  read -p "是否要更改主机名？(y/n): " answer
+
+  if [ "$answer" == "y" ]; then
+      # 获取新的主机名
+      read -p "请输入新的主机名: " new_hostname
+
+      # 更改主机名
+      if [ -n "$new_hostname" ]; then
+          # 根据发行版选择相应的命令
+          if [ -f /etc/debian_version ]; then
+              # Debian 或 Ubuntu
+              hostnamectl set-hostname "$new_hostname"
+              sed -i "s/$current_hostname/$new_hostname/g" /etc/hostname
+          elif [ -f /etc/redhat-release ]; then
+              # CentOS
+              hostnamectl set-hostname "$new_hostname"
+              sed -i "s/$current_hostname/$new_hostname/g" /etc/hostname
+          elif [ -f /etc/alpine-release ]; then
+              # alpine
+              echo "$new_hostname" > /etc/hostname
+              /etc/init.d/hostname restart
+          else
+              echo "未知的发行版，无法更改主机名。"
+              exit 1
+          fi
+
+          # 重启生效
+          systemctl restart systemd-hostnamed
+          echo "主机名已更改为: $new_hostname"
+      else
+          echo "无效的主机名。未更改主机名。"
+          exit 1
+      fi
+  else
+      echo "未更改主机名。"
+  fi
+}
+
+# 用户名和密码管理
+pss_generate(){
+  echo "随机用户名"
+  echo "------------------------"
+  for i in {1..5}; do
+      username="user$(< /dev/urandom tr -dc _a-z0-9 | head -c6)"
+      echo "随机用户名 $i: $username"
+  done
+
+  echo ""
+  echo "随机姓名"
+  echo "------------------------"
+  first_names=("John" "Jane" "Michael" "Emily" "David" "Sophia" "William" "Olivia" "James" "Emma" "Ava" "Liam" "Mia" "Noah" "Isabella")
+  last_names=("Smith" "Johnson" "Brown" "Davis" "Wilson" "Miller" "Jones" "Garcia" "Martinez" "Williams" "Lee" "Gonzalez" "Rodriguez" "Hernandez")
+
+  # 生成5个随机用户姓名
+  for i in {1..5}; do
+      first_name_index=$((RANDOM % ${#first_names[@]}))
+      last_name_index=$((RANDOM % ${#last_names[@]}))
+      user_name="${first_names[$first_name_index]} ${last_names[$last_name_index]}"
+      echo "随机用户姓名 $i: $user_name"
+  done
+
+  echo ""
+  echo "随机UUID"
+  echo "------------------------"
+  for i in {1..5}; do
+      uuid=$(cat /proc/sys/kernel/random/uuid)
+      echo "随机UUID $i: $uuid"
+  done
+
+  echo ""
+  echo "16位随机密码"
+  echo "------------------------"
+  for i in {1..5}; do
+      password=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c16)
+      echo "随机密码 $i: $password"
+  done
+
+  echo ""
+  echo "32位随机密码"
+  echo "------------------------"
+  for i in {1..5}; do
+      password=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c32)
+      echo "随机密码 $i: $password"
+  done
+  echo ""
+
+}
+
+# 定时任务管理
+cron_manage(){
+  while true; do
+      clear
+      echo "定时任务列表"
+      crontab -l
+      echo ""
+      echo "操作"
+      echo "------------------------"
+      echo "1. 添加定时任务              2. 删除定时任务"
+      echo "------------------------"
+      echo "0. 返回上一级选单"
+      echo "------------------------"
+      read -p "请输入你的选择: " sub_choice
+
+      case $sub_choice in
+          1)
+              read -p "请输入新任务的执行命令: " newquest
+              echo "------------------------"
+              echo "1. 每周任务                 2. 每天任务"
+              read -p "请输入你的选择: " dingshi
+
+              case $dingshi in
+                  1)
+                      read -p "选择周几执行任务？ (0-6，0代表星期日): " weekday
+                      (crontab -l ; echo "0 0 * * $weekday $newquest") | crontab - > /dev/null 2>&1
+                      ;;
+                  2)
+                      read -p "选择每天几点执行任务？（小时，0-23）: " hour
+                      (crontab -l ; echo "0 $hour * * * $newquest") | crontab - > /dev/null 2>&1
+                      ;;
+                  *)
+                      break  # 跳出
+                      ;;
+              esac
+              ;;
+          2)
+              read -p "请输入需要删除任务的关键字: " kquest
+              crontab -l | grep -v "$kquest" | crontab -
+              ;;
+          0)
+              break  # 跳出循环，退出菜单
+              ;;
+
+          *)
+              break  # 跳出循环，退出菜单
+              ;;
+      esac
+  done
+}
+
 # 系统常用工具
 system_tools_menu() {
 echo -e "
@@ -1389,11 +1706,11 @@ system_tools_run() {
      13) clear && alter_sourcelist ;;
      14) clear && alter_timezone ;;
      15) clear && bbrv3_install ;;
-     16) clear && echo "Todo: ..." ;;
-     17) clear && echo "Todo: ..." ;;
-     18) clear && echo "Todo: ..." ;;
-     19) clear && echo "Todo: ..." ;;
-     20) clear && echo "Todo: ..." ;;
+     16) clear && firewall_manage ;;
+     17) clear && user_manage ;;
+     18) clear && pss_generate ;;
+     19) clear && cron_manage ;;
+    #  20) clear && echo "Todo: ..." ;;
 
      99) clear && echo "正在重启服务器，即将断开SSH连接" && reboot ;;
       0) qiqtools ;;
@@ -1403,7 +1720,7 @@ system_tools_run() {
   done
 }
 
-install_panel_baota_cn() {
+install_baota_cn() {
   if [ -f "/etc/init.d/bt" ] && [ -d "/www/server/panel" ]; then
       clear
       echo "宝塔面板已安装，应用操作"
@@ -1473,7 +1790,7 @@ install_panel_baota_cn() {
 
 }
 
-install_panel_baota_aa(){
+install__baota_aa(){
   if [ -f "/etc/init.d/bt" ] && [ -d "/www/server/panel" ]; then
       clear
       echo "aaPanel已安装，应用操作"
@@ -1543,7 +1860,7 @@ install_panel_baota_aa(){
 
 }
 
-install_pannel_1panel() {
+install_1panel() {
   if command -v 1pctl &> /dev/null; then
       clear
       echo "1Panel已安装，应用操作"
@@ -1631,7 +1948,6 @@ ${green}13.${plain} AuroPanel(极光面板)
 ${green}14.${plain} IT-Tools                       
 ${green}15.${plain} Next Terminal
 ${green}16.${plain} VScode Server
-${green}17.${plain} ChatGPT-Next-Web
 -------------------------------
 ${green} 0.${plain} 返回主菜单
 -------------------------------
@@ -1645,9 +1961,9 @@ panel_tools_run(){
     read -p "请输入你的选择: " sub_choice
 
     case $sub_choice in
-      1) clear && install_panel_baota_cn ;;
-      2) clear && install_panel_baota_aa ;;
-      3) clear && install_pannel_1panel  ;;
+      1) clear && install_baota_cn ;;
+      2) clear && install__baota_aa ;;
+      3) clear && install_1panel  ;;
       4) clear && echo -e "\nTodo: ... \n"  ;;
       5) clear && echo -e "\nTodo: ... \n"  ;;
       6) clear && echo -e "\nTodo: ... \n"  ;;
@@ -1956,16 +2272,16 @@ while true; do
     13) clear && echo -e "\nTodo: ... \n" ;;
     # 14) clear && echo -e "\nTodo: ... \n" ;; # VPS集群控制
 
-    00) #script_update ;;
-      cd ~
-      # curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/update_log.sh && chmod +x update_log.sh && ./update_log.sh
-      # rm update_log.sh
-      echo ""
-      curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && chmod +x qiqtools.sh
-      echo "脚本已更新到最新版本！"
-      break_end
-      qiqtools
-      ;;
+    00) script_update ;;
+      # cd ~
+      # # curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/update_log.sh && chmod +x update_log.sh && ./update_log.sh
+      # # rm update_log.sh
+      # echo ""
+      # curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && chmod +x qiqtools.sh
+      # echo "脚本已更新到最新版本！"
+      # break_end
+      # qiqtools
+      # ;;
     99) clear && echo "正在重启服务器，即将断开SSH连接" && reboot  ;;
      0) exit ;;
      *) echo "无效的输入!" ;;
