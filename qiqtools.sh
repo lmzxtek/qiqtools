@@ -47,8 +47,7 @@ break_end() {
 
 # run qiq and exit 
 qiqtools() {
-    qiq
-    exit
+    qiq && exit
 }
 
 # 安装应用程序
@@ -1947,19 +1946,20 @@ echo -e "
 -------------------------------
 ${green} 1.${plain} 宝塔面板(官方版)               
 ${green} 2.${plain} aaPanel(宝塔国际版)
-${green} 3.${black} 1Panel(新一代管理面板) (Todo...)
-${green} 4.${black} NginxProxyManager(Nginx可视化面板) (Todo...)
-${green} 5.${black} AList(多存储文件列表程序)(Todo...)
-${green} 6.${black} Ubuntu远程桌面网页版 (Todo...)
-${green} 7.${black} 哪吒探针(VPS监控面板) (Todo...)
-${green} 8.${black} QB离线BT(磁力下载面板) (Todo...)
-${green} 9.${black} Poste.io(邮件服务器程序) (Todo...)
-${green}10.${black} RocketChat(多人在线聊天系统) (Todo...)
-${green}12.${black} Memos网页备忘录 (Todo...)
-${green}13.${black} AuroPanel(极光面板) (Todo...)
-${green}14.${black} IT-Tools (Todo...)
-${green}15.${black} Next Terminal (Todo...)
-${green}16.${black} VScode Server (Todo...)
+${green} 3.${plain} 1Panel(新一代管理面板)
+${green} 4.${plain} NginxProxyManager(Nginx可视化面板)
+${green} 5.${plain} AList(多存储文件列表程序)
+${green} 6.${plain} Ubuntu远程桌面网页版
+${green} 7.${plain} 哪吒探针(VPS监控面板)
+${green} 8.${plain} QB离线BT(磁力下载面板)
+${green} 9.${plain} portainer容器管理面板
+${green}10.${plain} RocketChat(多人在线聊天系统)
+${green}11.${plain} StirlingPDF工具大全
+${green}12.${plain} Memos网页备忘录
+${green}13.${plain} AuroPanel(极光面板)
+${green}14.${plain} IT-Tools
+${green}15.${plain} Next Terminal
+${green}16.${plain} VScode Server
 -------------------------------
 ${green} 0.${plain} 返回主菜单
 -------------------------------
@@ -1976,23 +1976,236 @@ panel_tools_run(){
       1) clear && install_baota_cn ;;
       2) clear && install__baota_aa ;;
       3) clear && install_1panel  ;;
-      4) clear && echo -e "\nTodo: ... \n"  ;;
-      5) clear && echo -e "\nTodo: ... \n"  ;;
-      6) clear && echo -e "\nTodo: ... \n"  ;;
-      7) clear && echo -e "\nTodo: ... \n"  ;;
-      8) clear && echo -e "\nTodo: ... \n"  ;;
-      9) clear && echo -e "\nTodo: ... \n"  ;;
-     10) clear && echo -e "\nTodo: ... \n"  ;;
-     11) clear && echo -e "\nTodo: ... \n"  ;;
-     12) clear && echo -e "\nTodo: ... \n"  ;;
-     13) clear && echo -e "\nTodo: ... \n"  ;;
-     14) clear && echo -e "\nTodo: ... \n"  ;;
-     15) clear && echo -e "\nTodo: ... \n"  ;;
-     16) clear && echo -e "\nTodo: ... \n"  ;;
-     17) clear && echo -e "\nTodo: ... \n"  ;;
-     18) clear && echo -e "\nTodo: ... \n"  ;;
-     19) clear && echo -e "\nTodo: ... \n"  ;;
-     20) clear && echo -e "\nTodo: ... \n"  ;;
+      4) 
+        clear 
+        docker_name="npm"
+        docker_img="jc21/nginx-proxy-manager:latest"
+        docker_port=81
+        docker_rum="docker run -d \
+                      --name=$docker_name \
+                      -p 80:80 \
+                      -p 81:$docker_port \
+                      -p 443:443 \
+                      -v /home/docker/npm/data:/data \
+                      -v /home/docker/npm/letsencrypt:/etc/letsencrypt \
+                      --restart=always \
+                      $docker_img"
+        docker_describe="如果您已经安装了其他面板工具或者LDNMP建站环境，建议先卸载，再安装npm！"
+        docker_url="官网介绍: https://nginxproxymanager.com/"
+        docker_use="echo \"初始用户名: admin@example.com\""
+        docker_passwd="echo \"初始密码: changeme\""
+
+        docker_app
+        ;;
+      5) clear && install curl && curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s install  ;;
+      6) 
+        clear 
+        docker_name="ubuntu-novnc"
+        docker_img="fredblgr/ubuntu-novnc:20.04"
+        docker_port=6080
+        rootpasswd=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c16)
+        docker_rum="docker run -d \
+                            --name ubuntu-novnc \
+                            -p 6080:80 \
+                            -v /home/docker/ubuntu-novnc:/workspace:rw \
+                            -e HTTP_PASSWORD=$rootpasswd \
+                            -e RESOLUTION=1280x720 \
+                            --restart=always \
+                            fredblgr/ubuntu-novnc:20.04"
+        docker_describe="一个网页版Ubuntu远程桌面，挺好用的！"
+        docker_url="官网介绍: https://hub.docker.com/r/fredblgr/ubuntu-novnc"
+        docker_use="echo \"用户名: root\""
+        docker_passwd="echo \"密码: $rootpasswd\""
+
+        docker_app
+        ;;
+        
+      7) clear && install curl && curl -L https://raw.githubusercontent.com/naiba/nezha/master/script/install.sh  -o nezha.sh && chmod +x nezha.sh && ./nezha.sh  ;;
+      8) 
+        docker_name="qbittorrent"
+        docker_img="lscr.io/linuxserver/qbittorrent:latest"
+        docker_port=8081
+        docker_rum="docker run -d \
+                              --name=qbittorrent \
+                              -e PUID=1000 \
+                              -e PGID=1000 \
+                              -e TZ=Etc/UTC \
+                              -e WEBUI_PORT=8081 \
+                              -p 8081:8081 \
+                              -p 6881:6881 \
+                              -p 6881:6881/udp \
+                              -v /home/docker/qbittorrent/config:/config \
+                              -v /home/docker/qbittorrent/downloads:/downloads \
+                              --restart unless-stopped \
+                              lscr.io/linuxserver/qbittorrent:latest"
+        docker_describe="qbittorrent离线BT磁力下载服务"
+        docker_url="官网介绍: https://hub.docker.com/r/linuxserver/qbittorrent"
+        docker_use="sleep 3"
+        docker_passwd="docker logs qbittorrent"
+
+        docker_app
+        ;;
+      9) 
+        clear 
+        docker_name="portainer"
+        docker_img="portainer/portainer"
+        docker_port=9050
+        docker_rum="docker run -d \
+                --name portainer \
+                -p 9050:9000 \
+                -v /var/run/docker.sock:/var/run/docker.sock \
+                -v /home/docker/portainer:/data \
+                --restart always \
+                portainer/portainer"
+        docker_describe="portainer是一个轻量级的docker容器管理面板"
+        docker_url="官网介绍: https://www.portainer.io/"
+        docker_use=""
+        docker_passwd=""
+        docker_app
+        ;;
+     10) 
+      clear 
+      if docker inspect rocketchat &>/dev/null; then
+              clear
+              echo "rocket.chat已安装，访问地址: "
+              ip_address
+              echo "http:$ipv4_address:3897"
+              echo ""
+
+              echo "应用操作"
+              echo "------------------------"
+              echo "1. 更新应用             2. 卸载应用"
+              echo "------------------------"
+              echo "0. 返回上一级选单"
+              echo "------------------------"
+              read -p "请输入你的选择: " sub_choice
+
+              case $sub_choice in
+                  1)
+                      clear
+                      docker rm -f rocketchat
+                      docker rmi -f rocket.chat:6.3
+
+
+                      docker run --name rocketchat --restart=always -p 3897:3000 --link db --env ROOT_URL=http://localhost --env MONGO_OPLOG_URL=mongodb://db:27017/rs5 -d rocket.chat
+
+                      clear
+                      ip_address
+                      echo "rocket.chat已经安装完成"
+                      echo "------------------------"
+                      echo "多等一会，您可以使用以下地址访问rocket.chat:"
+                      echo "http:$ipv4_address:3897"
+                      echo ""
+                      ;;
+                  2)
+                      clear
+                      docker rm -f rocketchat
+                      docker rmi -f rocket.chat
+                      docker rmi -f rocket.chat:6.3
+                      docker rm -f db
+                      docker rmi -f mongo:latest
+                      # docker rmi -f mongo:6
+                      rm -rf /home/docker/mongo
+                      echo "应用已卸载"
+                      ;;
+                  0)
+                      break  # 跳出循环，退出菜单
+                      ;;
+                  *)
+                      break  # 跳出循环，退出菜单
+                      ;;
+              esac
+      else
+          clear
+          echo "安装提示"
+          echo "rocket.chat国外知名开源多人聊天系统"
+          echo "官网介绍: https://www.rocket.chat"
+          echo ""
+
+          # 提示用户确认安装
+          read -p "确定安装rocket.chat吗？(Y/N): " choice
+          case "$choice" in
+              [Yy])
+              clear
+              install_docker
+              docker run --name db -d --restart=always \
+                  -v /home/docker/mongo/dump:/dump \
+                  mongo:latest --replSet rs5 --oplogSize 256
+              sleep 1
+              docker exec -it db mongosh --eval "printjson(rs.initiate())"
+              sleep 5
+              docker run --name rocketchat --restart=always -p 3897:3000 --link db --env ROOT_URL=http://localhost --env MONGO_OPLOG_URL=mongodb://db:27017/rs5 -d rocket.chat:6.3
+
+              clear
+
+              ip_address
+              echo "rocket.chat已经安装完成"
+              echo "------------------------"
+              echo "多等一会，您可以使用以下地址访问rocket.chat:"
+              echo "http:$ipv4_address:3897"
+              echo ""
+
+                  ;;
+              [Nn])
+                  ;;
+              *)
+                  ;;
+          esac
+      fi
+      
+      ;;
+     11) 
+      clear
+      docker_name="s-pdf"
+      docker_img="frooodle/s-pdf:latest"
+      docker_port=8020
+      docker_rum="docker run -d \
+                      --name s-pdf \
+                      --restart=always \
+                        -p 8020:8080 \
+                        -v /home/docker/s-pdf/trainingData:/usr/share/tesseract-ocr/5/tessdata \
+                        -v /home/docker/s-pdf/extraConfigs:/configs \
+                        -v /home/docker/s-pdf/logs:/logs \
+                        -e DOCKER_ENABLE_SECURITY=false \
+                        frooodle/s-pdf:latest"
+      docker_describe="这是一个强大的本地托管基于 Web 的 PDF 操作工具，使用 docker，允许您对 PDF 文件执行各种操作，例如拆分合并、转换、重新组织、添加图像、旋转、压缩等。"
+      docker_url="官网介绍: https://github.com/Stirling-Tools/Stirling-PDF"
+      docker_use=""
+      docker_passwd=""
+      docker_app
+      ;;
+     12) 
+      clear 
+      docker_name="memos"
+      docker_img="ghcr.io/usememos/memos:latest"
+      docker_port=5230
+      docker_rum="docker run -d --name memos -p 5230:5230 -v /home/docker/memos:/var/opt/memos --restart always ghcr.io/usememos/memos:latest"
+      docker_describe="Memos是一款轻量级、自托管的备忘录中心"
+      docker_url="官网介绍: https://github.com/usememos/memos"
+      docker_use=""
+      docker_passwd=""
+      docker_app
+      ;;
+     13) clear && install curl && bash <(curl -fsSL https://raw.githubusercontent.com/Aurora-Admin-Panel/deploy/main/install.sh)  ;;
+     14) 
+      clear 
+      docker run -d --name it-tools --restart unless-stopped -p 8080:80 corentinth/it-tools:latest
+      # docker run -d --name it-tools --restart unless-stopped -p 8080:80 ghcr.io/corentinth/it-tools:latest
+      ;;
+     15) 
+      clear
+      cd ~
+      mkdir next-terminal-docker && cd next-terminal-docker
+      curl -sSL https://f.typesafe.cn/next-terminal/docker-compose.yml > docker-compose.yml
+      # curl -sSL https://f.typesafe.cn/next-terminal/aliyuns/docker-compose.yml > docker-compose.yml # 阿里镜像
+      docker-compose up -d
+      cd ~
+      ;;
+     16) clear && install curl && curl -fsSL https://code-server.dev/install.sh | sh  ;;
+    #  17) clear && echo -e "\nTodo: ... \n"  ;;
+    #  18) clear && echo -e "\nTodo: ... \n"  ;;
+    #  19) clear && echo -e "\nTodo: ... \n"  ;;
+
       0) qiqtools ;;
      99) echo -e "重新启动系统，SSH连接将断开..." && reboot && exit ;;
       *) echo "无效的输入!" ;;
@@ -2010,6 +2223,7 @@ ${green} 1.${plain} Python
 ${green} 2.${plain} Conda
 ${green} 3.${plain} RustDesk Server
 ${green} 4.${plain} ChatGPT-Next-Web
+${green} 5.${plain} Docker
 -------------------------------
 ${green} 0.${plain} 返回主菜单
 -------------------------------
@@ -2033,6 +2247,7 @@ other_tools_run() {
         ;;
       3) clear && install wget && wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
       4) clear && install curl && bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh) ;;
+      5) clear && install curl && curl -fsSL https://get.docker.com | sh ;;
       0) qiqtools ;;
       *) echo "无效的输入!" ;;
     esac  
@@ -2071,6 +2286,7 @@ ${plain}-------------------------------
 ${green}91.${plain} Show IP       ${green}94.${plain} Check-OpenAI  
 ${green}92.${plain} Show IPv4     ${green}95.${plain} Cloudflare(IPv4)    
 ${green}93.${plain} Show IPv6     ${green}96.${plain} Cloudflare(IPv6)
+${green}97.${plain} Set GitHUB(for IPv6 only VPS)
 -------------------------------
 ${green} 0.${plain} 返回主菜单
 ${plain}-------------------------------
@@ -2128,12 +2344,96 @@ warp_tools_run() {
      94) clear && bash <(curl -Ls https://cdn.jsdelivr.net/gh/missuo/OpenAI-Checker/openai.sh) ;;
      95) clear && curl -s4m5 https://www.cloudflare.com/cdn-cgi/trace ;;
      96) clear && curl -s6m5 https://www.cloudflare.com/cdn-cgi/trace ;;
+     97) echo -e "nameserver 2001:67c:2b0::4\nnameserver 2001:67c:2b0::6" > /etc/resolv.conf ;;
 
       0) qiqtools ;;
       *) echo "无效的输入!" ;;
     esac  
     break_end
   done 
+
+}
+
+
+docker_app() {
+if docker inspect "$docker_name" &>/dev/null; then
+    clear
+    echo "$docker_name 已安装，访问地址: "
+    ip_address
+    echo "http:$ipv4_address:$docker_port"
+    echo ""
+    echo "应用操作"
+    echo "------------------------"
+    echo "1. 更新应用             2. 卸载应用"
+    echo "------------------------"
+    echo "0. 返回上一级选单"
+    echo "------------------------"
+    read -p "请输入你的选择: " sub_choice
+
+    case $sub_choice in
+        1)
+            clear
+            docker rm -f "$docker_name"
+            docker rmi -f "$docker_img"
+
+            $docker_rum
+            clear
+            echo "$docker_name 已经安装完成"
+            echo "------------------------"
+            # 获取外部 IP 地址
+            ip_address
+            echo "您可以使用以下地址访问:"
+            echo "http:$ipv4_address:$docker_port"
+            $docker_use
+            $docker_passwd
+            ;;
+        2)
+            clear
+            docker rm -f "$docker_name"
+            docker rmi -f "$docker_img"
+            rm -rf "/home/docker/$docker_name"
+            echo "应用已卸载"
+            ;;
+        0)
+            # 跳出循环，退出菜单
+            ;;
+        *)
+            # 跳出循环，退出菜单
+            ;;
+    esac
+else
+    clear
+    echo "安装提示"
+    echo "$docker_describe"
+    echo "$docker_url"
+    echo ""
+
+    # 提示用户确认安装
+    read -p "确定安装吗？(Y/N): " choice
+    case "$choice" in
+        [Yy])
+            clear
+            # 安装 Docker（请确保有 install_docker 函数）
+            install_docker
+            $docker_rum
+            clear
+            echo "$docker_name 已经安装完成"
+            echo "------------------------"
+            # 获取外部 IP 地址
+            ip_address
+            echo "您可以使用以下地址访问:"
+            echo "http:$ipv4_address:$docker_port"
+            $docker_use
+            $docker_passwd
+            ;;
+        [Nn])
+            # 用户选择不安装
+            ;;
+        *)
+            # 无效输入
+            ;;
+    esac
+fi
 
 }
 
