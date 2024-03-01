@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.1.2
+script_version=v0.1.3
 #==========================
 
  black='\033[0;30m'
@@ -874,18 +874,12 @@ alter_ipv4_ipv6() {
   case $choice in
       1)
           sysctl -w net.ipv6.conf.all.disable_ipv6=1 > /dev/null 2>&1
-          echo "已切换为 IPv4 优先"
-          ;;
+          echo "已切换为 IPv4 优先" ;;
       2)
           sysctl -w net.ipv6.conf.all.disable_ipv6=0 > /dev/null 2>&1
-          echo "已切换为 IPv6 优先"
-          ;;
-      *)
-          echo "无效的选择"
-          ;;
-
+          echo "已切换为 IPv6 优先" ;;
+      *) echo "无效的选择" ;;
   esac
-  
 }
 
 # 设置系统虚拟内存
@@ -1425,14 +1419,8 @@ EOF
               # reboot
                   ;;
 
-              0)
-                  break  # 跳出循环，退出菜单
-                  ;;
-
-              *)
-                  break  # 跳出循环，退出菜单
-                  ;;
-
+              0) break ;; # 跳出循环，退出菜单
+              *) break ;; # 跳出循环，退出菜单
           esac
     done
 else
@@ -1515,7 +1503,7 @@ user_manage(){
       echo "------------------------"
       echo "5. 删除账号"
       echo "------------------------"
-      echo "0. 返回上一级选单"
+      echo "0. 返回上一级菜单"
       echo "------------------------"
       read -p "请输入你的选择: " sub_choice
 
@@ -1629,7 +1617,7 @@ cron_manage(){
       echo "------------------------"
       echo "1. 添加定时任务              2. 删除定时任务"
       echo "------------------------"
-      echo "0. 返回上一级选单"
+      echo "0. 返回上一级菜单"
       echo "------------------------"
       read -p "请输入你的选择: " sub_choice
 
@@ -1959,19 +1947,19 @@ echo -e "
 -------------------------------
 ${green} 1.${plain} 宝塔面板(官方版)               
 ${green} 2.${plain} aaPanel(宝塔国际版)
-${green} 3.${plain} 1Panel(新一代管理面板) (Todo...)
-${green} 4.${plain} NginxProxyManager(Nginx可视化面板) (Todo...)
-${green} 5.${plain} AList(多存储文件列表程序)(Todo...)
-${green} 6.${plain} Ubuntu远程桌面网页版 (Todo...)
-${green} 7.${plain} 哪吒探针(VPS监控面板) (Todo...)
-${green} 8.${plain} QB离线BT(磁力下载面板) (Todo...)
-${green} 9.${plain} Poste.io(邮件服务器程序) (Todo...)
-${green}10.${plain} RocketChat(多人在线聊天系统) (Todo...)
-${green}12.${plain} Memos网页备忘录 (Todo...)
-${green}13.${plain} AuroPanel(极光面板) (Todo...)
-${green}14.${plain} IT-Tools (Todo...)
-${green}15.${plain} Next Terminal (Todo...)
-${green}16.${plain} VScode Server (Todo...)
+${green} 3.${black} 1Panel(新一代管理面板) (Todo...)
+${green} 4.${black} NginxProxyManager(Nginx可视化面板) (Todo...)
+${green} 5.${black} AList(多存储文件列表程序)(Todo...)
+${green} 6.${black} Ubuntu远程桌面网页版 (Todo...)
+${green} 7.${black} 哪吒探针(VPS监控面板) (Todo...)
+${green} 8.${black} QB离线BT(磁力下载面板) (Todo...)
+${green} 9.${black} Poste.io(邮件服务器程序) (Todo...)
+${green}10.${black} RocketChat(多人在线聊天系统) (Todo...)
+${green}12.${black} Memos网页备忘录 (Todo...)
+${green}13.${black} AuroPanel(极光面板) (Todo...)
+${green}14.${black} IT-Tools (Todo...)
+${green}15.${black} Next Terminal (Todo...)
+${green}16.${black} VScode Server (Todo...)
 -------------------------------
 ${green} 0.${plain} 返回主菜单
 -------------------------------
