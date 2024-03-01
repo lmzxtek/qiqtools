@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.1.1
+script_version=v0.1.2
 #==========================
 
  black='\033[0;30m'
@@ -1494,6 +1494,7 @@ fi
 user_manage(){
   while true; do
     # clear && install sudo && clear 
+    clear
     # 显示所有用户、用户权限、用户组和是否在sudoers中
     echo "用户列表"
     echo "----------------------------------------------------------------------------"
