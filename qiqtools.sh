@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version='v0.0.8'
+script_version=v0.0.9
 #==========================
 
  black='\033[0;30m'
