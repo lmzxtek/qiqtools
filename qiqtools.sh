@@ -2960,6 +2960,7 @@ script_update(){
 
 # 显示主菜单
 main_menu() {
+cd ~
 echo -e "
 ${red} __   _  __   ${blue}___ ____ ____ _  ${white} __ ${plain}
 ${red}|  |  | |  |  ${blue} |  |  | |  | |  ${white}|__ ${plain}
