@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.1.4
+script_version=v0.1.5
 #==========================
 
  black='\033[0;30m'
@@ -2677,6 +2677,108 @@ caddy_status(){
   sudo systemctl status caddy
 }
 
+# 站点列表（不包含default.conf)
+caddy_web_list(){
+  # ls -t /home/web/caddy | grep -v "default.conf" | sed 's/\.[^.]*$//'
+  dm_list=$(ls -t /home/web/caddy | grep -v "default.conf" | sed 's/\.[^.]*$//')
+  for dm_file in $dm_list; do
+      printf "%-30s\n" "$dm_file"
+  done
+}
+
+# 修改域名
+caddy_change_domain(){
+  read -p "请输入旧域名: " dm_old
+  read -p "请输入新域名: " dm_new
+
+  mv /home/web/caddy/$dm_old.conf /home/web/caddy/$dm_new.conf
+  sed -i "s/$dm_old/$dm_new/g" /home/web/caddy/$dm_new.conf
+
+  caddy_reload
+}
+
+# 给现有域名添加新的域名
+caddy_add_domain(){
+  read -p "请输入旧域名: " dm_old
+  read -p "请输入新域名: " dm_new
+
+  cp /home/web/caddy/$dm_old.conf /home/web/caddy/$dm_new.conf
+  sed -i "s/$dm_old/$dm_new/g" /home/web/caddy/$dm_new.conf
+
+  caddy_reload  
+}
+
+# 删除现有域名
+caddy_delete_domain(){
+  read -p "请输入要删除的域名: " dm_old
+  rm /home/web/caddy/$dm_old.conf
+  
+  caddy_reload  
+}
+
+# 清理站点缓存
+caddy_clean_cache(){
+  # Caddy 会自动清除过期的缓存条目。
+  # caddy adapt
+}
+
+caddy_version(){
+  caddy_version=$(caddy -v)
+  caddy_version=$(echo "$caddy_version" | grep -oP "caddy/\K[0-9]+\.[0-9]+\.[0-9]+")
+  echo -n "Caddy : v$caddy_version"
+}
+
+# 站点管理菜单
+caddy_web_menu(){
+
+clear
+echo "Web站点"
+echo "------------------------"
+caddy_version 
+
+echo -e "
+▶ 站点目录
+${plain}-------------------------------
+${green} ${plain} 数据： /home/web/html 
+${green} ${plain} 配置： /home/web/caddy
+${plain}-------------------------------    
+
+▶ 站点管理
+${plain}-------------------------------
+${green} 1.${plain} 查看站点列表
+${green} 2.${plain} 查看分析报告
+${green} 3.${plain} 更换站点域名
+${green} 4.${plain} 添加站点域名
+${green} 5.${plain} 删除指定站点
+${green} 6.${plain} 清理站点缓存
+${plain}-------------------------------    
+${green} 0.${plain} 返回上一级菜单
+${plain}-------------------------------    
+"
+}
+
+# Web站点管理器
+caddy_web_manager(){
+  while true; do
+      # caddy_web_list
+      caddy_web_menu
+      read -p "请输入你的选择: " sub_choice
+
+      case $sub_choice in
+          1) caddy_web_list ;;
+          2) install goaccess && goaccess --log-format=COMBINED /home/web/log/caddy/access.log ;;
+          3) caddy_change_domain ;;
+          4) caddy_add_domain ;;
+          5) caddy_delete_domain ;;
+          6) caddy_clean_cache ;;
+
+          0) break ;; # 跳出循环，退出菜单
+          *) echo "无效的输入!" ;; # 跳出循环，退出菜单
+      esac
+      break_end
+  done
+}
+
 # 网站管理菜单
 LDNMP_menu() {
 echo -e "
@@ -2691,9 +2793,10 @@ ${green}11.${plain} 安装Nginx      ${green}14.${plain} 重启服务
 ${green}12.${red} 安装Caddy*     ${green}15.${plain} 停止服务
 ${green}13.${plain} 查看状态       ${green}16.${plain} 更新服务
 ${yellow}-------------------------------  
-${green}21.${plain} 站点重定向
-${green}22.${plain} 站点反向代理
-${green}23.${plain} 自定义静态站点
+${green}21.${plain} 站点管理
+${green}22.${plain} 站点重定向
+${green}23.${plain} 站点反向代理
+${green}24.${plain} 自定义静态站点
 ${yellow}-------------------------------   
 ${green}88.${plain} 站点防御程序 (Todo...)
 ${plain}-------------------------------   
@@ -2758,7 +2861,8 @@ LDNMP_run(){
      15) caddy_start ;;
      16) caddy_stop ;;
 
-     21)
+     21) caddy_web_manager ;;
+     22)
         # ip_address
         add_yuming
         read -p "请输入跳转域名: " reverseproxy
@@ -2773,7 +2877,7 @@ LDNMP_run(){
         echo ""
         ;;
 
-     22)
+     23)
         # ip_address
         add_yuming
         read -p "请输入你的反代IP: " reverseproxy
@@ -2789,7 +2893,7 @@ LDNMP_run(){
         echo ""
         ;;
 
-     23)
+     24)
         # ip_address
         add_yuming
         read -p "请输入web概目录: " rootpath 
@@ -2841,7 +2945,7 @@ ${green} 6${white}.${plain} 面板工具 ▶
 ${green} 7${white}.${plain} 其他工具 ▶
 ${green} 8${white}.${plain} 节点管理 ▶ ${red}warp ${blue}x-ui
 ${green} 9${white}.${plain} Docker管理 ▶
-${green}10${white}.${yellow} Web管理 ▶${plain}
+${green}10${white}.${yellow} Web站点管理 ▶${plain}
 ${green}11${white}.${plain} 我的工作区 ▶ (Todo...)
 ${green}12${white}.${plain} 测试脚本合集 ▶ (Todo...)
 ${green}13${white}.${plain} 甲骨文云脚本合集 ▶ (Todo...)
