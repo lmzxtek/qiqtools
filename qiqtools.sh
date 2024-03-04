@@ -2971,7 +2971,7 @@ ${red}|  |  | |  |  ${blue} |  |  | |  | |  ${white}|__ ${plain}
 ${red}|__|_ | |__|_ ${blue} |  |__| |__| |__${white} __|${plain} 
 
 ${green}QiQTools 一键脚本工具 $script_version
-${plain}(支持Ubuntu/Debian/CentOS/Alpine系统)
+${plain}(支持Ubuntu|Debian|CentOS|Alpine系统)
 ${plain}-- 输入 >> ${yellow}qiq ${plain}<< 可快速启动此脚本 --
 ${plain}-------------------------------
 ${green} 1${white}.${yellow} 系统信息${plain}
