@@ -106,9 +106,16 @@ remove() {
 
 cur_dir=$(pwd)
 
+ipv4_address=""
+ipv6_address=""
+
+# 获取当前服务器的IP地址
 ip_address() {
-ipv4_address=$(curl -s ipv4.ip.sb)
-ipv6_address=$(curl -s --max-time 1 ipv6.ip.sb)
+  if [ -z "$ipv4_address" ] && [ -z "$ipv6_address" ]; then
+    # echo "s1 和 s2 均不为空"
+    ipv4_address=$(curl -s ipv4.ip.sb)
+    ipv6_address=$(curl -s --max-time 1 ipv6.ip.sb)
+  fi
 }
 
 check_root() {
