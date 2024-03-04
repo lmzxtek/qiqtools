@@ -2708,7 +2708,7 @@ caddy_web_list(){
   # ls -t /home/web/caddy | grep -v "default.conf" | sed 's/\.[^.]*$//'
   dm_list=$(ls -t /home/web/caddy | grep -v "default.conf" | sed 's/\.[^.]*$//')
 
-  clear
+  # clear
   echo -e "\n >> ${red}站点列表\n${plain}-------------------------------\n"
   for dm_file in $dm_list; do
       printf "%-30s\n" "$dm_file"
@@ -2795,11 +2795,11 @@ caddy_web_manager(){
       read -p "请输入你的选择: " sub_choice
 
       case $sub_choice in
-          1) caddy_web_list ;;
-          2) install goaccess && goaccess --log-format=COMBINED /home/web/log/caddy/access.log ;;
-          3) caddy_web_list && caddy_change_domain ;;
-          4) caddy_web_list && caddy_add_domain ;;
-          5) caddy_web_list && caddy_delete_domain ;;
+          1) clear && caddy_web_list ;;
+          2) clear && install goaccess && goaccess --log-format=COMBINED /home/web/log/caddy/access.log ;;
+          3) clear && caddy_web_list && caddy_change_domain ;;
+          4) clear && caddy_web_list && caddy_add_domain ;;
+          5) clear && caddy_web_list && caddy_delete_domain ;;
           6) caddy_clean_cache ;;
 
           # 0) break ;; # 跳出循环，退出菜单
@@ -2893,7 +2893,7 @@ LDNMP_run(){
      15) caddy_start ;;
      16) caddy_stop ;;
 
-     21) clear && caddy_web_list ;;
+     21) caddy_web_list ;;
      22) caddy_web_manager ;;
      23)
         # ip_address
