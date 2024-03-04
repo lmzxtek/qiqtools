@@ -2718,7 +2718,7 @@ caddy_delete_domain(){
 
 # 清理站点缓存
 caddy_clean_cache(){
-  # Caddy 会自动清除过期的缓存条目。
+  echo "Caddy会自动清除过期的缓存条目。"
   # caddy adapt
 }
 
