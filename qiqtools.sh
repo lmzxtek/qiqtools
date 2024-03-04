@@ -2681,7 +2681,7 @@ LDNMP_run(){
         add_yuming
         read -p "请输入跳转域名: " reverseproxy
 
-        caddy_staticweb yuming reverseproxy
+        caddy_staticweb $yuming $reverseproxy
           
         clear
         echo "您的重定向网站做好了！"
@@ -2694,7 +2694,7 @@ LDNMP_run(){
         read -p "请输入你的反代IP: " reverseproxy
         read -p "请输入你的反代端口: " port 
 
-        caddy_staticweb yuming reverseproxy port
+        caddy_staticweb $yuming $reverseproxy $port
 
         # wget -O /home/web/conf.d/$yuming.conf https://raw.githubusercontent.com/kejilion/nginx/main/reverse-proxy.conf
         # sed -i "s/yuming.com/$yuming/g" /home/web/conf.d/$yuming.conf
@@ -2711,7 +2711,7 @@ LDNMP_run(){
         add_yuming
         read -p "请输入web概目录: " rootpath 
 
-        caddy_staticweb yuming rootpath
+        caddy_staticweb $yuming $rootpath
 
         clear
         echo "您的静态网站搭建好了！"
