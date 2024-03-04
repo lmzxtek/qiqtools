@@ -2612,9 +2612,19 @@ $domain {
 }
 EOF
 }
+
+# 更新域名信息
+caddy_newcaddyfile(){
+  mv /etc/caddy/Caddyfile /etc/caddy/Caddyfile.bak
+  find /home/web/caddy -name "*.conf" -exec cat {} + > /etc/caddy/Caddyfile
+  # caddy reload
+}
+
+# 网站管理菜单
 LDNMP_menu() {
 echo -e "
 ▶ 站点管理
+本机IP: IPv4:${blue}$ipv4_address${plain}  IPv6: $ipv6_address${plain}
 ${plain}-------------------------------
 ${green} 1.${red} 安装LDNMP环境 (Todo...)
 ${green} 2.${plain} 更新LDNMP环境 (Todo...)
@@ -2685,9 +2695,11 @@ LDNMP_run(){
         read -p "请输入跳转域名: " reverseproxy
 
         caddy_redirect $yuming $reverseproxy
-          
-        clear
-        echo "您的重定向网站做好了！"
+        
+        caddy_newcaddyfile
+        caddy reload
+        
+        echo -e "\n您的重定向网站做好了！"
         echo "https://$yuming"
         ;;
 
@@ -2698,14 +2710,11 @@ LDNMP_run(){
         read -p "请输入你的反代端口: " port 
 
         caddy_reproxy $yuming $reverseproxy $port
-
-        # wget -O /home/web/conf.d/$yuming.conf https://raw.githubusercontent.com/kejilion/nginx/main/reverse-proxy.conf
-        # sed -i "s/yuming.com/$yuming/g" /home/web/conf.d/$yuming.conf
-        # sed -i "s/0.0.0.0/$reverseproxy/g" /home/web/conf.d/$yuming.conf
-        # sed -i "s/0000/$port/g" /home/web/conf.d/$yuming.conf
         
-        clear
-        echo "您的反向代理网站做好了！"
+        caddy_newcaddyfile
+        caddy reload
+        
+        echo -e "\n您的反向代理网站做好了！"
         echo "https://$yuming"
         ;;
 
@@ -2716,8 +2725,10 @@ LDNMP_run(){
 
         caddy_staticweb $yuming $rootpath
 
-        clear
-        echo "您的静态网站搭建好了！"
+        caddy_newcaddyfile
+        caddy reload
+        
+        echo -e "\n您的静态网站搭建好了！"
         echo "https://$yuming"
         ;;
 
@@ -2758,7 +2769,7 @@ ${green} 6${white}.${plain} 面板工具 ▶
 ${green} 7${white}.${plain} 其他工具 ▶
 ${green} 8${white}.${plain} 节点管理 ▶ ${yellow}Warp ${blue}X-ui ${cyan}XrayR
 ${green} 9${white}.${plain} Docker管理 ▶
-${green}10${white}.${blue} LDNMP建站 ▶${plain}
+${green}10${white}.${blue} Web管理 ▶${plain}
 ${green}11${white}.${plain} 测试脚本合集 ▶ (Todo...)
 ${green}12${white}.${plain} 甲骨文云脚本合集 ▶ (Todo...)
 ${green}13${white}.${plain} 我的工作区 ▶ (Todo...)
