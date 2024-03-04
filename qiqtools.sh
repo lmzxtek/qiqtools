@@ -2580,7 +2580,7 @@ caddy_reproxy(){
   local domain=$1
   local reproxip=$2
   local report=$3
-  cat > /home/web/caddy/$domain << EOF
+  cat > /home/web/caddy/$domain.conf << EOF
 $domain {
     reverse_proxy $reproxip:$report
     encode gzip
@@ -2592,7 +2592,7 @@ EOF
 caddy_redirect(){
   local domain=$1
   local redirurl=$2
-  cat > /home/web/caddy/$domain << EOF
+  cat > /home/web/caddy/$domain.conf << EOF
 $domain {
     redir $redirurl{uri}
 }
@@ -2604,7 +2604,7 @@ EOF
 caddy_staticweb(){
   local domain=$1
   local rootpath=$2
-  cat > /home/web/caddy/$domain << EOF
+  cat > /home/web/caddy/$domain.conf << EOF
 $domain {
     root * $rootpath
     encode gzip
@@ -2629,7 +2629,7 @@ ${green}15.${plain} 更新Caddy
 ${plain}-------------------------------  
 ${green}21.${plain} 站点重定向
 ${green}22.${plain} 站点反向代理
-${green}23.${plain} 自定义静态站点 (Todo...)
+${green}23.${plain} 自定义静态站点
 ${plain}-------------------------------
 ${green}32.${plain} 安装可道云桌面 (Todo...)
 ${green}33.${plain} 安装WordPress (Todo...)
