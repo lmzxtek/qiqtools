@@ -2648,8 +2648,8 @@ caddy_stop(){
 LDNMP_menu() {
 echo -e "
 ▶ 站点管理
-${plain}IPv4: ${white}$ipv4_address${plain}
-${plain}IPv6: ${white}$ipv6_address${plain}
+${yellow}IPv4: ${white}$ipv4_address${plain}
+${yellow}IPv6: ${white}$ipv6_address${plain}
 ${plain}-------------------------------
 ${green} 1.${plain} 安装LDNMP环境 (Todo...)      ${green} 3.${plain} 更新LDNMP环境 (Todo...)
 ${green} 2.${plain} 卸载LDNMP环境 (Todo...)      ${green} 4.${plain} 优化LDNMP环境 (Todo...)
