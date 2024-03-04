@@ -2824,10 +2824,11 @@ ${green}11.${plain} 安装Nginx      ${green}14.${plain} 重启服务
 ${red}12.${red} 安装Caddy*     ${green}15.${plain} 停止服务
 ${green}13.${plain} 查看状态       ${green}16.${plain} 更新服务
 ${yellow}-------------------------------  
-${green}21.${plain} 站点管理
-${green}22.${plain} 站点重定向
-${red}23.${red} 站点反向代理
-${green}24.${plain} 自定义静态站点
+${green}21.${plain} 站点列表
+${green}22.${plain} 站点管理
+${green}23.${plain} 站点重定向
+${red}24.${red} 站点反向代理
+${green}25.${plain} 自定义静态站点
 ${yellow}-------------------------------   
 ${green}88.${plain} 站点防御程序 (Todo...)
 ${plain}-------------------------------   
@@ -2892,8 +2893,9 @@ LDNMP_run(){
      15) caddy_start ;;
      16) caddy_stop ;;
 
-     21) caddy_web_manager ;;
-     22)
+     21) clear && caddy_web_list ;;
+     22) caddy_web_manager ;;
+     23)
         # ip_address
         add_yuming
         read -p "请输入跳转域名: " reverseproxy
@@ -2908,7 +2910,7 @@ LDNMP_run(){
         echo ""
         ;;
 
-     23)
+     24)
         # ip_address
         add_yuming
         read -p "请输入你的反代IP: " reverseproxy
@@ -2924,7 +2926,7 @@ LDNMP_run(){
         echo ""
         ;;
 
-     24)
+     25)
         # ip_address
         add_yuming
         read -p "请输入web概目录: " rootpath 
