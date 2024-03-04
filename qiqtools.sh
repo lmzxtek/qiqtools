@@ -196,6 +196,9 @@ get_os_version() {
 # 获取系统信息
 get_sysinfo(){
     # 函数: 获取IPv4和IPv6地址
+    
+    ipv4_address=""
+    ipv6_address=""
     ip_address
 
     if [ "$(uname -m)" == "x86_64" ]; then
