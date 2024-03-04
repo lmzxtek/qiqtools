@@ -2681,9 +2681,12 @@ caddy_status(){
 caddy_web_list(){
   # ls -t /home/web/caddy | grep -v "default.conf" | sed 's/\.[^.]*$//'
   dm_list=$(ls -t /home/web/caddy | grep -v "default.conf" | sed 's/\.[^.]*$//')
+
+  echo -e "\n >> 站点列表\n${plain}-------------------------------\n"
   for dm_file in $dm_list; do
       printf "%-30s\n" "$dm_file"
   done
+  echo -e "\n${plain}-------------------------------\n"
 }
 
 # 修改域名
@@ -2732,9 +2735,9 @@ caddy_version(){
 caddy_web_menu(){
 
 clear
-echo "Web站点"
-echo "------------------------"
-caddy_version 
+# echo "Web站点"
+# echo "------------------------"
+# caddy_version 
 
 echo -e "
 ▶ 站点目录
@@ -2767,9 +2770,9 @@ caddy_web_manager(){
       case $sub_choice in
           1) caddy_web_list ;;
           2) install goaccess && goaccess --log-format=COMBINED /home/web/log/caddy/access.log ;;
-          3) caddy_change_domain ;;
-          4) caddy_add_domain ;;
-          5) caddy_delete_domain ;;
+          3) caddy_web_list && caddy_change_domain ;;
+          4) caddy_web_list && caddy_add_domain ;;
+          5) caddy_web_list && caddy_delete_domain ;;
           6) caddy_clean_cache ;;
 
           0) break ;; # 跳出循环，退出菜单
