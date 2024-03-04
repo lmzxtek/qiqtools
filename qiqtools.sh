@@ -2821,12 +2821,12 @@ ${green} 1.${plain} 安装LDNMP环境 (Todo...)      ${green} 3.${plain} 更新L
 ${green} 2.${plain} 卸载LDNMP环境 (Todo...)      ${green} 4.${plain} 优化LDNMP环境 (Todo...)
 ${plain}-------------------------------     
 ${green}11.${plain} 安装Nginx      ${green}14.${plain} 重启服务
-${green}12.${red} 安装Caddy*     ${green}15.${plain} 停止服务
+${red}12.${red} 安装Caddy*     ${green}15.${plain} 停止服务
 ${green}13.${plain} 查看状态       ${green}16.${plain} 更新服务
 ${yellow}-------------------------------  
 ${green}21.${plain} 站点管理
 ${green}22.${plain} 站点重定向
-${green}23.${red} 站点反向代理
+${red}23.${red} 站点反向代理
 ${green}24.${plain} 自定义静态站点
 ${yellow}-------------------------------   
 ${green}88.${plain} 站点防御程序 (Todo...)
