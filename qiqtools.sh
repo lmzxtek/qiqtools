@@ -2976,13 +2976,9 @@ ${green} 6${white}.${plain} 其他工具 ▶
 ${green} 7${white}.${plain} 面板工具 ▶
 ${green} 8${white}.${plain} 节点管理 ▶ ${red}warp ${blue}x-ui
 ${plain}----------------
-${green} 9${white}.${plain} Docker管理 ▶
+${green} 9${white}.${plain} 容器管理 ▶
 ${green}10${white}.${yellow} 站点管理 ▶${plain}
 ${green}11${white}.${plain} 站点部署 ▶
-${plain}----------------
-${green}12${white}.${plain} 我的工作区 ▶ (Todo...)
-${green}13${white}.${plain} 测试脚本合集 ▶ (Todo...)
-${green}14${white}.${plain} 甲骨文云脚本合集 ▶ (Todo...)
 ${plain}-------------------------------
 ${green}00.${plain} 脚本更新       ${green}99.${plain} 重启系统
 ${plain}-------------------------------
@@ -2990,6 +2986,10 @@ ${green} 0.${plain} 退出脚本
 "
 }
 
+# ${plain}----------------
+# ${green}12${white}.${plain} 我的工作区 ▶ (Todo...)
+# ${green}13${white}.${plain} 测试脚本合集 ▶ (Todo...)
+# ${green}14${white}.${plain} 甲骨文云脚本合集 ▶ (Todo...)
 
 # Main Loops for the scripts
 main_loop(){
