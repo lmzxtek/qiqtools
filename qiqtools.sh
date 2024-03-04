@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.1.3
+script_version=v0.1.4
 #==========================
 
  black='\033[0;30m'
@@ -2517,6 +2517,48 @@ docker_run() {
 
 }
 
+
+LDNMP_menu() {
+echo -e "
+▶ 站点管理
+${plain}-------------------------------
+${green} 1.${red} 安装LDNMP环境
+${green} 2.${plain} 更新LDNMP环境
+${green} 3.${plain} 优化LDNMP环境
+${green} 4.${plain} 卸载LDNMP环境
+${plain}-------------------------------     
+${green}11.${red} 仅安装nginx
+${green}12.${plain} 站点重定向
+${green}13.${plain} 站点反向代理
+${green}14.${plain} 自定义静态站点 (Todo...)
+${plain}-------------------------------
+${green}22.${plain} 安装可道云桌面 (Todo...)
+${green}23.${plain} 安装WordPress (Todo...)
+${green}24.${plain} 安装Halo博客网站 (Todo...)
+${green}25.${plain} 安装typecho轻量博客网站 (Todo...)
+${plain}-------------------------------   
+${green}88.${plain} 站点防御程序 (Todo...)
+${plain}-------------------------------   
+${green} 0.${plain} 返回主菜单
+-------------------------------
+"
+}
+
+LDNMP_run(){
+  while true; do
+    clear && LDNMP_menu
+    reading "请选择: " choice
+
+    case $choice in
+      1) clear && install_add_docker ;;
+      2) ;;
+      0) qiqtools ;;
+      *) echo "无效的输入!" ;;
+    esac  
+    break_end    
+  done 
+}
+
 # 脚本更新
 script_update(){
   cd ~
@@ -2549,9 +2591,9 @@ ${green} 6${white}.${plain} 面板工具 ▶
 ${green} 7${white}.${plain} 其他工具 ▶
 ${green} 8${white}.${plain} 节点管理 ▶ ${yellow}Warp ${blue}X-ui ${cyan}XrayR
 ${green} 9${white}.${plain} Docker管理 ▶
-${green}10${white}.${plain} 测试脚本合集 ▶ (Todo...)
-${green}11${white}.${plain} 甲骨文云脚本合集 ▶ (Todo...)
-${green}12${white}.${blue} LDNMP建站 ▶${plain} (Todo...)
+${green}10${white}.${blue} LDNMP建站 ▶${plain}
+${green}11${white}.${plain} 测试脚本合集 ▶ (Todo...)
+${green}12${white}.${plain} 甲骨文云脚本合集 ▶ (Todo...)
 ${green}13${white}.${plain} 我的工作区 ▶ (Todo...)
 -------------------------------
 ${green}00.${plain} 脚本更新       ${green}99.${plain} 重启系统
@@ -2578,22 +2620,13 @@ while true; do
      7) other_tools_run  ;;
      8) warp_tools_run   ;;
      9) docker_run ;;
-    10) clear && echo -e "\nTodo: ... \n" ;;
+    10) clear && LDNMP_run ;;
     11) clear && echo -e "\nTodo: ... \n" ;;
     12) clear && echo -e "\nTodo: ... \n" ;;
     13) clear && echo -e "\nTodo: ... \n" ;;
     # 14) clear && echo -e "\nTodo: ... \n" ;; # VPS集群控制
 
     00) script_update ;;
-      # cd ~
-      # # curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/update_log.sh && chmod +x update_log.sh && ./update_log.sh
-      # # rm update_log.sh
-      # echo ""
-      # curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && chmod +x qiqtools.sh
-      # echo "脚本已更新到最新版本！"
-      # break_end
-      # qiqtools
-      # ;;
     99) clear && echo "正在重启服务器，即将断开SSH连接" && reboot  ;;
      0) exit ;;
      *) echo "无效的输入!" ;;
