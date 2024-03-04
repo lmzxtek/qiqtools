@@ -2563,14 +2563,16 @@ reverse_proxy() {
 caddy_install(){
   # 准备目录和主页文件
   mkdir -p /home/web/{caddy,html}
-  touch /home/web/caddy/Caddyfile
+  # touch /home/web/caddy/Caddyfile
   # touch /home/web/html/index.html
-  wget -O /home/web/html/index.html https://github.com/kejilion/Website_source_code/blob/main/index.html
+  wget -O /home/web/html/index.html https://gitlab.com/lmzxtek/qiqtools/-/raw/main/src/caddy/index.html
+  wget -O /home/web/caddy/default.conf https://gitlab.com/lmzxtek/qiqtools/-/raw/main/src/caddy/default.conf
 
   # 安装Caddy
   sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https curl
   curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
   curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
+  
   sudo apt update
   sudo apt install caddy
 }
