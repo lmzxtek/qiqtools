@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.1.5
+script_version=v0.2.0
 #==========================
 
  black='\033[0;30m'
@@ -1946,14 +1946,14 @@ install_1panel() {
   fi
 }
 
-# 面板工具菜单
-panel_tools_menu() {
+# 站点工具菜单
+website_tools_menu() {
 echo -e "
 ▶ 面板工具
 -------------------------------
 ${green} 1.${plain} 宝塔面板(官方版)               
 ${green} 2.${plain} aaPanel(宝塔国际版)
-${green} 3.${plain} 1Panel(新一代管理面板)
+${green} 3.${red} 1Panel(新一代管理面板)
 ${green} 4.${plain} NginxProxyManager(Nginx可视化面板)
 ${green} 5.${plain} AList(多存储文件列表程序)
 ${green} 6.${plain} Ubuntu远程桌面网页版
@@ -1975,9 +1975,9 @@ ${green} 0.${plain} 返回主菜单
 }
 
 # 面板工具
-panel_tools_run(){
+website_tools_run(){
   while true; do
-    clear && panel_tools_menu
+    clear && website_tools_menu
     read -p "请输入你的选择: " sub_choice
 
     case $sub_choice in
@@ -2292,17 +2292,7 @@ ${green} 3.${plain} Warp(@Misaka-blog)                 ${green}13.${plain} V2Ray
 ${green} 4.${plain} ArgoX(@fscarmen)                   ${green}14.${plain} Hysteria2(@Misaka)
 ${green} 5.${plain} ${blue}SingBox四合一(@ygkkk)              ${green}15.${plain} TUIC5(@Misaka)
 ${green} 6.${plain} ${yellow}SingBox全家桶(@fscarmen)           ${green}16.${plain} mianyang()
-${green} 7.${plain} ${yellow}SingBox-Argox(@fscarmen)           
-${plain}-------------------------------
-${green}21.${plain} ${blue}3X-UI(@mhsanaei)                   ${green}31.${plain} Hiddify
-${green}22.${plain} ${yellow}X-UI(@alireza0)                    ${green}32.${plain} V2RayA
-${green}23.${plain} X-UI(@FranzKafkaYu)                ${green}33.${plain} Daed
-${green}24.${plain} X-UI(@rwkgyg)                      ${green}34.${plain} Daed-Docker
-${green}25.${plain} S-UI(@alireza0)
-${plain}-------------------------------
-${green}41.${plain} XBoard                             ${green}44.${plain} LotusBoard
-${green}42.${plain} V2Board                            ${green}45.${plain} SSPanel
-${green}43.${plain} V2Board(wyx2685)                   ${green}46.${plain} Proxypanel
+${green} 7.${plain} ${yellow}SingBox-Argox(@fscarmen)    
 ${plain}-------------------------------
 ${green}51.${plain} ${yellow}XRayR(@XrayR-project)              ${green}61.${plain} Set Github(For IPv6 VPS)
 ${green}52.${plain} XRayR(@wyx2685)                    ${green}62.${plain} Cloudflare Select IP
@@ -2342,17 +2332,6 @@ warp_tools_run() {
      15) clear && wget -N --no-check-certificate https://gitlab.com/Misaka-blog/tuic-script/-/raw/main/tuic.sh && bash tuic.sh ;;
      16) clear && bash <(curl -fsSL https://github.com/vveg26/sing-box-reality-hysteria2/raw/main/beta.sh) ;;
 
-     21) clear && bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh) ;;
-     22) clear && bash <(curl -Ls https://raw.githubusercontent.com/alireza0/x-ui/master/install.sh) ;;
-     23) clear && bash <(curl -Ls https://raw.githubusercontent.com/FranzKafkaYu/x-ui/master/install.sh) ;;
-     24) clear && bash <(curl -Ls https://gitlab.com/rwkgyg/x-ui-yg/raw/main/install.sh)  ;;
-     25) clear && bash <(curl -Ls https://raw.githubusercontent.com/alireza0/s-ui/master/install.sh)  ;;
-
-     31) clear && bash -c "$(curl -Lfo- https://raw.githubusercontent.com/hiddify/hiddify-config/main/common/download_install.sh)" ;;
-     32) clear && echo -e "\n Todo: ... \n" ;;
-     33) clear && sh -c "$(curl -sL https://github.com/daeuniverse/dae-installer/raw/main/installer.sh)" @ update-geoip update-geosite ;;
-     34) clear && docker run -d --privileged --network=host --pid=host --restart=unless-stopped  -v /sys:/sys  -v /etc/daed:/etc/daed --name=daed ghcr.io/daeuniverse/daed:latest ;;
-
      51) clear && wget -N https://raw.githubusercontent.com/XrayR-project/XrayR-release/master/install.sh && bash install.sh && cd /etc/XrayR ;;
      52) clear && wget -N https://raw.githubusercontent.com/wyx2685/XrayR-release/master/install.sh && bash install.sh ;;
      53) clear && cd ~ && git clone https://github.com/XrayR-project/XrayR-release xrayr && cd xrayr ;;
@@ -2381,6 +2360,49 @@ warp_tools_run() {
 
 }
 
+board_tools_menu() {
+echo -e "
+▶ 面板管理
+${plain}-------------------------------
+${green}21.${plain} ${blue}3X-UI(@mhsanaei)                   ${green}31.${plain} Hiddify
+${green}22.${plain} ${yellow}X-UI(@alireza0)                    ${green}32.${plain} V2RayA
+${green}23.${plain} X-UI(@FranzKafkaYu)                ${green}33.${plain} Daed
+${green}24.${plain} X-UI(@rwkgyg)                      ${green}34.${plain} Daed-Docker
+${green}25.${plain} S-UI(@alireza0)
+${plain}-------------------------------
+${green}41.${plain} XBoard                             ${green}44.${plain} LotusBoard
+${green}42.${plain} V2Board                            ${green}45.${plain} SSPanel
+${green}43.${plain} V2Board(wyx2685)                   ${green}46.${plain} Proxypanel
+${plain}-------------------------------
+${green} 0.${plain} 返回主菜单
+${plain}-------------------------------
+"
+}
+
+board_tools_run() {
+  while true; do
+    clear && board_tools_menu
+    reading "请选择面板代码: " choice
+    
+    case $choice in
+     21) clear && bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh) ;;
+     22) clear && bash <(curl -Ls https://raw.githubusercontent.com/alireza0/x-ui/master/install.sh) ;;
+     23) clear && bash <(curl -Ls https://raw.githubusercontent.com/FranzKafkaYu/x-ui/master/install.sh) ;;
+     24) clear && bash <(curl -Ls https://gitlab.com/rwkgyg/x-ui-yg/raw/main/install.sh)  ;;
+     25) clear && bash <(curl -Ls https://raw.githubusercontent.com/alireza0/s-ui/master/install.sh)  ;;
+
+     31) clear && bash -c "$(curl -Lfo- https://raw.githubusercontent.com/hiddify/hiddify-config/main/common/download_install.sh)" ;;
+     32) clear && echo -e "\n Todo: ... \n" ;;
+     33) clear && sh -c "$(curl -sL https://github.com/daeuniverse/dae-installer/raw/main/installer.sh)" @ update-geoip update-geosite ;;
+     34) clear && docker run -d --privileged --network=host --pid=host --restart=unless-stopped  -v /sys:/sys  -v /etc/daed:/etc/daed --name=daed ghcr.io/daeuniverse/daed:latest ;;
+
+      0) qiqtools ;;
+      *) echo "无效的输入!" ;;
+    esac  
+    break_end
+  done 
+
+}
 
 docker_app() {
 if docker inspect "$docker_name" &>/dev/null; then
@@ -2953,14 +2975,15 @@ ${green} 2${white}.${plain} 系统更新
 ${green} 3${blue}.${plain} 系统清理
 ${green} 4${white}.${plain} 常用工具 ▶
 ${yellow} 5${white}.${yellow} 系统工具 ${blue}▶
-${green} 6${white}.${plain} 面板工具 ▶
-${green} 7${white}.${plain} 其他工具 ▶
+${green} 6${white}.${plain} 其他工具 ▶
+${green} 7${white}.${plain} 面板工具 ▶
 ${green} 8${white}.${plain} 节点管理 ▶ ${red}warp ${blue}x-ui
 ${green} 9${white}.${plain} Docker管理 ▶
-${green}10${white}.${yellow} Web站点管理 ▶${plain}
-${green}11${white}.${plain} 我的工作区 ▶ (Todo...)
-${green}12${white}.${plain} 测试脚本合集 ▶ (Todo...)
-${green}13${white}.${plain} 甲骨文云脚本合集 ▶ (Todo...)
+${green}10${white}.${yellow} 站点管理 ▶${plain}
+${green}11${white}.${plain} 站点部署 ▶
+${green}12${white}.${plain} 我的工作区 ▶ (Todo...)
+${green}13${white}.${plain} 测试脚本合集 ▶ (Todo...)
+${green}14${white}.${plain} 甲骨文云脚本合集 ▶ (Todo...)
 -------------------------------
 ${green}00.${plain} 脚本更新       ${green}99.${plain} 重启系统
 -------------------------------
@@ -2982,11 +3005,12 @@ while true; do
      3) clear && clean_sys ;;
      4) common_apps_run  ;;
      5) system_tools_run ;;
-     6) panel_tools_run  ;;
-     7) other_tools_run  ;;
+     6) other_tools_run  ;;
+     7) board_tools_run  ;;
      8) warp_tools_run   ;;
      9) docker_run ;;
     10) clear && LDNMP_run ;;
+    11) website_tools_run  ;;
     # 11) clear && echo -e "\nTodo: ... \n" ;;
     # 12) clear && echo -e "\nTodo: ... \n" ;;
     # 13) clear && echo -e "\nTodo: ... \n" ;;
