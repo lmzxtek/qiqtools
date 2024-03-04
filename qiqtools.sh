@@ -2545,14 +2545,14 @@ check_port() {
 }
 
 add_yuming() {
-  ip_address
+  # ip_address
   echo -e "先将域名解析到本机IP: ${red}$ipv4_address  $ipv6_address${plain}"
   read -p "请输入你解析的域名: " yuming
 }
 
 # 反代域名
 reverse_proxy() {
-      ip_address
+      # ip_address
       wget -O /home/web/conf.d/$yuming.conf https://raw.githubusercontent.com/kejilion/nginx/main/reverse-proxy.conf
       sed -i "s/yuming.com/$yuming/g" /home/web/conf.d/$yuming.conf
       sed -i "s/0.0.0.0/$ipv4_address/g" /home/web/conf.d/$yuming.conf
@@ -2644,6 +2644,9 @@ ${green} 0.${plain} 返回主菜单
 }
 
 LDNMP_run(){
+
+  ip_address
+
   while true; do
     clear && LDNMP_menu
     reading "请选择: " choice
@@ -2677,11 +2680,11 @@ LDNMP_run(){
         ;;
 
      21)
-        ip_address
+        # ip_address
         add_yuming
         read -p "请输入跳转域名: " reverseproxy
 
-        caddy_staticweb $yuming $reverseproxy
+        caddy_redirect $yuming $reverseproxy
           
         clear
         echo "您的重定向网站做好了！"
@@ -2689,12 +2692,12 @@ LDNMP_run(){
         ;;
 
      22)
-        ip_address
+        # ip_address
         add_yuming
         read -p "请输入你的反代IP: " reverseproxy
         read -p "请输入你的反代端口: " port 
 
-        caddy_staticweb $yuming $reverseproxy $port
+        caddy_reproxy $yuming $reverseproxy $port
 
         # wget -O /home/web/conf.d/$yuming.conf https://raw.githubusercontent.com/kejilion/nginx/main/reverse-proxy.conf
         # sed -i "s/yuming.com/$yuming/g" /home/web/conf.d/$yuming.conf
@@ -2707,7 +2710,7 @@ LDNMP_run(){
         ;;
 
      23)
-        ip_address
+        # ip_address
         add_yuming
         read -p "请输入web概目录: " rootpath 
 
