@@ -2825,7 +2825,7 @@ ${green} 1.${plain} 安装LDNMP环境 (Todo...)      ${green} 3.${plain} 更新L
 ${green} 2.${plain} 卸载LDNMP环境 (Todo...)      ${green} 4.${plain} 优化LDNMP环境 (Todo...)
 ${plain}-------------------------------     
 ${green}11.${plain} 安装Nginx      ${green}14.${plain} 重启服务
-${red}12.${red} 安装Caddy*     ${green}15.${plain} 停止服务
+${red}12.${red} 安装Caddy      ${green}15.${plain} 停止服务
 ${green}13.${plain} 查看状态       ${green}16.${plain} 更新服务
 ${yellow}-------------------------------  
 ${green}21.${plain} 站点列表
