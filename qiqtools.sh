@@ -2626,24 +2626,25 @@ caddy_newcaddyfile(){
 
 caddy_reload(){  
   caddy_newcaddyfile
-  sudo systemctl stop caddy
+
+  # sudo systemctl stop caddy
   # cd /etc/caddy
-  # caddy reload
+  caddy reload
   # cd -
 }
 
 caddy_start(){
-  sudo systemctl stop caddy
+  # sudo systemctl stop caddy
   # cd /etc/caddy
-  # caddy start
+  caddy start
   # caddy run
   # cd -
 }
 
 caddy_stop(){
-  sudo systemctl stop caddy
+  # sudo systemctl stop caddy
   # cd /etc/caddy
-  # caddy stop
+  caddy stop
   # cd -
 }
 
@@ -2678,6 +2679,7 @@ ${green} 0.${plain} 返回主菜单
 
 LDNMP_run(){
 
+  cd /etc/caddy
   ip_address
 
   while true; do
@@ -2757,7 +2759,7 @@ LDNMP_run(){
         echo "https://$yuming"
         ;;
 
-      0) qiqtools ;;
+      0) cd - && qiqtools ;;
       *) echo "无效的输入!" ;;
     esac  
     break_end    
