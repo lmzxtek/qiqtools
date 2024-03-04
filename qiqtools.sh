@@ -2777,19 +2777,19 @@ ${green}QiQTools 一键脚本工具 $script_version
 ${plain}(支持Ubuntu/Debian/CentOS/Alpine系统)
 ${plain}-- 输入${yellow}qiq ${plain}可快速启动此脚本 --
 -------------------------------
-${green} 1${white}.${plain} 系统信息查询
+${green} 1${white}.${yellow} 系统信息${plain}查询
 ${green} 2${white}.${plain} 系统更新
-${green} 3${white}.${plain} 系统清理
+${green} 3${blue}.${plain} 系统清理
 ${green} 4${white}.${plain} 常用工具 ▶
-${green} 5${white}.${plain} 系统工具 ▶
+${green} 5${yellow}.${plain} 系统工具 ▶
 ${green} 6${white}.${plain} 面板工具 ▶
 ${green} 7${white}.${plain} 其他工具 ▶
 ${green} 8${white}.${plain} 节点管理 ▶ ${red}Warp ${blue}X-ui
 ${green} 9${white}.${plain} Docker管理 ▶
 ${green}10${white}.${yellow} Web管理 ▶${plain}
-${green}11${white}.${plain} 测试脚本合集 ▶ (Todo...)
-${green}12${white}.${plain} 甲骨文云脚本合集 ▶ (Todo...)
-${green}13${white}.${plain} 我的工作区 ▶ (Todo...)
+${green}11${white}.${plain} 我的工作区 ▶ (Todo...)
+${green}12${white}.${plain} 测试脚本合集 ▶ (Todo...)
+${green}13${white}.${plain} 甲骨文云脚本合集 ▶ (Todo...)
 -------------------------------
 ${green}00.${plain} 脚本更新       ${green}99.${plain} 重启系统
 -------------------------------
@@ -2816,9 +2816,9 @@ while true; do
      8) warp_tools_run   ;;
      9) docker_run ;;
     10) clear && LDNMP_run ;;
-    11) clear && echo -e "\nTodo: ... \n" ;;
-    12) clear && echo -e "\nTodo: ... \n" ;;
-    13) clear && echo -e "\nTodo: ... \n" ;;
+    # 11) clear && echo -e "\nTodo: ... \n" ;;
+    # 12) clear && echo -e "\nTodo: ... \n" ;;
+    # 13) clear && echo -e "\nTodo: ... \n" ;;
     # 14) clear && echo -e "\nTodo: ... \n" ;; # VPS集群控制
 
     00) script_update ;;
