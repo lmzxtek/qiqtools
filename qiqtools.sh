@@ -2615,9 +2615,13 @@ EOF
 
 # 更新域名信息
 caddy_newcaddyfile(){
-  mv /etc/caddy/Caddyfile /etc/caddy/Caddyfile.bak
-  find /home/web/caddy -name "*.conf" -exec cat {} + > /etc/caddy/Caddyfile
-  # caddy reload
+  if [ -z "$(find /etc/caddy -name "*.conf")" ]; then
+    echo "No .conf files found in /home/web/caddy"
+
+  else
+    mv /etc/caddy/Caddyfile /etc/caddy/Caddyfile.bak
+    find /home/web/caddy -name "*.conf" -exec cat {} + > /etc/caddy/Caddyfile
+  fi
 }
 
 caddy_reload(){  
