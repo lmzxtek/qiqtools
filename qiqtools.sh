@@ -39,7 +39,7 @@ reading() { read -rp "$(info "$1")" "$2"; }
 text() { grep -q '\$' <<< "${E[$*]}" && eval echo "\$(eval echo "\${${L}[$*]}")" || eval echo "\${${L}[$*]}"; }
 
 break_end() {
-      echo -e "${green} 操作完成 ${plain}\n 按任意键继续..."
+      echo -e "${green} 操作完成 >> ${plain} 按任意键继续..."
       read -n 1 -s -r -p ""
       echo ""
       clear
