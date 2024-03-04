@@ -2624,7 +2624,8 @@ caddy_newcaddyfile(){
 LDNMP_menu() {
 echo -e "
 ▶ 站点管理
-本机IP: IPv4:${blue}$ipv4_address${plain}  IPv6: $ipv6_address${plain}
+${plain}IPv4: ${white}$ipv4_address${plain}
+${plain}IPv6: ${white}$ipv6_address${plain}
 ${plain}-------------------------------
 ${green} 1.${red} 安装LDNMP环境 (Todo...)
 ${green} 2.${plain} 更新LDNMP环境 (Todo...)
