@@ -2651,16 +2651,12 @@ echo -e "
 ${plain}IPv4: ${white}$ipv4_address${plain}
 ${plain}IPv6: ${white}$ipv6_address${plain}
 ${plain}-------------------------------
-${green} 1.${plain} 安装LDNMP环境 (Todo...)
-${green} 2.${plain} 更新LDNMP环境 (Todo...)
-${green} 3.${plain} 优化LDNMP环境 (Todo...)
-${green} 4.${plain} 卸载LDNMP环境 (Todo...)
+${green} 1.${plain} 安装LDNMP环境 (Todo...)      ${green} 3.${plain} 更新LDNMP环境 (Todo...)
+${green} 2.${plain} 卸载LDNMP环境 (Todo...)      ${green} 4.${plain} 优化LDNMP环境 (Todo...)
 ${plain}-------------------------------     
-${green}11.${blue} 安装nginx
-${green}12.${white} 安装Caddy*
-${green}13.${plain} 重启服务
-${green}14.${plain} 停止服务
-${green}15.${plain} 更新服务
+${green}11.${blue} 安装nginx      ${green}14.${plain} 重启服务
+${green}12.${white} 安装Caddy*     ${green}15.${plain} 停止服务
+${green}13.${plain} 查看状态       ${green}16.${plain} 更新服务
 ${plain}-------------------------------  
 ${green}21.${plain} 站点重定向
 ${green}22.${plain} 站点反向代理
