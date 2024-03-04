@@ -1312,12 +1312,8 @@ EOF
     reboot
 
       ;;
-    [Nn])
-      echo "已取消"
-      ;;
-    *)
-      echo "无效的选择，请输入 Y 或 N。"
-      ;;
+    [Nn]) echo "已取消" ;;
+    *) echo "无效的选择，请输入 Y 或 N。" ;;
   esac
 fi
 
