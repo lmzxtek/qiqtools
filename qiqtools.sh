@@ -47,7 +47,7 @@ break_end() {
 
 # run qiq and exit 
 qiqtools() {
-    qiq && exit
+    cd ~ && qiq && exit
 }
 
 # 安装应用程序
@@ -2679,7 +2679,10 @@ ${green} 0.${plain} 返回主菜单
 
 LDNMP_run(){
 
-  cd /etc/caddy
+  if [ -d /etc/caddy ]; then
+    cd /etc/caddy
+  fi
+
   ip_address
 
   while true; do
