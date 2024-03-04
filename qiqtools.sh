@@ -2641,11 +2641,6 @@ ${plain}-------------------------------
 ${green}21.${plain} 站点重定向
 ${green}22.${plain} 站点反向代理
 ${green}23.${plain} 自定义静态站点
-${plain}-------------------------------
-${green}32.${plain} 安装可道云桌面 (Todo...)
-${green}33.${plain} 安装WordPress (Todo...)
-${green}34.${plain} 安装Halo博客网站 (Todo...)
-${green}35.${plain} 安装typecho轻量博客网站 (Todo...)
 ${plain}-------------------------------   
 ${green}88.${plain} 站点防御程序 (Todo...)
 ${plain}-------------------------------   
