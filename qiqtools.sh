@@ -2380,7 +2380,8 @@ if docker inspect "$docker_name" &>/dev/null; then
     clear
     echo "$docker_name 已安装，访问地址: "
     ip_address
-    echo "http:$ipv4_address:$docker_port"
+    echo "http://$ipv4_address:$docker_port"
+    echo "http://[$ipv6_address]:$docker_port"
     echo ""
     echo "应用操作"
     echo "------------------------"
@@ -2442,7 +2443,9 @@ else
             # 获取外部 IP 地址
             ip_address
             echo "您可以使用以下地址访问:"
-            echo "http:$ipv4_address:$docker_port"
+            echo "http://$ipv4_address:$docker_port"
+            echo "http://[$ipv6_address]:$docker_port"
+            echo "------------------------"
             $docker_use
             $docker_passwd
             ;;
@@ -2677,7 +2680,7 @@ caddy_status(){
 # 网站管理菜单
 LDNMP_menu() {
 echo -e "
-▶ 站点管理
+▶ Web站点管理
 ${yellow}IPv4: ${white}$ipv4_address${plain}
 ${yellow}IPv6: ${white}$ipv6_address${plain}
 ${plain}-------------------------------
