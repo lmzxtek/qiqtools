@@ -2691,6 +2691,7 @@ LDNMP_run(){
 
     case $choice in
      11) 
+        #  安装Nginx
         check_port
         install_dependency
         install_docker
@@ -2797,7 +2798,7 @@ ${green} 4${white}.${plain} 常用工具 ▶
 ${yellow} 5${white}.${yellow} 系统工具 ${blue}▶
 ${green} 6${white}.${plain} 面板工具 ▶
 ${green} 7${white}.${plain} 其他工具 ▶
-${green} 8${white}.${plain} 节点管理 ▶ ${red}Warp ${blue}X-ui
+${green} 8${white}.${plain} 节点管理 ▶ ${red}Warp ${blue}x-ui
 ${green} 9${white}.${plain} Docker管理 ▶
 ${green}10${white}.${yellow} Web管理 ▶${plain}
 ${green}11${white}.${plain} 我的工作区 ▶ (Todo...)
