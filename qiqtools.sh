@@ -2958,9 +2958,9 @@ script_update(){
 # 显示主菜单
 main_menu() {
 echo -e "
-${cyan} __   _  __   ___ ____ ____ _   __
-${cyan}|  |  | |  |   |  |  | |  | |  |__
-${cyan}|__|_ | |__|_  |  |__| |__| |__ __|
+${red} __   _  __   ${blue}___ ____ ____ _   __   ${plain}
+${red}|  |  | |  |  ${blue} |  |  | |  | |  |__   ${plain}
+${red}|__|_ | |__|_ ${blue} |  |__| |__| |__ __|  ${plain} 
 
 ${green}QiQTools 一键脚本工具 $script_version
 ${plain}(支持Ubuntu/Debian/CentOS/Alpine系统)
