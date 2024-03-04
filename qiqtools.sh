@@ -2620,6 +2620,26 @@ caddy_newcaddyfile(){
   # caddy reload
 }
 
+caddy_reload(){  
+  caddy_newcaddyfile
+  cd /etc/caddy
+  caddy reload
+  cd -
+}
+
+caddy_start(){
+  cd /etc/caddy
+  caddy start
+  # caddy run
+  cd -
+}
+
+caddy_stop(){
+  cd /etc/caddy
+  caddy stop
+  cd -
+}
+
 # 网站管理菜单
 LDNMP_menu() {
 echo -e "
@@ -2627,16 +2647,16 @@ echo -e "
 ${plain}IPv4: ${white}$ipv4_address${plain}
 ${plain}IPv6: ${white}$ipv6_address${plain}
 ${plain}-------------------------------
-${green} 1.${red} 安装LDNMP环境 (Todo...)
+${green} 1.${plain} 安装LDNMP环境 (Todo...)
 ${green} 2.${plain} 更新LDNMP环境 (Todo...)
 ${green} 3.${plain} 优化LDNMP环境 (Todo...)
 ${green} 4.${plain} 卸载LDNMP环境 (Todo...)
 ${plain}-------------------------------     
 ${green}11.${blue} 安装nginx
-${green}12.${red} 安装Caddy
-${green}13.${plain} 重启Caddy
-${green}14.${plain} 停止Caddy
-${green}15.${plain} 更新Caddy
+${green}12.${white} 安装Caddy*
+${green}13.${plain} 重启服务
+${green}14.${plain} 停止服务
+${green}15.${plain} 更新服务
 ${plain}-------------------------------  
 ${green}21.${plain} 站点重定向
 ${green}22.${plain} 站点反向代理
@@ -2680,10 +2700,11 @@ LDNMP_run(){
         echo "当前版本: v$nginx_version"
         echo ""
         ;;
-     12)
-        check_port
-        caddy_install
-        ;;
+
+     12) caddy_install ;;
+     13) caddy_reload ;;
+     14) caddy_start ;;
+     15) caddy_stop ;;
 
      21)
         # ip_address
@@ -2692,8 +2713,8 @@ LDNMP_run(){
 
         caddy_redirect $yuming $reverseproxy
         
-        caddy_newcaddyfile
-        caddy reload
+        # caddy_newcaddyfile
+        caddy_reload
         
         echo -e "\n您的重定向网站做好了！"
         echo "https://$yuming"
@@ -2707,8 +2728,8 @@ LDNMP_run(){
 
         caddy_reproxy $yuming $reverseproxy $port
         
-        caddy_newcaddyfile
-        caddy reload
+        # caddy_newcaddyfile
+        caddy_reload
         
         echo -e "\n您的反向代理网站做好了！"
         echo "https://$yuming"
@@ -2721,8 +2742,8 @@ LDNMP_run(){
 
         caddy_staticweb $yuming $rootpath
 
-        caddy_newcaddyfile
-        caddy reload
+        # caddy_newcaddyfile
+        caddy_reload
         
         echo -e "\n您的静态网站搭建好了！"
         echo "https://$yuming"
