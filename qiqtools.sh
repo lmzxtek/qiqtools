@@ -2776,7 +2776,7 @@ caddy_web_manager(){
           5) caddy_web_list && caddy_delete_domain ;;
           6) caddy_clean_cache ;;
 
-          0) break ;; # 跳出循环，退出菜单
+          0) break && break ;; # 跳出循环，退出菜单
           *) echo "无效的输入!" ;; # 跳出循环，退出菜单
       esac
       break_end
