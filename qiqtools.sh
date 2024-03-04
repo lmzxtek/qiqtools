@@ -2964,7 +2964,7 @@ ${cyan}|__|_ | |__|_  |  |__| |__| |__ __|
 
 ${green}QiQTools 一键脚本工具 $script_version
 ${plain}(支持Ubuntu/Debian/CentOS/Alpine系统)
-${plain}-- 输入${yellow}qiq ${plain}可快速启动此脚本 --
+${plain}-- 输入 >> ${yellow}qiq ${plain} << 可快速启动此脚本 --
 ${plain}-------------------------------
 ${green} 1${white}.${yellow} 系统信息${plain}查询
 ${green} 2${white}.${plain} 系统更新
