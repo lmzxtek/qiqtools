@@ -2781,7 +2781,7 @@ ${green} 1${white}.${yellow} 系统信息${plain}查询
 ${green} 2${white}.${plain} 系统更新
 ${green} 3${blue}.${plain} 系统清理
 ${green} 4${white}.${plain} 常用工具 ▶
-${green} 5${yellow}.${plain} 系统工具 ▶
+${yellow} 5${white}.${plain} 系统工具 ▶
 ${green} 6${white}.${plain} 面板工具 ▶
 ${green} 7${white}.${plain} 其他工具 ▶
 ${green} 8${white}.${plain} 节点管理 ▶ ${red}Warp ${blue}X-ui
