@@ -1960,6 +1960,7 @@ ${green}13.${plain} AuroPanel(极光面板)
 ${green}14.${plain} IT-Tools
 ${green}15.${plain} Next Terminal
 ${green}16.${plain} VScode Server
+${green}17.${plain} SearXNG聚合搜索站
 -------------------------------
 ${green} 0.${plain} 返回主菜单
 -------------------------------
@@ -2202,6 +2203,25 @@ panel_tools_run(){
       cd ~
       ;;
      16) clear && install curl && curl -fsSL https://code-server.dev/install.sh | sh  ;;
+     17) 
+      clear 
+      docker_name="searxng"
+      docker_img="alandoyle/searxng:latest"
+      docker_port=8700
+      docker_rum="docker run --name=searxng \
+                      -d --init \
+                      --restart=unless-stopped \
+                      -v /home/docker/searxng/config:/etc/searxng \
+                      -v /home/docker/searxng/templates:/usr/local/searxng/searx/templates/simple \
+                      -v /home/docker/searxng/theme:/usr/local/searxng/searx/static/themes/simple \
+                      -p 8700:8080/tcp \
+                      alandoyle/searxng:latest"
+      docker_describe="searxng是一个私有且隐私的搜索引擎站点"
+      docker_url="官网介绍: https://hub.docker.com/r/alandoyle/searxng"
+      docker_use=""
+      docker_passwd=""
+      docker_app
+      ;;
     #  17) clear && echo -e "\nTodo: ... \n"  ;;
     #  18) clear && echo -e "\nTodo: ... \n"  ;;
     #  19) clear && echo -e "\nTodo: ... \n"  ;;
@@ -2572,7 +2592,7 @@ caddy_install(){
   sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https curl
   curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
   curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
-  
+
   sudo apt update
   sudo apt install caddy
 }
@@ -2664,7 +2684,7 @@ ${plain}-------------------------------
 ${green} 1.${plain} 安装LDNMP环境 (Todo...)      ${green} 3.${plain} 更新LDNMP环境 (Todo...)
 ${green} 2.${plain} 卸载LDNMP环境 (Todo...)      ${green} 4.${plain} 优化LDNMP环境 (Todo...)
 ${plain}-------------------------------     
-${green}11.${plain} 安装nginx      ${green}14.${plain} 重启服务
+${green}11.${plain} 安装Nginx      ${green}14.${plain} 重启服务
 ${green}12.${red} 安装Caddy*     ${green}15.${plain} 停止服务
 ${green}13.${plain} 查看状态       ${green}16.${plain} 更新服务
 ${yellow}-------------------------------  
@@ -2694,25 +2714,38 @@ LDNMP_run(){
     case $choice in
      11) 
         #  安装Nginx
-        check_port
-        install_dependency
-        install_docker
-        install_certbot
+        # check_port
+        # install_dependency
+        # install_docker
+        # install_certbot
 
-        cd /home && mkdir -p web/html web/mysql web/certs web/conf.d web/redis web/log/nginx && touch web/docker-compose.yml
+        # cd /home && mkdir -p web/html web/mysql web/certs web/conf.d web/redis web/log/nginx && touch web/docker-compose.yml
 
-        wget -O /home/web/nginx.conf https://raw.githubusercontent.com/kejilion/nginx/main/nginx10.conf
-        wget -O /home/web/conf.d/default.conf https://raw.githubusercontent.com/kejilion/nginx/main/default10.conf
-        default_server_ssl
-        docker rm -f nginx >/dev/null 2>&1
-        docker rmi nginx nginx:alpine >/dev/null 2>&1
-        docker run -d --name nginx --restart always -p 80:80 -p 443:443 -p 443:443/udp -v /home/web/nginx.conf:/etc/nginx/nginx.conf -v /home/web/conf.d:/etc/nginx/conf.d -v /home/web/certs:/etc/nginx/certs -v /home/web/html:/var/www/html -v /home/web/log/nginx:/var/log/nginx nginx:alpine
+        # wget -O /home/web/nginx.conf https://raw.githubusercontent.com/kejilion/nginx/main/nginx10.conf
+        # wget -O /home/web/conf.d/default.conf https://raw.githubusercontent.com/kejilion/nginx/main/default10.conf
+        # default_server_ssl
+        # docker rm -f nginx >/dev/null 2>&1
+        # docker rmi nginx nginx:alpine >/dev/null 2>&1
+        # docker run -d --name nginx --restart always -p 80:80 -p 443:443 -p 443:443/udp -v /home/web/nginx.conf:/etc/nginx/nginx.conf -v /home/web/conf.d:/etc/nginx/conf.d -v /home/web/certs:/etc/nginx/certs -v /home/web/html:/var/www/html -v /home/web/log/nginx:/var/log/nginx nginx:alpine
+
+        apt install curl gnupg2 ca-certificates lsb-release ubuntu-keyring
+        curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
+        echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/mainline/ubuntu `lsb_release -cs` nginx" | sudo tee /etc/apt/sources.list.d/nginx.list
+        echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" | sudo tee /etc/apt/preferences.d/99nginx
+
+        apt update
+        apt install nginx
+        
+        systemctl start nginx
+        systemctl enable nginx
 
         clear
-        nginx_version=$(docker exec nginx nginx -v 2>&1)
+        # nginx_version=$(docker exec nginx nginx -v 2>&1)
+        nginx_version=$(nginx -v)
         nginx_version=$(echo "$nginx_version" | grep -oP "nginx/\K[0-9]+\.[0-9]+\.[0-9]+")
         echo "nginx已安装完成"
         echo "当前版本: v$nginx_version"
+        # echo "当前版本: $(nginx -v)"
         echo ""
         ;;
 
@@ -2734,6 +2767,7 @@ LDNMP_run(){
         
         echo -e "\n您的重定向网站做好了！"
         echo "https://$yuming"
+        echo ""
         ;;
 
      22)
@@ -2749,6 +2783,7 @@ LDNMP_run(){
         
         echo -e "\n您的反向代理网站做好了！"
         echo "https://$yuming"
+        echo ""
         ;;
 
      23)
@@ -2763,6 +2798,7 @@ LDNMP_run(){
         
         echo -e "\n您的静态网站搭建好了！"
         echo "https://$yuming"
+        echo ""
         ;;
 
       0) qiqtools ;;
@@ -2800,7 +2836,7 @@ ${green} 4${white}.${plain} 常用工具 ▶
 ${yellow} 5${white}.${yellow} 系统工具 ${blue}▶
 ${green} 6${white}.${plain} 面板工具 ▶
 ${green} 7${white}.${plain} 其他工具 ▶
-${green} 8${white}.${plain} 节点管理 ▶ ${red}Warp ${blue}x-ui
+${green} 8${white}.${plain} 节点管理 ▶ ${red}warp ${blue}x-ui
 ${green} 9${white}.${plain} Docker管理 ▶
 ${green}10${white}.${yellow} Web管理 ▶${plain}
 ${green}11${white}.${plain} 我的工作区 ▶ (Todo...)
