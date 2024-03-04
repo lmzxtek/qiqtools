@@ -2786,7 +2786,7 @@ ${green} 6${white}.${plain} 面板工具 ▶
 ${green} 7${white}.${plain} 其他工具 ▶
 ${green} 8${white}.${plain} 节点管理 ▶ ${yellow}Warp ${blue}X-ui ${cyan}XrayR
 ${green} 9${white}.${plain} Docker管理 ▶
-${green}10${white}.${blue} Web管理 ▶${plain}
+${green}10${white}.${yellow} Web管理 ▶${plain}
 ${green}11${white}.${plain} 测试脚本合集 ▶ (Todo...)
 ${green}12${white}.${plain} 甲骨文云脚本合集 ▶ (Todo...)
 ${green}13${white}.${plain} 我的工作区 ▶ (Todo...)
