@@ -2682,7 +2682,8 @@ caddy_web_list(){
   # ls -t /home/web/caddy | grep -v "default.conf" | sed 's/\.[^.]*$//'
   dm_list=$(ls -t /home/web/caddy | grep -v "default.conf" | sed 's/\.[^.]*$//')
 
-  echo -e "\n >> 站点列表\n${plain}-------------------------------\n"
+  clear
+  echo -e "\n >> ${red}站点列表\n${plain}-------------------------------\n"
   for dm_file in $dm_list; do
       printf "%-30s\n" "$dm_file"
   done
