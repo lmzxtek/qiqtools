@@ -2762,7 +2762,7 @@ LDNMP_run(){
         echo "https://$yuming"
         ;;
 
-      0) cd - && qiqtools ;;
+      0) qiqtools ;;
       *) echo "无效的输入!" ;;
     esac  
     break_end    
