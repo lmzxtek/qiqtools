@@ -2615,7 +2615,7 @@ EOF
 
 # 更新域名信息
 caddy_newcaddyfile(){
-  if [ -z "$(find /etc/caddy -name "*.conf")" ]; then
+  if [ -z "$(find /home/web/caddy -name "*.conf")" ]; then
     echo "No .conf files found in /home/web/caddy"
 
   else
@@ -2626,22 +2626,29 @@ caddy_newcaddyfile(){
 
 caddy_reload(){  
   caddy_newcaddyfile
-  cd /etc/caddy
-  caddy reload
-  cd -
+  sudo systemctl stop caddy
+  # cd /etc/caddy
+  # caddy reload
+  # cd -
 }
 
 caddy_start(){
-  cd /etc/caddy
-  caddy start
+  sudo systemctl stop caddy
+  # cd /etc/caddy
+  # caddy start
   # caddy run
-  cd -
+  # cd -
 }
 
 caddy_stop(){
-  cd /etc/caddy
-  caddy stop
-  cd -
+  sudo systemctl stop caddy
+  # cd /etc/caddy
+  # caddy stop
+  # cd -
+}
+
+caddy_status(){
+  sudo systemctl status caddy
 }
 
 # 网站管理菜单
@@ -2702,7 +2709,7 @@ LDNMP_run(){
         ;;
 
      12) caddy_install ;;
-     13) caddy adapt ;;
+     13) caddy_status ;;
      14) caddy_reload ;;
      15) caddy_start ;;
      16) caddy_stop ;;
