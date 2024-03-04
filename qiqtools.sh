@@ -2826,7 +2826,7 @@ ${green}13.${plain} 查看状态       ${green}16.${plain} 更新服务
 ${yellow}-------------------------------  
 ${green}21.${plain} 站点管理
 ${green}22.${plain} 站点重定向
-${green}23.${plain} 站点反向代理
+${green}23.${red} 站点反向代理
 ${green}24.${plain} 自定义静态站点
 ${yellow}-------------------------------   
 ${green}88.${plain} 站点防御程序 (Todo...)
