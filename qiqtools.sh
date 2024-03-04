@@ -2773,7 +2773,7 @@ ${cyan} __   _  __   ___ ____ ____ _   __
 ${cyan}|  |  | |  |   |  |  | |  | |  |__
 ${cyan}|__|_ | |__|_  |  |__| |__| |__ __|
 
-${plain}QiQTools 一键脚本工具 $script_version
+${green}QiQTools 一键脚本工具 $script_version
 ${plain}(支持Ubuntu/Debian/CentOS/Alpine系统)
 ${plain}-- 输入${yellow}qiq ${plain}可快速启动此脚本 --
 -------------------------------
@@ -2784,7 +2784,7 @@ ${green} 4${white}.${plain} 常用工具 ▶
 ${green} 5${white}.${plain} 系统工具 ▶
 ${green} 6${white}.${plain} 面板工具 ▶
 ${green} 7${white}.${plain} 其他工具 ▶
-${green} 8${white}.${plain} 节点管理 ▶ ${yellow}Warp ${blue}X-ui ${cyan}XrayR
+${green} 8${white}.${plain} 节点管理 ▶ ${red}Warp ${blue}X-ui
 ${green} 9${white}.${plain} Docker管理 ▶
 ${green}10${white}.${yellow} Web管理 ▶${plain}
 ${green}11${white}.${plain} 测试脚本合集 ▶ (Todo...)
