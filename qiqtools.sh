@@ -47,7 +47,8 @@ break_end() {
 
 # run qiq and exit 
 qiqtools() {
-    cd ~ && qiq && exit
+    # cd ~ && qiq && exit
+    cd ~ && main_loop && exit
 }
 
 # 安装应用程序
