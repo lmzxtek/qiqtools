@@ -2518,24 +2518,123 @@ docker_run() {
 }
 
 
+check_port() {
+    # 定义要检测的端口
+    PORT=443
+
+    # 检查端口占用情况
+    result=$(ss -tulpn | grep ":$PORT")
+
+    # 判断结果并输出相应信息
+    if [ -n "$result" ]; then
+        is_nginx_container=$(docker ps --format '{{.Names}}' | grep 'nginx')
+
+        # 判断是否是Nginx容器占用端口
+        if [ -n "$is_nginx_container" ]; then
+            echo ""
+        else
+            clear
+            echo -e "\e[1;31m端口 $PORT 已被占用，无法安装环境，卸载以下程序后重试！\e[0m"
+            echo "$result"
+            break_end
+            qiqtools
+        fi
+    else
+        echo ""
+    fi
+}
+
+add_yuming() {
+  ip_address
+  echo -e "先将域名解析到本机IP: ${red}$ipv4_address  $ipv6_address${plain}"
+  read -p "请输入你解析的域名: " yuming
+}
+
+# 反代域名
+reverse_proxy() {
+      ip_address
+      wget -O /home/web/conf.d/$yuming.conf https://raw.githubusercontent.com/kejilion/nginx/main/reverse-proxy.conf
+      sed -i "s/yuming.com/$yuming/g" /home/web/conf.d/$yuming.conf
+      sed -i "s/0.0.0.0/$ipv4_address/g" /home/web/conf.d/$yuming.conf
+      sed -i "s/0000/$duankou/g" /home/web/conf.d/$yuming.conf
+      docker restart nginx
+}
+
+caddy_install(){
+  # 准备目录和主页文件
+  mkdir -p /home/web/{caddy,html}
+  touch /home/web/caddy/Caddyfile
+  # touch /home/web/html/index.html
+  wget -O /home/web/html/index.html https://github.com/kejilion/Website_source_code/blob/main/index.html
+
+  # 安装Caddy
+  sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https curl
+  curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+  curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
+  sudo apt update
+  sudo apt install caddy
+}
+
+# 反代
+caddy_reproxy(){
+  local domain=$1
+  local reproxip=$2
+  local report=$3
+  cat > /home/web/caddy/$domain << EOF
+$domain {
+    reverse_proxy $reproxip:$report
+    encode gzip
+}
+EOF
+}
+
+# 重定向
+caddy_redirect(){
+  local domain=$1
+  local redirurl=$2
+  cat > /home/web/caddy/$domain << EOF
+$domain {
+    redir $redirurl{uri}
+}
+EOF
+}
+
+
+# 静态网站
+caddy_staticweb(){
+  local domain=$1
+  local rootpath=$2
+  cat > /home/web/caddy/$domain << EOF
+$domain {
+    root * $rootpath
+    encode gzip
+    file_server
+}
+EOF
+}
 LDNMP_menu() {
 echo -e "
 ▶ 站点管理
 ${plain}-------------------------------
-${green} 1.${red} 安装LDNMP环境
-${green} 2.${plain} 更新LDNMP环境
-${green} 3.${plain} 优化LDNMP环境
-${green} 4.${plain} 卸载LDNMP环境
+${green} 1.${red} 安装LDNMP环境 (Todo...)
+${green} 2.${plain} 更新LDNMP环境 (Todo...)
+${green} 3.${plain} 优化LDNMP环境 (Todo...)
+${green} 4.${plain} 卸载LDNMP环境 (Todo...)
 ${plain}-------------------------------     
-${green}11.${red} 仅安装nginx
-${green}12.${plain} 站点重定向
-${green}13.${plain} 站点反向代理
-${green}14.${plain} 自定义静态站点 (Todo...)
+${green}11.${blue} 安装nginx
+${green}12.${red} 安装Caddy
+${green}13.${plain} 重启Caddy
+${green}14.${plain} 停止Caddy
+${green}15.${plain} 更新Caddy
+${plain}-------------------------------  
+${green}21.${plain} 站点重定向
+${green}22.${plain} 站点反向代理
+${green}23.${plain} 自定义静态站点 (Todo...)
 ${plain}-------------------------------
-${green}22.${plain} 安装可道云桌面 (Todo...)
-${green}23.${plain} 安装WordPress (Todo...)
-${green}24.${plain} 安装Halo博客网站 (Todo...)
-${green}25.${plain} 安装typecho轻量博客网站 (Todo...)
+${green}32.${plain} 安装可道云桌面 (Todo...)
+${green}33.${plain} 安装WordPress (Todo...)
+${green}34.${plain} 安装Halo博客网站 (Todo...)
+${green}35.${plain} 安装typecho轻量博客网站 (Todo...)
 ${plain}-------------------------------   
 ${green}88.${plain} 站点防御程序 (Todo...)
 ${plain}-------------------------------   
@@ -2550,8 +2649,75 @@ LDNMP_run(){
     reading "请选择: " choice
 
     case $choice in
-      1) clear && install_add_docker ;;
-      2) ;;
+     11) 
+        check_port
+        install_dependency
+        install_docker
+        install_certbot
+
+        cd /home && mkdir -p web/html web/mysql web/certs web/conf.d web/redis web/log/nginx && touch web/docker-compose.yml
+
+        wget -O /home/web/nginx.conf https://raw.githubusercontent.com/kejilion/nginx/main/nginx10.conf
+        wget -O /home/web/conf.d/default.conf https://raw.githubusercontent.com/kejilion/nginx/main/default10.conf
+        default_server_ssl
+        docker rm -f nginx >/dev/null 2>&1
+        docker rmi nginx nginx:alpine >/dev/null 2>&1
+        docker run -d --name nginx --restart always -p 80:80 -p 443:443 -p 443:443/udp -v /home/web/nginx.conf:/etc/nginx/nginx.conf -v /home/web/conf.d:/etc/nginx/conf.d -v /home/web/certs:/etc/nginx/certs -v /home/web/html:/var/www/html -v /home/web/log/nginx:/var/log/nginx nginx:alpine
+
+        clear
+        nginx_version=$(docker exec nginx nginx -v 2>&1)
+        nginx_version=$(echo "$nginx_version" | grep -oP "nginx/\K[0-9]+\.[0-9]+\.[0-9]+")
+        echo "nginx已安装完成"
+        echo "当前版本: v$nginx_version"
+        echo ""
+        ;;
+     12)
+        check_port
+        caddy_install
+        ;;
+
+     21)
+        ip_address
+        add_yuming
+        read -p "请输入跳转域名: " reverseproxy
+
+        caddy_staticweb yuming reverseproxy
+          
+        clear
+        echo "您的重定向网站做好了！"
+        echo "https://$yuming"
+        ;;
+
+     22)
+        ip_address
+        add_yuming
+        read -p "请输入你的反代IP: " reverseproxy
+        read -p "请输入你的反代端口: " port 
+
+        caddy_staticweb yuming reverseproxy port
+
+        # wget -O /home/web/conf.d/$yuming.conf https://raw.githubusercontent.com/kejilion/nginx/main/reverse-proxy.conf
+        # sed -i "s/yuming.com/$yuming/g" /home/web/conf.d/$yuming.conf
+        # sed -i "s/0.0.0.0/$reverseproxy/g" /home/web/conf.d/$yuming.conf
+        # sed -i "s/0000/$port/g" /home/web/conf.d/$yuming.conf
+        
+        clear
+        echo "您的反向代理网站做好了！"
+        echo "https://$yuming"
+        ;;
+
+     23)
+        ip_address
+        add_yuming
+        read -p "请输入web概目录: " rootpath 
+
+        caddy_staticweb yuming rootpath
+
+        clear
+        echo "您的静态网站搭建好了！"
+        echo "https://$yuming"
+        ;;
+
       0) qiqtools ;;
       *) echo "无效的输入!" ;;
     esac  
@@ -2562,8 +2728,6 @@ LDNMP_run(){
 # 脚本更新
 script_update(){
   cd ~
-  # curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/update_log.sh && chmod +x update_log.sh && ./update_log.sh
-  # rm update_log.sh
   echo ""
   curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && chmod +x qiqtools.sh
   echo "脚本已更新到最新版本！"
