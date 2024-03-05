@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.2.5
+script_version=v0.2.6
 #==========================
 
  black='\033[0;30m'
@@ -1944,31 +1944,115 @@ install_1panel() {
   fi
 }
 
+# 在Ubuntu22.04上安装可道云
+# https://docs.kodcloud.com/setup/ubuntu/
+install_kodbox(){
+  # 安装信赖
+  sudo apt update && sudo apt upgrade
+  sudo apt install nginx mysql-server redis-server
+  sudo apt install php php-fpm php-mysql php-gd php-redis php-mbstring php-curl php-xml php-zip php-json
+  sudo systemctl disable apache2.service
+  sudo systemctl enable nginx php8.1-fpm mysql redis-server
+
+  sudo apt install imagemagick ffmpeg
+  sudo sed -i '/PDF/s/none/read \| write/g' /etc/ImageMagick-6/policy.xml
+
+  # touch /etc/nginx/sites-enabled/default
+  cat /etc/nginx/sites-enabled/default << EOF
+listen 80;              ##访问端口
+root /var/www/html;     #改成自己的站点目录
+server_name _;          #访问域名 '_'代表任何域名都能访问
+
+location ~ [^/]\.php(/|$) {
+   try_files $uri =404;
+   fastcgi_pass unix:/run/php/php8.1-fpm.sock;
+   fastcgi_index index.php;
+   set $path_info $fastcgi_path_info;
+   set $real_script_name $fastcgi_script_name;  
+   if ($fastcgi_script_name ~ "^(.+?\.php)(/.+)$") {
+      set $real_script_name $1;
+      set $path_info $2;
+   }
+   fastcgi_param SCRIPT_FILENAME $document_root$real_script_name;
+   fastcgi_param SCRIPT_NAME $real_script_name;
+   fastcgi_param PATH_INFO $path_info;
+   include fastcgi_params;
+}
+EOF
+
+  PHP_INI=/etc/php/8.1/fpm/php.ini
+  PHP_FPM=/etc/php/8.1/fpm/pool.d/www.conf
+  sed -i \
+    -e "s/max_execution_time = 30/max_execution_time = 3600/g" \
+    -e "s/max_input_time = 60/max_input_time = 3600/g" \
+    -e "s/memory_limit = 128M/memory_limit = 512M/g" \
+    -e "s/post_max_size = 8M/post_max_size = 512M/g" \
+    -e "s/upload_max_filesize = 2M/upload_max_filesize = 512M/g" \
+    ${PHP_INI}
+  sed -i \
+    -e "s/pm.max_children = 5/pm.max_children = 100/g" \
+    -e "s/pm.start_servers = 2/pm.start_servers = 10/g" \
+    -e "s/pm.min_spare_servers = 1/pm.min_spare_servers = 10/g" \
+    -e "s/pm.max_spare_servers = 3/pm.max_spare_servers = 50/g" \
+    -e "s/;pm.max_requests = 500/pm.max_requests = 500/g" \
+    -e "s/;listen.mode = 0660/listen.mode = 0666/g" \
+    ${PHP_FPM}
+  sudo systemctl restart php8.1-fpm
+
+  sudo mysql
+  # mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password by 'xxxx';
+  # mysql> quit
+
+  # sudo mysql_secure_installation
+
+  # mysql> CREATE USER 'username'@'localhost' IDENTIFIED BY 'password';
+  # mysql> CREATE DATABASE IF NOT EXISTS kodbox CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+  # mysql> GRANT ALL PRIVILEGES ON kodbox.* TO 'username'@'localhost';
+  # mysql> FLUSH PRIVILEGES;
+  # mysql> quit
+
+  # 安装KodBox
+  sudo apt install -y unzip
+  cd /var/www/html/
+  sudo curl -L "https://api.kodcloud.com/?app/version&download=server.link" -o kodbox.zip
+  sudo unzip kodbox.zip && sudo rm kodbox.zip
+  sudo chown -R www-data:www-data /var/www/html
+  sudo chmod -R 755 /var/www/html
+  sudo systemctl restart nginx
+
+  # 设置防火墙
+  sudo ufw allow ssh
+  sudo ufw allow http
+  sudo ufw enable
+}
+
 # 站点工具菜单
 website_tools_menu() {
 echo -e "
 ▶ 面板工具
--------------------------------
-${green} 1.${plain} 宝塔面板(官方版)               
-${green} 2.${plain} aaPanel(宝塔国际版)
-${green} 3.${red} 1Panel(新一代管理面板)
-${green} 4.${plain} NginxProxyManager(Nginx可视化面板)
-${green} 5.${plain} AList(多存储文件列表程序)
-${green} 6.${plain} Ubuntu远程桌面网页版
-${green} 7.${plain} 哪吒探针(VPS监控面板)
-${green} 8.${plain} QB离线BT(磁力下载面板)
-${green} 9.${plain} portainer容器管理面板
-${green}10.${plain} RocketChat(多人在线聊天系统)
-${green}11.${plain} StirlingPDF工具大全
-${green}12.${plain} Memos网页备忘录
-${green}13.${plain} AuroPanel(极光面板)
-${green}14.${plain} IT-Tools
-${green}15.${plain} Next Terminal
-${green}16.${plain} VScode Server
-${green}17.${plain} SearXNG聚合搜索站
--------------------------------
+${plain}-------------------------------
+${green} 1.${red}1Panel(新一代管理面板)
+${green} 2.${plain}aaPanel(宝塔国际版)
+${green} 3.${plain}宝塔面板(官方版)
+${green} 4.${plain}NginxProxyManager(Nginx可视化面板)
+${green} 5.${cyan}哪吒探针(VPS监控面板)
+${plain}-------------------------------
+${green}11.${plain}Ubuntu远程桌面网页版(Docker)
+${green}12.${plain}AuroPanel极光面板(Docker)
+${green}13.${plain}Portainer容器管理面板(Docker)
+${green}14.${plain}Memos网页备忘录(Docker)
+${green}15.${plain}QBittorrent-BT下载面板(Docker)
+${green}16.${plain}RocketChat多人在线聊天系统(Docker)
+${green}17.${plain}SearXNG聚合搜索站(Docker)
+${green}18.${plain}StirlingPDF工具大全(Docker)
+${green}19.${plain}IT-Tools常用工具(Docker)
+${green}20.${plain}Next-Terminal资产管理(Docker)
+${plain}-------------------------------
+${green}61.${cyan}AList多存储文件列表程序
+${green}62.${cyan}VScode-Server在线版
+${green}63.${cyan}KodBox可道云在线桌面
+${plain}-------------------------------
 ${green} 0.${plain} 返回主菜单
--------------------------------
 "
 }
 
@@ -1979,9 +2063,9 @@ website_tools_run(){
     read -p "请输入你的选择: " sub_choice
 
     case $sub_choice in
-      1) clear && install_baota_cn ;;
+      1) clear && install_1panel  ;;
       2) clear && install__baota_aa ;;
-      3) clear && install_1panel  ;;
+      3) clear && install_baota_cn ;;
       4) 
         clear 
         docker_name="npm"
@@ -2000,11 +2084,11 @@ website_tools_run(){
         docker_url="官网介绍: https://nginxproxymanager.com/"
         docker_use="echo \"初始用户名: admin@example.com\""
         docker_passwd="echo \"初始密码: changeme\""
-
         docker_app
         ;;
-      5) clear && install curl && curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s install  ;;
-      6) 
+
+      5) clear && install curl && curl -L https://raw.githubusercontent.com/naiba/nezha/master/script/install.sh  -o nezha.sh && chmod +x nezha.sh && ./nezha.sh  ;;
+     11) 
         clear 
         docker_name="ubuntu-novnc"
         docker_img="fredblgr/ubuntu-novnc:20.04"
@@ -2022,12 +2106,44 @@ website_tools_run(){
         docker_url="官网介绍: https://hub.docker.com/r/fredblgr/ubuntu-novnc"
         docker_use="echo \"用户名: root\""
         docker_passwd="echo \"密码: $rootpasswd\""
-
         docker_app
         ;;
-        
-      7) clear && install curl && curl -L https://raw.githubusercontent.com/naiba/nezha/master/script/install.sh  -o nezha.sh && chmod +x nezha.sh && ./nezha.sh  ;;
-      8) 
+
+     12) clear && install curl && bash <(curl -fsSL https://raw.githubusercontent.com/Aurora-Admin-Panel/deploy/main/install.sh)  ;;
+
+     13) 
+        clear 
+        docker_name="portainer"
+        docker_img="portainer/portainer"
+        docker_port=9050
+        docker_rum="docker run -d \
+                --name portainer \
+                -p 9050:9000 \
+                -v /var/run/docker.sock:/var/run/docker.sock \
+                -v /home/docker/portainer:/data \
+                --restart always \
+                portainer/portainer"
+        docker_describe="portainer是一个轻量级的docker容器管理面板"
+        docker_url="官网介绍: https://www.portainer.io/"
+        docker_use=""
+        docker_passwd=""
+        docker_app
+        ;;
+
+     14) 
+      clear 
+      docker_name="memos"
+      docker_img="ghcr.io/usememos/memos:latest"
+      docker_port=5230
+      docker_rum="docker run -d --name memos -p 5230:5230 -v /home/docker/memos:/var/opt/memos --restart always ghcr.io/usememos/memos:latest"
+      docker_describe="Memos是一款轻量级、自托管的备忘录中心"
+      docker_url="官网介绍: https://github.com/usememos/memos"
+      docker_use=""
+      docker_passwd=""
+      docker_app
+      ;;
+
+     15) 
         docker_name="qbittorrent"
         docker_img="lscr.io/linuxserver/qbittorrent:latest"
         docker_port=8081
@@ -2051,25 +2167,7 @@ website_tools_run(){
 
         docker_app
         ;;
-      9) 
-        clear 
-        docker_name="portainer"
-        docker_img="portainer/portainer"
-        docker_port=9050
-        docker_rum="docker run -d \
-                --name portainer \
-                -p 9050:9000 \
-                -v /var/run/docker.sock:/var/run/docker.sock \
-                -v /home/docker/portainer:/data \
-                --restart always \
-                portainer/portainer"
-        docker_describe="portainer是一个轻量级的docker容器管理面板"
-        docker_url="官网介绍: https://www.portainer.io/"
-        docker_use=""
-        docker_passwd=""
-        docker_app
-        ;;
-     10) 
+     16) 
       clear 
       if docker inspect rocketchat &>/dev/null; then
               clear
@@ -2158,56 +2256,8 @@ website_tools_run(){
                   ;;
           esac
       fi
-      
       ;;
-     11) 
-      clear
-      docker_name="s-pdf"
-      docker_img="frooodle/s-pdf:latest"
-      docker_port=8020
-      docker_rum="docker run -d \
-                      --name s-pdf \
-                      --restart=always \
-                        -p 8020:8080 \
-                        -v /home/docker/s-pdf/trainingData:/usr/share/tesseract-ocr/5/tessdata \
-                        -v /home/docker/s-pdf/extraConfigs:/configs \
-                        -v /home/docker/s-pdf/logs:/logs \
-                        -e DOCKER_ENABLE_SECURITY=false \
-                        frooodle/s-pdf:latest"
-      docker_describe="这是一个强大的本地托管基于 Web 的 PDF 操作工具，使用 docker，允许您对 PDF 文件执行各种操作，例如拆分合并、转换、重新组织、添加图像、旋转、压缩等。"
-      docker_url="官网介绍: https://github.com/Stirling-Tools/Stirling-PDF"
-      docker_use=""
-      docker_passwd=""
-      docker_app
-      ;;
-     12) 
-      clear 
-      docker_name="memos"
-      docker_img="ghcr.io/usememos/memos:latest"
-      docker_port=5230
-      docker_rum="docker run -d --name memos -p 5230:5230 -v /home/docker/memos:/var/opt/memos --restart always ghcr.io/usememos/memos:latest"
-      docker_describe="Memos是一款轻量级、自托管的备忘录中心"
-      docker_url="官网介绍: https://github.com/usememos/memos"
-      docker_use=""
-      docker_passwd=""
-      docker_app
-      ;;
-     13) clear && install curl && bash <(curl -fsSL https://raw.githubusercontent.com/Aurora-Admin-Panel/deploy/main/install.sh)  ;;
-     14) 
-      clear 
-      docker run -d --name it-tools --restart unless-stopped -p 8080:80 corentinth/it-tools:latest
-      # docker run -d --name it-tools --restart unless-stopped -p 8080:80 ghcr.io/corentinth/it-tools:latest
-      ;;
-     15) 
-      clear
-      cd ~
-      mkdir next-terminal-docker && cd next-terminal-docker
-      curl -sSL https://f.typesafe.cn/next-terminal/docker-compose.yml > docker-compose.yml
-      # curl -sSL https://f.typesafe.cn/next-terminal/aliyuns/docker-compose.yml > docker-compose.yml # 阿里镜像
-      docker-compose up -d
-      cd ~
-      ;;
-     16) clear && install curl && curl -fsSL https://code-server.dev/install.sh | sh  ;;
+
      17) 
       clear 
       docker_name="searxng"
@@ -2227,9 +2277,47 @@ website_tools_run(){
       docker_passwd=""
       docker_app
       ;;
-    #  17) clear && echo -e "\nTodo: ... \n"  ;;
-    #  18) clear && echo -e "\nTodo: ... \n"  ;;
-    #  19) clear && echo -e "\nTodo: ... \n"  ;;
+
+     18) 
+      clear
+      docker_name="s-pdf"
+      docker_img="frooodle/s-pdf:latest"
+      docker_port=8020
+      docker_rum="docker run -d \
+                      --name s-pdf \
+                      --restart=always \
+                        -p 8020:8080 \
+                        -v /home/docker/s-pdf/trainingData:/usr/share/tesseract-ocr/5/tessdata \
+                        -v /home/docker/s-pdf/extraConfigs:/configs \
+                        -v /home/docker/s-pdf/logs:/logs \
+                        -e DOCKER_ENABLE_SECURITY=false \
+                        frooodle/s-pdf:latest"
+      docker_describe="这是一个强大的本地托管基于 Web 的 PDF 操作工具，使用 docker，允许您对 PDF 文件执行各种操作，例如拆分合并、转换、重新组织、添加图像、旋转、压缩等。"
+      docker_url="官网介绍: https://github.com/Stirling-Tools/Stirling-PDF"
+      docker_use=""
+      docker_passwd=""
+      docker_app
+      ;;
+      
+     19) 
+      clear 
+      docker run -d --name it-tools --restart unless-stopped -p 8080:80 corentinth/it-tools:latest
+      # docker run -d --name it-tools --restart unless-stopped -p 8080:80 ghcr.io/corentinth/it-tools:latest
+      ;;
+
+     20) 
+      clear
+      cd ~
+      mkdir next-terminal-docker && cd next-terminal-docker
+      curl -sSL https://f.typesafe.cn/next-terminal/docker-compose.yml > docker-compose.yml
+      # curl -sSL https://f.typesafe.cn/next-terminal/aliyuns/docker-compose.yml > docker-compose.yml # 阿里镜像
+      docker-compose up -d
+      cd ~
+      ;;
+
+     61) clear && install curl && curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s install  ;;
+     62) clear && install curl && curl -fsSL https://code-server.dev/install.sh | sh  ;;
+     63) clear && install_kodbox  ;;   
 
       0) qiqtools ;;
      99) echo -e "重新启动系统，SSH连接将断开..." && reboot && exit ;;
@@ -2244,11 +2332,11 @@ other_tools_menu() {
 echo -e "
 ▶ 其他工具
 -------------------------------
-${green} 1.${plain} Python
-${green} 2.${plain} Conda
-${green} 3.${plain} RustDesk Server
-${green} 4.${plain} ChatGPT-Next-Web
-${green} 5.${plain} Docker
+${green} 1.${plain} Docker
+${green} 2.${plain} Python
+${green} 3.${plain} Conda
+${green} 4.${plain} RustDesk Server
+${green} 5.${plain} ChatGPT-Next-Web
 -------------------------------
 ${green} 0.${plain} 返回主菜单
 -------------------------------
@@ -2261,8 +2349,9 @@ other_tools_run() {
     reading "请选择代码: " choice
 
     case $choice in
-      1) clear && install_python ;;
-      2) 
+      1) clear && install curl && curl -fsSL https://get.docker.com | sh ;;
+      2) clear && install_python ;;
+      3) 
         clear 
         if [[ $(uname -m | grep 'arm') != "" ]]; then 
           wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-aarch64.sh && bash Miniconda3-latest-Linux-aarch64.sh
@@ -2270,9 +2359,9 @@ other_tools_run() {
           wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && bash Miniconda3-latest-Linux-x86_64.sh 
         fi 
         ;;
-      3) clear && install wget && wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
-      4) clear && install curl && bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh) ;;
-      5) clear && install curl && curl -fsSL https://get.docker.com | sh ;;
+      4) clear && install wget && wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
+      5) clear && install curl && bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh) ;;
+
       0) qiqtools ;;
       *) echo "无效的输入!" ;;
     esac  
@@ -3098,7 +3187,7 @@ while true; do
     # 14) clear && echo -e "\nTodo: ... \n" ;; # VPS集群控制
 
     00) script_update ;;
-    99) clear && echo "正在重启服务器，即将断开SSH连接" && reboot  ;;
+    99) echo "正在重启服务器，即将断开SSH连接" && reboot  ;;
      0) exit ;;
      *) echo "无效的输入!" ;;
   esac  
