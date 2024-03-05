@@ -3140,9 +3140,12 @@ echo -e "
 ${green}  ░██ ██      ${cyan}░██████  ${green}  ░██ ██      
 ${green} ░██   ░██    ${cyan}  ░██    ${green} ░██   ░██    
 ${green}░██     ░██   ${cyan}  ░██    ${green}░██     ░██   
-${green}░██  ░██░██   ${cyan}  ░██    ${green}░██  ░██░██   ${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}
-${green} ░██   ░██    ${cyan}  ░██    ${green} ░██   ░██    ${blue} │ │ ││ ││ ╰─╮${plain}  ${cyan}♤${plain}快捷命令：${yellow}qiq${plain}
-${green}  ░██ ██ ░██  ${cyan}░██████  ${green}  ░██ ██ ░██  ${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}♤${plain}一键脚本工具 ${blue}QiQTools${plain} 
+${green}░██  ░██░██   ${cyan}  ░██    ${green}░██  ░██░██   
+${green} ░██   ░██    ${cyan}  ░██    ${green} ░██   ░██    
+${green}  ░██ ██ ░██  ${cyan}░██████  ${green}  ░██ ██ ░██  
+${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}  
+${blue} │ │ ││ ││ ╰─╮${plain}  ${cyan}✟${plain}快捷命令：☞${yellow} qiq ☜${plain}
+${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain}一键脚本工具 ${blue}QiQTools${plain} 
 "
 
 echo -e "${plain}=====================================
