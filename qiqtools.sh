@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.2.2
+script_version=v0.2.3
 #==========================
 
  black='\033[0;30m'
@@ -2908,23 +2908,23 @@ echo -e "
 ${yellow}IPv4: ${white}$ipv4_address${plain}
 ${yellow}IPv6: ${white}$ipv6_address${plain}
 ${plain}-------------------------------
-${green} 1.${plain} 安装LDNMP环境 (Todo...)      ${green} 3.${plain} 更新LDNMP环境 (Todo...)
-${green} 2.${plain} 卸载LDNMP环境 (Todo...)      ${green} 4.${plain} 优化LDNMP环境 (Todo...)
+${green} 1.${plain}安装LDNMP环境(Todo...)   ${green} 3.${plain}更新LDNMP环境 (Todo...)
+${green} 2.${plain}卸载LDNMP环境(Todo...)   ${green} 4.${plain}优化LDNMP环境 (Todo...)
 ${plain}-------------------------------     
-${red}11.${red} 安装Caddy      ${green}21.${plain} 安装PHP8.3
-${green}12.${plain} 安装Nginx      ${green}22.${plain} 安装PHP7.4
-${green}13.${plain} 安装OpenResty  ${green}23.${plain} 安装MariaDB
-${green}14.${plain} 查看状态       ${green}24.${plain} 安装Redis
+${red}11.${red}安装Caddy      ${green}21.${plain}安装PHP8.3
+${green}12.${plain}安装Nginx      ${green}22.${plain}安装PHP7.4
+${green}13.${plain}安装OpenResty  ${green}23.${plain}安装MariaDB
+${green}14.${plain}查看状态       ${green}24.${plain}安装Redis
 ${yellow}-------------------------------  
-${green}31.${plain} 站点列表       ${green}41.${plain} 重启服务
-${green}32.${plain} 站点管理       ${green}42.${plain} 停止服务
-${green}33.${plain} 站点重定向     ${green}43.${plain} 更新服务 
-${red}34.${red} 站点反向代理   ${green}44.${plain} 删除服务(Todo...)
-${green}35.${plain} 自定义静态站点 ${green}
+${green}31.${plain}站点列表       ${green}41.${plain}重启服务
+${green}32.${plain}站点管理       ${green}42.${plain}停止服务
+${green}33.${plain}站点重定向     ${green}43.${plain}更新服务 
+${red}34.${red}站点反向代理   ${green}44.${plain}删除服务(Todo...)
+${green}35.${plain}自定义静态站点 ${green}
 ${yellow}-------------------------------   
-${green}88.${plain} 站点防御程序 (Todo...)
+${green}88.${plain}站点防御程序 (Todo...)
 ${plain}-------------------------------   
-${green} 0.${plain} 返回主菜单
+${green} 0.${plain}返回主菜单
 -------------------------------
 "
 }
