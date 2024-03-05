@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.2.6
+script_version=v0.2.7
 #==========================
 
  black='\033[0;30m'
@@ -1948,13 +1948,13 @@ install_1panel() {
 # https://docs.kodcloud.com/setup/ubuntu/
 install_kodbox(){
   # 安装信赖
-  sudo apt update && sudo apt upgrade
-  sudo apt install nginx mysql-server redis-server
-  sudo apt install php php-fpm php-mysql php-gd php-redis php-mbstring php-curl php-xml php-zip php-json
-  sudo systemctl disable apache2.service
+  sudo apt update && sudo apt -y upgrade && \
+  sudo apt install -y nginx mysql-server redis-server && \
+  sudo apt install -y php php-fpm php-mysql php-gd php-redis php-mbstring php-curl php-xml php-zip php-json && \
+  sudo systemctl disable apache2.service && \
   sudo systemctl enable nginx php8.1-fpm mysql redis-server
 
-  sudo apt install imagemagick ffmpeg
+  sudo apt -y install imagemagick ffmpeg && \
   sudo sed -i '/PDF/s/none/read \| write/g' /etc/ImageMagick-6/policy.xml
 
   # touch /etc/nginx/sites-enabled/default
@@ -2373,19 +2373,19 @@ warp_tools_menu() {
 echo -e "
 ▶ 节点管理
 ${plain}-------------------------------
-${green} 1.${plain} ${yellow}Warp(@fscarmen)                    ${green}11.${plain} XRay(@233boy)
+${yellow} 1.${plain} ${yellow}Warp(@fscarmen)                    ${green}11.${plain} XRay(@233boy)
 ${green} 2.${plain} Warp(@hamid-gh98)                  ${green}12.${plain} V2Ray(@233boy)
 ${green} 3.${plain} Warp(@Misaka-blog)                 ${green}13.${plain} V2Ray-Agent(@mack-a)
 ${green} 4.${plain} ArgoX(@fscarmen)                   ${green}14.${plain} Hysteria2(@Misaka)
-${green} 5.${plain} ${blue}SingBox四合一(@ygkkk)              ${green}15.${plain} TUIC5(@Misaka)
-${green} 6.${plain} ${yellow}SingBox全家桶(@fscarmen)           ${green}16.${plain} mianyang()
+${green} 5.${plain} ${cyan}SingBox四合一(@ygkkk)              ${green}15.${plain} TUIC5(@Misaka)
+${yellow} 6.${plain} ${yellow}SingBox全家桶(@fscarmen)           ${green}16.${plain} mianyang()
 ${green} 7.${plain} ${yellow}SingBox-Argox(@fscarmen)    
 ${plain}-------------------------------
 ${green}51.${plain} ${yellow}XRayR(@XrayR-project)              ${green}61.${plain} Set Github(For IPv6 VPS)
 ${green}52.${plain} XRayR(@wyx2685)                    ${green}62.${plain} Cloudflare Select IP
 ${green}53.${plain} XRayR-Docker(@XrayR-project)       ${green}63.${plain} Cloudflare Select CDN
 ${green}54.${plain} ${blue}Bodhi(Hysteria2 to V2board)        ${green}64.${plain} YACD(Yet another Clash Dashboard)
-${green}55.${plain} ${yellow}V2bX(Vless&Trojan to V2board)      ${green}65.${plain} ClashDashBoard
+${yellow}55.${plain} ${yellow}V2bX(Vless&Trojan to V2board)      ${green}65.${plain} ClashDashBoard
 ${plain}-------------------------------
 ${green}91.${plain} Show IP(ip.sb)                   ${green}95.${plain} Check-OpenAI(检测OpenAI解锁)
 ${green}92.${plain} Show IPv4(ip addr | grep...)     ${green}96.${plain} Check-Region(检测区域媒体解锁)
@@ -3126,15 +3126,26 @@ script_update(){
 # 显示主菜单
 main_menu() {
 cd ~
+
 echo -e "
 ${red}${bold}╭─╮ ┬╭─╮  ${plain}${blue}─┬─╭─╮╭─╮┬ ${plain}╭─╮${plain} 
 ${red}${bold}│ │ ││ │  ${plain}${blue} │ │ ││ ││ ${plain}╰─╮${plain}
 ${red}${bold}╰─┴╯┴╰─┴╯ ${plain}${blue} │ ╰─╯╰─╯╰─${plain}╰─╯${plain}
-
 ${yellow}${bold}QiQTools ${white}一键脚本工具 $script_version
 ${cyan}(支持Ubuntu|Debian|CentOS|Alpine系统)${plain}
-
 ${plain}♤♤  输入>> ${yellow}qiq ${plain}<<可快速启动此脚本  ♤♤
+"
+
+echo -e "
+  ░██ ██      ░██████    ░██ ██      
+ ░██   ░██      ░██     ░██   ░██    
+░██     ░██     ░██    ░██     ░██   
+░██  ░██░██     ░██    ░██  ░██░██   ─┬─╭─╮╭─╮┬ ╭─╮
+ ░██   ░██      ░██     ░██   ░██     │ │ ││ ││ ╰─╮  ♤快捷命令：qiq
+  ░██ ██ ░██  ░██████    ░██ ██ ░██   │ ╰─╯╰─╯╰─╰─╯  ♤一键脚本工具 QiQTools 
+"
+
+echo -e "
 ${plain}=====================================
 ${green} 1${white}.${yellow}系统信息${red}☄${plain}
 ${green} 2${white}.${plain}系统更新${blue}☣${plain}
