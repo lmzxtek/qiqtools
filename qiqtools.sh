@@ -3032,7 +3032,7 @@ script_update(){
   cd ~
   echo ""
   curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && chmod +x qiqtools.sh
-  echo "\n脚本已更新到最新版本！\n"
+  echo -e "\n脚本已更新到最新版本！\n"
   break_end
   qiqtools
 }
