@@ -3145,7 +3145,7 @@ ${green} ░██   ░██    ${cyan}  ░██    ${green} ░██   ░
 ${green}  ░██ ██ ░██  ${cyan}░██████  ${green}  ░██ ██ ░██${plain}
 
 ${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}  
-${blue} │ │ ││ ││ ╰─╮${plain}  ${cyan}✟${plain} 快捷命令：${cyan}☞ ${yellow}qiq${cyan} ☜${plain}
+${blue} │ │ ││ ││ ╰─╮${plain}  ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}
 ${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 一键脚本 ${blue}QiQTools${plain}
 ${white}=====================================${plain}
 ${green} 1${white}.${yellow}系统信息${red}☄${plain}       ${green}11${white}.${plain}容器管理${blue}❂${plain}
