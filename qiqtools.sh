@@ -38,15 +38,15 @@ hint()    { echo -e "${yellow}${bold}$*${plain}"; }        # 黄色粗体
 reading() { read -rp "$(info "$1")" "$2"; }
 text() { grep -q '\$' <<< "${E[$*]}" && eval echo "\$(eval echo "\${${L}[$*]}")" || eval echo "\${${L}[$*]}"; }
 
+qiqtools() { main_loop && exit; }
+qiq_reload() { cd ~ && qiq && exit; }
+
 break_end() {
       echo -e "${green} 操作完成 ${red}>> ${yellow} 按任意键继续${green}..."
       read -n 1 -s -r -p ""
       echo ""
-      clear
+      # clear
 }
-
-qiqtools() { main_loop && exit; }
-qiq_reload() { cd ~ && qiq && exit; }
 
 # 安装应用程序
 install() {
