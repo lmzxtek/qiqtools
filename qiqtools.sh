@@ -3137,27 +3137,27 @@ cd ~
 # "
 
 echo -e "
-${green}  ░██ ██      ${cyan}░██████  ${green}  ░██ ██    
-${green} ░██   ░██    ${cyan}  ░██    ${green} ░██   ░██  
-${green}░██     ░██   ${cyan}  ░██    ${green}░██     ░██ 
-${green}░██  ░██░██   ${cyan}  ░██    ${green}░██  ░██░██ 
-${green} ░██   ░██    ${cyan}  ░██    ${green} ░██   ░██  
-${green}  ░██ ██ ░██  ${cyan}░██████  ${green}  ░██ ██ ░██
+${green}  ░██ ██      ${cyan}░██████  ${green}  ░██ ██    ${plain}
+${green} ░██   ░██    ${cyan}  ░██    ${green} ░██   ░██  ${plain}
+${green}░██     ░██   ${cyan}  ░██    ${green}░██     ░██ ${plain}
+${green}░██  ░██░██   ${cyan}  ░██    ${green}░██  ░██░██ ${plain}
+${green} ░██   ░██    ${cyan}  ░██    ${green} ░██   ░██  ${plain}
+${green}  ░██ ██ ░██  ${cyan}░██████  ${green}  ░██ ██ ░██${plain}
 
 ${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}  
 ${blue} │ │ ││ ││ ╰─╮${plain}  ${cyan}✟${plain} 快捷命令：${cyan}☞ ${yellow}qiq${cyan} ☜${plain}
 ${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 一键脚本工具${blue}QiQTools${plain}
-${plain}=====================================
+${plain}=====================================${plain}
 ${green} 1${white}.${yellow}系统信息${red}☄${plain}       ${green}11${white}.${plain}容器管理${blue}❂${plain}
 ${green} 2${white}.${plain}系统更新${blue}☣${plain}       ${green}12${white}.${yellow}站点管理${red}❈${plain}
 ${green} 3${blue}.${plain}系统清理${blue}☢${plain}       ${green}13${white}.${plain}站点部署${blue}ஐ${plain}
-${plain}-------------------------------------
+${plain}-------------------------------------${plain}
 ${green}21${white}.${plain}常用工具${blue}❃${plain}       ${green}31${white}.${plain}面板工具${blue}◈${plain}
 ${yellow}22${white}.${yellow}系统工具${yellow}❁${plain}       ${green}32${white}.${plain}其他工具${blue}☃${plain}
 ${cyan}23${white}.${cyan}节点工具${yellow}✈ ${red}warp${plain}
-${plain}-------------------------------------
+${plain}-------------------------------------${plain}
 ${green}99.${plain}重启系统${blue}❂${plain}       ${green}00.${plain}脚本更新${blue}♨${plain}
-${plain}=====================================
+${plain}=====================================${plain}
 ${green} 0.${plain}退出脚本${red}✖${plain}
 "
 }
