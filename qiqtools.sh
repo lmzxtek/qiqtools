@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.2.1
+script_version=v0.2.2
 #==========================
 
  black='\033[0;30m'
@@ -2301,10 +2301,10 @@ ${green}53.${plain} XRayR-Docker(@XrayR-project)       ${green}63.${plain} Cloud
 ${green}54.${plain} ${blue}Bodhi(Hysteria2 to V2board)        ${green}64.${plain} YACD(Yet another Clash Dashboard)
 ${green}55.${plain} ${yellow}V2bX(Vless&Trojan to V2board)      ${green}65.${plain} ClashDashBoard
 ${plain}-------------------------------
-${green}91.${plain} Show IP       ${green}94.${plain} Check-OpenAI  
-${green}92.${plain} Show IPv4     ${green}95.${plain} Cloudflare(IPv4)    
-${green}93.${plain} Show IPv6     ${green}96.${plain} Cloudflare(IPv6)
-${green}97.${plain} Set GitHUB(for IPv6 only VPS)
+${green}91.${plain} Show IP       ${green}95.${plain} Check-OpenAI(检测OpenAI解锁)
+${green}92.${plain} Show IPv4     ${green}96.${plain} Check-Region(检测区域媒体解锁)
+${green}93.${plain} Show IPv6     ${green}97.${plain} Cloudflare(IPv4)
+${green}94.${plain} Set GitHUB(IPv6) ${green}98.${plain} Cloudflare(IPv6)    
 -------------------------------
 ${green} 0.${plain} 返回主菜单
 ${plain}-------------------------------
@@ -2345,13 +2345,14 @@ warp_tools_run() {
      64) clear && docker run -p 1234:80 -d --name yacd --rm ghcr.io/haishanh/yacd:master ;;
      65) clear && echo -e "\n Todo: ... \n" ;;
 
-     91) clear && curl ip.sb  ;;
-     92) clear && ip addr | grep "inet " ;;
-     93) clear && ip addr | grep "inet6" ;;
-     94) clear && bash <(curl -Ls https://cdn.jsdelivr.net/gh/missuo/OpenAI-Checker/openai.sh) ;;
-     95) clear && curl -s4m5 https://www.cloudflare.com/cdn-cgi/trace ;;
-     96) clear && curl -s6m5 https://www.cloudflare.com/cdn-cgi/trace ;;
-     97) echo -e "nameserver 2001:67c:2b0::4\nnameserver 2001:67c:2b0::6" > /etc/resolv.conf ;;
+     91) echo -e "IP: "$(curl -s ip.sb)  ;;
+     92) ip addr | grep "inet " ;;
+     93) ip addr | grep "inet6" ;;
+     94) echo -e "nameserver 2001:67c:2b0::4\nnameserver 2001:67c:2b0::6" > /etc/resolv.conf ;;
+     95) clear && bash <(curl -Ls https://cdn.jsdelivr.net/gh/missuo/OpenAI-Checker/openai.sh) ;;
+     96) clear && bash <(curl -Ls check.unlock.media) ;;
+     97) clear && curl -s4m5 https://www.cloudflare.com/cdn-cgi/trace ;;
+     98) clear && curl -s6m5 https://www.cloudflare.com/cdn-cgi/trace ;;
 
       0) qiqtools ;;
       *) echo "无效的输入!" ;;
