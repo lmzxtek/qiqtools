@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.2.4
+script_version=v0.2.5
 #==========================
 
  black='\033[0;30m'
@@ -3045,7 +3045,7 @@ ${red}|__|_ | |__|_ ${blue} |  |__| |__| |__${white} __|${plain}
 ${green}QiQTools 一键脚本工具 $script_version
 ${plain}(支持Ubuntu|Debian|CentOS|Alpine系统)
 ${plain}-- 输入 >> ${yellow}qiq ${plain}<< 可快速启动此脚本 --
-${plain}-------------------------------
+${plain}-------------------------------------
 ${green} 1${white}.${yellow}系统信息👁️${plain}
 ${green} 2${white}.${plain}系统更新💚
 ${green} 3${blue}.${plain}系统清理🛑
@@ -3059,7 +3059,7 @@ ${plain}----------------
 ${green} 9${white}.${plain}容器管理 ▶
 ${green}10${white}.${yellow}站点管理 ▶${plain}
 ${green}11${white}.${plain}站点部署 ▶
-${plain}-------------------------------
+${plain}----------------
 ${green}99.${plain}重启系统🌀
 ${green}00.${plain}脚本更新✅     
 ${plain}-------------------------------
