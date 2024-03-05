@@ -2301,10 +2301,10 @@ ${green}53.${plain} XRayR-Docker(@XrayR-project)       ${green}63.${plain} Cloud
 ${green}54.${plain} ${blue}Bodhi(Hysteria2 to V2board)        ${green}64.${plain} YACD(Yet another Clash Dashboard)
 ${green}55.${plain} ${yellow}V2bX(Vless&Trojan to V2board)      ${green}65.${plain} ClashDashBoard
 ${plain}-------------------------------
-${green}91.${plain} Show IP       ${green}95.${plain} Check-OpenAI(检测OpenAI解锁)
-${green}92.${plain} Show IPv4     ${green}96.${plain} Check-Region(检测区域媒体解锁)
-${green}93.${plain} Show IPv6     ${green}97.${plain} Cloudflare(IPv4)
-${green}94.${plain} Set GitHUB(IPv6) ${green}98.${plain} Cloudflare(IPv6)    
+${green}91.${plain} Show IP(ip.sb)                   ${green}95.${plain} Check-OpenAI(检测OpenAI解锁)
+${green}92.${plain} Show IPv4(ip addr | grep...)     ${green}96.${plain} Check-Region(检测区域媒体解锁)
+${green}93.${plain} Show IPv6(ip addr | grep...)     ${green}97.${plain} Cloudflare(IPv4)
+${green}94.${plain} Set GitHUB(IPv6)                 ${green}98.${plain} Cloudflare(IPv6)    
 -------------------------------
 ${green} 0.${plain} 返回主菜单
 ${plain}-------------------------------
