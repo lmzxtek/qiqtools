@@ -3038,9 +3038,9 @@ script_update(){
 main_menu() {
 cd ~
 echo -e "
-${red}${bold}╭─╮  ┬ ╭─╮  ${plain}${blue}─┬─╭─╮╭─╮┬ ${plain}╭─╮${plain} 
-${red}${bold}│ │  │ │ │  ${plain}${blue} │ │ ││ ││ ${plain}╰─╮${plain}
-${red}${bold}╰─╯╮ ┴ ╰─╯╮ ${plain}${blue} │ ╰─╯╰─╯╰─${plain}╰─╯${plain}
+${red}${bold}╭─╮ ┬╭─╮  ${plain}${blue}─┬─╭─╮╭─╮┬ ${plain}╭─╮${plain} 
+${red}${bold}│ │ ││ │  ${plain}${blue} │ │ ││ ││ ${plain}╰─╮${plain}
+${red}${bold}╰─┴╯┴╰─┴╯ ${plain}${blue} │ ╰─╯╰─╯╰─${plain}╰─╯${plain}
 
 ${yellow}${bold}QiQTools ${white}一键脚本工具 $script_version
 ${cyan}(支持Ubuntu|Debian|CentOS|Alpine系统)${plain}
