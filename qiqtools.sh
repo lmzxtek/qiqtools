@@ -3149,7 +3149,7 @@ ${blue} │ │ ││ ││ ╰─╮${plain}  ${cyan}✟${plain} 快捷命令
 ${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 一键脚本 ${blue}QiQTools${plain}
 ${white}=====================================${plain}
 ${green} 1${white}.${yellow}系统信息${red}☄${plain}       ${green}11${white}.${plain}容器管理${blue}❂${plain}
-${green} 2${white}.${plain}系统更新${blue}☣${plain}       ${green}12${white}.${yellow}站点管理${red}❈${plain}
+${green} 2${white}.${plain}系统更新${blue}☣${plain}       ${green}12${white}.${yellow}站点管理${yellow}❈${plain}
 ${green} 3${blue}.${plain}系统清理${blue}☢${plain}       ${green}13${white}.${plain}站点部署${blue}ஐ${plain}
 ${white}-------------------------------------${plain}
 ${green}21${white}.${plain}常用工具${blue}❃${plain}       ${green}31${white}.${plain}面板工具${blue}◈${plain}
