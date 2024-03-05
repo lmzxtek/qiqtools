@@ -3053,14 +3053,14 @@ ${plain}----------------
 ${green} 4${white}.${plain}常用工具${blue}❃${plain}
 ${yellow} 5${white}.${yellow}系统工具${blue}❁${plain}
 ${green} 6${white}.${plain}其他工具${blue}☃${plain}
-${green} 7${white}.${plain}面板工具${blue}ஐ${plain}
+${green} 7${white}.${plain}面板工具${blue}◈${plain}
 ${cyan} 8${white}.${cyan}节点工具 ${white}▶${red}warp${blue}✈${plain}
 ${plain}----------------
 ${green} 9${white}.${plain}容器管理${blue}❂${plain}
 ${green}10${white}.${yellow}站点管理${blue}❈${plain}
 ${green}11${white}.${plain}站点部署${blue}ஐ${plain}
 ${plain}----------------
-${green}99.${plain}重启系统${blue}๑${plain}
+${green}99.${plain}重启系统${blue}❂${plain}
 ${green}00.${plain}脚本更新${blue}♨${plain}
 ${plain}=====================================
 ${green} 0.${plain}退出脚本${red}✖${plain}
