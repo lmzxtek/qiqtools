@@ -2379,7 +2379,7 @@ ${green} 3.${plain} Warp(@Misaka-blog)                 ${green}13.${plain} V2Ray
 ${green} 4.${plain} ArgoX(@fscarmen)                   ${green}14.${plain} Hysteria2(@Misaka)
 ${green} 5.${plain} ${cyan}SingBox四合一(@ygkkk)              ${green}15.${plain} TUIC5(@Misaka)
 ${yellow} 6.${plain} ${yellow}SingBox全家桶(@fscarmen)           ${green}16.${plain} mianyang()
-${green} 7.${plain} ${yellow}SingBox-Argox(@fscarmen)    
+${green} 7.${plain} ${plain}SingBox-Argox(@fscarmen)    
 ${plain}-------------------------------
 ${green}51.${plain} ${yellow}XRayR(@XrayR-project)              ${green}61.${plain} Set Github(For IPv6 VPS)
 ${green}52.${plain} XRayR(@wyx2685)                    ${green}62.${plain} Cloudflare Select IP
