@@ -3045,7 +3045,7 @@ ${red}${bold}╰─┴╯┴╰─┴╯ ${plain}${blue} │ ╰─╯╰─╯�
 ${yellow}${bold}QiQTools ${white}一键脚本工具 $script_version
 ${cyan}(支持Ubuntu|Debian|CentOS|Alpine系统)${plain}
 
-${plain}♤♤ 输入 >> ${yellow}qiq ${plain}<< 可快速启动此脚本 ♤♤
+${plain}♤♤  输入>> ${yellow}qiq ${plain}<<可快速启动此脚本  ♤♤
 ${plain}=====================================
 ${green} 1${white}.${yellow}系统信息${red}☄${plain}
 ${green} 2${white}.${plain}系统更新${blue}☣${plain}
