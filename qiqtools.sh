@@ -3145,8 +3145,8 @@ ${green} ░██   ░██    ${cyan}  ░██    ${green} ░██   ░
 ${green}  ░██ ██ ░██  ${cyan}░██████  ${green}  ░██ ██ ░██
 
 ${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}  
-${blue} │ │ ││ ││ ╰─╮${plain}  ${cyan}✟${plain}快捷命令：${cyan}☞ ${yellow}qiq${cyan} ☜${plain}
-${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain}一键脚本工具 ${blue}QiQTools${plain}
+${blue} │ │ ││ ││ ╰─╮${plain}  ${cyan}✟${plain} 快捷命令：${cyan}☞ ${yellow}qiq${cyan} ☜${plain}
+${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 一键脚本工具 ${blue}QiQTools${plain}
 ${plain}=====================================
 ${green} 1${white}.${yellow}系统信息${red}☄${plain}       ${green}11${white}.${plain}容器管理${blue}❂${plain}
 ${green} 2${white}.${plain}系统更新${blue}☣${plain}       ${green}12${white}.${yellow}站点管理${red}❈${plain}
