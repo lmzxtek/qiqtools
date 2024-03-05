@@ -2642,15 +2642,15 @@ mariadb_install(){
   mkdir -p /etc/apt/keyrings
   curl -o /etc/apt/keyrings/mariadb-keyring.pgp 'https://mariadb.org/mariadb_release_signing_key.pgp'
 
-#   cat /etc/apt/sources.list.d/mariadb.sources << EOF
-# X-Repolib-Name: MariaDB
-# Types: deb
-# # deb.mariadb.org is a dynamic mirror if your preferred mirror goes offline. See https://mariadb.org/mirrorbits/ for details.
-# URIs: https://deb.mariadb.org/11.2/ubuntu
-# Suites: jammy
-# Components: main main/debug
-# Signed-By: /etc/apt/keyrings/mariadb-keyring.pgp
-# EOF
+  cat /etc/apt/sources.list.d/mariadb.sources << EOF
+X-Repolib-Name: MariaDB
+Types: deb
+# deb.mariadb.org is a dynamic mirror if your preferred mirror goes offline. See https://mariadb.org/mirrorbits/ for details.
+URIs: https://deb.mariadb.org/11.2/ubuntu
+Suites: jammy
+Components: main main/debug
+Signed-By: /etc/apt/keyrings/mariadb-keyring.pgp
+EOF
 
   apt update
   apt install mariadb-server
@@ -2693,7 +2693,7 @@ nginx_install(){
 
 }
 
-openresty_install(){ echo -e "OpenResty installation is not implemented..."}
+openresty_install(){ echo -e "OpenResty installation is not implemented...";}
 
 caddy_install(){
   # 准备目录和主页文件
