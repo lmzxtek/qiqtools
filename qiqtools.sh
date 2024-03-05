@@ -2345,10 +2345,11 @@ warp_tools_run() {
      64) clear && docker run -p 1234:80 -d --name yacd --rm ghcr.io/haishanh/yacd:master ;;
      65) clear && echo -e "\n Todo: ... \n" ;;
 
-     91) echo -e "IP: "$(curl -s ip.sb)  ;;
-     92) ip addr | grep "inet " ;;
-     93) ip addr | grep "inet6" ;;
+     91) echo -e "\nIP: $(curl -s ip.sb)\n"  ;;
+     92) echo -e "\n$(ip addr | grep "inet ")\n"  ;;
+     93) echo -e "\n$(ip addr | grep "inet6")\n"  ;;
      94) echo -e "nameserver 2001:67c:2b0::4\nnameserver 2001:67c:2b0::6" > /etc/resolv.conf ;;
+
      95) clear && bash <(curl -Ls https://cdn.jsdelivr.net/gh/missuo/OpenAI-Checker/openai.sh) ;;
      96) clear && bash <(curl -Ls check.unlock.media) ;;
      97) clear && curl -s4m5 https://www.cloudflare.com/cdn-cgi/trace ;;
@@ -2614,6 +2615,86 @@ reverse_proxy() {
       docker restart nginx
 }
 
+# 安装PHP8.3
+install_php83(){
+  apt insstall sudo && sudo apt update && sudo apt upgrade -y && sudo apt install -y ca-certificates apt-transport-https software-properties-common lsb-release && sudo add-apt-repository ppa:ondrej/php -y && sudo apt update && sudo apt install -y php8.3 php8.3-fpm php8.3-cli && sudo systemctl enable php8.3-fpm --now
+
+  # 安装PHP8.3-extentions
+  # sudo apt install -y php8.3-{cli,fpm,curl,mysql,gd,opcache,zip,intl,common,bcmath,imagick,xmlrpc,readline,memcached,redis,mbstring,apcu,xml,dom,memcache}
+
+  # php --version
+  # php -m
+}
+
+# 安装PHP7.4
+install_php74(){
+  sudo apt update && sudo -y apt install software-properties-common && sudo add-apt-repository ppa:ondrej/php && sudo apt -y install php7.4 php7.4-cli php7.4-fpm php7.4-mysql php7.4-curl php7.4-gd php7.4-zip php7.4-xsl php7.4-mbstring php7.4-xml php7.4-xmlrpc php7.4-opcache
+
+  # sudo apt-get autoremove php*
+  # sudo add-apt-repository ppa:apt-fast/stable && sudo -y apt install apt-fast && sudo add-apt-repository ppa:ondrej/php && sudo apt-get update && sudo apt-fast -y install php7.4 && sudo -y apt-fast install php7.4-dev && sudo -y apt-fast install php-pear && sudo -y apt-fast install php7.4-fpm php7.4-mysql php7.4-curl php7.4-json php7.4-mbstring php7.4-xml php7.4-intl
+
+  # php --version
+  # php -m
+}
+
+mariadb_install(){
+  apt install apt-transport-https curl
+  mkdir -p /etc/apt/keyrings
+  curl -o /etc/apt/keyrings/mariadb-keyring.pgp 'https://mariadb.org/mariadb_release_signing_key.pgp'
+
+  cat /etc/apt/sources.list.d/mariadb.sources << EOF
+X-Repolib-Name: MariaDB
+Types: deb
+# deb.mariadb.org is a dynamic mirror if your preferred mirror goes offline. See https://mariadb.org/mirrorbits/ for details.
+URIs: https://deb.mariadb.org/11.2/ubuntu
+Suites: jammy
+Components: main main/debug
+Signed-By: /etc/apt/keyrings/mariadb-keyring.pgp
+EOF
+
+  apt update
+  apt install mariadb-server
+  systemctl start mariadb
+  systemctl enable mariadb
+  mariadb-secure-installation
+
+}
+
+redis_install(){
+  curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
+  echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
+
+  apt update
+  apt install redis
+  systemctl start redis-server
+  systemctl enable redis-server
+
+}
+
+nginx_docker(){
+  docker rm -f nginx >/dev/null 2>&1
+  docker rmi nginx nginx:alpine >/dev/null 2>&1
+  docker run -d --name nginx --restart always -p 80:80 -p 443:443 -p 443:443/udp -v /home/web/nginx.conf:/etc/nginx/nginx.conf -v /home/web/conf.d:/etc/nginx/conf.d -v /home/web/certs:/etc/nginx/certs -v /home/web/html:/var/www/html -v /home/web/log/nginx:/var/log/nginx nginx:alpine
+}
+
+nginx_install(){
+  # apt install curl gnupg2 ca-certificates lsb-release ubuntu-keyring
+  # curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
+  # echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/mainline/ubuntu `lsb_release -cs` nginx" | sudo tee /etc/apt/sources.list.d/nginx.list
+  # echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" | sudo tee /etc/apt/preferences.d/99nginx
+
+  # apt update
+  # apt install nginx
+  
+  # systemctl start nginx
+  # systemctl enable nginx
+  
+  apt install sudo && sudo apt install -y curl gnupg2 ca-certificates lsb-release ubuntu-keyring && curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null && echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/mainline/ubuntu `lsb_release -cs` nginx" | sudo tee /etc/apt/sources.list.d/nginx.list && echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" | sudo tee /etc/apt/preferences.d/99nginx && sudo apt update && sudo apt install -y nginx && systemctl start nginx && systemctl enable nginx
+
+}
+
+openresty_install(){ echo -e "OpenResty installation is not implemented..."}
+
 caddy_install(){
   # 准备目录和主页文件
   mkdir -p /home/web/{caddy,html}
@@ -2622,14 +2703,19 @@ caddy_install(){
   wget -O /home/web/html/index.html https://gitlab.com/lmzxtek/qiqtools/-/raw/main/src/caddy/index.html
   wget -O /home/web/caddy/default.conf https://gitlab.com/lmzxtek/qiqtools/-/raw/main/src/caddy/default.conf
 
-  # 安装Caddy
-  sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https curl
-  curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
-  curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
+  sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https curl && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list && sudo apt update && sudo apt install -y caddy
 
-  sudo apt update
-  sudo apt install caddy
+  # 安装Caddy
+  # sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https curl
+  # curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+  # curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
+
+  # sudo apt update
+  # sudo apt install caddy
+
 }
+
+caddy_uninstall(){ echo -e "\nUninstall Caddy is not implemented...\n";}
 
 # 反代
 caddy_reproxy(){
@@ -2825,15 +2911,16 @@ ${plain}-------------------------------
 ${green} 1.${plain} 安装LDNMP环境 (Todo...)      ${green} 3.${plain} 更新LDNMP环境 (Todo...)
 ${green} 2.${plain} 卸载LDNMP环境 (Todo...)      ${green} 4.${plain} 优化LDNMP环境 (Todo...)
 ${plain}-------------------------------     
-${green}11.${plain} 安装Nginx      ${green}14.${plain} 重启服务
-${red}12.${red} 安装Caddy      ${green}15.${plain} 停止服务
-${green}13.${plain} 查看状态       ${green}16.${plain} 更新服务
+${red}11.${red} 安装Caddy      ${green}21.${plain} 安装PHP8.3
+${green}12.${plain} 安装Nginx      ${green}22.${plain} 安装PHP7.4
+${green}13.${plain} 安装OpenResty  ${green}23.${plain} 安装MariaDB
+${green}14.${plain} 查看状态       ${green}24.${plain} 安装Redis
 ${yellow}-------------------------------  
-${green}21.${plain} 站点列表
-${green}22.${plain} 站点管理
-${green}23.${plain} 站点重定向
-${red}24.${red} 站点反向代理
-${green}25.${plain} 自定义静态站点
+${green}31.${plain} 站点列表     ${green}41.${plain} 重启服务
+${green}32.${plain} 站点管理     ${green}42.${plain} 停止服务
+${green}33.${plain} 站点重定向     ${green}43.${plain} 更新服务 
+${red}34.${red} 站点反向代理     ${green}44.${plain} 删除服务(Todo...)
+${green}35.${plain} 自定义静态站点     ${green}
 ${yellow}-------------------------------   
 ${green}88.${plain} 站点防御程序 (Todo...)
 ${plain}-------------------------------   
@@ -2855,32 +2942,12 @@ LDNMP_run(){
     reading "请选择: " choice
 
     case $choice in
-     11) 
+     11) clear && caddy_install ;;
+     12) 
         #  安装Nginx
-        # check_port
-        # install_dependency
-        # install_docker
-        # install_certbot
 
-        # cd /home && mkdir -p web/html web/mysql web/certs web/conf.d web/redis web/log/nginx && touch web/docker-compose.yml
-
-        # wget -O /home/web/nginx.conf https://raw.githubusercontent.com/kejilion/nginx/main/nginx10.conf
-        # wget -O /home/web/conf.d/default.conf https://raw.githubusercontent.com/kejilion/nginx/main/default10.conf
-        # default_server_ssl
-        # docker rm -f nginx >/dev/null 2>&1
-        # docker rmi nginx nginx:alpine >/dev/null 2>&1
-        # docker run -d --name nginx --restart always -p 80:80 -p 443:443 -p 443:443/udp -v /home/web/nginx.conf:/etc/nginx/nginx.conf -v /home/web/conf.d:/etc/nginx/conf.d -v /home/web/certs:/etc/nginx/certs -v /home/web/html:/var/www/html -v /home/web/log/nginx:/var/log/nginx nginx:alpine
-
-        apt install curl gnupg2 ca-certificates lsb-release ubuntu-keyring
-        curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
-        echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/mainline/ubuntu `lsb_release -cs` nginx" | sudo tee /etc/apt/sources.list.d/nginx.list
-        echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" | sudo tee /etc/apt/preferences.d/99nginx
-
-        apt update
-        apt install nginx
-        
-        systemctl start nginx
-        systemctl enable nginx
+        # nginx_docker
+        nginx_install
 
         clear
         # nginx_version=$(docker exec nginx nginx -v 2>&1)
@@ -2892,15 +2959,22 @@ LDNMP_run(){
         echo ""
         ;;
 
-     12) caddy_install ;;
-     13) caddy_status ;;
-     14) caddy_reload ;;
-     15) caddy_start ;;
-     16) caddy_stop ;;
+     13) clear && openresty_install ;;
+     14) caddy_status ;;
 
-     21) caddy_web_list ;;
-     22) caddy_web_manager ;;
-     23)
+     21) clear && install_php83 ;;
+     22) clear && install_php74 ;;
+     23) clear && mariadb_install ;;
+     24) clear && redis_install ;;
+
+     41) caddy_reload ;;
+     42) caddy_start ;;
+     43) caddy_stop ;;
+     44) caddy_uninstall ;;
+
+     31) caddy_web_list ;;
+     32) caddy_web_manager ;;
+     33)
         # ip_address
         add_yuming
         read -p "请输入跳转域名: " reverseproxy
@@ -2915,7 +2989,7 @@ LDNMP_run(){
         echo ""
         ;;
 
-     24)
+     34)
         # ip_address
         add_yuming
         read -p "请输入你的反代IP: " reverseproxy
@@ -2931,7 +3005,7 @@ LDNMP_run(){
         echo ""
         ;;
 
-     25)
+     35)
         # ip_address
         add_yuming
         read -p "请输入web概目录: " rootpath 
