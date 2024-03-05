@@ -3137,11 +3137,11 @@ cd ~
 # "
 
 echo -e "
-${green}  ░██ ██      ${cyan}░██████  ${green}  ░██ ██     
-${green} ░██   ░██    ${cyan}  ░██    ${green} ░██   ░██   
-${green}░██     ░██   ${cyan}  ░██    ${green}░██     ░██  
-${green}░██  ░██░██   ${cyan}  ░██    ${green}░██  ░██░██  
-${green} ░██   ░██    ${cyan}  ░██    ${green} ░██   ░██   
+${green}  ░██ ██      ${cyan}░██████  ${green}  ░██ ██    
+${green} ░██   ░██    ${cyan}  ░██    ${green} ░██   ░██  
+${green}░██     ░██   ${cyan}  ░██    ${green}░██     ░██ 
+${green}░██  ░██░██   ${cyan}  ░██    ${green}░██  ░██░██ 
+${green} ░██   ░██    ${cyan}  ░██    ${green} ░██   ░██  
 ${green}  ░██ ██ ░██  ${cyan}░██████  ${green}  ░██ ██ ░██
 
 ${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}  
