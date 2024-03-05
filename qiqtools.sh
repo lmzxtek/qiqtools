@@ -3047,7 +3047,7 @@ ${cyan}(支持Ubuntu|Debian|CentOS|Alpine系统)${plain}
 
 ${plain}♤♤ 输入 >> ${yellow}qiq ${plain}<< 可快速启动此脚本 ♤♤
 ${plain}=====================================
-${green} 1${white}.${yellow}系统信息${blue}☄${plain}
+${green} 1${white}.${yellow}系统信息${red}☄${plain}
 ${green} 2${white}.${plain}系统更新${blue}☣${plain}
 ${green} 3${blue}.${plain}系统清理${blue}☢${plain}
 ${plain}----------------
@@ -3058,7 +3058,7 @@ ${green} 7${white}.${plain}面板工具${blue}◈${plain}
 ${cyan} 8${white}.${cyan}节点工具${yellow}✈ ${red}warp${plain}
 ${plain}----------------
 ${green} 9${white}.${plain}容器管理${blue}❂${plain}
-${green}10${white}.${yellow}站点管理${blue}❈${plain}
+${green}10${white}.${yellow}站点管理${red}❈${plain}
 ${green}11${white}.${plain}站点部署${blue}ஐ${plain}
 ${plain}----------------
 ${green}99.${plain}重启系统${blue}❂${plain}
