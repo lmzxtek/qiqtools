@@ -3150,8 +3150,8 @@ ${green} 1${white}.${yellow}系统信息${red}☄${plain}       ${green}11${whit
 ${green} 2${white}.${plain}系统更新${blue}☣${plain}       ${green}12${white}.${yellow}站点管理${red}❈${plain}
 ${green} 3${blue}.${plain}系统清理${blue}☢${plain}       ${green}13${white}.${plain}站点部署${blue}ஐ${plain}
 ${plain}-------------------------------------
-${green}21${white}.${plain}常用工具${blue}❃${plain}       ${yellow}31${white}.${yellow}系统工具${yellow}❁${plain}
-${green}22${white}.${plain}面板工具${blue}◈${plain}       ${green}32${white}.${plain}其他工具${blue}☃${plain}       
+${green}21${white}.${plain}常用工具${blue}❃${plain}       ${green}31${white}.${plain}面板工具${blue}◈${plain}       
+${yellow}22${white}.${yellow}系统工具${yellow}❁${plain}       ${green}32${white}.${plain}其他工具${blue}☃${plain}
 ${cyan}23${white}.${cyan}节点工具${yellow}✈ ${red}warp${plain}
 ${plain}-------------------------------------
 ${green}99.${plain}重启系统${blue}❂${plain}       ${green}00.${plain}脚本更新${blue}♨${plain}
@@ -3159,7 +3159,6 @@ ${plain}=====================================
 ${green} 0.${plain}退出脚本${red}✖${plain}
 "
 }
-
 
 # ${plain}----------------
 # ${green}12${white}.${plain} 我的工作区 ▶ (Todo...)
@@ -3176,18 +3175,17 @@ while true; do
      1) clear && get_sysinfo && show_info ;;
      2) clear && update_and_upgrade ;;
      3) clear && clean_sys ;;
-     4) common_apps_run  ;;
-     5) system_tools_run ;;
-     6) other_tools_run  ;;
-     7) board_tools_run  ;;
-     8) warp_tools_run   ;;
-     9) docker_run ;;
-    10) clear && LDNMP_run ;;
-    11) website_tools_run  ;;
-    # 11) clear && echo -e "\nTodo: ... \n" ;;
-    # 12) clear && echo -e "\nTodo: ... \n" ;;
-    # 13) clear && echo -e "\nTodo: ... \n" ;;
-    # 14) clear && echo -e "\nTodo: ... \n" ;; # VPS集群控制
+
+    11) docker_run ;;
+    12) clear && LDNMP_run ;;
+    13) website_tools_run  ;;
+
+    21) common_apps_run  ;;
+    22) system_tools_run ;;
+    23) warp_tools_run   ;;
+
+    31) board_tools_run  ;;
+    32) other_tools_run  ;;
 
     00) script_update ;;
     99) echo "正在重启服务器，即将断开SSH连接" && reboot  ;;
