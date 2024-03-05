@@ -3038,11 +3038,11 @@ script_update(){
 main_menu() {
 cd ~
 echo -e "
-${red} __   _  __   ${blue}___ ____ ____ _  ${white} __ ${plain}
-${red}|  |  | |  |  ${blue} |  |  | |  | |  ${white}|__ ${plain}
-${red}|__|_ | |__|_ ${blue} |  |__| |__| |__${white} __|${plain} 
+${red}${bold} __   _  __   ${plain}${blue}___ ____ ____ _  ${white} __ ${plain}
+${red}${bold}|  |  | |  |  ${plain}${blue} |  |  | |  | |  ${white}|__ ${plain}
+${red}${bold}|__|_ | |__|_ ${plain}${blue} |  |__| |__| |__${white} __|${plain} 
 
-${green}QiQTools 一键脚本工具 $script_version
+${yellow}${bold}QiQTools ${white}一键脚本工具 $script_version
 ${plain}(支持Ubuntu|Debian|CentOS|Alpine系统)
 ${plain}|| 输入 >> ${yellow}qiq ${plain}<< 可快速启动此脚本 ||
 ${plain}=====================================
