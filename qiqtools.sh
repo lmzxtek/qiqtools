@@ -3033,8 +3033,8 @@ script_update(){
   echo ""
   curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && chmod +x qiqtools.sh
   echo -e "\n脚本已更新到最新版本！\n"
-  break_end
-  qiqtools
+  break_end && qiq
+  # qiqtools
 }
 
 # 显示主菜单
