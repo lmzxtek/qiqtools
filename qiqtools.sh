@@ -3055,7 +3055,7 @@ ${green} 4${white}.${plain}常用工具${blue}❃${plain}
 ${yellow} 5${white}.${yellow}系统工具${blue}❁${plain}
 ${green} 6${white}.${plain}其他工具${blue}☃${plain}
 ${green} 7${white}.${plain}面板工具${blue}◈${plain}
-${cyan} 8${white}.${cyan}节点工具 ${white}▶ ${red}warp${blue}✈${plain}
+${cyan} 8${white}.${cyan}节点工具 ${yellow}✈  ${red}warp${plain}
 ${plain}----------------
 ${green} 9${white}.${plain}容器管理${blue}❂${plain}
 ${green}10${white}.${yellow}站点管理${blue}❈${plain}
