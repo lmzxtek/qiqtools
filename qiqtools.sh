@@ -47,8 +47,8 @@ break_end() {
 
 # run qiq and exit 
 qiqtools() {
-    # cd ~ && qiq && exit
-    cd ~ && main_loop && exit
+    cd ~ && qiq && exit
+    # cd ~ && main_loop && exit
 }
 
 # 安装应用程序
@@ -3033,8 +3033,8 @@ script_update(){
   echo ""
   curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && chmod +x qiqtools.sh
   echo -e "脚本已更新到最新版本！\n"
-  break_end && exit && qiq
-  # qiqtools
+  break_end #&& exit && qiq
+  qiqtools
 }
 
 # 显示主菜单
