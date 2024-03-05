@@ -3043,8 +3043,8 @@ ${red}${bold}|  |  | |  |  ${plain}${blue} |  |  | |  | |  ${white}|__ ${plain}
 ${red}${bold}|__|_ | |__|_ ${plain}${blue} |  |__| |__| |__${white} __|${plain} 
 
 ${yellow}${bold}QiQTools ${white}一键脚本工具 $script_version
-${plain}(支持Ubuntu|Debian|CentOS|Alpine系统)
-${plain}|| 输入 >> ${yellow}qiq ${plain}<< 可快速启动此脚本 ||
+${cyan}(支持Ubuntu|Debian|CentOS|Alpine系统)${plain}
+${plain}-- 输入 >> ${yellow}qiq ${plain}<< 可快速启动此脚本 --
 ${plain}=====================================
 ${green} 1${white}.${yellow}系统信息👁️${plain}
 ${green} 2${white}.${plain}系统更新💚
