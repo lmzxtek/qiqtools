@@ -2904,7 +2904,7 @@ caddy_web_manager(){
 # 网站管理菜单
 LDNMP_menu() {
 echo -e "
-▶ Web站点管理
+▶ Web站点管理✈️
 ${yellow}IPv4: ${white}$ipv4_address${plain}
 ${yellow}IPv6: ${white}$ipv6_address${plain}
 ${plain}-------------------------------
