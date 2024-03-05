@@ -3038,9 +3038,9 @@ script_update(){
 main_menu() {
 cd ~
 echo -e "
-${red}${bold} __   _  __   ${plain}${blue}___ ____ ____ _  ${white} __ ${plain}
-${red}${bold}|  |  | |  |  ${plain}${blue} |  |  | |  | |  ${white}|__ ${plain}
-${red}${bold}|__|_ | |__|_ ${plain}${blue} |  |__| |__| |__${white} __|${plain} 
+${red}${bold}╭─╮  ┬ ╭─╮  ${plain}${blue}─┬─╭─╮╭─╮┬ ${white}╭─╮${plain} 
+${red}${bold}│ │  │ │ │  ${plain}${blue} │ │ ││ ││ ${white}╰─╮${plain}
+${red}${bold}╰─┴─ ┴ ╰─┴─ ${plain}${blue} ┴ ╰─╯╰─╯╰─${white}╰─╯${plain}
 
 ${yellow}${bold}QiQTools ${white}一键脚本工具 $script_version
 ${cyan}(支持Ubuntu|Debian|CentOS|Alpine系统)${plain}
@@ -3055,7 +3055,7 @@ ${green} 4${white}.${plain}常用工具${blue}❃${plain}
 ${yellow} 5${white}.${yellow}系统工具${blue}❁${plain}
 ${green} 6${white}.${plain}其他工具${blue}☃${plain}
 ${green} 7${white}.${plain}面板工具${blue}◈${plain}
-${cyan} 8${white}.${cyan}节点工具 ${yellow}✈  ${red}warp${plain}
+${cyan} 8${white}.${cyan}节点工具 ${yellow}✈ ${red}warp${plain}
 ${plain}----------------
 ${green} 9${white}.${plain}容器管理${blue}❂${plain}
 ${green}10${white}.${yellow}站点管理${blue}❈${plain}
