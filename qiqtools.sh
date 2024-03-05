@@ -3051,14 +3051,14 @@ ${green} 2${white}.${plain}系统更新💚
 ${green} 3${blue}.${plain}系统清理🛑
 ${plain}----------------
 ${green} 4${white}.${plain}常用工具 ▶
-${yellow} 5${white}.${yellow}系统工具 ${blue}▶
+${yellow} 5${white}.${yellow}系统工具 ${blue}🚩
 ${green} 6${white}.${plain}其他工具 ▶
 ${green} 7${white}.${plain}面板工具 ▶
 ${red} 8${white}.${red}节点工具 ${white}▶ ${red}warp✈️
 ${plain}----------------
 ${green} 9${white}.${plain}容器管理 ▶
 ${green}10${white}.${yellow}站点管理 ▶${plain}
-${green}11${white}.${plain}站点部署 ▶
+${green}11${white}.${plain}站点部署 🚩
 ${plain}----------------
 ${green}99.${plain}重启系统🌀
 ${green}00.${plain}脚本更新✅     
