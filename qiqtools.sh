@@ -14,8 +14,12 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.2.8
+script_version=v0.3.0
 #==========================
+
+# Language
+L=E
+L=C
 
  black='\033[0;30m'
    red='\033[0;31m'
@@ -73,9 +77,7 @@ install() {
     return 0
 }
 
-install_dependency() { 
-  clear && install curl wget socat unzip tar 
-}
+install_dependency() { clear && install curl wget socat unzip tar; }
 
 remove() {
     if [ $# -eq 0 ]; then
@@ -109,15 +111,46 @@ ipv6_address=""
 
 # 获取当前服务器的IP地址
 ip_address() {
-  if [ -z "$ipv4_address" ] && [ -z "$ipv6_address" ]; then
-    # echo "s1 和 s2 均不为空"
-    ipv4_address=$(curl -s ipv4.ip.sb)
-    ipv6_address=$(curl -s --max-time 1 ipv6.ip.sb)
-  fi
+  # if [ -z "$ipv4_address" ] && [ -z "$ipv6_address" ]; then
+  #   # echo "s1 和 s2 均不为空"
+  #   # ipv4_address=$(curl -s ipv4.ip.sb)
+  #   # ipv6_address=$(curl -s --max-time 1 ipv6.ip.sb)
+  #   check_system_ip
+  # fi
+  [[ -z "$ipv4_address" ] && [ -z "$ipv6_address" ]] && check_system_ip
+}
+
+ip_show(){
+  info "\t IPv4: $WAN4 $WARPSTATUS4 $COUNTRY4  $ASNORG4 "
+  info "\t IPv6: $WAN6 $WARPSTATUS6 $COUNTRY6  $ASNORG6 "
+}
+
+
+# 自定义谷歌翻译函数
+translate() {
+  [ -n "$@" ] && EN="$@"
+  ZH=$(wget --no-check-certificate -qO- --tries=1 --timeout=2 "https://translate.google.com/translate_a/t?client=any_client_id_works&sl=en&tl=zh&q=${EN//[[:space:]]/}" 2>/dev/null)
+  [[ "$ZH" =~ ^\[\".+\"\]$ ]] && cut -d \" -f2 <<< "$ZH"
+}
+
+# 检测 IPv4 IPv6 信息
+check_system_ip() {
+  IP4=$(wget -4 -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 http://ip-api.com/json/) &&
+  WAN4=$(expr "$IP4" : '.*query\":[ ]*\"\([^"]*\).*') &&
+  COUNTRY4=$(expr "$IP4" : '.*country\":[ ]*\"\([^"]*\).*') &&
+  ASNORG4=$(expr "$IP4" : '.*isp\":[ ]*\"\([^"]*\).*') &&
+  ipv4_address=IP4 &&
+  [[ "$L" = C && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4")
+
+  IP6=$(wget -6 -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://api.ip.sb/geoip) &&
+  WAN6=$(expr "$IP6" : '.*ip\":[ ]*\"\([^"]*\).*') &&
+  COUNTRY6=$(expr "$IP6" : '.*country\":[ ]*\"\([^"]*\).*') &&
+  ASNORG6=$(expr "$IP6" : '.*isp\":[ ]*\"\([^"]*\).*') &&
+  ipv6_address=IP6 &&
+  [[ "$L" = C && -n "$COUNTRY6" ]] && COUNTRY6=$(translate "$COUNTRY6")
 }
 
 check_root() {
-    # check root
     [[ $EUID -ne 0 ]] && echo -e "${red}错误：${plain} 必须使用root用户运行此脚本！\n" && exit 1
 }
 
@@ -190,6 +223,17 @@ get_os_version() {
     fi
 }
 
+check_virt(){
+  # 判断虚拟化
+  if [ $(type -p systemd-detect-virt) ]; then
+    VIRT=$(systemd-detect-virt)
+  elif [ $(type -p hostnamectl) ]; then
+    VIRT=$(hostnamectl | awk '/Virtualization/{print $NF}')
+  elif [ $(type -p virt-what) ]; then
+    VIRT=$(virt-what)
+  fi
+}
+
 # 获取系统信息
 get_sysinfo(){
     # 函数: 获取IPv4和IPv6地址
@@ -197,6 +241,8 @@ get_sysinfo(){
     ipv4_address=""
     ipv6_address=""
     ip_address
+
+    check_virt
 
     if [ "$(uname -m)" == "x86_64" ]; then
       cpu_info=$(cat /proc/cpuinfo | grep 'model name' | uniq | sed -e 's/model name[[:space:]]*: //')
@@ -288,11 +334,12 @@ show_info() {
    运营商: $isp_info
 ------------------------
  系统版本: $os_info
-Linux版本: $kernel_version
+ 内核版本: $kernel_version
 ------------------------
   CPU架构: $cpu_arch
   CPU型号: $cpu_info
-CPU核心数: $cpu_cores
+   核心数: $cpu_cores
+   虚拟化: ${red}$VIRT${plain}
 ------------------------
   CPU占用: $cpu_usage_percent
  物理内存: $mem_info
@@ -303,8 +350,8 @@ $output
 ------------------------
 网络拥堵算法: $congestion_algorithm $queue_algorithm
 ------------------------
-公网IPv4地址: $ipv4_address
-公网IPv6地址: $ipv6_address
+   IPv4地址: $ipv4_address  $WARPSTATUS4 $COUNTRY4  $ASNORG4
+   IPv6地址: $ipv6_address  $WARPSTATUS6 $COUNTRY6  $ASNORG6
 ------------------------
     地理位置: $country $city
     系统时间: $current_time
