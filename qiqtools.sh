@@ -2421,19 +2421,19 @@ warp_tools_menu() {
 echo -e "
 ▶ 节点管理
 ${plain}-------------------------------
-${yellow} 1.${plain} ${yellow}Warp(@fscarmen)                    ${green}11.${plain} XRay(@233boy)
-${green} 2.${plain} Warp(@hamid-gh98)                  ${green}12.${plain} V2Ray(@233boy)
-${green} 3.${plain} Warp(@Misaka-blog)                 ${green}13.${plain} V2Ray-Agent(@mack-a)
-${green} 4.${plain} ArgoX(@fscarmen)                   ${green}14.${plain} Hysteria2(@Misaka)
-${green} 5.${plain} ${cyan}SingBox四合一(@ygkkk)              ${green}15.${plain} TUIC5(@Misaka)
-${yellow} 6.${plain} ${yellow}SingBox全家桶(@fscarmen)           ${green}16.${plain} mianyang()
-${green} 7.${plain} ${plain}SingBox-Argox(@fscarmen)    
+${yellow} 1.${plain} ${yellow}Warp(@fscarmen)                  ${green}11.${plain} XRay(@233boy)
+${green} 2.${plain} Warp(@hamid-gh98)                ${green}12.${plain} V2Ray(@233boy)
+${green} 3.${plain} Warp(@Misaka-blog)               ${green}13.${plain} V2Ray-Agent(@mack-a)
+${green} 4.${plain} ArgoX(@fscarmen)                 ${green}14.${plain} Hysteria2(@Misaka)
+${green} 5.${plain} ${cyan}SingBox四合一(@ygkkk)            ${green}15.${plain} TUIC5(@Misaka)
+${yellow} 6.${plain} ${yellow}SingBox全家桶(@fscarmen)         ${green}16.${plain} mianyang()
+${green} 7.${plain} ${plain}SingBox-Argox(@fscarmen)
 ${plain}-------------------------------
-${green}51.${plain} ${yellow}XRayR(@XrayR-project)              ${green}61.${plain} Set Github(For IPv6 VPS)
-${green}52.${plain} XRayR(@wyx2685)                    ${green}62.${plain} Cloudflare Select IP
-${green}53.${plain} XRayR-Docker(@XrayR-project)       ${green}63.${plain} Cloudflare Select CDN
-${green}54.${plain} ${blue}Bodhi(Hysteria2 to V2board)        ${green}64.${plain} YACD(Yet another Clash Dashboard)
-${yellow}55.${plain} ${yellow}V2bX(Vless&Trojan to V2board)      ${green}65.${plain} ClashDashBoard
+${green}51.${plain} ${yellow}XRayR(@XrayR-project)            ${green}61.${plain} Set Github(For IPv6 VPS)
+${green}52.${plain} XRayR(@wyx2685)                  ${green}62.${plain} Cloudflare Select IP
+${green}53.${plain} XRayR-Docker(@XrayR-project)     ${green}63.${plain} Cloudflare Select CDN
+${green}54.${plain} ${blue}Bodhi(Hysteria2 to V2board)      ${green}64.${plain} YACD(Yet another Clash Dashboard)
+${yellow}55.${plain} ${yellow}V2bX(Vless&Trojan to V2board)    ${green}65.${plain} ClashDashBoard
 ${plain}-------------------------------
 ${green}91.${plain} Show IP(ip.sb)                   ${green}95.${plain} Check-OpenAI(检测OpenAI解锁)
 ${green}92.${plain} Show IPv4(ip addr | grep...)     ${green}96.${plain} Check-Region(检测区域媒体解锁)
