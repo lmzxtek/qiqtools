@@ -3193,12 +3193,11 @@ cd ~
 # "
 
 echo -e "
-${green}  ░██ ██      ${cyan}░██████  ${green}  ░██ ██    ${plain}
-${green} ░██   ░██    ${cyan}  ░██    ${green} ░██   ░██  ${plain}
-${green}░██     ░██   ${cyan}  ░██    ${green}░██     ░██ ${plain}
-${green}░██  ░██░██   ${cyan}  ░██    ${green}░██  ░██░██ ${plain}
-${green} ░██   ░██    ${cyan}  ░██    ${green} ░██   ░██  ${plain}
-${green}  ░██ ██ ░██  ${cyan}░██████  ${green}  ░██ ██ ░██${plain}
+${green}  ░████     ${cyan}░████ ${green}  ░████    ${plain}
+${green} ░██  ░██   ${cyan} ░██  ${green} ░██  ░██  ${plain}
+${green}░██    ░██  ${cyan} ░██  ${green}░██    ░██ ${plain}
+${green} ░██  ░██   ${cyan} ░██  ${green} ░██  ░██  ${plain}
+${green}  ░████ ░██ ${cyan}░████ ${green}  ░████ ░██${plain}
 
 ${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}  
 ${blue} │ │ ││ ││ ╰─╮${plain}  ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}
