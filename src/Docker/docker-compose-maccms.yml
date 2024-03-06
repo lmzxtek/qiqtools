@@ -1,0 +1,11 @@
+version: '3'
+services:
+  maccms10:
+      volumes:
+          - ./mnt/maccms:/data
+          - ./mnt/maccms/template:/opt/maccms10/template
+      ports:
+          - '7878:7878'
+      image: gs0245/maccms10
+        #network_mode: host (optional)
+      restart: always

@@ -1307,6 +1307,7 @@ net.core.default_qdisc=fq_pie
 net.ipv4.tcp_congestion_control=bbr
 EOF
     sysctl -p
+
     echo "XanMod内核安装并BBR3启用成功。重启后生效"
     rm -f /etc/apt/sources.list.d/xanmod-release.list
     rm -f check_x86-64_psabi.sh*
@@ -1318,6 +1319,16 @@ EOF
   esac
 fi
 
+}
+
+# 给Alpine系统添加BBRv3
+bbrv3_conf(){
+  cat > /etc/sysctl.conf << EOF
+net.core.default_qdisc=fq_pie
+net.ipv4.tcp_congestion_control=bbr
+EOF
+
+  sysctl -p
 }
 
 # 防火墙管理
@@ -1958,7 +1969,7 @@ install_kodbox(){
   sudo sed -i '/PDF/s/none/read \| write/g' /etc/ImageMagick-6/policy.xml
 
   # touch /etc/nginx/sites-enabled/default
-  cat /etc/nginx/sites-enabled/default << EOF
+  cat > /etc/nginx/sites-enabled/default << EOF
 listen 80;              ##访问端口
 root /var/www/html;     #改成自己的站点目录
 server_name _;          #访问域名 '_'代表任何域名都能访问
@@ -2026,6 +2037,49 @@ EOF
   sudo ufw enable
 }
 
+# 安装苹果CMS网站
+# https://github.com/magicblack/maccms_down
+# https://github.com/magicblack/maccms10
+# https://kejilion.blogspot.com/2023/06/3-cms.html
+# https://www.youtube.com/watch?v=94u3wvJWKuA
+# https://www.tweek.top/archives/1706060591396
+# https://www.youtube.com/watch?v=AVorImTHH8Q
+install_maccms(){
+  
+      # add_yuming
+      # install_ssltls
+      add_db
+
+  wget -O /home/web/conf.d/$yuming.conf https://raw.githubusercontent.com/kejilion/nginx/main/maccms.com.conf
+  sed -i "s/yuming.com/$yuming/g" /home/web/conf.d/$yuming.conf
+
+  cd /home/web/html
+  mkdir $yuming
+  cd $yuming
+
+  wget https://github.com/magicblack/maccms_down/raw/master/maccms10.zip && unzip maccms10.zip && rm maccms10.zip
+  cd /home/web/html/$yuming/template/ && wget https://github.com/kejilion/Website_source_code/raw/main/DYXS2.zip && unzip DYXS2.zip && rm /home/web/html/$yuming/template/DYXS2.zip
+  cp /home/web/html/$yuming/template/DYXS2/asset/admin/Dyxs2.php /home/web/html/$yuming/application/admin/controller
+  cp /home/web/html/$yuming/template/DYXS2/asset/admin/dycms.html /home/web/html/$yuming/application/admin/view/system
+  mv /home/web/html/$yuming/admin.php /home/web/html/$yuming/vip.php && wget -O /home/web/html/$yuming/application/extra/maccms.php https://raw.githubusercontent.com/kejilion/Website_source_code/main/maccms.php
+
+  clear
+  echo "您的苹果CMS搭建好了！"
+  echo "https://$yuming"
+  echo "------------------------"
+  echo "安装信息如下: "
+  echo "数据库地址: mysql"
+  echo "数据库端口: 3306"
+  echo "数据库名: $dbname"
+  echo "用户名: $dbuse"
+  echo "密码: $dbusepasswd"
+  echo "数据库前缀: mac_"
+  echo "------------------------"
+  echo "安装成功后登录后台地址"
+  echo "https://$yuming/vip.php"
+  # nginx_status
+}
+
 # 站点工具菜单
 website_tools_menu() {
 echo -e "
@@ -2052,6 +2106,8 @@ ${green}61.${cyan}AList多存储文件列表程序
 ${green}62.${cyan}VScode-Server在线版
 ${green}63.${cyan}KodBox可道云在线桌面
 ${green}64.${cyan}ChatGPT-Next-Web
+${green}65.${cyan}苹果CMS网站
+${green}66.${cyan}苹果CMS网站(Docker)
 ${plain}-------------------------------
 ${green} 0.${plain} 返回主菜单
 "
@@ -2320,6 +2376,7 @@ website_tools_run(){
      62) clear && install curl && curl -fsSL https://code-server.dev/install.sh | sh  ;;
      63) clear && install_kodbox  ;;   
      64) clear && install curl && bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh) ;;
+     65) clear && install_maccms ;;
 
       0) qiqtools ;;
      99) echo -e "重新启动系统，SSH连接将断开..." && reboot && exit ;;
@@ -2728,7 +2785,7 @@ mariadb_install(){
   mkdir -p /etc/apt/keyrings
   curl -o /etc/apt/keyrings/mariadb-keyring.pgp 'https://mariadb.org/mariadb_release_signing_key.pgp'
 
-  cat /etc/apt/sources.list.d/mariadb.sources << EOF
+  cat > /etc/apt/sources.list.d/mariadb.sources << EOF
 X-Repolib-Name: MariaDB
 Types: deb
 # deb.mariadb.org is a dynamic mirror if your preferred mirror goes offline. See https://mariadb.org/mirrorbits/ for details.
@@ -3050,6 +3107,9 @@ LDNMP_run(){
       clear
       wget https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh && bash ols1clk.sh
       # bash <( curl -k https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh )
+      echo ""
+      echo -e " >>> 安装OpenLiteSpeed成功..."
+      echo -e " >>> 设置用户名和密码：/usr/local/lsws/admin/misc/admpass.sh"
       ;;
 
      14) caddy_status ;;
