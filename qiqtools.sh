@@ -290,7 +290,7 @@ get_sysinfo(){
       fi
     fi
 
-    output=$(awk 'BEGIN { rx_total = 0; tx_total = 0 }
+    sys_output=$(awk 'BEGIN { rx_total = 0; tx_total = 0 }
         NR > 2 { rx_total += $2; tx_total += $10 }
         END {
             rx_units = "Bytes";
@@ -345,9 +345,8 @@ show_info() {
  虚拟内存: $swap_info
  硬盘占用: $disk_info
 ---------------------------------
-$output
----------------------------------
 网络拥堵算法: $congestion_algorithm $queue_algorithm
+$sys_output
 ---------------------------------
    IPv4地址: $ipv4_address  $WARPSTATUS4 ($COUNTRY4 $CITY4 $ASNORG4)
    IPv6地址: $ipv6_address  $WARPSTATUS6 ($COUNTRY6 $CITY6 $ASNORG6)
