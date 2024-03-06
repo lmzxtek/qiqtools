@@ -345,7 +345,7 @@ show_info() {
  虚拟内存: $swap_info
  硬盘占用: $disk_info
 ---------------------------------
-网络拥堵算法: $congestion_algorithm $queue_algorithm
+网络拥堵算法: ${yellow}$congestion_algorithm ${plain}$queue_algorithm
 $sys_output
 ---------------------------------
    IPv4地址: $ipv4_address  $WARPSTATUS4 ($COUNTRY4 $CITY4 $ASNORG4)
