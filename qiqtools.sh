@@ -138,6 +138,7 @@ check_system_ip() {
   IP4=$(wget -4 -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 http://ip-api.com/json/) &&
   WAN4=$(expr "$IP4" : '.*query\":[ ]*\"\([^"]*\).*') &&
   COUNTRY4=$(expr "$IP4" : '.*country\":[ ]*\"\([^"]*\).*') &&
+  CITY4=$(expr "$IP4" : '.*city\":[ ]*\"\([^"]*\).*') &&
   ASNORG4=$(expr "$IP4" : '.*isp\":[ ]*\"\([^"]*\).*') &&
   ipv4_address=$WAN4 &&
   [[ "$L" = C && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4")
@@ -145,6 +146,7 @@ check_system_ip() {
   IP6=$(wget -6 -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://api.ip.sb/geoip) &&
   WAN6=$(expr "$IP6" : '.*ip\":[ ]*\"\([^"]*\).*') &&
   COUNTRY6=$(expr "$IP6" : '.*country\":[ ]*\"\([^"]*\).*') &&
+  CITY6=$(expr "$IP6" : '.*city\":[ ]*\"\([^"]*\).*') &&
   ASNORG6=$(expr "$IP6" : '.*isp\":[ ]*\"\([^"]*\).*') &&
   ipv6_address=$WAN6 &&
   [[ "$L" = C && -n "$COUNTRY6" ]] && COUNTRY6=$(translate "$COUNTRY6")
