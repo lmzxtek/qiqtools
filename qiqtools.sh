@@ -2419,7 +2419,7 @@ other_tools_run() {
 
 warp_tools_menu() {
 echo -e "
-▽ 节点管理 ${blue}✈${plain}
+▽ 节点管理 ${blue}✈✈✈${plain}
 ${plain}==============================================================
 ${yellow} 1.${plain} ${yellow}Warp(@fscarmen)                  ${green}11.${plain} XRay(@233boy)
 ${green} 2.${plain} Warp(@hamid-gh98)                ${green}12.${plain} V2Ray(@233boy)
