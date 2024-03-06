@@ -3214,7 +3214,7 @@ ${cyan}23${white}.${cyan}节点工具${yellow}✈ ${red}warp${plain}
 ${white}-------------------------------------${plain}
 ${green}99.${plain}重启系统${blue}❂${plain}       ${green}00.${plain}脚本更新${blue}♨${plain}
 ${white}=====================================${plain}
-${green} 0.${plain}退出脚本${red}✖${plain}       ${green}♧${blue}QiQTools-$script_version${plain}
+${green} 0.${plain}退出脚本${red}✖${plain}       ${green}♧♧ ${blue}QiQTools-$script_version${plain}
 "
 }
 
