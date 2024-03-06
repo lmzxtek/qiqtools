@@ -350,8 +350,8 @@ show_info() {
 网络拥堵算法: ${yellow}$congestion_algorithm ${plain}$queue_algorithm
 $sys_output
 ---------------------------------
-   IPv4地址: ${yellow}$ipv4_address${plain}  $WARPSTATUS4 ($COUNTRY4 $CITY4 $ASNORG4)
-   IPv6地址: ${blue}$ipv6_address${plain}  $WARPSTATUS6 ($COUNTRY6 $CITY6 $ASNORG6)
+   IPv4地址: ${yellow}$ipv4_address${plain}  $WARPSTATUS4 $COUNTRY4 $CITY4 $ASNORG4
+   IPv6地址: ${blue}$ipv6_address${plain}  $WARPSTATUS6 $COUNTRY6 $CITY6 $ASNORG6
 ---------------------------------
     系统时间: $current_time
     运行时长: $runtime
