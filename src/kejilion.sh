@@ -480,7 +480,7 @@ echo -e "\033[96m_  _ ____  _ _ _    _ ____ _  _ "
 echo "|_/  |___  | | |    | |  | |\ | "
 echo "| \_ |___ _| | |___ | |__| | \| "
 echo "                                "
-echo -e "\033[96m科技lion一键脚本工具 v2.3.2 （支持Ubuntu/Debian/CentOS/Alpine系统）\033[0m"
+echo -e "\033[96m科技lion一键脚本工具 v2.3.3 （支持Ubuntu/Debian/CentOS/Alpine系统）\033[0m"
 echo -e "\033[96m-输入\033[93mk\033[96m可快速启动此脚本-\033[0m"
 echo "------------------------"
 echo "1. 系统信息查询"
@@ -489,7 +489,7 @@ echo "3. 系统清理"
 echo "4. 常用工具 ▶"
 echo "5. BBR管理 ▶"
 echo "6. Docker管理 ▶ "
-echo "7. WARP管理 ▶ 解锁ChatGPT Netflix"
+echo "7. WARP管理 ▶ "
 echo "8. 测试脚本合集 ▶ "
 echo "9. 甲骨文云脚本合集 ▶ "
 echo -e "\033[33m10. LDNMP建站 ▶ \033[0m"
@@ -1703,10 +1703,10 @@ EOF
       mkdir $yuming
       cd $yuming
       wget https://github.com/magicblack/maccms_down/raw/master/maccms10.zip && unzip maccms10.zip && rm maccms10.zip
-      cd /home/web/html/$yuming/maccms10-master/template/ && wget https://github.com/kejilion/Website_source_code/raw/main/DYXS2.zip && unzip DYXS2.zip && rm /home/web/html/$yuming/maccms10-master/template/DYXS2.zip
-      cp /home/web/html/$yuming/maccms10-master/template/DYXS2/asset/admin/Dyxs2.php /home/web/html/$yuming/maccms10-master/application/admin/controller
-      cp /home/web/html/$yuming/maccms10-master/template/DYXS2/asset/admin/dycms.html /home/web/html/$yuming/maccms10-master/application/admin/view/system
-      mv /home/web/html/$yuming/maccms10-master/admin.php /home/web/html/$yuming/maccms10-master/vip.php && wget -O /home/web/html/$yuming/maccms10-master/application/extra/maccms.php https://raw.githubusercontent.com/kejilion/Website_source_code/main/maccms.php
+      cd /home/web/html/$yuming/template/ && wget https://github.com/kejilion/Website_source_code/raw/main/DYXS2.zip && unzip DYXS2.zip && rm /home/web/html/$yuming/template/DYXS2.zip
+      cp /home/web/html/$yuming/template/DYXS2/asset/admin/Dyxs2.php /home/web/html/$yuming/application/admin/controller
+      cp /home/web/html/$yuming/template/DYXS2/asset/admin/dycms.html /home/web/html/$yuming/application/admin/view/system
+      mv /home/web/html/$yuming/admin.php /home/web/html/$yuming/vip.php && wget -O /home/web/html/$yuming/application/extra/maccms.php https://raw.githubusercontent.com/kejilion/Website_source_code/main/maccms.php
 
       restart_ldnmp
 
@@ -3790,9 +3790,10 @@ EOF
       echo "17. 防火墙高级管理器"
       echo "18. 修改主机名"
       echo "19. 切换系统更新源"
-      echo -e "20. 定时任务管理 \033[33mNEW\033[0m"
+      echo "20. 定时任务管理"
+      echo "21. 本机host解析"
       echo "------------------------"
-      echo "21. 留言板"
+      echo "31. 留言板"
       echo "------------------------"
       echo "99. 重启服务器"
       echo "------------------------"
@@ -4829,40 +4830,23 @@ EOF
 
           18)
           clear
-          # 获取当前主机名
           current_hostname=$(hostname)
-
           echo "当前主机名: $current_hostname"
-
-          # 询问用户是否要更改主机名
           read -p "是否要更改主机名？(y/n): " answer
-
           if [ "$answer" == "y" ]; then
               # 获取新的主机名
               read -p "请输入新的主机名: " new_hostname
-
-              # 更改主机名
               if [ -n "$new_hostname" ]; then
-                  # 根据发行版选择相应的命令
-                  if [ -f /etc/debian_version ]; then
-                      # Debian 或 Ubuntu
-                      hostnamectl set-hostname "$new_hostname"
-                      sed -i "s/$current_hostname/$new_hostname/g" /etc/hostname
-                  elif [ -f /etc/redhat-release ]; then
-                      # CentOS
-                      hostnamectl set-hostname "$new_hostname"
-                      sed -i "s/$current_hostname/$new_hostname/g" /etc/hostname
-                  elif [ -f /etc/alpine-release ]; then
-                      # alpine
+                  if [ -f /etc/alpine-release ]; then
+                      # Alpine
                       echo "$new_hostname" > /etc/hostname
-                      /etc/init.d/hostname restart
+                      hostname "$new_hostname"
                   else
-                      echo "未知的发行版，无法更改主机名。"
-                      exit 1
+                      # 其他系统，如 Debian, Ubuntu, CentOS 等
+                      hostnamectl set-hostname "$new_hostname"
+                      sed -i "s/$current_hostname/$new_hostname/g" /etc/hostname
+                      systemctl restart systemd-hostnamed
                   fi
-
-                  # 重启生效
-                  systemctl restart systemd-hostnamed
                   echo "主机名已更改为: $new_hostname"
               else
                   echo "无效的主机名。未更改主机名。"
@@ -4871,7 +4855,6 @@ EOF
           else
               echo "未更改主机名。"
           fi
-
               ;;
 
           19)
@@ -5132,8 +5115,46 @@ EOF
 
               ;;
 
-
           21)
+
+              while true; do
+                  clear
+                  echo "本机host解析列表"
+                  echo "如果你在这里添加解析匹配，将不再使用动态解析了"
+                  cat /etc/hosts
+                  echo ""
+                  echo "操作"
+                  echo "------------------------"
+                  echo "1. 添加新的解析              2. 删除解析地址"
+                  echo "------------------------"
+                  echo "0. 返回上一级选单"
+                  echo "------------------------"
+                  read -p "请输入你的选择: " host_dns
+
+                  case $host_dns in
+                      1)
+                          read -p "请输入新的解析记录 格式: 110.25.5.33 kejilion.pro : " addhost
+                          echo "$addhost" >> /etc/hosts
+
+                          ;;
+                      2)
+                          read -p "请输入需要删除的解析内容关键字: " delhost
+                          sed -i "/$delhost/d" /etc/hosts
+                          ;;
+                      0)
+                          break  # 跳出循环，退出菜单
+                          ;;
+
+                      *)
+                          break  # 跳出循环，退出菜单
+                          ;;
+                  esac
+              done
+              ;;
+
+
+
+          31)
             clear
             install sshpass
 

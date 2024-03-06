@@ -2051,6 +2051,7 @@ ${plain}-------------------------------
 ${green}61.${cyan}AList多存储文件列表程序
 ${green}62.${cyan}VScode-Server在线版
 ${green}63.${cyan}KodBox可道云在线桌面
+${green}64.${cyan}ChatGPT-Next-Web
 ${plain}-------------------------------
 ${green} 0.${plain} 返回主菜单
 "
@@ -2318,6 +2319,7 @@ website_tools_run(){
      61) clear && install curl && curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s install  ;;
      62) clear && install curl && curl -fsSL https://code-server.dev/install.sh | sh  ;;
      63) clear && install_kodbox  ;;   
+     64) clear && install curl && bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh) ;;
 
       0) qiqtools ;;
      99) echo -e "重新启动系统，SSH连接将断开..." && reboot && exit ;;
@@ -2336,7 +2338,6 @@ ${green} 1.${plain} Docker
 ${green} 2.${plain} Python
 ${green} 3.${plain} Conda
 ${green} 4.${plain} RustDesk Server
-${green} 5.${plain} ChatGPT-Next-Web
 -------------------------------
 ${green} 0.${plain} 返回主菜单
 -------------------------------
@@ -2360,7 +2361,6 @@ other_tools_run() {
         fi 
         ;;
       4) clear && install wget && wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
-      5) clear && install curl && bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh) ;;
 
       0) qiqtools ;;
       *) echo "无效的输入!" ;;
