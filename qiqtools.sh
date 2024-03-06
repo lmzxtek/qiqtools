@@ -2031,7 +2031,7 @@ website_tools_menu() {
 echo -e "
 ▶ 面板工具
 ${plain}-------------------------------
-${green} 1.${red}1Panel(新一代管理面板)
+${green} 1.${yellow}1Panel(新一代管理面板)
 ${green} 2.${plain}aaPanel(宝塔国际版)
 ${green} 3.${plain}宝塔面板(官方版)
 ${green} 4.${plain}NginxProxyManager(Nginx可视化面板)
@@ -2997,15 +2997,15 @@ ${plain}-------------------------------
 ${green} 1.${plain}安装LDNMP环境(Todo...)   ${green} 3.${plain}更新LDNMP环境(Todo...)
 ${green} 2.${plain}卸载LDNMP环境(Todo...)   ${green} 4.${plain}优化LDNMP环境(Todo...)
 ${plain}-------------------------------     
-${red}11.${red}安装Caddy      ${green}21.${plain}安装PHP8.3
-${green}12.${plain}安装Nginx      ${green}22.${plain}安装PHP7.4
-${green}13.${plain}安装OpenResty  ${green}23.${plain}安装MariaDB
-${green}14.${plain}查看状态       ${green}24.${plain}安装Redis
+${red}11.${yellow}安装Caddy          ${green}21.${plain}安装PHP8.3
+${green}12.${plain}安装Nginx          ${green}22.${plain}安装PHP7.4
+${green}13.${plain}安装OpenLiteSpeed  ${green}23.${plain}安装MariaDB
+${green}14.${plain}查看状态          ${green}24.${plain}安装Redis
 ${yellow}-------------------------------  
-${green}31.${plain}站点列表       ${green}41.${plain}重启服务
-${green}32.${plain}站点管理       ${green}42.${plain}停止服务
-${green}33.${plain}站点重定向     ${green}43.${plain}更新服务 
-${red}34.${red}站点反向代理   ${green}44.${plain}删除服务(Todo...)
+${green}31.${plain}站点列表          ${green}41.${plain}重启服务
+${green}32.${plain}站点管理          ${green}42.${plain}停止服务
+${green}33.${plain}站点重定向        ${green}43.${plain}更新服务 
+${red}34.${yellow}站点反向代理   ${green}44.${plain}删除服务(Todo...)
 ${green}35.${plain}自定义静态站点 ${green}
 ${yellow}-------------------------------   
 ${green}88.${plain}站点防御程序 (Todo...)
@@ -3045,7 +3045,13 @@ LDNMP_run(){
         echo ""
         ;;
 
-     13) clear && openresty_install ;;
+    #  13) clear && openresty_install ;;
+     13) 
+      clear
+      wget https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh && bash ols1clk.sh
+      # bash <( curl -k https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh )
+      ;;
+
      14) caddy_status ;;
 
      21) clear && install_php83 ;;
