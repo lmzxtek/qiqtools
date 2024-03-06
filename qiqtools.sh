@@ -117,7 +117,7 @@ ip_address() {
   #   # ipv6_address=$(curl -s --max-time 1 ipv6.ip.sb)
   #   check_system_ip
   # fi
-  [[ -z "$ipv4_address" ] && [ -z "$ipv6_address" ]] && check_system_ip
+  [[ -z "$ipv4_address" ] && [ -z "$ipv6_address" ]] && check_system_ip;
 }
 
 ip_show(){
