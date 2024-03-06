@@ -349,8 +349,8 @@ $output
 ------------------------
 网络拥堵算法: $congestion_algorithm $queue_algorithm
 ------------------------
-   IPv4地址: $ipv4_address  $WARPSTATUS4 $COUNTRY4  $CITY4  $ASNORG4
-   IPv6地址: $ipv6_address  $WARPSTATUS6 $COUNTRY6  $CITY6  $ASNORG6
+   IPv4地址: $ipv4_address  $WARPSTATUS4 ($COUNTRY4 $CITY4 $ASNORG4)
+   IPv6地址: $ipv6_address  $WARPSTATUS6 ($COUNTRY6 $CITY6 $ASNORG6)
 ------------------------
     系统时间: $current_time
     运行时长: $runtime
