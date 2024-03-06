@@ -329,32 +329,32 @@ get_sysinfo(){
 show_info() {
     echo -e "${plain}
 系统信息查询
-========================
+=================================
    主机名: $hostname
    运营商: $isp_info
  系统版本: $os_info
  内核版本: $kernel_version
-------------------------
+---------------------------------
   CPU架构: $cpu_arch
   CPU型号: $cpu_info
    核心数: $cpu_cores
    虚拟化: ${yellow}$VIRT${plain}
-------------------------
+---------------------------------
   CPU占用: $cpu_usage_percent
  物理内存: $mem_info
  虚拟内存: $swap_info
  硬盘占用: $disk_info
-------------------------
+---------------------------------
 $output
-------------------------
+---------------------------------
 网络拥堵算法: $congestion_algorithm $queue_algorithm
-------------------------
+---------------------------------
    IPv4地址: $ipv4_address  $WARPSTATUS4 ($COUNTRY4 $CITY4 $ASNORG4)
    IPv6地址: $ipv6_address  $WARPSTATUS6 ($COUNTRY6 $CITY6 $ASNORG6)
-------------------------
+---------------------------------
     系统时间: $current_time
     运行时长: $runtime
-========================
+=================================
 "
 }
 
