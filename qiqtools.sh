@@ -3411,7 +3411,7 @@ main_menu() {
   txtn "-------------------------------------"
   txtn $(txtn "99." "重启系统" $(txtb "☢")) "       " $(txtn "00." "脚本更新" $(txtb "☋"))
   txtn "====================================="
-  txtn $(txtn " 0." "退出脚本" $(txtb "✖")) "   " $(txtb "♧♧ ") "QiQTools " $(txtb "$script_version")
+  txtn $(txtn " 0." "退出脚本" $(txtb "✖")) "   " $(txtb "♧♧") "QiQTools" $(txtb "$script_version")
 }
 
 
