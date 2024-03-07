@@ -2686,24 +2686,41 @@ warp_tools_run() {
 }
 
 board_tools_menu() {
-echo -e "
-▶ 面板管理
-${yellow}IPv4: ${white}$WAN4${plain}  ($COUNTRY4 $WARPSTATUS4)
-${yellow}IPv6: ${white}$WAN6${plain}  ($COUNTRY6 $WARPSTATUS6)
-${plain}-------------------------------
-${green}21.${plain} ${blue}3X-UI(@mhsanaei)                   ${green}31.${plain} Hiddify
-${green}22.${plain} ${yellow}X-UI(@alireza0)                    ${green}32.${plain} V2RayA
-${green}23.${plain} X-UI(@FranzKafkaYu)                ${green}33.${plain} Daed
-${green}24.${plain} X-UI(@rwkgyg)                      ${green}34.${plain} Daed-Docker
-${green}25.${plain} S-UI(@alireza0)
-${plain}-------------------------------
-${green}41.${plain} XBoard                             ${green}44.${plain} LotusBoard
-${green}42.${plain} V2Board                            ${green}45.${plain} SSPanel
-${green}43.${plain} V2Board(wyx2685)                   ${green}46.${plain} Proxypanel
-${plain}-------------------------------
-${green} 0.${plain} 返回主菜单
-${plain}-------------------------------
-"
+
+txtn $(txbr "▼ 面板管理")$(txbg " ❦ ")
+txtn "-------------------------------------"
+WANIP_show
+txtn "====================================="
+txtn $(txtn "21.3X-UI(@mhsanaei)")$(txtg "✔")"       "$(txtn "31.Hiddify")$(txtg "✔")
+txtn $(txtb "22.X-UI(@alireza0)")$(txtg "✔")"        "$(txty "32.V2RayA")$(txtg "✔")
+txtn $(txtn "23.X-UI(@FranzKafkaYu)")$(txtg "✔")"    "$(txtn "33.Daed")$(txtg "✔")
+txtn $(txtn "24.X-UI(@rwkgyg)")$(txtg "✔")"          "$(txtn "34.Daed-Docker")$(txtg "✔")
+txtn $(txtn "25.S-UI(@alireza0)")$(txtg "✔")"        "$(txtn "")$(txtg "")
+txtn "-------------------------------------"
+txtn $(txty "41.XBoard")$(txtg "✔")"                 "$(txtn "44.LotusBoard")$(txtg "✔")
+txtn $(txtn "42.V2Board")$(txtg "✔")"                "$(txtn "45.SSPanel")$(txtg "✔")
+txtn $(txtn "43.V2Board(wyx2685)")$(txtg "✔")"       "$(txtn "46.Proxypanel")$(txtb "✔")
+txtn "====================================="
+txtn $(txtn " 0.返回主菜单")$(txtr "✖")
+txtn " "
+
+
+# echo -e "
+# ▶ 面板管理
+# ${plain}-------------------------------
+# ${green}21.${plain} ${blue}3X-UI(@mhsanaei)                   ${green}31.${plain} Hiddify
+# ${green}22.${plain} ${yellow}X-UI(@alireza0)                    ${green}32.${plain} V2RayA
+# ${green}23.${plain} X-UI(@FranzKafkaYu)                ${green}33.${plain} Daed
+# ${green}24.${plain} X-UI(@rwkgyg)                      ${green}34.${plain} Daed-Docker
+# ${green}25.${plain} S-UI(@alireza0)
+# ${plain}-------------------------------
+# ${green}41.${plain} XBoard                             ${green}44.${plain} LotusBoard
+# ${green}42.${plain} V2Board                            ${green}45.${plain} SSPanel
+# ${green}43.${plain} V2Board(wyx2685)                   ${green}46.${plain} Proxypanel
+# ${plain}-------------------------------
+# ${green} 0.${plain} 返回主菜单
+# ${plain}-------------------------------
+# "
 }
 
 board_tools_run() {
@@ -3182,9 +3199,9 @@ clear
 
 txtn "====================================="
 WANIP_show
-txtn "-------------------------------------"
+txtb "-------------------------------------"
 txtn $(txbr "▼ 站点目录")$(txbg " ✉ ")
-txtn "-------------------------------------"
+txtb "-------------------------------------"
 txtn $(txtn " 数据：")$(txtb " /home/web/html ")
 txtn $(txtn " 配置：")$(txtb " /home/web/caddy")
 txtn "====================================="
@@ -3249,6 +3266,7 @@ caddy_web_manager(){
 
 # 网站管理菜单
 WebSites_manager_menu() {
+
 txtn $(txbr "▼ 站点管理")$(txbg " ❦ ")
 txtn "-------------------------------------"
 WANIP_show
@@ -3271,6 +3289,7 @@ txtn $(txtn "88.站点防御程序")$(txtb "✘")
 txtn "====================================="
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
 txtn " "
+
 }
 
 WebSites_manager_run(){
