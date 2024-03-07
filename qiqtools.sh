@@ -164,6 +164,7 @@ check_IPV4(){
 	if [[ "$check4" != *"received"* ]] && [[ "$check4" != *"transmitted"* ]];then
     IP4_INFO="${red}Not Supported${plain}"
 	else
+    txtn " >>> Check IPv4 info ..."
 		# local_ipv4=$(curl -4 -s --max-time 10 api64.ipify.org)
     local res_ipv4=$(curl -4 -sS https://www.cloudflare.com/cdn-cgi/trace)
 		local local_ipv4=$( echo -e "$res_ipv4" | grep "ip="   | awk -F= '{print $2}')
@@ -190,6 +191,7 @@ check_IPV6(){
 	if [[ "$check6" != *"received"* ]] && [[ "$check4" != *"transmitted"* ]];then
     IP6_INFO="${red}Not Supported${plain}"
 	else
+    txtn " >>> Check IPv6 info ..."
 		# local_ipv6=$(curl -6 -s --max-time 20 api64.ipify.org)
     local res_ipv6=$(curl -6 -sS https://www.cloudflare.com/cdn-cgi/trace)
 		local local_ipv6=$( echo -e "$res_ipv6" | grep "ip="   | awk -F= '{print $2}')
@@ -213,10 +215,7 @@ check_IP_address() {
     txtn " >>> Check IP failed ..."
     return 1
   else  
-    txtn " >>> Check IPv4 info ..."
     check_IPV4
-
-    txtn " >>> Check IPv6 info ..."
     check_IPV6
   fi
 }
@@ -548,7 +547,7 @@ clean_sys() {
 # 设置docker-compose快捷命令
 set_docker_1ckl(){
   tcmd="dcc"
-  reading " 请输入要设置的快捷键[dcc]: " ccmd
+  reading "\n 请输入要设置的快捷键[dcc]: " ccmd
   [[ -n $ccmd ]] && tcmd=$ccmd
   chmod a+x /usr/local/bin/docker-compose 
   rm -rf `which $tcmd` 
