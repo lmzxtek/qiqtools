@@ -3231,10 +3231,28 @@ caddy_web_manager(){
 
 # 网站管理菜单
 LDNMP_menu() {
-  txby "▼ 站点管理✈️"
-  txtn $(txtr "-------------------------------")
-  txtn $(txty " IPv4: ") $(txtb $WAN4) $(txtn "\t(" $COUNTRY4 " " $WARPSTATUS4 ")")
-  txtn $(txty " IPv6: ") $(txtb $WAN6) $(txtn "\t(" $COUNTRY6 " " $WARPSTATUS6 ")")
+
+txtn $(txtr "▼ 站点管理")$(txtg " ❦ ")
+txtn "-------------------------------------"
+WANIP_show
+txtn "====================================="
+txtn $(txty " 1.安装LDNMP环境")$(txtb "✘")"     "$(txtn "11.更新LDNMP环境")$(txtb "✘")
+txtn $(txtn " 2.卸载LDNMP环境")$(txtb "✘")"     "$(txty "12.优化LDNMP环境")$(txtb "✘")
+txtn "-------------------------------------"
+txtn $(txty "11.安装Caddy")$(txtg "✔")"         "$(txtn "21.安装PHP8.3")$(txtg "✔")
+txtn $(txtn "12.安装Nginx")$(txtg "✔")"         "$(txty "22.安装PHP7.4")$(txtg "✔")
+txtn $(txtn "13.安装OpenLiteSpeed")$(txtg "✔")" "$(txtb "23.安装MariaDB")$(txtb "✔")
+txtn $(txtn "14.查看状态")$(txtg "✔")"          "$(txtb "24.安装Redis")$(txtb "✔")
+txtn "-------------------------------------"
+txtn $(txty "31.站点列表")$(txtg "✔")"          "$(txtn "21.重启服务")$(txtg "✔")
+txtn $(txtn "32.站点管理")$(txtg "✔")"          "$(txty "22.停止服务")$(txtg "✔")
+txtn $(txtn "33.添加重定向")$(txtg "✔")"        "$(txtb "23.更新服务")$(txtb "✔")
+txtn $(txtn "34.添加反向代理")$(txtg "✔")"      "$(txtb "24.删除服务")$(txtb "✘")
+txtn $(txtn "34.添加静态站点")$(txtg "✔")"      "$(txtb "")$(txtb "")
+txtn "-------------------------------------"
+txtn $(txtn "88.站点防御程序")$(txtb "✘")
+txtn "====================================="
+txtn $(txtn " 0.返回主菜单")$(txtr "✖")
 
 echo -e "
 ▼ 站点管理✈️
@@ -3380,26 +3398,26 @@ script_update(){
 
 
 show_header_qiq(){
-  
-txtn " "$(txtg "  ░███   ") $(txtc "░████") $(txtg "  ░███   ")
-txtn " "$(txtg " ░██ ░██ ") $(txtc " ░██ ") $(txtg " ░██ ░██ ")
-txtn " "$(txtg "░██   ░██") $(txtc " ░██ ") $(txtg "░██   ░██")
-txtn " "$(txtg " ░██ ░██ ") $(txtc " ░██ ") $(txtg " ░██ ░██ ")
-txtn " "$(txtg "   ░██ ██") $(txtc "░████") $(txtg "   ░██ ██")
-txtn $(txtb "─┬─╭─╮╭─╮┬ ╭─╮")
-txtn $(txtb " │ │ ││ ││ ╰─╮")
-txtn $(txtb " │ ╰─╯╰─╯╰─╰─╯")$(txtc "  ✟  ")$(txtn "快捷命令")$(txtc "☞")$(txty " qiq ")$(txtc "☜")
 
-# echo -e "
-#  ${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}
-#  ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
-#  ${green}░██   ░██  ${cyan} ░██   ${green}░██   ░██${plain}
-#  ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
-#  ${green}   ░██ ██  ${cyan}░████  ${green}   ░██ ██${plain}
+# txtn " "$(txtg "  ░███   ") $(txtc "░████") $(txtg "  ░███   ")
+# txtn " "$(txtg " ░██ ░██ ") $(txtc " ░██ ") $(txtg " ░██ ░██ ")
+# txtn " "$(txtg "░██   ░██") $(txtc " ░██ ") $(txtg "░██   ░██")
+# txtn " "$(txtg " ░██ ░██ ") $(txtc " ░██ ") $(txtg " ░██ ░██ ")
+# txtn " "$(txtg "   ░██ ██") $(txtc "░████") $(txtg "   ░██ ██")
+# txtn $(txtb "─┬─╭─╮╭─╮┬ ╭─╮")
+# txtn $(txtb " │ │ ││ ││ ╰─╮")
+# txtn $(txtb " │ ╰─╯╰─╯╰─╰─╯")$(txtc "  ✟  ")$(txtn "快捷命令")$(txtc "☞")$(txty " qiq ")$(txtc "☜")
 
-# ${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}  
-# ${blue} │ │ ││ ││ ╰─╮${plain}  
-# ${blue} │ ╰─╯╰─╯╰─╰─╯${plain}   ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}"
+echo -e "
+ ${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}
+ ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
+ ${green}░██   ░██  ${cyan} ░██   ${green}░██   ░██${plain}
+ ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
+ ${green}   ░██ ██  ${cyan}░████  ${green}   ░██ ██${plain}
+
+${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}  
+${blue} │ │ ││ ││ ╰─╮${plain}  
+${blue} │ ╰─╯╰─╯╰─╰─╯${plain}   ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}"
 }
 
 # 显示主菜单
