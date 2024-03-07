@@ -2252,8 +2252,8 @@ install_maccms(){
 website_tools_menu() {
 echo -e "
 ▶ 站点面板工具
-${yellow}IPv4: ${white}$WAN4${plain}  ($COUNTRY4 $WARPSTATUS4)
-${yellow}IPv6: ${white}$WAN6${plain}  ($COUNTRY6 $WARPSTATUS6)
+${yellow}IPv4: ${pink}$WAN4${plain}  ($COUNTRY4 $WARPSTATUS4)
+${yellow}IPv6: ${pink}$WAN6${plain}  ($COUNTRY6 $WARPSTATUS6)
 ${plain}-------------------------------
 ${green} 1.${yellow}1Panel(新一代管理面板)
 ${green} 2.${plain}aaPanel(宝塔国际版)
