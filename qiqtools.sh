@@ -3399,14 +3399,13 @@ ${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 快捷
 
 # 显示主菜单
 main_menu() {
-
   # txtn $(txty " IPv4: ") $(txtb $WAN4) $(txtn "\t(" $COUNTRY4 " " $WARPSTATUS4 ")")
   # txtn $(txty " IPv6: ") $(txtb $WAN6) $(txtn "\t(" $COUNTRY6 " " $WARPSTATUS6 ")")
   txtn "====================================="
   WANIP_show
   txtn "-------------------------------------"
-  txtn $(txty " 1." "系统信息" "☄") $(txty "11." "容器管理" "❂")
-  txtn $(txty "21." "常用工具" "❃") $(txty "31." "面板工具" "◈")
+  txtn $(txty " 1." "系统信息" $(txtb "☄")) $(txty "11." "容器管理" $(txtb "❂"))
+  txtn $(txty "21." "常用工具" $(txtb "❃")) $(txty "31." "面板工具" $(txtb "◈"))
   txtn "-------------------------------------"
   txtn "====================================="
 
