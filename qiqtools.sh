@@ -172,6 +172,7 @@ check_IPV4(){
     WAN4=$local_ipv4
     COUNTRY4=$iso2_code4
     ASNORG4=$local_isp4
+    isp_info=$local_isp4
     IP4_INFO="$WARPSTATUS4 $iso2_code4 -> $local_isp4"
 	fi
 }
@@ -195,6 +196,7 @@ check_IPV6(){
     WAN6=$local_ipv6
     COUNTRY6=$iso2_code6
     ASNORG6=$local_isp6
+    isp_info=$local_isp6
     IP6_INFO="$WARPSTATUS6 $iso2_code6 -> $local_isp6"
 	fi
 }
@@ -441,8 +443,7 @@ system_info() {
   txtkvn "    主机名: " "$hostname"
   txtkvn "    运营商: " "$isp_info"
   txtkvn "  系统版本: " "$os_info"
-  txtkvy "  内核版本: " "$isp_info"
-  txtkvn "    运营商: " "$kernel_version"
+  txtkvy "  内核版本: " "$kernel_version"
   txtkvn "---------------------------------"
   txtkvn "  CPU架构: " "$cpu_arch"
   txtkvn "  CPU型号: " "$cpu_info"
