@@ -3403,6 +3403,7 @@ echo -e "
 ${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}  
 ${blue} │ │ ││ ││ ╰─╮${plain}  
 ${blue} │ ╰─╯╰─╯╰─╰─╯${plain}   ${cyan}♧♧${plain} QiQTools ${blue}$script_version${plain}"
+
 }
 
 # 显示主菜单
