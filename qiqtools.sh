@@ -3424,20 +3424,19 @@ cd ~
 # ${blue} │ │ ││ ││ ╰─╮${plain}  
 # ${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}
 
-  txthd="
+  txthd="\n
  ${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}\n
  ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}\n
  ${green}░██   ░██  ${cyan} ░██   ${green}░██   ░██${plain}\n
  ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}\n
  ${green}   ░██ ██  ${cyan}░████  ${green}   ░██ ██${plain}"
 
-  txtht="
+  txtht="\n
 ${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}\n
 ${blue} │ │ ││ ││ ╰─╮${plain}\n
 ${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}"
 
-  echo -e $txthd
-  echo -e $txtht
+  echo -e $txthd $txtht
 
 echo -e "
  ${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}
