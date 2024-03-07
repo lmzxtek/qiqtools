@@ -3422,7 +3422,7 @@ txtn $(txtr "99")$(txtb ".重启系统☢")"       "$(txtb "00.脚本更新")$(t
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "====================================="
 # txtn $(txtn " 0.退出脚本")$(txtr "✖")"       "$(txtb "♧♧ ")$(txtc "QiQTools") $(txtb "$script_version")
-txtn $(txtn " 0.退出脚本")$(txtr "✖")"       "$(txtb "✟✟ ")$(txtc "快捷命令") $(txtb "☞") $(txtb "qiq") $(txtb "☜")
+txtn $(txtn " 0.退出脚本")$(txtr "✖")"       "$(txtp "✟✟ ")$(txtc "快捷命令")$(txtb "☞") $(txty "qiq") $(txtb "☜")
 txtn " "
 }
 
