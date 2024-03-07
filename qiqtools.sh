@@ -3236,25 +3236,24 @@ echo -e "
 ▼ 站点管理✈️
 ${yellow}IPv4: ${white}$WAN4${plain}
 ${yellow}IPv6: ${white}$WAN6${plain}
-${plain}-------------------------------
+${plain}===============================
 ${green} 1.${plain}安装LDNMP环境(Todo...)   ${green} 3.${plain}更新LDNMP环境(Todo...)
 ${green} 2.${plain}卸载LDNMP环境(Todo...)   ${green} 4.${plain}优化LDNMP环境(Todo...)
-${plain}-------------------------------     
+${plain}-------------------------------
 ${red}11.${yellow}安装Caddy          ${green}21.${plain}安装PHP8.3
 ${green}12.${plain}安装Nginx          ${green}22.${plain}安装PHP7.4
 ${green}13.${plain}安装OpenLiteSpeed  ${green}23.${plain}安装MariaDB
 ${green}14.${plain}查看状态          ${green}24.${plain}安装Redis
-${yellow}-------------------------------  
+${yellow}-------------------------------
 ${green}31.${plain}站点列表          ${green}41.${plain}重启服务
 ${green}32.${plain}站点管理          ${green}42.${plain}停止服务
-${green}33.${plain}站点重定向        ${green}43.${plain}更新服务 
-${red}34.${yellow}站点反向代理   ${green}44.${plain}删除服务(Todo...)
-${green}35.${plain}自定义静态站点 ${green}
-${yellow}-------------------------------   
+${green}33.${plain}添加重定向        ${green}43.${plain}更新服务
+${red}34.${yellow}添加反向代理   ${green}44.${plain}删除服务(Todo...)
+${green}35.${plain}添加静态站点 ${green}
+${yellow}-------------------------------
 ${green}88.${plain}站点防御程序 (Todo...)
-${plain}-------------------------------   
+${plain}===============================
 ${green} 0.${plain}返回主菜单
--------------------------------
 "
 }
 
@@ -3402,7 +3401,7 @@ ${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 快捷
 ${white}=====================================${plain}
 ${yellow}IPv4: ${white}$WAN4${plain}
 ${yellow}IPv6: ${white}$WAN6${plain}
-${white}-------------------------------------${plain}
+${white}=====================================${plain}
 ${green} 1${white}.${yellow}系统信息${red}☄${plain}       ${green}11${white}.${plain}容器管理${blue}❂${plain}
 ${green} 2${white}.${plain}系统更新${blue}☣${plain}       ${green}12${white}.${yellow}站点管理${yellow}❈${plain}
 ${green} 3${blue}.${plain}系统清理${blue}☢${plain}       ${green}13${white}.${plain}站点部署${blue}ஐ${plain}
