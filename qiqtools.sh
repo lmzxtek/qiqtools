@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.3.0
+script_version=v0.3.2
 #==========================
 
 # Language
@@ -34,23 +34,77 @@ yellow='\033[0;33m'
  plain='\033[0m'
 
 # 自定义字体彩色，read 函数
-warning() { echo -e "${red}$*${plain}"; }                  # 红色
-error()   { echo -e "${red}${bold}$*${plain}" && exit 1; } # 红色粗体
-info()    { echo -e "${green}${bold}$*${plain}"; }         # 绿色粗体
-hint()    { echo -e "${yellow}${bold}$*${plain}"; }        # 黄色粗体
+  warning(){ echo -e "${red}$*${plain}"; }              # 红色
+highlight(){ echo -e "${yellow}$*${plain}"; }           # 黄色
+
+ txtr(){ echo -e "${red}$*${plain}"; }                  # 红色字符
+ txtb(){ echo -e "${blue}$*${plain}"; }                 # 蓝色字符
+ txtg(){ echo -e "${green}$*${plain}"; }                # 红色字符
+ txty(){ echo -e "${yellow}$*${plain}"; }               # 黄色字符
+ txtn(){ echo -e "${plain}$*${plain}"; }                # 常规字符
+
+ note(){ echo -e "${pink}${bold}$*${plain}"; }          # 品色粗体
+ info(){ echo -e "${green}${bold}$*${plain}"; }         # 绿色粗体
+ hint(){ echo -e "${yellow}${bold}$*${plain}"; }        # 黄色粗体
+error(){ echo -e "${red}${bold}$*${plain}" && exit 1; } # 红色粗体并退出
+
+# 键值对输出
+txtkvn() {
+  local key="$1" # 获取第一个参数  
+  shift # 将第一个参数从参数列表中删除  
+  local value=$(echo "$*" | tr -d '\n') # 将剩余参数连接成一个字符串
+  echo -e "${plain}${bold}$key${plain}$value${plain}" # 键以常规输出，值则以常规文本输出
+}
+txtkvy() {
+  local key="$1" # 获取第一个参数  
+  shift # 将第一个参数从参数列表中删除  
+  local value=$(echo "$*" | tr -d '\n') # 将剩余参数连接成一个字符串
+  echo -e "${yellow}${bold}$key${plain}$value${plain}" # 键以黄色输出，值则以常规文本输出
+}
+txtkvr() {
+  local key="$1" # 获取第一个参数  
+  shift # 将第一个参数从参数列表中删除  
+  local value=$(echo "$*" | tr -d '\n') # 将剩余参数连接成一个字符串
+  echo -e "${red}${bold}$key${plain}$value${plain}" # 键以红色输出，值则以常规文本输出
+}
+
+# 项目输出: 在第一个字符和后续字符之间加'.'
+txtitem() {
+  local key="$1" # 获取第一个参数  
+  shift # 将第一个参数从参数列表中删除  
+  local value=$(echo "$*" | tr -d '\n') # 将剩余参数连接成一个字符串
+
+  if [ -z "$value"]; then
+    echo -e "${plain}$key${plain}" # 键以黄色输出，值则以常规文本输出
+  else
+    echo -e "${plain}$key${plain}.$value${plain}" # 键以黄色输出，值则以常规文本输出
+  fi
+
+}
 
 reading() { read -rp "$(info "$1")" "$2"; }
+
+# 显示标号对应的文字（中文或英文）
 text() { grep -q '\$' <<< "${E[$*]}" && eval echo "\$(eval echo "\${${L}[$*]}")" || eval echo "\${${L}[$*]}"; }
 
-qiqtools() { main_loop && exit; }
+  qiqtools() {   main_loop && exit; }
 qiq_reload() { cd ~ && qiq && exit; }
 
+# 操作完成，等待输入...
 break_end() {
       echo -e "${green} 操作完成 ${red}>> ${yellow} 按任意键继续${green}..."
       read -n 1 -s -r -p ""
       echo ""
-      # clear
 }
+
+
+# 自定义谷歌翻译函数
+translate() {
+  [ -n "$@" ] && EN="$@"
+  ZH=$(wget --no-check-certificate -qO- --tries=1 --timeout=2 "https://translate.google.com/translate_a/t?client=any_client_id_works&sl=en&tl=zh&q=${EN//[[:space:]]/}" 2>/dev/null)
+  [[ "$ZH" =~ ^\[\".+\"\]$ ]] && cut -d \" -f2 <<< "$ZH"
+}
+
 
 # 安装应用程序
 install() {
@@ -77,8 +131,6 @@ install() {
     return 0
 }
 
-install_dependency() { clear && install curl wget socat unzip tar; }
-
 remove() {
     if [ $# -eq 0 ]; then
         echo "未提供软件包参数!"
@@ -101,6 +153,8 @@ remove() {
     return 0
 }
 
+install_dependency() { clear && install curl wget socat unzip tar; }
+
 
 # export PATH=$PATH:/usr/local/bin
 
@@ -108,6 +162,9 @@ cur_dir=$(pwd)
 
 ipv4_address=""
 ipv6_address=""
+
+IP4_INFO="${red}Not Supported${plain}"
+IP6_INFO="${red}Not Supported${plain}"
 
 # 获取当前服务器的IP地址
 ip_address() {
@@ -117,6 +174,9 @@ ip_address() {
   #   # ipv6_address=$(curl -s --max-time 1 ipv6.ip.sb)
   #   check_system_ip
   # fi
+
+
+
   [ -z "$ipv4_address" ] && [ -z "$ipv6_address" ] && check_system_ip
 }
 
@@ -125,13 +185,6 @@ ip_show(){
   info "\t IPv6: $WAN6 $WARPSTATUS6 $COUNTRY6  $ASNORG6 "
 }
 
-
-# 自定义谷歌翻译函数
-translate() {
-  [ -n "$@" ] && EN="$@"
-  ZH=$(wget --no-check-certificate -qO- --tries=1 --timeout=2 "https://translate.google.com/translate_a/t?client=any_client_id_works&sl=en&tl=zh&q=${EN//[[:space:]]/}" 2>/dev/null)
-  [[ "$ZH" =~ ^\[\".+\"\]$ ]] && cut -d \" -f2 <<< "$ZH"
-}
 
 # 检测 IPv4 IPv6 信息
 check_system_ip() {
@@ -292,7 +345,7 @@ get_sysinfo(){
       fi
     fi
 
-    sys_output=$(awk 'BEGIN { rx_total = 0; tx_total = 0 }
+    txt_data_transfer=$(awk 'BEGIN { rx_total = 0; tx_total = 0 }
         NR > 2 { rx_total += $2; tx_total += $10 }
         END {
             rx_units = "Bytes";
@@ -329,34 +382,62 @@ get_sysinfo(){
 
 # 显示系统信息
 show_info() {
-    echo -e "${plain}
-系统信息查询
-=================================
-   主机名: $hostname
-   运营商: $isp_info
- 系统版本: $os_info
- 内核版本: $kernel_version
----------------------------------
-  CPU架构: $cpu_arch
-  CPU型号: $cpu_info
-   核心数: $cpu_cores
-   虚拟化: ${yellow}$VIRT${plain}
----------------------------------
-  CPU占用: $cpu_usage_percent
- 物理内存: $mem_info
- 虚拟内存: $swap_info
- 硬盘占用: $disk_info
----------------------------------
-网络拥堵算法: ${yellow}$congestion_algorithm ${plain}$queue_algorithm
-$sys_output
----------------------------------
-   IPv4地址: ${yellow}$ipv4_address${plain}  $WARPSTATUS4 $COUNTRY4 $CITY4 $ASNORG4
-   IPv6地址: ${blue}$ipv6_address${plain}  $WARPSTATUS6 $COUNTRY6 $CITY6 $ASNORG6
----------------------------------
-    系统时间: $current_time
-    运行时长: $runtime
-=================================
-"
+    info "系统信息查询"
+  txtkvn "================================="
+  txtkvn "    主机名: " "$hostname"
+  txtkvn "    运营商: " "$isp_info"
+  txtkvn "  系统版本: " "$os_info"
+  txtkvy "  内核版本: " "$isp_info"
+  txtkvn "    运营商: " "$kernel_version"
+  txtkvn "---------------------------------"
+  txtkvn "  CPU架构: " "$cpu_arch"
+  txtkvn "  CPU型号: " "$cpu_info"
+  txtkvn "   核心数: " "$cpu_cores"
+  txtkvy "   虚拟化: " "${yellow}$VIRT${plain}"
+  txtkvn "---------------------------------"
+  txtkvn "  CPU占用: " "$cpu_usage_percent"
+  txtkvy " 物理内存: " "$mem_info"
+  txtkvn " 虚拟内存: " "$swap_info"
+  txtkvy " 硬盘占用: " "$disk_info"
+  txtkvn "---------------------------------"
+  txtkvy " 系统时间: " "$current_time"
+  txtkvy " 运行时长: " "$runtime"
+  txtkvn "---------------------------------"
+  txtkvy " IPv4地址: " "$current_time"
+  txtkvy " IPv6地址: " "$runtime"
+  txtkvn "---------------------------------"
+  txtkvy "网络拥堵算法: " "${yellow}$congestion_algorithm" "${plain}$queue_algorithm"
+  txtkvn "$txt_data_transfer"
+  txtkvn "================================="
+
+#   echo -e "${plain}
+# 系统信息查询
+# =================================
+#    主机名: $hostname
+#    运营商: $isp_info
+#  系统版本: $os_info
+#  内核版本: $kernel_version
+# ---------------------------------
+#   CPU架构: $cpu_arch
+#   CPU型号: $cpu_info
+#    核心数: $cpu_cores
+#    虚拟化: ${yellow}$VIRT${plain}
+# ---------------------------------
+#   CPU占用: $cpu_usage_percent
+#  物理内存: $mem_info
+#  虚拟内存: $swap_info
+#  硬盘占用: $disk_info
+# ---------------------------------
+#  系统时间: $current_time
+#  运行时长: $runtime
+# ---------------------------------
+#  IPv4地址: ${yellow}$ipv4_address${plain}  $WARPSTATUS4 $COUNTRY4 $CITY4 $ASNORG4
+#  IPv6地址: ${blue}$ipv6_address${plain}  $WARPSTATUS6 $COUNTRY6 $CITY6 $ASNORG6
+# ---------------------------------
+# 网络拥堵算法: ${yellow}$congestion_algorithm ${plain}$queue_algorithm
+# $txt_data_transfer
+# =================================
+# "
 }
 
 # 更新系统
@@ -1292,69 +1373,73 @@ bbrv3_install(){
 
           esac
     done
-else
 
-  clear
-  echo "请备份数据，将为你升级Linux内核开启BBR3"
-  echo "官网介绍: https://xanmod.org/"
-  echo "------------------------------------------------"
-  echo "仅支持Debian/Ubuntu 仅支持x86_64架构"
-  echo "VPS是512M内存的，请提前添加1G虚拟内存，防止因内存不足失联！"
-  echo "------------------------------------------------"
-  read -p "确定继续吗？(Y/N): " choice
+  else
 
-  case "$choice" in
-    [Yy])
-    if [ -r /etc/os-release ]; then
-        . /etc/os-release
-        if [ "$ID" != "debian" ] && [ "$ID" != "ubuntu" ]; then
-            echo "当前环境不支持，仅支持Debian和Ubuntu系统"
+    clear
+    echo "请备份数据，将为你升级Linux内核开启BBR3"
+    echo "官网介绍: https://xanmod.org/"
+    echo "------------------------------------------------"
+    echo "仅支持Debian|Ubuntu 仅支持x86_64架构"
+    echo "VPS是512M内存的，请提前添加1G虚拟内存，防止因内存不足失联！"
+    echo "------------------------------------------------"
+    read -p "确定继续吗？(Y/N): " choice
+
+    case "$choice" in
+      [Yy])
+        if [ -r /etc/os-release ]; then
+            . /etc/os-release
+            if [ "$ID" != "debian" ] && [ "$ID" != "ubuntu" ]; then
+                echo "当前环境不支持，仅支持Debian和Ubuntu系统"
+                break
+            fi
+        else
+            echo "无法确定操作系统类型"
             break
         fi
-    else
-        echo "无法确定操作系统类型"
-        break
-    fi
 
-    # 检查系统架构
-    arch=$(dpkg --print-architecture)
-    if [ "$arch" != "amd64" ]; then
-      echo "当前环境不支持，仅支持x86_64架构"
-      break
-    fi
+        bbrv3_debian_ub
 
-    install wget gnupg
+        reboot
 
-    # wget -qO - https://dl.xanmod.org/archive.key | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
-    wget -qO - https://raw.githubusercontent.com/kejilion/sh/main/archive.key | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
+        ;;
 
-    # 步骤3：添加存储库
-    echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' | tee /etc/apt/sources.list.d/xanmod-release.list
+      [Nn]) echo "已取消" ;;
+      *) echo "无效的选择，请输入 Y 或 N。" ;;
+    esac
+  fi
 
-    # version=$(wget -q https://dl.xanmod.org/check_x86-64_psabi.sh && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
-    version=$(wget -q https://raw.githubusercontent.com/kejilion/sh/main/check_x86-64_psabi.sh && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
+}
 
-    apt update -y
-    apt install -y linux-xanmod-x64v$version
+# 为Debian或Ubuntu系统开启BBRv3
+bbrv3_debian_ub(){
+  # 检查系统架构
+  arch=$(dpkg --print-architecture)
+  if [ "$arch" != "amd64" ]; then
+    echo "当前环境不支持，仅支持x86_64架构"
+    break
+  fi
 
-    # 步骤5：启用BBR3
-    cat > /etc/sysctl.conf << EOF
-net.core.default_qdisc=fq_pie
-net.ipv4.tcp_congestion_control=bbr
-EOF
-    sysctl -p
+  install wget gnupg
 
-    echo "XanMod内核安装并BBR3启用成功。重启后生效"
-    rm -f /etc/apt/sources.list.d/xanmod-release.list
-    rm -f check_x86-64_psabi.sh*
-    reboot
+  # wget -qO - https://dl.xanmod.org/archive.key | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
+  wget -qO - https://raw.githubusercontent.com/kejilion/sh/main/archive.key | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
 
-      ;;
-    [Nn]) echo "已取消" ;;
-    *) echo "无效的选择，请输入 Y 或 N。" ;;
-  esac
-fi
+  # 步骤3：添加存储库
+  echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' | tee /etc/apt/sources.list.d/xanmod-release.list
 
+  # version=$(wget -q https://dl.xanmod.org/check_x86-64_psabi.sh && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
+  version=$(wget -q https://raw.githubusercontent.com/kejilion/sh/main/check_x86-64_psabi.sh && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
+
+  apt update -y
+  apt install -y linux-xanmod-x64v$version
+
+  # 步骤5：启用BBR3
+  bbrv3_conf
+
+  echo "XanMod内核安装并BBR3启用成功。重启后生效"
+  rm -f /etc/apt/sources.list.d/xanmod-release.list
+  rm -f check_x86-64_psabi.sh*
 }
 
 # 给Alpine系统添加BBRv3

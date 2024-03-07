@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # 当前脚本版本号
-VERSION='3.01'
+VERSION='3.02'
 
 # IP API 服务商
 IP_API=("http://ip-api.com/json/" "https://api.ip.sb/geoip" "https://ifconfig.co/json" "https://www.who.int/cdn-cgi/trace")
@@ -16,8 +16,8 @@ export DEBIAN_FRONTEND=noninteractive
 
 E[0]="\n Language:\n 1. English (default) \n 2. 简体中文\n"
 C[0]="${E[0]}"
-E[1]="Add a check to see if udp is allowed, if all endpoints of WARP are unreachable, the script will abort."
-C[1]="增加是否允许 udp 的检测，如果 WARP 的所有 endpoint 均不能连通，脚本将中止"
+E[1]="To check if the WireGuard kernel module is already loaded. If not, attempt to load it and recheck."
+C[1]="判断系统是否已经加载 wireguard 内核模块，如果还没有则尝试加载，再重新判断"
 E[2]="The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp-sh/issues]"
 C[2]="必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp-sh/issues]"
 E[3]="The TUN module is not loaded. You should turn it on in the control panel. Ask the supplier for more help. Feedback: [https://github.com/fscarmen/warp-sh/issues]"
@@ -1423,8 +1423,13 @@ working_mode_switch() {
 check_system_info() {
   info " $(text 37) "
 
-  # 判断是否有 wireguard 内核
-  [ -e /sys/module/wireguard ] && KERNEL_ENABLE=1 || KERNEL_ENABLE=0
+  # 判断是否有加载 wireguard 内核，如没有先尝试是否可以加载，再重新判断一次
+  if [ ! -e /sys/module/wireguard ]; then
+    [ -s /lib/modules/$(uname -r)/kernel/drivers/net/wireguard/wireguard.ko ] && [ $(type -p lsmod) ] && ! lsmod | grep -q wireguard && [ $(type -p modprobe) ] && modprobe wireguard
+    [ -e /sys/module/wireguard ] && KERNEL_ENABLE=1 || KERNEL_ENABLE=0
+  else
+    KERNEL_ENABLE=1
+  fi
 
   # 必须加载 TUN 模块，先尝试在线打开 TUN。尝试成功放到启动项，失败作提示并退出脚本
   TUN=$(cat /dev/net/tun 2>&1)
@@ -1942,7 +1947,7 @@ install() {
     # 如安装 WireProxy ，尽量下载官方的最新版本，如官方 WireProxy 下载不成功，将使用 cdn，以更好的支持双栈和大陆 VPS。并添加执行权限
     if [ "$PUFFERFFISH" = 1 ]; then
       wireproxy_latest=$(wget --no-check-certificate -qO- -T1 -t1 $STACK "https://api.github.com/repos/pufferffish/wireproxy/releases/latest" | awk -F [v\"] '/tag_name/{print $5; exit}')
-      wireproxy_latest=${wireproxy_latest:-'1.0.6'}
+      wireproxy_latest=${wireproxy_latest:-'1.0.7'}
       wget --no-check-certificate -T10 -t1 $STACK -O wireproxy.tar.gz https://${CDN}github.com/pufferffish/wireproxy/releases/download/v"$wireproxy_latest"/wireproxy_linux_"$ARCHITECTURE".tar.gz ||
       wget --no-check-certificate $STACK -O wireproxy.tar.gz https://${CDN}gitlab.com/fscarmen/warp/-/raw/main/wireproxy/wireproxy_linux_"$ARCHITECTURE".tar.gz
       [ $(type -p tar) ] || ${PACKAGE_INSTALL[int]} tar 2>/dev/null || ( ${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} tar 2>/dev/null )
