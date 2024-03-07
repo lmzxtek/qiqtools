@@ -3393,8 +3393,7 @@ echo -e "
 
 ${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}  
 ${blue} │ │ ││ ││ ╰─╮${plain}  
-${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}
-"
+${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}"
 }
 
 # 显示主菜单
