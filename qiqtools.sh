@@ -34,13 +34,14 @@ yellow='\033[0;33m'
  plain='\033[0m'
 
 # 自定义字体彩色，read 函数
+ txtn(){ echo -e "$*"; }                                # 常规字符
+#  txtn(){ echo -e "${plain}$*${plain}"; }                # 常规字符
  txtr(){ echo -e "${red}$*${plain}"; }                  # 红色字符
  txtb(){ echo -e "${blue}$*${plain}"; }                 # 蓝色字符
  txtc(){ echo -e "${cyan}$*${plain}"; }                 # 
  txtp(){ echo -e "${pink}$*${plain}"; }                 # 
  txtg(){ echo -e "${green}$*${plain}"; }                # 绿色字符
  txtw(){ echo -e "${white}$*${plain}"; }                # 
- txtn(){ echo -e "${plain}$*${plain}"; }                # 常规字符
  txty(){ echo -e "${yellow}$*${plain}"; }               # 黄色字符
 
  txbr(){ echo -e "${red}${bold}$*${plain}"; }           # 红色粗体
