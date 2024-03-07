@@ -3179,9 +3179,22 @@ caddy_version(){
 caddy_web_menu(){
 
 clear
-# echo "Web站点"
-# echo "------------------------"
-# caddy_version 
+
+txtn $(txbr "▼ 站点管理")$(txbg " 〠 ")
+txtn "-------------------------------------"
+WANIP_show
+txtn "-------------------------------------"
+txtn $(txtn " 数据：")$(txtb " /home/web/html ")
+txtn $(txtn " 配置：")$(txtb " /home/web/caddy")
+txtn "====================================="
+txtn $(txtn " 1.查看站点列表")$(txtb "✔")"      "$(txtn "")$(txtb "")
+txtn $(txtn " 2.查看分析报告")$(txtb "✔")"      "$(txtn "")$(txtb "")
+txtn $(txtn " 3.更换站点域名")$(txtb "✔")"      "$(txtn "")$(txtb "")
+txtn $(txtn " 4.添加站点域名")$(txtb "✔")"      "$(txtn "")$(txtb "")
+txtn $(txtn " 5.删除指定站点")$(txtb "✔")"      "$(txtn "")$(txtb "")
+txtn $(txtn " 6.清理站点缓存")$(txtb "✔")"      "$(txtn "")$(txtb "")
+txtn "====================================="
+txtn $(txtn " 0.返回上一级菜单")$(txtr "✖")
 
 echo -e "
 ▶ 站点目录
@@ -3222,7 +3235,7 @@ caddy_web_manager(){
           6) caddy_clean_cache ;;
 
           # 0) break ;; # 跳出循环，退出菜单
-          0) LDNMP_run ;; # 跳出循环，退出菜单
+          0) WebSites_manager_run ;; # 跳出循环，退出菜单
           *) echo "无效的输入!" ;; # 跳出循环，退出菜单
       esac
       break_end
@@ -3230,56 +3243,31 @@ caddy_web_manager(){
 }
 
 # 网站管理菜单
-LDNMP_menu() {
-
+WebSites_manager_menu() {
 txtn $(txbr "▼ 站点管理")$(txbg " ❦ ")
 txtn "-------------------------------------"
 WANIP_show
 txtn "====================================="
-txtn $(txty " 1.安装LDNMP环境")$(txtb "✘")"     "$(txtn "11.更新LDNMP环境") $(txtb "✘")
-txtn $(txtn " 2.卸载LDNMP环境")$(txtb "✘")"     "$(txty "12.优化LDNMP环境") $(txtb "✘")
+txtn $(txtn " 1.安装LDNMP环境")$(txtb "✘")"      "$(txtn "11.更新LDNMP环境")$(txtb "✘")
+txtn $(txtn " 2.卸载LDNMP环境")$(txtb "✘")"      "$(txtn "12.优化LDNMP环境")$(txtb "✘")
 txtn "-------------------------------------"
-txtn $(txty "11.安装Caddy")$(txtg "✔")"         "$(txtn "21.安装PHP8.3") $(txtg "✔")
-txtn $(txtn "12.安装Nginx")$(txtg "✔")"         "$(txty "22.安装PHP7.4") $(txtg "✔")
-txtn $(txtn "13.安装OpenLiteSpeed")$(txtg "✔")" "$(txtb "23.安装MariaDB") $(txtb "✔")
-txtn $(txtn "14.查看状态")$(txtg "✔")"          "$(txtb "24.安装Redis") $(txtb "✔")
+txtn $(txty "11.安装Caddy")$(txtg "✔")"          "$(txtn "21.安装PHP8.3")$(txtg "✔")
+txtn $(txtn "12.安装Nginx")$(txtg "✔")"          "$(txtn "22.安装PHP7.4")$(txtg "✔")
+txtn $(txtn "13.安装OpenLiteSpeed")$(txtg "✔")"  "$(txtn "23.安装MariaDB")$(txtb "✔")
+txtn $(txtn "14.查看状态")$(txtg "✔")"           "$(txtn "24.安装Redis")$(txtb "✔")
 txtn "-------------------------------------"
-txtn $(txtn "31.站点列表")$(txtg "✔")"          "$(txtn "41.重启服务") $(txtg "✔")
-txtn $(txtn "32.站点管理")$(txtg "✔")"          "$(txtn "42.停止服务") $(txtg "✔")
-txtn $(txtn "33.添加重定向")$(txtg "✔")"        "$(txtn "43.更新服务") $(txtb "✔")
-txtn $(txty "34.添加反向代理")$(txtg "✔")"      "$(txtn "44.删除服务") $(txtb "✘")
-txtn $(txtn "34.添加静态站点")$(txtg "✔")"      "$(txtb "") $(txtb "")
+txtn $(txtn "31.站点列表")$(txtg "✔")"           "$(txtn "41.重启服务")$(txtg "✔")
+txtn $(txtn "32.站点管理")$(txtg "✔")"           "$(txtn "42.停止服务")$(txtg "✔")
+txtn $(txtn "33.添加重定向")$(txtg "✔")"         "$(txtn "43.更新服务")$(txtg "✔")
+txtn $(txty "34.添加反向代理")$(txtg "✔")"       "$(txtn "44.删除服务")$(txtb "✘")
+txtn $(txtn "34.添加静态站点")$(txtg "✔")"       "$(txtn "") $(txtb "")
 txtn "-------------------------------------"
-txtn $(txtn "88.站点防御程序") $(txtb "✘")
+txtn $(txtn "88.站点防御程序")$(txtb "✘")
 txtn "====================================="
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
-
-# echo -e "
-# ▼ 站点管理✈️
-# ${yellow}IPv4: ${white}$WAN4${plain}
-# ${yellow}IPv6: ${white}$WAN6${plain}
-# ${plain}===============================
-# ${green} 1.${plain}安装LDNMP环境(Todo...)   ${green} 3.${plain}更新LDNMP环境(Todo...)
-# ${green} 2.${plain}卸载LDNMP环境(Todo...)   ${green} 4.${plain}优化LDNMP环境(Todo...)
-# ${plain}-------------------------------
-# ${red}11.${yellow}安装Caddy          ${green}21.${plain}安装PHP8.3
-# ${green}12.${plain}安装Nginx          ${green}22.${plain}安装PHP7.4
-# ${green}13.${plain}安装OpenLiteSpeed  ${green}23.${plain}安装MariaDB
-# ${green}14.${plain}查看状态          ${green}24.${plain}安装Redis
-# ${yellow}-------------------------------
-# ${green}31.${plain}站点列表          ${green}41.${plain}重启服务
-# ${green}32.${plain}站点管理          ${green}42.${plain}停止服务
-# ${green}33.${plain}添加重定向        ${green}43.${plain}更新服务
-# ${red}34.${yellow}添加反向代理   ${green}44.${plain}删除服务(Todo...)
-# ${green}35.${plain}添加静态站点 ${green}
-# ${yellow}-------------------------------
-# ${green}88.${plain}站点防御程序 (Todo...)
-# ${plain}===============================
-# ${green} 0.${plain}返回主菜单
-# "
 }
 
-LDNMP_run(){
+WebSites_manager_run(){
 
   if [ -d /etc/caddy ]; then
     cd /etc/caddy
@@ -3288,7 +3276,7 @@ LDNMP_run(){
   check_IP_address
 
   while true; do
-    clear && LDNMP_menu
+    clear && WebSites_manager_menu
     reading "请选择: " choice
 
     case $choice in
@@ -3451,7 +3439,7 @@ while true; do
      3) clear && clean_sys ;;
 
     11) docker_run ;;
-    12) clear && LDNMP_run ;;
+    12) clear && WebSites_manager_run ;;
     13) website_tools_run  ;;
 
     21) common_apps_run  ;;
