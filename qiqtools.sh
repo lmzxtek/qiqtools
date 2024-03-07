@@ -172,10 +172,10 @@ check_IPV4(){
 		local iso2_code4=$( echo -e "$res_ipv4" | grep "loc="  | awk -F= '{print $2}')
 		local warp_ipv4=$( echo -e "$res_ipv4"  | grep "warp=" | awk -F= '{print $2}')
 		local local_isp4=$(curl -s -4 --max-time 10  --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36" "https://api.ip.sb/geoip/${local_ipv4}" | grep organization | cut -f4 -d '"')
-    ["warp_ipv4" == *"on"*] && WARPSTATUS4="(warp)"
+    ["$warp_ipv4" == *"on"*] && WARPSTATUS4="(warp)"
 		# local iso2_code4=$(curl -4 -sS https://www.cloudflare.com/cdn-cgi/trace | grep "loc=" | awk -F= '{print $2}')
 		# local warp_code4=$(curl -4 -sS https://www.cloudflare.com/cdn-cgi/trace | grep "warp=" | awk -F= '{print $2}')
-    
+
     WAN4=$local_ipv4
     COUNTRY4=$iso2_code4
     ASNORG4=$local_isp4
@@ -211,7 +211,7 @@ check_IP_address() {
     return 1
   else
     check_IPV4
-    check_IPv6
+    check_IPV6
   fi
   # if [ -z "$WAN4" ] && [ -z "$WAN6" ]; then
   #   # echo "s1 和 s2 均不为空"
@@ -246,8 +246,8 @@ check_system_ip() {
 }
 
 WANIP_show(){
-  txtkvy " IPv4: " "$WAN4" "\t($COUNTRY4)"
-  txtkvy " IPv6: " "$WAN6" "\t($COUNTRY4)"
+  txtkvy " IPv4: " "$WAN4" "\t$COUNTRY4 - $ASNORG4"
+  txtkvy " IPv6: " "$WAN6" "\t$COUNTRY4 - $ASNORG6"
   # info "\t IPv4: $WAN4 $WARPSTATUS4 $COUNTRY4  $ASNORG4 "
   # info "\t IPv6: $WAN6 $WARPSTATUS6 $COUNTRY6  $ASNORG6 "
 }
