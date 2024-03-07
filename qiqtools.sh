@@ -3382,6 +3382,17 @@ show_header_qiq(){
 # txtn $(txtb " │ │ ││ ││ ╰─╮")
 # txtn $(txtb " │ ╰─╯╰─╯╰─╰─╯")$(txtc "  ✟  ")$(txtn "快捷命令")$(txtc "☞")$(txty " qiq ")$(txtc "☜")
 
+# echo -e "
+#  ${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}
+#  ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
+#  ${green}░██   ░██  ${cyan} ░██   ${green}░██   ░██${plain}
+#  ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
+#  ${green}   ░██ ██  ${cyan}░████  ${green}   ░██ ██${plain}
+
+# ${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}  
+# ${blue} │ │ ││ ││ ╰─╮${plain}  
+# ${blue} │ ╰─╯╰─╯╰─╰─╯${plain}   ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}"
+
 echo -e "
  ${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}
  ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
@@ -3391,7 +3402,7 @@ echo -e "
 
 ${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}  
 ${blue} │ │ ││ ││ ╰─╮${plain}  
-${blue} │ ╰─╯╰─╯╰─╰─╯${plain}   ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}"
+${blue} │ ╰─╯╰─╯╰─╰─╯${plain}   ${cyan}♧♧${plain} QiQTools ${blue}$script_version${plain}"
 }
 
 # 显示主菜单
@@ -3410,7 +3421,8 @@ txtn "-------------------------------------"
 txtn $(txtr "99")$(txtb ".重启系统☢")"       "$(txtb "00.脚本更新")$(txtb "☋")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "====================================="
-txtn $(txtn " 0.退出脚本")$(txtr "✖")"       "$(txtb "♧♧ ")$(txtc "QiQTools") $(txtb "$script_version")
+# txtn $(txtn " 0.退出脚本")$(txtr "✖")"       "$(txtb "♧♧ ")$(txtc "QiQTools") $(txtb "$script_version")
+txtn $(txtn " 0.退出脚本")$(txtr "✖")"       "$(txtb "✟✟ ")$(txtc "快捷命令") $(txtb "☞") $(txtb "qiq") $(txtb "☜")
 txtn " "
 }
 
