@@ -196,7 +196,7 @@ check_IPV6(){
 		local warp_ipv6=$( echo -e "$res_ipv6"  | grep "warp=" | awk -F= '{print $2}')
 		local local_isp6=$(curl -s -6 --max-time 10 --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36" "https://api.ip.sb/geoip/${local_ipv6}" | grep organization | cut -f4 -d '"')
     
-    ["warp_ipv6" == *"on"*] && WARPSTATUS6="(warp)"
+    ["$warp_ipv6" == *"on"*] && WARPSTATUS6="(warp)"
     WAN6=$local_ipv6
     COUNTRY6=$iso2_code6
     ASNORG6=$local_isp6
