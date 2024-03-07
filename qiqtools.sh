@@ -545,6 +545,15 @@ clean_sys() {
     fi
 }
 
+# 设置docker-compose快捷命令
+set_docker_1ckl(){
+  reading " 请输入要设置的快捷键[dcc]: " ccmd
+  tcmd="dcc"
+  [ -n $ccmd ] && tcmd=$ccmd
+  chmod a+x /usr/local/bin/docker-compose 
+  rm -rf `which $tcmd` 
+  ln -s /usr/local/bin/docker-compose /usr/bin/$tcmd
+}
 
 install_add_docker() {
     if [ -f "/etc/alpine-release" ]; then
@@ -2578,7 +2587,16 @@ other_tools_run() {
     reading "请选择代码: " choice
 
     case $choice in
-      1) clear && install curl && curl -fsSL https://get.docker.com | sh ;;
+      1) 
+        clear 
+        install_docker
+        set_docker_1ckl "dcc"
+        # install curl 
+        # curl -fsSL https://get.docker.com | sh 
+        # curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        # chmod +x /usr/local/bin/docker-compose
+        # ;;
+
       2) clear && install_python ;;
       3) 
         clear 
@@ -2896,7 +2914,8 @@ docker_run() {
           *) echo "无效的选择，请输入 Y 或 N。" ;;
         esac
         ;;
-      9) clear && chmod a+x /usr/local/bin/docker-compose && rm -rf `which dcc` && ln -s /usr/local/bin/docker-compose /usr/bin/dcc ;;
+      9) clear && set_docker_1ckl "dcc" ;;
+      # 9) clear && chmod a+x /usr/local/bin/docker-compose && rm -rf `which dcc` && ln -s /usr/local/bin/docker-compose /usr/bin/dcc ;;
       0) qiqtools ;;
       *) echo "无效的输入!" ;;
     esac  
