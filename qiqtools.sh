@@ -3180,44 +3180,48 @@ caddy_web_menu(){
 
 clear
 
-txtn $(txbr "▼ 站点管理")$(txbg " 〠 ")
-txtn "-------------------------------------"
+txtn "====================================="
 WANIP_show
+txtn "-------------------------------------"
+txtn $(txbr "▼ 站点目录")$(txbg " ✉ ")
 txtn "-------------------------------------"
 txtn $(txtn " 数据：")$(txtb " /home/web/html ")
 txtn $(txtn " 配置：")$(txtb " /home/web/caddy")
 txtn "====================================="
+txtn " "
+txtn $(txbr "▼ 站点管理")$(txbg " 〠 ")
+txtn "====================================="
 txtn $(txtn " 1.查看站点列表")$(txtb "✔")"      "$(txtn "")$(txtb "")
 txtn $(txtn " 2.查看分析报告")$(txtb "✔")"      "$(txtn "")$(txtb "")
-txtn $(txtn " 3.更换站点域名")$(txtb "✔")"      "$(txtn "")$(txtb "")
+txtn $(txtr " 3.更换站点域名")$(txtb "✔")"      "$(txtn "")$(txtb "")
 txtn $(txtn " 4.添加站点域名")$(txtb "✔")"      "$(txtn "")$(txtb "")
-txtn $(txtn " 5.删除指定站点")$(txtb "✔")"      "$(txtn "")$(txtb "")
+txtn $(txtb " 5.删除指定站点")$(txtb "✔")"      "$(txtn "")$(txtb "")
 txtn $(txtn " 6.清理站点缓存")$(txtb "✔")"      "$(txtn "")$(txtb "")
 txtn "====================================="
-txtn $(txtn " 0.返回上一级菜单")$(txtr "✖")
+txtn $(txtn " 0.返回上级菜单")$(txtr "✖")
 txtn " "
 
-echo -e "
-▶ 站点目录
-${yellow}IPv4: ${white}$WAN4${plain}
-${yellow}IPv6: ${white}$WAN6${plain}
-${plain}-------------------------------
-${green} ${plain} 数据： /home/web/html 
-${green} ${plain} 配置： /home/web/caddy
-${plain}-------------------------------    
+# echo -e "
+# ▶ 站点目录
+# ${yellow}IPv4: ${white}$WAN4${plain}
+# ${yellow}IPv6: ${white}$WAN6${plain}
+# ${plain}-------------------------------
+# ${green} ${plain} 数据： /home/web/html 
+# ${green} ${plain} 配置： /home/web/caddy
+# ${plain}-------------------------------    
 
-▶ 站点管理
-${plain}-------------------------------
-${green} 1.${plain} 查看站点列表
-${green} 2.${plain} 查看分析报告
-${green} 3.${plain} 更换站点域名
-${green} 4.${plain} 添加站点域名
-${green} 5.${plain} 删除指定站点
-${green} 6.${plain} 清理站点缓存
-${plain}-------------------------------    
-${green} 0.${plain} 返回上一级菜单
-${plain}-------------------------------    
-"
+# ▶ 站点管理
+# ${plain}-------------------------------
+# ${green} 1.${plain} 查看站点列表
+# ${green} 2.${plain} 查看分析报告
+# ${green} 3.${plain} 更换站点域名
+# ${green} 4.${plain} 添加站点域名
+# ${green} 5.${plain} 删除指定站点
+# ${green} 6.${plain} 清理站点缓存
+# ${plain}-------------------------------    
+# ${green} 0.${plain} 返回上级菜单
+# ${plain}-------------------------------    
+# "
 }
 
 # Web站点管理器
