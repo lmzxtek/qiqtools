@@ -3382,6 +3382,21 @@ script_update(){
   qiq_reload
 }
 
+
+show_header_qiq(){
+echo -e "
+ ${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}
+ ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
+ ${green}░██   ░██  ${cyan} ░██   ${green}░██   ░██${plain}
+ ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
+ ${green}   ░██ ██  ${cyan}░████  ${green}   ░██ ██${plain}
+
+${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}  
+${blue} │ │ ││ ││ ╰─╮${plain}  
+${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}
+"
+}
+
 # 显示主菜单
 main_menu() {
 cd ~
@@ -3426,6 +3441,7 @@ ${blue} │ │ ││ ││ ╰─╮${plain}\n
 ${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}"
 
   echo -e $txthd $txtht
+  show_header_qiq
 
 echo -e "
  ${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}
