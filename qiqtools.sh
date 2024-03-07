@@ -3393,42 +3393,25 @@ echo -e "
 
 ${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}  
 ${blue} │ │ ││ ││ ╰─╮${plain}  
-${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}"
+${blue} │ ╰─╯╰─╯╰─╰─╯${plain}   ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}"
 }
 
 # 显示主菜单
 main_menu() {
-  # txtn $(txty " IPv4: ") $(txtb $WAN4) $(txtn "\t(" $COUNTRY4 " " $WARPSTATUS4 ")")
-  # txtn $(txty " IPv6: ") $(txtb $WAN6) $(txtn "\t(" $COUNTRY6 " " $WARPSTATUS6 ")")
   txtn "====================================="
   WANIP_show
   txtn "====================================="
-  txtn $(txty " 1." "系统信息" $(txty "☄")) "       " $(txtn "11." "容器管理" $(txtb "❂"))
-  txtn $(txtn " 2." "系统更新" $(txtb "☣")) "       " $(txty "12." "站点管理" $(txtb "❈"))
-  txtn $(txtn " 3." "系统清理" $(txtb "☢")) "       " $(txtb "13." "站点部署" $(txtb "ஐ"))
+  txtn $(txty " 1." "系统信息" $(txty "☄")) "       " $(txtn "11." "容器管理" $(txtb "☉"))
+  txtn $(txtn " 2." "系统更新" $(txtb "☣")) "       " $(txty "12." "站点管理" $(txtb "◎"))
+  txtn $(txtn " 3." "系统清理" $(txtb "卍")) "       " $(txtb "13." "站点部署" $(txtb "❈"))
   txtn "-------------------------------------"
-  txtn $(txtn "21." "常用工具" $(txtb "❃")) "       " $(txtn "31." "面板工具" $(txtb "◈"))
-  txtn $(txtn "22." "系统工具" $(txtb "❁")) "       " $(txtn "32." "其他工具" $(txtb "☃"))
+  txtn $(txtn "21." "常用工具" $(txtb "❃")) "       " $(txtn "31." "面板工具" $(txtb "⊕"))
+  txtn $(txtn "22." "系统工具" $(txtb "❁")) "       " $(txtn "32." "其他工具" $(txtb "の"))
   txtn $(txty "23." "节点工具" $(txty "✈")) "       " $(txtn "" "" $(txtb ""))
   txtn "-------------------------------------"
-  txtn $(txtn "99." "重启系统" $(txtb "❂")) "       " $(txtn "00." "脚本更新" $(txtb "♨"))
+  txtn $(txtn "99." "重启系统" $(txtb "☢")) "       " $(txtn "00." "脚本更新" $(txtb "☋"))
   txtn "====================================="
   txtn $(txtn " 0." "退出脚本" $(txtb "✖")) "   " $(txtn "♧♧ " "QiQTools " $(txtb "$script_version"))
-
-# echo -e "
-# ${white}=====================================${plain}
-# ${green} 1${white}.${yellow}系统信息${red}☄${plain}       ${green}11${white}.${plain}容器管理${blue}❂${plain}
-# ${green} 2${white}.${plain}系统更新${blue}☣${plain}       ${green}12${white}.${yellow}站点管理${yellow}❈${plain}
-# ${green} 3${blue}.${plain}系统清理${blue}☢${plain}       ${green}13${white}.${plain}站点部署${blue}ஐ${plain}
-# ${white}-------------------------------------${plain}
-# ${green}21${white}.${plain}常用工具${blue}❃${plain}       ${green}31${white}.${plain}面板工具${blue}◈${plain}
-# ${yellow}22${white}.${yellow}系统工具${yellow}❁${plain}       ${green}32${white}.${plain}其他工具${blue}☃${plain}
-# ${cyan}23${white}.${cyan}节点工具${yellow}✈ ${red}warp${plain}
-# ${white}-------------------------------------${plain}
-# ${green}99.${plain}重启系统${blue}❂${plain}       ${green}00.${plain}脚本更新${blue}♨${plain}
-# ${white}=====================================${plain}
-# ${green} 0.${plain}退出脚本${red}✖${plain}       ${green}♧♧ ${blue}QiQTools ${plain}$script_version${plain}
-# "
 }
 
 
