@@ -155,7 +155,6 @@ remove() {
 
 install_dependency() { clear && install curl wget socat unzip tar; }
 
-
 # export PATH=$PATH:/usr/local/bin
 
 cur_dir=$(pwd)
@@ -217,13 +216,6 @@ check_IP_address() {
     check_IPV4
     check_IPV6
   fi
-  # if [ -z "$WAN4" ] && [ -z "$WAN6" ]; then
-  #   # echo "s1 和 s2 均不为空"
-  #   # WAN4=$(curl -s ipv4.ip.sb)
-  #   # WAN6=$(curl -s --max-time 1 ipv6.ip.sb)
-  #   check_system_ip
-  # fi
-  # [ -z "$WAN4" ] && [ -z "$WAN6" ] && check_system_ip
 }
 
 
@@ -452,7 +444,7 @@ show_info() {
   txtkvn "---------------------------------"
   txtkvy " IPv4地址: " "$WAN4" "\t($IP4_INFO)"
   txtkvy " IPv6地址: " "$WAN6" "\t($IP6_INFO)"
-  WANIP_show
+  # WANIP_show
   txtkvn "---------------------------------"
   txtkvn "网络拥堵算法: " "${yellow}$congestion_algorithm" "${plain}$queue_algorithm"
   txtkvn "$txt_data_transfer"
@@ -3171,6 +3163,8 @@ clear
 
 echo -e "
 ▶ 站点目录
+${yellow}IPv4: ${white}$WAN4${plain}
+${yellow}IPv6: ${white}$WAN6${plain}
 ${plain}-------------------------------
 ${green} ${plain} 数据： /home/web/html 
 ${green} ${plain} 配置： /home/web/caddy
@@ -3216,7 +3210,7 @@ caddy_web_manager(){
 # 网站管理菜单
 LDNMP_menu() {
 echo -e "
-▼ Web站点管理✈️
+▼ 站点管理✈️
 ${yellow}IPv4: ${white}$WAN4${plain}
 ${yellow}IPv6: ${white}$WAN6${plain}
 ${plain}-------------------------------
@@ -3390,6 +3384,8 @@ ${white}-------------------------------------${plain}
 ${green}21${white}.${plain}常用工具${blue}❃${plain}       ${green}31${white}.${plain}面板工具${blue}◈${plain}
 ${yellow}22${white}.${yellow}系统工具${yellow}❁${plain}       ${green}32${white}.${plain}其他工具${blue}☃${plain}
 ${cyan}23${white}.${cyan}节点工具${yellow}✈ ${red}warp${plain}
+${yellow}IPv4: ${white}$WAN4${plain}
+${yellow}IPv6: ${white}$WAN6${plain}
 ${white}-------------------------------------${plain}
 ${green}99.${plain}重启系统${blue}❂${plain}       ${green}00.${plain}脚本更新${blue}♨${plain}
 ${white}=====================================${plain}
@@ -3433,4 +3429,5 @@ while true; do
 done
 }
 
+check_IP_address
 main_loop
