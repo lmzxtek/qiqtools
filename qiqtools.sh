@@ -3413,30 +3413,19 @@ cd ~
   txtn $(txtr "-------------------------------------")
   txtn $(txtr "=====================================")
 
-
-#  ${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}
-#  ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
-#  ${green}░██   ░██  ${cyan} ░██   ${green}░██   ░██${plain}
-#  ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
-#  ${green}   ░██ ██  ${cyan}░████  ${green}   ░██ ██${plain}
-
-# ${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}  
-# ${blue} │ │ ││ ││ ╰─╮${plain}  
-# ${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}
-
-  txthd="\n
- ${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}\n
- ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}\n
- ${green}░██   ░██  ${cyan} ░██   ${green}░██   ░██${plain}\n
- ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}\n
- ${green}   ░██ ██  ${cyan}░████  ${green}   ░██ ██${plain}"
+  txthd=""
+  txthd+="${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}\n"
+  txthd+="${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}\n"
+  txthd+="${green}░██   ░██  ${cyan} ░██   ${green}░██   ░██${plain}\n"
+  txthd+="${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}\n"
+  txthd+="${green}   ░██ ██  ${cyan}░████  ${green}   ░██ ██${plain}"
 
   txtht="\n
 ${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}\n
 ${blue} │ │ ││ ││ ╰─╮${plain}\n
 ${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}"
 
-  echo -e " " $txthd $txtht
+  echo -e $txthd $txtht
 
 echo -e "
  ${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}
