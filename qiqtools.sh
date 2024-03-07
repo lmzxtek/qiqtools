@@ -448,31 +448,31 @@ get_sysinfo(){
 system_info() {
   txtn " "
     info "系统信息查询"
-  txtkvn "================================="
+  txtkvn "====================================="
   txtkvn "    主机名: " "$hostname"
   txtkvn "    运营商: " "$isp_info"
   txtkvy "    ${blue}虚拟化: " "${yellow}${bold}$VIRT${plain}"
   txtkvn "  系统版本: " "$os_info"
   txtkvy "  内核版本: " "$kernel_version"
-  txtkvn "---------------------------------"
+  txtkvn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
   txtkvn "  CPU架构: " "$cpu_arch   核心数: ${yellow}$cpu_cores${plain}"
   txtkvn "  CPU型号: " "$cpu_info"
   txtkvn "  CPU占用: " "$cpu_usage_percent"
-  txtkvn "---------------------------------"
+  txtkvn "——————————————————————————————————————"
   txtkvy " 物理内存: " "$mem_info"
   txtkvn " 虚拟内存: " "$swap_info"
   txtkvy " 硬盘占用: " "$disk_info"
-  txtkvn "---------------------------------"
+  txtkvn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
   txtkvn " 系统时间: " "$current_time"
   txtkvn " 运行时长: " "$runtime"
-  txtkvn "---------------------------------"
+  txtkvn "——————————————————————————————————————"
   txtkvy " IPv4地址: " "$WAN4" "\t($IP4_INFO)"
   txtkvy " IPv6地址: " "$WAN6" "\t($IP6_INFO)"
   # WANIP_show
-  txtkvn "---------------------------------"
+  txtkvn "——————————————————————————————————————"
   txtkvn " 拥堵算法: " "${yellow}$congestion_algorithm" "${plain}$queue_algorithm"
   txtkvn "$txt_data_transfer"
-  txtkvn "================================="
+  txtkvn "====================================="
   # txtn " "
 }
 
@@ -1828,11 +1828,11 @@ system_tools_menu() {
   
 txtn " "
 txtn $(txbr "▼ 系统工具")$(txbg " ❦ ")
-txtn "-------------------------------------"
+txtn "====================================="
 # WANIP_show
 txtn $(txty "\t  主机名: ")$(txtb "$hostname")
 txtn $(txty "\t系统版本: ")$(txtb "$os_info")
-txtn "====================================="
+txtn "—————————————————————————————————————"
 txtn $(txtn " 1.修改ROOT密码")$(txtg "✔")"           "$(txby "11.修改虚拟内存大小")$(txty "✔")
 txtn $(txtn " 2.开启ROOT密码登录模式")$(txtg "✔")"   "$(txtn "12.修改主机名")$(txty "✔")
 txtn $(txtn " 3.开放所有端口")$(txtg "✔")"           "$(txtn "13.切换系统更新源")$(txty "✔")
@@ -2245,7 +2245,7 @@ website_tools_menu() {
 
 txtn " "
 txtn $(txbr "▼ 站点面板工具")$(txbg " ❤ ")
-txtn "-------------------------------------"
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 WANIP_show
 txtn "====================================="
 txtn $(txty " 1.1Panel")$(txty "☑")"             "$(txtn "61.AList多存储文件列表程序")$(txtg "✔")
@@ -2256,7 +2256,7 @@ txtn $(txtn " 5.哪吒探针")$(txtg "✔")"           "$(txtn "65.苹果CMS网�
 txtn $(txtn " 6.OpenLiteSpeed")$(txtb "✘")"      "$(txtn "66.苹果CMS网站(Docker)")$(txtg "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txbr "▼ Docker")$(txbg " ❦ ")
-txtn "-------------------------------------"
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "11.Ubuntu远程桌面网页版")$(txtg "✔")"             "$(txtn "")$(txtb "")
 txtn $(txtn "12.AuroPanel极光面板")$(txtg "✔")"               "$(txtn "")$(txtb "")
 txtn $(txtn "13.Portainer容器管理面板")$(txtg "✔")"           "$(txtn "")$(txtb "")
@@ -2594,14 +2594,14 @@ warp_tools_menu() {
 
 txtn " "
 txtn $(txbr "▼ 节点管理")$(txbb " ✈✈✈ ")
-txtn "-------------------------------------"
-WANIP_show
 txtn "====================================="
+WANIP_show
+txtn "—————————————————————————————————————"
 txtn $(txty "91.Show IP(ip.sb)")$(txtg "✔")"          "$(txty "95.Check-OpenAI(检测OpenAI解锁)")$(txtg "✔")
 txtn $(txtn "92.Show IPv4(local)")$(txtg "✔")"        "$(txtb "96.Check-Region(检测区域媒体解锁)")$(txtg "✔")
 txtn $(txtn "93.Show IPv6(local)")$(txtg "✔")"        "$(txtn "97.Cloudflare(IPv4)")$(txtg "✔")
 txtn $(txtn "94.Set GitHUB(IPv6)")$(txtg "✔")"        "$(txtn "98.Cloudflare(IPv6)")$(txtg "✔")
-txtn "-------------------------------------"
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty " 1.Warp(@fscarmen)")$(txtg "✔")"         "$(txtn "11.XRay(@233boy)")$(txtg "✔")
 txtn $(txtn " 2.Warp(@hamid-gh98)")$(txtg "✔")"       "$(txtn "12.V2Ray(@233boy)")$(txtg "✔")
 txtn $(txtn " 3.Warp(@Misaka-blog)")$(txtg "✔")"      "$(txtn "13.V2Ray-Agent(@mack-a)")$(txtg "✔")
@@ -2610,7 +2610,7 @@ txtn $(txtn " 5.SingBox四合一")$(txtg "✔")"            "$(txtn "15.TUIC5(@M
 txtn $(txty " 6.SingBox全家桶(@fscarmen)")$(txtg "✔")" "$(txtn "16.mianyang()")$(txtg "✔")
 txtn $(txtn " 7.SingBox-Argox(@fscarmen)")$(txtg "✔")" "$(txtn "")$(txtb "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
-txtn "-------------------------------------"
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "51.XRayR(@XrayR-project)")$(txtg "✔")"         "$(txtn "61.Set Github(For IPv6 VPS)")$(txtg "✔")
 txtn $(txtn "52.XRayR(@wyx2685)")$(txtg "✔")"               "$(txtn "62.Cloudflare Select IP")$(txtg "✔")
 txtn $(txtn "53.XRayR-Docker(@XrayR-project)")$(txtg "✔")"  "$(txtn "63.Cloudflare Select CDN")$(txtg "✔")
@@ -2687,15 +2687,15 @@ board_tools_menu() {
 
 txtn " "
 txtn $(txbr "▼ 面板管理")$(txbg " ❦ ")
-txtn "-------------------------------------"
-WANIP_show
 txtn "====================================="
+WANIP_show
+txtn "—————————————————————————————————————"
 txtn $(txtn "21.3X-UI(@mhsanaei)")$(txtg "✔")"       "$(txtn "31.Hiddify")$(txtg "✔")
 txtn $(txtb "22.X-UI(@alireza0)")$(txtg "✔")"        "$(txty "32.V2RayA")$(txtg "✔")
 txtn $(txtn "23.X-UI(@FranzKafkaYu)")$(txtg "✔")"    "$(txtn "33.Daed")$(txtg "✔")
 txtn $(txtn "24.X-UI(@rwkgyg)")$(txtg "✔")"          "$(txtn "34.Daed-Docker")$(txtg "✔")
 txtn $(txtn "25.S-UI(@alireza0)")$(txtg "✔")"        "$(txtn "")$(txtg "")
-txtn "-------------------------------------"
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "41.XBoard")$(txtg "✔")"                 "$(txtn "44.LotusBoard")$(txtg "✔")
 txtn $(txtn "42.V2Board")$(txtg "✔")"                "$(txtn "45.SSPanel")$(txtg "✔")
 txtn $(txtn "43.V2Board(wyx2685)")$(txtg "✔")"       "$(txtn "46.Proxypanel")$(txtg "✔")
@@ -3229,23 +3229,23 @@ WebSites_manager_menu() {
 
 txtn " "
 txtn $(txbr "▼ 站点管理")$(txbg " ❦ ")
-txtn "-------------------------------------"
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 WANIP_show
 txtn "====================================="
 txtn $(txtn " 1.安装LDNMP环境")$(txtb "✘")"      "$(txtn "11.更新LDNMP环境")$(txtb "✘")
 txtn $(txtn " 2.卸载LDNMP环境")$(txtb "✘")"      "$(txtn "12.优化LDNMP环境")$(txtb "✘")
-txtn "-------------------------------------"
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "11.安装Caddy")$(txtg "✔")"          "$(txtn "21.安装PHP8.3")$(txtg "✔")
 txtn $(txtn "12.安装Nginx")$(txtg "✔")"          "$(txtn "22.安装PHP7.4")$(txtg "✔")
 txtn $(txtn "13.安装OpenLiteSpeed")$(txtg "✔")"  "$(txtn "23.安装MariaDB")$(txtb "✔")
 txtn $(txtn "14.查看状态")$(txtg "✔")"           "$(txtn "24.安装Redis")$(txtb "✔")
-txtn "-------------------------------------"
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.站点列表")$(txtg "✔")"           "$(txtn "41.重启服务")$(txtg "✔")
 txtn $(txtn "32.站点管理")$(txtg "✔")"           "$(txtn "42.停止服务")$(txtg "✔")
 txtn $(txtn "33.添加重定向")$(txtg "✔")"         "$(txtn "43.更新服务")$(txtg "✔")
 txtn $(txty "34.添加反向代理")$(txtg "✔")"       "$(txtn "44.删除服务")$(txtb "✘")
 txtn $(txtn "34.添加静态站点")$(txtg "✔")"       "$(txtn "") $(txtb "")
-txtn "-------------------------------------"
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "88.站点防御程序")$(txtb "✘")
 txtn "====================================="
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
@@ -3414,11 +3414,11 @@ txtn "====================================="
 txtn $(txty " 1.系统信息")$(txty "☄")"       "$(txtn "11.容器管理")$(txtb "☪")
 txtn $(txtn " 2.系统更新")$(txtb "☣")"       "$(txty "12.站点管理")$(txtr "◎")
 txtn $(txtn " 3.系统清理")$(txtb "☒")"       "$(txtb "13.站点部署")$(txtb "❈")
-txtn "-------------------------------------"
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "21.常用工具")$(txtn "❃")"       "$(txtn "31.面板工具")$(txtb "⊕")
 txtn $(txty "22.系统工具")$(txtb "❁")"       "$(txtn "32.其他工具")$(txtb "の")
 txtn $(txtr "23.节点工具")$(txty "✈")"       "$(txtn "")$(txtb "")
-txtn "-------------------------------------"
+txtn "—————————————————————————————————————"
 txtn $(txtr "99")$(txtb ".重启系统☢")"       "$(txtb "00.脚本更新")$(txtb "☋")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "====================================="
@@ -3440,7 +3440,7 @@ while true; do
      3) clear && clean_sys ;;
 
     11) docker_run ;;
-    12) clear && WebSites_manager_run ;;
+    12) WebSites_manager_run ;;
     13) website_tools_run  ;;
 
     21) common_apps_run  ;;
