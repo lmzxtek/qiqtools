@@ -178,8 +178,8 @@ ip_address() {
 }
 
 ip_show(){
-  txtkvy "IPv4:" "$WAN4" "\t(COUNTRY4)"
-  txtkvy "IPv6:" "$WAN6" "\t(COUNTRY4)"
+  txtkvy "IPv4:" "$WAN4" "\t($COUNTRY4)"
+  txtkvy "IPv6:" "$WAN6" "\t($COUNTRY4)"
   # info "\t IPv4: $WAN4 $WARPSTATUS4 $COUNTRY4  $ASNORG4 "
   # info "\t IPv6: $WAN6 $WARPSTATUS6 $COUNTRY6  $ASNORG6 "
 }
