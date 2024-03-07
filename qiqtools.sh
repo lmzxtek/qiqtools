@@ -34,8 +34,8 @@ yellow='\033[0;33m'
  plain='\033[0m'
 
 # 自定义字体彩色，read 函数
- txtn(){ echo -e "${plain}$*"; }                        # 常规字符
-#  txtn(){ echo -e "${plain}$*${plain}"; }                # 常规字符
+#  txtn(){ echo -e "${plain}$*"; }                        # 常规字符
+ txtn(){ echo -e "${plain}$*${plain}"; }                # 常规字符
  txtr(){ echo -e "${red}$*${plain}"; }                  # 红色字符
  txtb(){ echo -e "${blue}$*${plain}"; }                 # 蓝色字符
  txtc(){ echo -e "${cyan}$*${plain}"; }                 # 
@@ -3402,7 +3402,7 @@ main_menu() {
   txtn "====================================="
   WANIP_show
   txtn "====================================="
-  txtn $(txty " 1.系统信息")$(txty "☄")"       "$(txtn "11.容器管理")$(txtb "☉")
+  txtn $(txty " 1.系统信息")$(txty "☄")"       "$(txtn "11.容器管理")$(txtb "☪")
   txtn $(txtn " 2.系统更新")$(txtb "☣")"       "$(txty "12.站点管理")$(txtb "◎")
   txtn $(txtn " 3.系统清理")$(txtb "☒")"       "$(txtb "13.站点部署")$(txtb "❈")
   txtn "-------------------------------------"
