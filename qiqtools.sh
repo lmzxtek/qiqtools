@@ -160,9 +160,6 @@ install_dependency() { clear && install curl wget socat unzip tar; }
 
 cur_dir=$(pwd)
 
-ipv4_address=""
-ipv6_address=""
-
 IP4_INFO="${red}Not Supported${plain}"
 IP6_INFO="${red}Not Supported${plain}"
 
@@ -181,8 +178,10 @@ ip_address() {
 }
 
 ip_show(){
-  info "\t IPv4: $WAN4 $WARPSTATUS4 $COUNTRY4  $ASNORG4 "
-  info "\t IPv6: $WAN6 $WARPSTATUS6 $COUNTRY6  $ASNORG6 "
+  txtkvy "IPv4:" "$WAN4" "\t(COUNTRY4)"
+  txtkvy "IPv6:" "$WAN6" "\t(COUNTRY4)"
+  # info "\t IPv4: $WAN4 $WARPSTATUS4 $COUNTRY4  $ASNORG4 "
+  # info "\t IPv6: $WAN6 $WARPSTATUS6 $COUNTRY6  $ASNORG6 "
 }
 
 
@@ -194,7 +193,8 @@ check_system_ip() {
   CITY4=$(expr "$IP4" : '.*city\":[ ]*\"\([^"]*\).*') &&
   ASNORG4=$(expr "$IP4" : '.*isp\":[ ]*\"\([^"]*\).*') &&
   ipv4_address=$WAN4 &&
-  [[ "$L" = C && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4")
+  [[ "$L" = C && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4") && 
+  IP4_INFO="($WARPSTATUS4 $COUNTRY4 $CITY4 $ASNORG4)"
 
   IP6=$(wget -6 -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://api.ip.sb/geoip) &&
   WAN6=$(expr "$IP6" : '.*ip\":[ ]*\"\([^"]*\).*') &&
@@ -202,7 +202,8 @@ check_system_ip() {
   CITY6=$(expr "$IP6" : '.*city\":[ ]*\"\([^"]*\).*') &&
   ASNORG6=$(expr "$IP6" : '.*isp\":[ ]*\"\([^"]*\).*') &&
   ipv6_address=$WAN6 &&
-  [[ "$L" = C && -n "$COUNTRY6" ]] && COUNTRY6=$(translate "$COUNTRY6")
+  [[ "$L" = C && -n "$COUNTRY6" ]] && COUNTRY6=$(translate "$COUNTRY6")&& 
+  IP6_INFO="($WARPSTATUS6 $COUNTRY6 $CITY6 $ASNORG6)"
 }
 
 check_root() {
@@ -293,8 +294,6 @@ check_virt(){
 get_sysinfo(){
     # 函数: 获取IPv4和IPv6地址
     
-    ipv4_address=""
-    ipv6_address=""
     ip_address
 
     check_virt
@@ -403,8 +402,9 @@ show_info() {
   txtkvy " 系统时间: " "$current_time"
   txtkvy " 运行时长: " "$runtime"
   txtkvn "---------------------------------"
-  txtkvy " IPv4地址: " "$current_time"
-  txtkvy " IPv6地址: " "$runtime"
+  txtkvy " IPv4地址: " "$WAN4" "\t(IP4_INFO)"
+  txtkvy " IPv6地址: " "$WAN6" "\t(IP6_INFO)"
+  ip_show
   txtkvn "---------------------------------"
   txtkvy "网络拥堵算法: " "${yellow}$congestion_algorithm" "${plain}$queue_algorithm"
   txtkvn "$txt_data_transfer"
