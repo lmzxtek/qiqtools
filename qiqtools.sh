@@ -2565,7 +2565,7 @@ txtn $(txtn " 1.Docker")$(txtg "✔")"          "$(txtn "")$(txtg "")
 txtn $(txtn " 2.Python")$(txtg "✔")"          "$(txtn "")$(txtg "")
 txtn $(txtn " 3.Conda")$(txtg "✔")"           "$(txtn "")$(txtg "")
 txtn $(txtn " 4.RustDesk Server")$(txtg "✔")" "$(txtn "")$(txtg "")
-# txtn $(txtn " 5.Docker")$(txtg "✔")"        "$(txtn "15.Test")$(txtb "✘")
+# txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "====================================="
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
 txtn " "
@@ -2742,6 +2742,7 @@ txtn "-------------------------------------"
 txtn $(txty "41.XBoard")$(txtg "✔")"                 "$(txtn "44.LotusBoard")$(txtg "✔")
 txtn $(txtn "42.V2Board")$(txtg "✔")"                "$(txtn "45.SSPanel")$(txtg "✔")
 txtn $(txtn "43.V2Board(wyx2685)")$(txtg "✔")"       "$(txtn "46.Proxypanel")$(txtg "✔")
+# txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "====================================="
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
 txtn " "
@@ -3471,6 +3472,7 @@ txtn $(txty "22.系统工具")$(txtb "❁")"       "$(txtn "32.其他工具")$(t
 txtn $(txtr "23.节点工具")$(txtr "✈")"       "$(txtn "")$(txtb "")
 txtn "-------------------------------------"
 txtn $(txtn "99.重启系统")$(txtb "☢")"       "$(txtb "00.脚本更新")$(txtb "☋")
+# txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "====================================="
 txtn $(txtn " 0.退出脚本")$(txtb "✖")"       "$(txtb "♧♧ ")$(txtc "QiQTools")$(txtb "$script_version")
 txtn " "
