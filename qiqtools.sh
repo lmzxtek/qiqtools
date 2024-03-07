@@ -3418,9 +3418,10 @@ txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "21.常用工具")$(txtn "❃")"       "$(txtn "31.面板工具")$(txtb "⊕")
 txtn $(txty "22.系统工具")$(txtb "❁")"       "$(txtn "32.其他工具")$(txtb "の")
 txtn $(txtr "23.节点工具")$(txty "✈")"       "$(txtn "")$(txtb "")
-txtn $(txtr "99")$(txtb ".重启系统☢")"       "$(txtb "00.脚本更新")$(txtb "☋")
-# txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "====================================="
+txtn $(txtr "99")$(txtb ".重启系统☢")"       "$(txtb "00.脚本更新")$(txtb "☋")
+txtn "—————————————————————————————————————"
+# txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 # txtn $(txtn " 0.退出脚本")$(txtr "✖")"       "$(txtb "♧♧ ")$(txtc "QiQTools") $(txtb "$script_version")
 txtn $(txtn " 0.退出脚本")$(txtr "✖")"       "$(txtp "✟✟ ")$(txtc "快捷命令")$(txtb "☞") $(txty "qiq") $(txtb "☜")
 txtn " "
