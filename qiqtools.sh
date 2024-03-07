@@ -3380,34 +3380,44 @@ script_update(){
 
 
 show_header_qiq(){
-echo -e "
- ${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}
- ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
- ${green}░██   ░██  ${cyan} ░██   ${green}░██   ░██${plain}
- ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
- ${green}   ░██ ██  ${cyan}░████  ${green}   ░██ ██${plain}
+  
+txtn " "$(txtg "  ░███   ") $(txtc "░████") $(txtg "  ░███   ")
+txtn " "$(txtg " ░██ ░██ ") $(txtc " ░██ ") $(txtg " ░██ ░██ ")
+txtn " "$(txtg "░██   ░██") $(txtc " ░██ ") $(txtg "░██   ░██")
+txtn " "$(txtg " ░██ ░██ ") $(txtc " ░██ ") $(txtg " ░██ ░██ ")
+txtn " "$(txtg "   ░██ ██") $(txtc "░████") $(txtg "   ░██ ██")
+txtn $(txtb "─┬─╭─╮╭─╮┬ ╭─╮")
+txtn $(txtb " │ │ ││ ││ ╰─╮")
+txtn $(txtb " │ ╰─╯╰─╯╰─╰─╯")$(txtc "  ✟  ")$(txtn "快捷命令")$(txtc "☞")$(txty " qiq ")$(txtc "☜")
 
-${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}  
-${blue} │ │ ││ ││ ╰─╮${plain}  
-${blue} │ ╰─╯╰─╯╰─╰─╯${plain}   ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}"
+# echo -e "
+#  ${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}
+#  ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
+#  ${green}░██   ░██  ${cyan} ░██   ${green}░██   ░██${plain}
+#  ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
+#  ${green}   ░██ ██  ${cyan}░████  ${green}   ░██ ██${plain}
+
+# ${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}  
+# ${blue} │ │ ││ ││ ╰─╮${plain}  
+# ${blue} │ ╰─╯╰─╯╰─╰─╯${plain}   ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}"
 }
 
 # 显示主菜单
 main_menu() {
-  txtn "====================================="
-  WANIP_show
-  txtn "====================================="
-  txtn $(txty " 1.系统信息")$(txty "☄")"       "$(txtn "11.容器管理")$(txtb "☪")
-  txtn $(txtn " 2.系统更新")$(txtb "☣")"       "$(txty "12.站点管理")$(txtb "◎")
-  txtn $(txtn " 3.系统清理")$(txtb "☒")"       "$(txtb "13.站点部署")$(txtb "❈")
-  txtn "-------------------------------------"
-  txtn $(txty "21.系统信息")$(txty "❃")"       "$(txtn "31.面板工具")$(txtb "⊕")
-  txtn $(txtn "22.系统更新")$(txtb "❁")"       "$(txty "32.其他工具")$(txtb "の")
-  txtn $(txtn "23.系统清理")$(txtb "✈")"       "$(txtb "")$(txtb "")
-  txtn "-------------------------------------"
-  txtn $(txtn "99.重启系统")$(txtb "☢")"       "$(txtb "00.脚本更新")$(txtb "☋")
-  txtn "====================================="
-  txtn $(txtn " 0.退出脚本")$(txtb "✖")"       "$(txtb "♧♧ ")"QiQTools"$(txtb "$script_version")
+txtn "====================================="
+WANIP_show
+txtn "====================================="
+txtn $(txty " 1.系统信息")$(txty "☄")"       "$(txtn "11.容器管理")$(txtb "☪")
+txtn $(txtn " 2.系统更新")$(txtb "☣")"       "$(txty "12.站点管理")$(txtb "◎")
+txtn $(txtn " 3.系统清理")$(txtb "☒")"       "$(txtb "13.站点部署")$(txtb "❈")
+txtn "-------------------------------------"
+txtn $(txty "21.系统信息")$(txty "❃")"       "$(txtn "31.面板工具")$(txtb "⊕")
+txtn $(txtn "22.系统更新")$(txtb "❁")"       "$(txty "32.其他工具")$(txtb "の")
+txtn $(txtn "23.系统清理")$(txtb "✈")"       "$(txtb "")$(txtb "")
+txtn "-------------------------------------"
+txtn $(txtn "99.重启系统")$(txtb "☢")"       "$(txtb "00.脚本更新")$(txtb "☋")
+txtn "====================================="
+txtn $(txtn " 0.退出脚本")$(txtb "✖")"       "$(txtb "♧♧ ")"QiQTools"$(txtb "$script_version")
 }
 
 
