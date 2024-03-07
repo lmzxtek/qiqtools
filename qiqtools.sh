@@ -205,9 +205,13 @@ check_IPV6(){
 check_IP_address() {
   if [[ $(curl -sS https://www.cloudflare.com/ -I | grep "text/plain") != "" ]]; then 
     echo "Your IP is BLOCKED!"
+    txtn " >>> Check IP failed ..."
     return 1
-  else
+  else  
+    txtn " >>> Check IPv4 info ..."
     check_IPV4
+
+    txtn " >>> Check IPv6 info ..."
     check_IPV6
   fi
 }
