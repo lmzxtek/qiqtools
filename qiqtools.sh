@@ -3405,13 +3405,12 @@ main_menu() {
   txtn "====================================="
   WANIP_show
   txtn "-------------------------------------"
+  txtn $(txty " 1." "系统信息" "☄") $(txty "11." "容器管理" "❂")
+  txtn $(txty "21." "常用工具" "❃") $(txty "31." "面板工具" "◈")
   txtn "-------------------------------------"
   txtn "====================================="
 
 echo -e "
-${white}=====================================${plain}
-${yellow}IPv4: ${white}$WAN4${plain}  ($COUNTRY4 $WARPSTATUS4)
-${yellow}IPv6: ${white}$WAN6${plain}  ($COUNTRY6 $WARPSTATUS6)
 ${white}=====================================${plain}
 ${green} 1${white}.${yellow}系统信息${red}☄${plain}       ${green}11${white}.${plain}容器管理${blue}❂${plain}
 ${green} 2${white}.${plain}系统更新${blue}☣${plain}       ${green}12${white}.${yellow}站点管理${yellow}❈${plain}
