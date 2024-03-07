@@ -418,7 +418,7 @@ get_sysinfo(){
 }
 
 # 显示系统信息
-show_info() {
+system_info() {
     info "系统信息查询"
   txtkvn "================================="
   txtkvn "    主机名: " "$hostname"
@@ -1831,8 +1831,8 @@ system_tools_menu() {
 txtn $(txbr "▼ 系统工具")$(txbg " ❦ ")
 txtn "-------------------------------------"
 # WANIP_show
-txtn $(txty "   主机名: ")$(txtb "$hostname")
-txtn $(txty " 系统版本: ")$(txtb "$os_info")
+txtn $(txty "\t  主机名: ")$(txtb "$hostname")
+txtn $(txty "\t系统版本: ")$(txtb "$os_info")
 txtn "====================================="
 txtn $(txtn " 1.修改ROOT密码")$(txtg "✔")"           "$(txby "11.修改虚拟内存大小")$(txty "✔")
 txtn $(txtn " 2.开启ROOT密码登录模式")$(txtg "✔")"   "$(txtn "12.修改主机名")$(txty "✔")
@@ -3205,28 +3205,6 @@ txtn $(txtn " 6.清理站点缓存")$(txtb "✔")"      "$(txtn "")$(txtb "")
 txtn "====================================="
 txtn $(txtn " 0.返回上级菜单")$(txtr "✖")
 txtn " "
-
-# echo -e "
-# ▶ 站点目录
-# ${yellow}IPv4: ${white}$WAN4${plain}
-# ${yellow}IPv6: ${white}$WAN6${plain}
-# ${plain}-------------------------------
-# ${green} ${plain} 数据： /home/web/html 
-# ${green} ${plain} 配置： /home/web/caddy
-# ${plain}-------------------------------    
-
-# ▶ 站点管理
-# ${plain}-------------------------------
-# ${green} 1.${plain} 查看站点列表
-# ${green} 2.${plain} 查看分析报告
-# ${green} 3.${plain} 更换站点域名
-# ${green} 4.${plain} 添加站点域名
-# ${green} 5.${plain} 删除指定站点
-# ${green} 6.${plain} 清理站点缓存
-# ${plain}-------------------------------    
-# ${green} 0.${plain} 返回上级菜单
-# ${plain}-------------------------------    
-# "
 }
 
 # Web站点管理器
@@ -3444,12 +3422,12 @@ txtn " "
 
 # Main Loops for the scripts
 main_loop(){
-while true; do 
+while true; do
   clear && cd ~ && show_header_qiq && main_menu 
   reading "请输入你的选择: " choice
 
   case $choice in
-     1) clear && get_sysinfo && show_info ;;
+     1) clear && system_info ;;
      2) clear && update_and_upgrade ;;
      3) clear && clean_sys ;;
 
@@ -3473,5 +3451,6 @@ while true; do
 done
 }
 
-check_IP_address
+# check_IP_address
+get_sysinfo
 main_loop
