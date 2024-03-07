@@ -3425,15 +3425,15 @@ cd ~
 # ${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}
 
   txthd="
- ${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}
- ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
- ${green}░██   ░██  ${cyan} ░██   ${green}░██   ░██${plain}
- ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
+ ${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}\n
+ ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}\n
+ ${green}░██   ░██  ${cyan} ░██   ${green}░██   ░██${plain}\n
+ ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}\n
  ${green}   ░██ ██  ${cyan}░████  ${green}   ░██ ██${plain}"
 
   txtht="
-${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}  
-${blue} │ │ ││ ││ ╰─╮${plain}  
+${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}\n
+${blue} │ │ ││ ││ ╰─╮${plain}\n
 ${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}"
 
   echo -e $txthd
