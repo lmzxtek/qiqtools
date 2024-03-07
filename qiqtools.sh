@@ -2245,8 +2245,7 @@ txtn $(txtn " 3.宝塔面板")$(txtg "✔")"           "$(txtn "63.KodBox可道�
 txtn $(txtn " 4.NginxProxyManager")$(txtg "✔")"  "$(txtn "64.ChatGPT-Next-Web")$(txtg "✔")
 txtn $(txtn " 5.哪吒探针")$(txtg "✔")"           "$(txtn "65.苹果CMS网站")$(txtg "✔")
 txtn $(txtn " 6.OpenLiteSpeed")$(txtb "✘")"      "$(txtn "66.苹果CMS网站(Docker)")$(txtg "✔")
-txtn "-------------------------------------"
-txtn " "
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txbr "▼ Docker")$(txbg " ❦ ")
 txtn "-------------------------------------"
 txtn $(txtn "11.Ubuntu远程桌面网页版")$(txtg "✔")"             "$(txtn "")$(txtb "")
