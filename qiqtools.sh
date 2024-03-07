@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.3.4
+script_version=v0.3.5
 #==========================
 
 # Language
@@ -150,6 +150,11 @@ install_dependency() { clear && install curl wget socat unzip tar; }
 # export PATH=$PATH:/usr/local/bin
 
 cur_dir=$(pwd)
+
+# 设置纯IPv6访问GitHub出问题的处理办法
+set_ipv6_github(){
+  echo -e "nameserver 2001:67c:2b0::4\nnameserver 2001:67c:2b0::6" > /etc/resolv.conf
+}
 
 check_IPV4(){
 	# echo -e "[IPv4]"
@@ -2660,7 +2665,8 @@ warp_tools_run() {
      54) clear && cd ~ && git clone https://github.com/lotusnetwork/bodhi-docker.git && cd bodhi-docker ;;
      55) clear && wget -N https://raw.githubusercontent.com/wyx2685/V2bX-script/master/install.sh && bash install.sh ;;
 
-     61) clear && echo -e "nameserver 2001:67c:2b0::4\nnameserver 2001:67c:2b0::6" > /etc/resolv.conf ;;
+     61) set_ipv6_github ;;
+    #  61) echo -e "nameserver 2001:67c:2b0::4\nnameserver 2001:67c:2b0::6" > /etc/resolv.conf ;;
      62) clear && cd ~ && curl -sSL https://gitlab.com/rwkgyg/CFwarp/raw/main/point/cfip.sh -o cfip.sh && chmod +x cfip.sh && bash cfip.sh ;;
      63) clear && cd ~ && curl -sSL https://gitlab.com/rwkgyg/CFwarp/raw/main/point/CFcdnym.sh -o CFcdnym.sh && chmod +x CFcdnym.sh && bash CFcdnym.sh ;;
      64) clear && docker run -p 1234:80 -d --name yacd --rm ghcr.io/haishanh/yacd:master ;;
@@ -2669,7 +2675,7 @@ warp_tools_run() {
      91) echo -e "\nIP: $(curl -s ip.sb)\n"  ;;
      92) echo -e "\n$(ip addr | grep "inet ")\n"  ;;
      93) echo -e "\n$(ip addr | grep "inet6")\n"  ;;
-     94) echo -e "nameserver 2001:67c:2b0::4\nnameserver 2001:67c:2b0::6" > /etc/resolv.conf ;;
+     94) set_ipv6_github ;;
 
      95) clear && bash <(curl -Ls https://cdn.jsdelivr.net/gh/missuo/OpenAI-Checker/openai.sh) ;;
      96) clear && bash <(curl -Ls check.unlock.media) ;;
@@ -2679,7 +2685,7 @@ warp_tools_run() {
       0) qiqtools ;;
       *) echo "无效的输入!" ;;
     esac
-    recheck_ip_address
+    # recheck_ip_address
     break_end
   done 
 
