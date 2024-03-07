@@ -3436,7 +3436,7 @@ ${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}\n
 ${blue} │ │ ││ ││ ╰─╮${plain}\n
 ${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}"
 
-  echo -e $txthd $txtht
+  echo -e " " $txthd $txtht
 
 echo -e "
  ${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}
