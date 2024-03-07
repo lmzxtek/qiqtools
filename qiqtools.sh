@@ -3396,18 +3396,18 @@ cd ~
 # ${cyan}✟${plain} 一键脚本 ${blue}QiQTools${plain}
 # "
 
-  txby "▶ 站点面板工具"
-  txtn $(txty " IPv4: ") $(txtb $WAN4) $(txtn "\t(" $COUNTRY4 " " $WARPSTATUS4 ")")
-  txtn $(txty " IPv6: ") $(txtb $WAN6) $(txtn "\t(" $COUNTRY6 " " $WARPSTATUS6 ")")
+  # txby "▶ 站点面板工具"
+  # txtn $(txty " IPv4: ") $(txtb $WAN4) $(txtn "\t(" $COUNTRY4 " " $WARPSTATUS4 ")")
+  # txtn $(txty " IPv6: ") $(txtb $WAN6) $(txtn "\t(" $COUNTRY6 " " $WARPSTATUS6 ")")
 
-  txtn " " $(txtg "  ░███   ") " " $(txtc "░████") " " $(txtg "  ░███   ")
-  txtn " " $(txtg " ░██ ░██ ") " " $(txtc " ░██ ") " " $(txtg " ░██ ░██ ")
-  txtn " " $(txtg "░██   ░██") " " $(txtc " ░██ ") " " $(txtg "░██   ░██")
-  txtn " " $(txtg " ░██ ░██ ") " " $(txtc " ░██ ") " " $(txtg " ░██ ░██ ")
-  txtn " " $(txtg "   ░██ ██") " " $(txtc "░████") " " $(txtg "   ░██ ██")
+  # txtn " " $(txtg "  ░███   ") " " $(txtc "░████") " " $(txtg "  ░███   ")
+  # txtn " " $(txtg " ░██ ░██ ") " " $(txtc " ░██ ") " " $(txtg " ░██ ░██ ")
+  # txtn " " $(txtg "░██   ░██") " " $(txtc " ░██ ") " " $(txtg "░██   ░██")
+  # txtn " " $(txtg " ░██ ░██ ") " " $(txtc " ░██ ") " " $(txtg " ░██ ░██ ")
+  # txtn " " $(txtg "   ░██ ██") " " $(txtc "░████") " " $(txtg "   ░██ ██")
 
-  txtn $(txtb "─┬─╭─╮╭─╮┬ ╭─╮")
-  txtn $(txtb " │ │ ││ ││ ╰─╮")
+  # txtn $(txtb "─┬─╭─╮╭─╮┬ ╭─╮")
+  # txtn $(txtb " │ │ ││ ││ ╰─╮")
   # txtn $(txtb " │ ╰─╯╰─╯╰─╰─╯") $(txtc "  ✟  ") $(txtn "快捷命令") $(txtc "☞") $(txty " qiq ") $(txtc "☜")
   txtn $(txtr "=====================================")
   txtn $(txtr "-------------------------------------")
@@ -3423,6 +3423,21 @@ cd ~
 # ${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}  
 # ${blue} │ │ ││ ││ ╰─╮${plain}  
 # ${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}
+
+  txthd="
+ ${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}
+ ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
+ ${green}░██   ░██  ${cyan} ░██   ${green}░██   ░██${plain}
+ ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
+ ${green}   ░██ ██  ${cyan}░████  ${green}   ░██ ██${plain}"
+
+  txtht="
+${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}  
+${blue} │ │ ││ ││ ╰─╮${plain}  
+${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}"
+
+  echo -e $txthd
+  echo -e $txtht
 
 echo -e "
  ${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}
