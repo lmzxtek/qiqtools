@@ -335,7 +335,7 @@ get_sysinfo(){
     # 函数: 获取IPv4和IPv6地址
     
     txtn ""
-    txtn " >>> Welcome for using QiQTools "
+    txtn " Welcome for using QiQTools "
     txtn ""
     txtn " >>> Start to get system information ..."
     txtn ""
@@ -406,18 +406,6 @@ get_sysinfo(){
     congestion_algorithm=$(sysctl -n net.ipv4.tcp_congestion_control)
     queue_algorithm=$(sysctl -n net.core.default_qdisc)
 
-    txtn " >>> Check Current time ..."
-    current_time=$(date "+%Y-%m-%d %I:%M %p")
-
-    txtn " >>> Check System running elapsed time ..."
-    runtime=$(cat /proc/uptime | awk -F. '{run_days=int($1 / 86400);run_hours=int(($1 % 86400) / 3600);run_minutes=int(($1 % 3600) / 60); if (run_days > 0) printf("%d天 ", run_days); if (run_hours > 0) printf("%d时 ", run_hours); printf("%d分\n", run_minutes)}')
-
-    txtn " >>> Check IP address ..."
-    check_IP_address
-    # country=$(curl -s ipinfo.io/country)
-    # city=$(curl -s ipinfo.io/city)
-    # isp_info=$(curl -s ipinfo.io/org)
-
     txtn " >>> Check Sever data transfer ..."
     txt_data_transfer=$(awk 'BEGIN { rx_total = 0; tx_total = 0 }
         NR > 2 { rx_total += $2; tx_total += $10 }
@@ -432,8 +420,20 @@ get_sysinfo(){
             if (tx_total > 1024) { tx_total /= 1024; tx_units = "MB"; }
             if (tx_total > 1024) { tx_total /= 1024; tx_units = "GB"; }
 
-            printf("      总接收: %.2f %s\n      总发送: %.2f %s\n", rx_total, rx_units, tx_total, tx_units);
+            printf("    总接收: %.2f %s\n    总发送: %.2f %s\n", rx_total, rx_units, tx_total, tx_units);
         }' /proc/net/dev)
+
+    txtn " >>> Check Current time ..."
+    current_time=$(date "+%Y-%m-%d %I:%M %p")
+
+    txtn " >>> Check System running elapsed time ..."
+    runtime=$(cat /proc/uptime | awk -F. '{run_days=int($1 / 86400);run_hours=int(($1 % 86400) / 3600);run_minutes=int(($1 % 3600) / 60); if (run_days > 0) printf("%d天 ", run_days); if (run_hours > 0) printf("%d时 ", run_hours); printf("%d分\n", run_minutes)}')
+
+    txtn " >>> Check IP address ..."
+    check_IP_address
+    # country=$(curl -s ipinfo.io/country)
+    # city=$(curl -s ipinfo.io/city)
+    # isp_info=$(curl -s ipinfo.io/org)
 
 }
 
@@ -464,7 +464,7 @@ system_info() {
   txtkvy " IPv6地址: " "$WAN6" "\t($IP6_INFO)"
   # WANIP_show
   txtkvn "---------------------------------"
-  txtkvn "网络拥堵算法: " "${yellow}$congestion_algorithm" "${plain}$queue_algorithm"
+  txtkvn " 拥堵算法: " "${yellow}$congestion_algorithm" "${plain}$queue_algorithm"
   txtkvn "$txt_data_transfer"
   txtkvn "================================="
   # txtn " "
