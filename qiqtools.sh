@@ -547,9 +547,9 @@ clean_sys() {
 
 # 设置docker-compose快捷命令
 set_docker_1ckl(){
-  reading " 请输入要设置的快捷键[dcc]: " ccmd
   tcmd="dcc"
-  [ -n $ccmd ] && tcmd=$ccmd
+  reading " 请输入要设置的快捷键[dcc]: " ccmd
+  [[ -n $ccmd ]] && tcmd=$ccmd
   chmod a+x /usr/local/bin/docker-compose 
   rm -rf `which $tcmd` 
   ln -s /usr/local/bin/docker-compose /usr/bin/$tcmd
