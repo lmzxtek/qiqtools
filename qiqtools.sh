@@ -3466,13 +3466,14 @@ txtn $(txty " 1.系统信息")$(txty "☄")"       "$(txtn "11.容器管理")$(t
 txtn $(txtn " 2.系统更新")$(txtb "☣")"       "$(txty "12.站点管理")$(txtb "◎")
 txtn $(txtn " 3.系统清理")$(txtb "☒")"       "$(txtb "13.站点部署")$(txtb "❈")
 txtn "-------------------------------------"
-txtn $(txty "21.常用工具")$(txty "❃")"       "$(txtn "31.面板工具")$(txtb "⊕")
-txtn $(txtn "22.系统工具")$(txtb "❁")"       "$(txty "32.其他工具")$(txtb "の")
-txtn $(txtn "23.节点工具")$(txtb "✈")"       "$(txtb "")$(txtb "")
+txtn $(txtb "21.常用工具")$(txtn "❃")"       "$(txtn "31.面板工具")$(txtb "⊕")
+txtn $(txty "22.系统工具")$(txtb "❁")"       "$(txtn "32.其他工具")$(txtb "の")
+txtn $(txtr "23.节点工具")$(txtr "✈")"       "$(txtn "")$(txtb "")
 txtn "-------------------------------------"
 txtn $(txtn "99.重启系统")$(txtb "☢")"       "$(txtb "00.脚本更新")$(txtb "☋")
 txtn "====================================="
-txtn $(txtn " 0.退出脚本")$(txtb "✖")"       "$(txtb "♧♧ ")"QiQTools"$(txtb "$script_version")
+txtn $(txtn " 0.退出脚本")$(txtb "✖")"       "$(txtb "♧♧ ")$(txtc "QiQTools")$(txtb "$script_version")
+txtn " "
 }
 
 
@@ -3480,7 +3481,7 @@ txtn $(txtn " 0.退出脚本")$(txtb "✖")"       "$(txtb "♧♧ ")"QiQTools"$
 main_loop(){
 while true; do 
   clear && cd ~ && show_header_qiq && main_menu 
-  reading "\n请输入你的选择: " choice
+  reading "请输入你的选择: " choice
 
   case $choice in
      1) clear && get_sysinfo && show_info ;;
