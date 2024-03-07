@@ -419,6 +419,7 @@ get_sysinfo(){
 
 # 显示系统信息
 system_info() {
+  txtn " "
     info "系统信息查询"
   txtkvn "================================="
   txtkvn "    主机名: " "$hostname"
@@ -1828,6 +1829,7 @@ cron_manage(){
 # 系统常用工具
 system_tools_menu() {
   
+txtn " "
 txtn $(txbr "▼ 系统工具")$(txbg " ❦ ")
 txtn "-------------------------------------"
 # WANIP_show
@@ -2244,42 +2246,64 @@ install_maccms(){
 # 站点工具菜单
 website_tools_menu() {
 
-  txby "▶ 站点面板工具"
-  txtn $(txtr "-------------------------------")
-  txtn $(txty " IPv4: ") $(txtb $WAN4) $(txtn "\t(" $COUNTRY4 " " $WARPSTATUS4 ")")
-  txtn $(txty " IPv6: ") $(txtb $WAN6) $(txtn "\t(" $COUNTRY6 " " $WARPSTATUS6 ")")
+txtn " "
+txtn $(txbr "▼ 站点面板工具")$(txbg " ❦ ")
+txtn "-------------------------------------"
+WANIP_show
+txtn "====================================="
+txtn $(txty " 1.1Panel")$(txty "✔")"             "$(txtn "61.AList多存储文件列表程序")$(txtb "✔")
+txtn $(txtn " 2.aaPanel")$(txtg "✔")"            "$(txtb "62.VScode-Server网页版")$(txtb "✔")
+txtn $(txtn " 3.宝塔面板")$(txtg "✔")"            "$(txtn "63.KodBox可道云在线桌面")$(txtb "✔")
+txtn $(txtn " 4.NginxProxyManager")$(txtg "✔")"  "$(txtn "64.ChatGPT-Next-Web")$(txtb "✔")
+txtn $(txtn " 5.哪吒探针")$(txtg "✔")"            "$(txtn "65.苹果CMS网站")$(txtb "✔")
+txtn $(txtn " 6.OpenLiteSpeed")$(txtb "✘")"      "$(txtn "66.苹果CMS网站(Docker)")$(txtb "✔")
+txtn "-------------------------------------"
+txtn $(txtn "11.Ubuntu远程桌面网页版")$(txtg "✔")"             "$(txtn "")$(txtb "")
+txtn $(txtn "12.AuroPanel极光面板")$(txtg "✔")"               "$(txtn "")$(txtb "")
+txtn $(txtn "13.Portainer容器管理面板")$(txtg "✔")"           "$(txtn "")$(txtb "")
+txtn $(txtn "14.Memos网页备忘录")$(txtg "✔")"                 "$(txtn "")$(txtb "")
+txtn $(txtn "15.QBittorrent")$(txtg "✔")"                    "$(txtn "")$(txtb "")
+txtn $(txtn "16.RocketChat在线聊天系统")$(txtg "✔")"          "$(txtn "")$(txtb "")
+txtn $(txtb "17.SearXNG聚合搜索站")$(txtg "✔")"               "$(txtn "")$(txtb "")
+txtn $(txtn "18.StirlingPDF工具大全")$(txtg "✔")"             "$(txtn "")$(txtb "")
+txtn $(txty "19.IT-Tools常用工具")$(txtg "✔")"                "$(txtn "")$(txtb "")
+txtn $(txtn "20.Next-Terminal资产管理")$(txtg "✔")"           "$(txtn "")$(txtb "")
+# txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
+txtn "====================================="
+txtn $(txtn " 0.返回主菜单")$(txtr "✖")
+txtn " "
 
-echo -e "
-▶ 站点面板工具
-${yellow}IPv4: ${pink}$WAN4${plain}  ($COUNTRY4 $WARPSTATUS4)
-${yellow}IPv6: ${pink}$WAN6${plain}  ($COUNTRY6 $WARPSTATUS6)
-${plain}-------------------------------
-${green} 1.${yellow}1Panel(新一代管理面板)
-${green} 2.${plain}aaPanel(宝塔国际版)
-${green} 3.${plain}宝塔面板(官方版)
-${green} 4.${plain}NginxProxyManager(NPM)
-${green} 5.${cyan}哪吒探针(VPS监控面板)
-${plain}-------------------------------
-${green}11.${plain}Ubuntu远程桌面网页版(Docker)
-${green}12.${plain}AuroPanel极光面板(Docker)
-${green}13.${plain}Portainer容器管理面板(Docker)
-${green}14.${plain}Memos网页备忘录(Docker)
-${green}15.${plain}QBittorrent-BT下载面板(Docker)
-${green}16.${plain}RocketChat在线聊天系统(Docker)
-${green}17.${plain}SearXNG聚合搜索站(Docker)
-${green}18.${plain}StirlingPDF工具大全(Docker)
-${green}19.${plain}IT-Tools常用工具(Docker)
-${green}20.${plain}Next-Terminal资产管理(Docker)
-${plain}-------------------------------
-${green}61.${cyan}AList多存储文件列表程序
-${green}62.${cyan}VScode-Server网页版
-${green}63.${cyan}KodBox可道云在线桌面
-${green}64.${cyan}ChatGPT-Next-Web
-${green}65.${cyan}苹果CMS网站
-${green}66.${cyan}苹果CMS网站(Docker)
-${plain}-------------------------------
-${green} 0.${plain} 返回主菜单
-"
+# echo -e "
+# ▶ 站点面板工具
+# ${yellow}IPv4: ${pink}$WAN4${plain}  ($COUNTRY4 $WARPSTATUS4)
+# ${yellow}IPv6: ${pink}$WAN6${plain}  ($COUNTRY6 $WARPSTATUS6)
+# ${plain}-------------------------------
+# ${green} 1.${yellow}1Panel(新一代管理面板)
+# ${green} 2.${plain}aaPanel(宝塔国际版)
+# ${green} 3.${plain}宝塔面板(官方版)
+# ${green} 4.${plain}NginxProxyManager(NPM)
+# ${green} 5.${cyan}哪吒探针(VPS监控面板)
+# ${plain}-------------------------------
+# ${green}11.${plain}Ubuntu远程桌面网页版(Docker)
+# ${green}12.${plain}AuroPanel极光面板(Docker)
+# ${green}13.${plain}Portainer容器管理面板(Docker)
+# ${green}14.${plain}Memos网页备忘录(Docker)
+# ${green}15.${plain}QBittorrent-BT下载面板(Docker)
+# ${green}16.${plain}RocketChat在线聊天系统(Docker)
+# ${green}17.${plain}SearXNG聚合搜索站(Docker)
+# ${green}18.${plain}StirlingPDF工具大全(Docker)
+# ${green}19.${plain}IT-Tools常用工具(Docker)
+# ${green}20.${plain}Next-Terminal资产管理(Docker)
+# ${plain}-------------------------------
+# ${green}61.${cyan}AList多存储文件列表程序
+# ${green}62.${cyan}VScode-Server网页版
+# ${green}63.${cyan}KodBox可道云在线桌面
+# ${green}64.${cyan}ChatGPT-Next-Web
+# ${green}65.${cyan}苹果CMS网站
+# ${green}66.${cyan}苹果CMS网站(Docker)
+# ${plain}-------------------------------
+# ${green} 0.${plain} 返回主菜单
+# "
 }
 
 # 面板工具
@@ -2559,6 +2583,7 @@ website_tools_run(){
 
 other_tools_menu() {
   
+txtn " "
 txtn $(txbr "▼ 其他工具")$(txbg " ❦ ")
 # txtn "-------------------------------------"
 # WANIP_show
@@ -2600,6 +2625,7 @@ other_tools_run() {
 
 warp_tools_menu() {
 
+txtn " "
 txtn $(txbr "▼ 节点管理")$(txbb " ✈✈✈ ")
 txtn "-------------------------------------"
 WANIP_show
@@ -2692,6 +2718,7 @@ warp_tools_run() {
 
 board_tools_menu() {
 
+txtn " "
 txtn $(txbr "▼ 面板管理")$(txbg " ❦ ")
 txtn "-------------------------------------"
 WANIP_show
@@ -3233,6 +3260,7 @@ caddy_web_manager(){
 # 网站管理菜单
 WebSites_manager_menu() {
 
+txtn " "
 txtn $(txbr "▼ 站点管理")$(txbg " ❦ ")
 txtn "-------------------------------------"
 WANIP_show
