@@ -2251,7 +2251,7 @@ txtn $(txbr "▼ 站点面板工具")$(txbg " ❤ ")
 txtn "-------------------------------------"
 WANIP_show
 txtn "====================================="
-txtn $(txty " 1.1Panel")$(txty "✔")"             "$(txtn "61.AList多存储文件列表程序")$(txtb "✔")
+txtn $(txty " 1.1Panel")$(txty "☑")"             "$(txtn "61.AList多存储文件列表程序")$(txtb "✔")
 txtn $(txtn " 2.aaPanel")$(txtg "✔")"            "$(txtb "62.VScode-Server网页版")$(txtb "✔")
 txtn $(txtn " 3.宝塔面板")$(txtg "✔")"           "$(txtn "63.KodBox可道云在线桌面")$(txtb "✔")
 txtn $(txtn " 4.NginxProxyManager")$(txtg "✔")"  "$(txtn "64.ChatGPT-Next-Web")$(txtb "✔")
