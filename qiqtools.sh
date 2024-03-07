@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.3.2
+script_version=v0.3.3
 #==========================
 
 # Language
@@ -216,6 +216,13 @@ check_IP_address() {
     check_IPV4
     check_IPV6
   fi
+}
+
+# 重新检测服务器IP
+recheck_ip_address(){
+  IP4_INFO=""
+  IP6_INFO=""
+  check_IP_address
 }
 
 
@@ -2591,6 +2598,8 @@ other_tools_run() {
 warp_tools_menu() {
 echo -e "
 ▽ 节点管理 ${blue}✈✈✈${plain}
+${yellow}IPv4: ${white}$WAN4${plain}
+${yellow}IPv6: ${white}$WAN6${plain}
 ${plain}==============================================================
 ${yellow} 1.${plain} ${yellow}Warp(@fscarmen)                  ${green}11.${plain} XRay(@233boy)
 ${green} 2.${plain} Warp(@hamid-gh98)                ${green}12.${plain} V2Ray(@233boy)
@@ -2621,9 +2630,18 @@ warp_tools_run() {
     reading "请选择代码: " choice
     
     case $choice in
-      1) clear && install wget && wget -N https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh && bash menu.sh [option] [lisence/url/token] ;;
-      2) clear && bash <(curl -sSL https://raw.githubusercontent.com/hamid-gh98/x-ui-scripts/main/install_warp_proxy.sh) ;;
-      3) clear && wget -N https://gitlab.com/Misaka-blog/warp-script/-/raw/main/warp.sh && bash warp.sh ;;
+      1) 
+        clear && install wget && wget -N https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh && bash menu.sh [option] [lisence/url/token] 
+        recheck_ip_address
+        ;;
+      2) 
+        clear && bash <(curl -sSL https://raw.githubusercontent.com/hamid-gh98/x-ui-scripts/main/install_warp_proxy.sh) 
+        recheck_ip_address
+        ;;
+      3) 
+        clear && wget -N https://gitlab.com/Misaka-blog/warp-script/-/raw/main/warp.sh && bash warp.sh 
+        recheck_ip_address
+        ;;
       4) clear && bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/argox/main/argox.sh)  ;;
       5) clear && bash <(curl -Ls https://gitlab.com/rwkgyg/sing-box-yg/raw/main/sb.sh)  ;;
       6) clear && bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/sing-box/main/sing-box.sh) ;;
@@ -2661,7 +2679,8 @@ warp_tools_run() {
 
       0) qiqtools ;;
       *) echo "无效的输入!" ;;
-    esac  
+    esac
+    recheck_ip_address
     break_end
   done 
 
@@ -2670,6 +2689,8 @@ warp_tools_run() {
 board_tools_menu() {
 echo -e "
 ▶ 面板管理
+${yellow}IPv4: ${white}$WAN4${plain}
+${yellow}IPv6: ${white}$WAN6${plain}
 ${plain}-------------------------------
 ${green}21.${plain} ${blue}3X-UI(@mhsanaei)                   ${green}31.${plain} Hiddify
 ${green}22.${plain} ${yellow}X-UI(@alireza0)                    ${green}32.${plain} V2RayA
@@ -2799,6 +2820,8 @@ fi
 docker_menu() {
 echo -e "
 ▶ 容器管理
+${yellow}IPv4: ${white}$WAN4${plain}
+${yellow}IPv6: ${white}$WAN6${plain}
 -------------------------------
 ${green} 1.${plain} Docker环境安装
 ${green} 2.${plain} Docker环境卸载
@@ -3377,6 +3400,9 @@ ${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}
 ${blue} │ │ ││ ││ ╰─╮${plain}  
 ${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}
 ${white}=====================================${plain}
+${yellow}IPv4: ${white}$WAN4${plain}
+${yellow}IPv6: ${white}$WAN6${plain}
+${white}-------------------------------------${plain}
 ${green} 1${white}.${yellow}系统信息${red}☄${plain}       ${green}11${white}.${plain}容器管理${blue}❂${plain}
 ${green} 2${white}.${plain}系统更新${blue}☣${plain}       ${green}12${white}.${yellow}站点管理${yellow}❈${plain}
 ${green} 3${blue}.${plain}系统清理${blue}☢${plain}       ${green}13${white}.${plain}站点部署${blue}ஐ${plain}
@@ -3384,8 +3410,6 @@ ${white}-------------------------------------${plain}
 ${green}21${white}.${plain}常用工具${blue}❃${plain}       ${green}31${white}.${plain}面板工具${blue}◈${plain}
 ${yellow}22${white}.${yellow}系统工具${yellow}❁${plain}       ${green}32${white}.${plain}其他工具${blue}☃${plain}
 ${cyan}23${white}.${cyan}节点工具${yellow}✈ ${red}warp${plain}
-${yellow}IPv4: ${white}$WAN4${plain}
-${yellow}IPv6: ${white}$WAN6${plain}
 ${white}-------------------------------------${plain}
 ${green}99.${plain}重启系统${blue}❂${plain}       ${green}00.${plain}脚本更新${blue}♨${plain}
 ${white}=====================================${plain}
