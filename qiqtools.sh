@@ -3436,7 +3436,7 @@ main_menu() {
 main_loop(){
 while true; do 
   clear && cd ~ && show_header_qiq && main_menu 
-  reading "请输入你的选择: " choice
+  reading "\n请输入你的选择: " choice
 
   case $choice in
      1) clear && get_sysinfo && show_info ;;
