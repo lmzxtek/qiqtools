@@ -240,15 +240,10 @@ check_system_ip() {
   IP6_INFO="$WARPSTATUS6 $COUNTRY6 $CITY6 $ASNORG6"
 }
 
+# Output IP details to shell
 WANIP_show(){
-  txtn $(txty " IPv4: ")$(txtr $WAN4)"\t"$(txtn $COUNTRY4 "-" $WARPSTATUS4)
-  txtn $(txty " IPv6: ")$(txtb $WAN6)"\t"$(txtn $COUNTRY6 "-" $WARPSTATUS6)
-  # txtkvy " IPv4: " "$WAN4" "\t$COUNTRY4 - $ASNORG4"
-  # txtkvy " IPv6: " "$WAN6" "\t$COUNTRY4 - $ASNORG6"
-  # txtn $(txty " IPv4: ") $(txty "${pink}$WAN4${plain}  ($COUNTRY4 $WARPSTATUS4)")
-  # txtn $(txtr " IPv6: ") $(txty "${pink}$WAN6${plain}  ($COUNTRY6 $WARPSTATUS6)")
-  # info "\t IPv4: $WAN4 $WARPSTATUS4 $COUNTRY4  $ASNORG4 "
-  # info "\t IPv6: $WAN6 $WARPSTATUS6 $COUNTRY6  $ASNORG6 "
+  txtn $(txty " IPv4: ")$(txtr $WAN4)"\t"$(txtn $COUNTRY4 $WARPSTATUS4)
+  txtn $(txty " IPv6: ")$(txtb $WAN6)"\t"$(txtn $COUNTRY6 $WARPSTATUS6)
 }
 
 check_root() { [[ $EUID -ne 0 ]] && echo -e "${red}错误：${plain} 必须使用root用户运行此脚本！\n" && exit 1; }
