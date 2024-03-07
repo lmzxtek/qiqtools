@@ -160,29 +160,68 @@ install_dependency() { clear && install curl wget socat unzip tar; }
 
 cur_dir=$(pwd)
 
-IP4_INFO="${red}Not Supported${plain}"
-IP6_INFO="${red}Not Supported${plain}"
+check_IPV4(){
+	# echo -e "[IPv4]"
+	local check4=`ping 1.1.1.1 -c 1 2>&1`;
+	if [[ "$check4" != *"received"* ]] && [[ "$check4" != *"transmitted"* ]];then
+    IP4_INFO="${red}Not Supported${plain}"
+	else
+		# local_ipv4=$(curl -4 -s --max-time 10 api64.ipify.org)
+    local res_ipv4=$(curl -4 -sS https://www.cloudflare.com/cdn-cgi/trace)
+		local local_ipv4=$( echo -e "$res_ipv4" | grep "ip="   | awk -F= '{print $2}')
+		local iso2_code4=$( echo -e "$res_ipv4" | grep "loc="  | awk -F= '{print $2}')
+		local warp_ipv4=$( echo -e "$res_ipv4"  | grep "warp=" | awk -F= '{print $2}')
+		local local_isp4=$(curl -s -4 --max-time 10  --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36" "https://api.ip.sb/geoip/${local_ipv4}" | grep organization | cut -f4 -d '"')
+    ["warp_ipv4" == *"on"*] && WARPSTATUS4="(warp)"
+		# local iso2_code4=$(curl -4 -sS https://www.cloudflare.com/cdn-cgi/trace | grep "loc=" | awk -F= '{print $2}')
+		# local warp_code4=$(curl -4 -sS https://www.cloudflare.com/cdn-cgi/trace | grep "warp=" | awk -F= '{print $2}')
+    
+    WAN4=$local_ipv4
+    COUNTRY4=$iso2_code4
+    ASNORG4=$local_isp4
+    IP4_INFO="$WARPSTATUS4 $iso2_code4 $local_isp4"
+	fi
+}
+
+check_IPV6(){
+	# echo -e "[IPv6]"
+	local check6=`ping6 240c::6666 -c 1 2>&1`;
+	if [[ "$check6" != *"received"* ]] && [[ "$check4" != *"transmitted"* ]];then
+    IP6_INFO="${red}Not Supported${plain}"
+	else
+		# local_ipv6=$(curl -6 -s --max-time 20 api64.ipify.org)
+    local res_ipv6=$(curl -6 -sS https://www.cloudflare.com/cdn-cgi/trace)
+		local local_ipv6=$( echo -e "$res_ipv6" | grep "ip="   | awk -F= '{print $2}')
+		local iso2_code6=$( echo -e "$res_ipv6" | grep "loc="  | awk -F= '{print $2}')
+		local warp_ipv6=$( echo -e "$res_ipv6"  | grep "warp=" | awk -F= '{print $2}')
+		local local_isp6=$(curl -s -6 --max-time 10 --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36" "https://api.ip.sb/geoip/${local_ipv6}" | grep organization | cut -f4 -d '"')
+    
+    ["warp_ipv6" == *"on"*] && WARPSTATUS6="(warp)"
+    WAN6=$local_ipv6
+    COUNTRY6=$iso2_code6
+    ASNORG6=$local_isp6
+    IP6_INFO="$WARPSTATUS6 $iso2_code6 $local_isp6"
+	fi
+}
 
 # 获取当前服务器的IP地址
-ip_address() {
-  # if [ -z "$ipv4_address" ] && [ -z "$ipv6_address" ]; then
+check_IP_address() {
+  if [[ $(curl -sS https://www.cloudflare.com/ -I | grep "text/plain") != "" ]]; then 
+    echo "Your IP is BLOCKED!"
+    return 1
+  else
+    check_IPV4
+    check_IPv6
+  fi
+  # if [ -z "$WAN4" ] && [ -z "$WAN6" ]; then
   #   # echo "s1 和 s2 均不为空"
-  #   # ipv4_address=$(curl -s ipv4.ip.sb)
-  #   # ipv6_address=$(curl -s --max-time 1 ipv6.ip.sb)
+  #   # WAN4=$(curl -s ipv4.ip.sb)
+  #   # WAN6=$(curl -s --max-time 1 ipv6.ip.sb)
   #   check_system_ip
   # fi
-
-
-
-  [ -z "$ipv4_address" ] && [ -z "$ipv6_address" ] && check_system_ip
+  # [ -z "$WAN4" ] && [ -z "$WAN6" ] && check_system_ip
 }
 
-ip_show(){
-  txtkvy "IPv4:" "$WAN4" "\t($COUNTRY4)"
-  txtkvy "IPv6:" "$WAN6" "\t($COUNTRY4)"
-  # info "\t IPv4: $WAN4 $WARPSTATUS4 $COUNTRY4  $ASNORG4 "
-  # info "\t IPv6: $WAN6 $WARPSTATUS6 $COUNTRY6  $ASNORG6 "
-}
 
 
 # 检测 IPv4 IPv6 信息
@@ -192,23 +231,28 @@ check_system_ip() {
   COUNTRY4=$(expr "$IP4" : '.*country\":[ ]*\"\([^"]*\).*') &&
   CITY4=$(expr "$IP4" : '.*city\":[ ]*\"\([^"]*\).*') &&
   ASNORG4=$(expr "$IP4" : '.*isp\":[ ]*\"\([^"]*\).*') &&
-  ipv4_address=$WAN4 &&
+  WAN4=$WAN4 &&
   [[ "$L" = C && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4") && 
-  IP4_INFO="($WARPSTATUS4 $COUNTRY4 $CITY4 $ASNORG4)"
+  IP4_INFO="$WARPSTATUS4 $COUNTRY4 $CITY4 $ASNORG4"
 
   IP6=$(wget -6 -qO- --no-check-certificate --user-agent=Mozilla --tries=2 --timeout=1 https://api.ip.sb/geoip) &&
   WAN6=$(expr "$IP6" : '.*ip\":[ ]*\"\([^"]*\).*') &&
   COUNTRY6=$(expr "$IP6" : '.*country\":[ ]*\"\([^"]*\).*') &&
   CITY6=$(expr "$IP6" : '.*city\":[ ]*\"\([^"]*\).*') &&
   ASNORG6=$(expr "$IP6" : '.*isp\":[ ]*\"\([^"]*\).*') &&
-  ipv6_address=$WAN6 &&
+  WAN6=$WAN6 &&
   [[ "$L" = C && -n "$COUNTRY6" ]] && COUNTRY6=$(translate "$COUNTRY6")&& 
-  IP6_INFO="($WARPSTATUS6 $COUNTRY6 $CITY6 $ASNORG6)"
+  IP6_INFO="$WARPSTATUS6 $COUNTRY6 $CITY6 $ASNORG6"
 }
 
-check_root() {
-    [[ $EUID -ne 0 ]] && echo -e "${red}错误：${plain} 必须使用root用户运行此脚本！\n" && exit 1
+WANIP_show(){
+  txtkvy " IPv4: " "$WAN4" "\t($COUNTRY4)"
+  txtkvy " IPv6: " "$WAN6" "\t($COUNTRY4)"
+  # info "\t IPv4: $WAN4 $WARPSTATUS4 $COUNTRY4  $ASNORG4 "
+  # info "\t IPv6: $WAN6 $WARPSTATUS6 $COUNTRY6  $ASNORG6 "
 }
+
+check_root() { [[ $EUID -ne 0 ]] && echo -e "${red}错误：${plain} 必须使用root用户运行此脚本！\n" && exit 1; }
 
 check_os() {
     # check os
@@ -294,7 +338,7 @@ check_virt(){
 get_sysinfo(){
     # 函数: 获取IPv4和IPv6地址
     
-    ip_address
+    check_IP_address
 
     check_virt
 
@@ -399,14 +443,14 @@ show_info() {
   txtkvn " 虚拟内存: " "$swap_info"
   txtkvy " 硬盘占用: " "$disk_info"
   txtkvn "---------------------------------"
-  txtkvy " 系统时间: " "$current_time"
-  txtkvy " 运行时长: " "$runtime"
+  txtkvn " 系统时间: " "$current_time"
+  txtkvn " 运行时长: " "$runtime"
   txtkvn "---------------------------------"
   txtkvy " IPv4地址: " "$WAN4" "\t($IP4_INFO)"
   txtkvy " IPv6地址: " "$WAN6" "\t($IP6_INFO)"
-  ip_show
+  WANIP_show
   txtkvn "---------------------------------"
-  txtkvy "网络拥堵算法: " "${yellow}$congestion_algorithm" "${plain}$queue_algorithm"
+  txtkvn "网络拥堵算法: " "${yellow}$congestion_algorithm" "${plain}$queue_algorithm"
   txtkvn "$txt_data_transfer"
   txtkvn "================================="
 
@@ -431,8 +475,8 @@ show_info() {
 #  系统时间: $current_time
 #  运行时长: $runtime
 # ---------------------------------
-#  IPv4地址: ${yellow}$ipv4_address${plain}  $WARPSTATUS4 $COUNTRY4 $CITY4 $ASNORG4
-#  IPv6地址: ${blue}$ipv6_address${plain}  $WARPSTATUS6 $COUNTRY6 $CITY6 $ASNORG6
+#  IPv4地址: ${yellow}$WAN4${plain}  $WARPSTATUS4 $COUNTRY4 $CITY4 $ASNORG4
+#  IPv6地址: ${blue}$WAN6${plain}  $WARPSTATUS6 $COUNTRY6 $CITY6 $ASNORG6
 # ---------------------------------
 # 网络拥堵算法: ${yellow}$congestion_algorithm ${plain}$queue_algorithm
 # $txt_data_transfer
@@ -2350,8 +2394,8 @@ website_tools_run(){
       if docker inspect rocketchat &>/dev/null; then
               clear
               echo "rocket.chat已安装，访问地址: "
-              ip_address
-              echo "http:$ipv4_address:3897"
+              check_IP_address
+              echo "http:$WAN4:3897"
               echo ""
 
               echo "应用操作"
@@ -2372,11 +2416,11 @@ website_tools_run(){
                       docker run --name rocketchat --restart=always -p 3897:3000 --link db --env ROOT_URL=http://localhost --env MONGO_OPLOG_URL=mongodb://db:27017/rs5 -d rocket.chat
 
                       clear
-                      ip_address
+                      check_IP_address
                       echo "rocket.chat已经安装完成"
                       echo "------------------------"
                       echo "多等一会，您可以使用以下地址访问rocket.chat:"
-                      echo "http:$ipv4_address:3897"
+                      echo "http:$WAN4:3897"
                       echo ""
                       ;;
                   2)
@@ -2420,11 +2464,11 @@ website_tools_run(){
 
               clear
 
-              ip_address
+              check_IP_address
               echo "rocket.chat已经安装完成"
               echo "------------------------"
               echo "多等一会，您可以使用以下地址访问rocket.chat:"
-              echo "http:$ipv4_address:3897"
+              echo "http:$WAN4:3897"
               echo ""
 
                   ;;
@@ -2675,9 +2719,9 @@ docker_app() {
 if docker inspect "$docker_name" &>/dev/null; then
     clear
     echo "$docker_name 已安装，访问地址: "
-    ip_address
-    echo "http://$ipv4_address:$docker_port"
-    echo "http://[$ipv6_address]:$docker_port"
+    check_IP_address
+    echo "http://$WAN4:$docker_port"
+    echo "http://[$WAN6]:$docker_port"
     echo ""
     echo "应用操作"
     echo "------------------------"
@@ -2698,9 +2742,9 @@ if docker inspect "$docker_name" &>/dev/null; then
             echo "$docker_name 已经安装完成"
             echo "------------------------"
             # 获取外部 IP 地址
-            ip_address
+            check_IP_address
             echo "您可以使用以下地址访问:"
-            echo "http:$ipv4_address:$docker_port"
+            echo "http:$WAN4:$docker_port"
             $docker_use
             $docker_passwd
             ;;
@@ -2737,10 +2781,10 @@ else
             echo "$docker_name 已经安装完成"
             echo "------------------------"
             # 获取外部 IP 地址
-            ip_address
+            check_IP_address
             echo "您可以使用以下地址访问:"
-            echo "http://$ipv4_address:$docker_port"
-            echo "http://[$ipv6_address]:$docker_port"
+            echo "http://$WAN4:$docker_port"
+            echo "http://[$WAN6]:$docker_port"
             echo "------------------------"
             $docker_use
             $docker_passwd
@@ -2864,17 +2908,17 @@ check_port() {
 }
 
 add_yuming() {
-  # ip_address
-  echo -e "先将域名解析到本机IP: ${red}$ipv4_address  $ipv6_address${plain}"
+  # check_IP_address
+  echo -e "先将域名解析到本机IP: ${red}$WAN4  $WAN6${plain}"
   read -p "请输入你解析的域名: " yuming
 }
 
 # 反代域名
 reverse_proxy() {
-      # ip_address
+      # check_IP_address
       wget -O /home/web/conf.d/$yuming.conf https://raw.githubusercontent.com/kejilion/nginx/main/reverse-proxy.conf
       sed -i "s/yuming.com/$yuming/g" /home/web/conf.d/$yuming.conf
-      sed -i "s/0.0.0.0/$ipv4_address/g" /home/web/conf.d/$yuming.conf
+      sed -i "s/0.0.0.0/$WAN4/g" /home/web/conf.d/$yuming.conf
       sed -i "s/0000/$duankou/g" /home/web/conf.d/$yuming.conf
       docker restart nginx
 }
@@ -3169,8 +3213,8 @@ caddy_web_manager(){
 LDNMP_menu() {
 echo -e "
 ▼ Web站点管理✈️
-${yellow}IPv4: ${white}$ipv4_address${plain}
-${yellow}IPv6: ${white}$ipv6_address${plain}
+${yellow}IPv4: ${white}$WAN4${plain}
+${yellow}IPv6: ${white}$WAN6${plain}
 ${plain}-------------------------------
 ${green} 1.${plain}安装LDNMP环境(Todo...)   ${green} 3.${plain}更新LDNMP环境(Todo...)
 ${green} 2.${plain}卸载LDNMP环境(Todo...)   ${green} 4.${plain}优化LDNMP环境(Todo...)
@@ -3199,7 +3243,7 @@ LDNMP_run(){
     cd /etc/caddy
   fi
 
-  ip_address
+  check_IP_address
 
   while true; do
     clear && LDNMP_menu
@@ -3248,7 +3292,7 @@ LDNMP_run(){
      31) caddy_web_list ;;
      32) caddy_web_manager ;;
      33)
-        # ip_address
+        # check_IP_address
         add_yuming
         read -p "请输入跳转域名: " reverseproxy
 
@@ -3263,7 +3307,7 @@ LDNMP_run(){
         ;;
 
      34)
-        # ip_address
+        # check_IP_address
         add_yuming
         read -p "请输入你的反代IP: " reverseproxy
         read -p "请输入你的反代端口: " port 
@@ -3279,7 +3323,7 @@ LDNMP_run(){
         ;;
 
      35)
-        # ip_address
+        # check_IP_address
         add_yuming
         read -p "请输入web概目录: " rootpath 
 
