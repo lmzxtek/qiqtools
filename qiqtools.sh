@@ -2556,17 +2556,31 @@ website_tools_run(){
 }
 
 other_tools_menu() {
-echo -e "
-▶ 其他工具
--------------------------------
-${green} 1.${plain} Docker
-${green} 2.${plain} Python
-${green} 3.${plain} Conda
-${green} 4.${plain} RustDesk Server
--------------------------------
-${green} 0.${plain} 返回主菜单
--------------------------------
-"
+  
+txtn $(txbr "▼ 其他工具")$(txbg " ❦ ")
+# txtn "-------------------------------------"
+# WANIP_show
+txtn "====================================="
+txtn $(txtn " 1.Docker")$(txtg "✔")"          "$(txtn "")$(txtg "")
+txtn $(txtn " 2.Python")$(txtg "✔")"          "$(txtn "")$(txtg "")
+txtn $(txtn " 3.Conda")$(txtg "✔")"           "$(txtn "")$(txtg "")
+txtn $(txtn " 4.RustDesk Server")$(txtg "✔")" "$(txtn "")$(txtg "")
+# txtn $(txtn " 5.Docker")$(txtg "✔")"        "$(txtn "15.Test")$(txtb "✘")
+txtn "====================================="
+txtn $(txtn " 0.返回主菜单")$(txtr "✖")
+txtn " "
+
+# echo -e "
+# ▶ 其他工具
+# -------------------------------
+# ${green} 1.${plain} Docker
+# ${green} 2.${plain} Python
+# ${green} 3.${plain} Conda
+# ${green} 4.${plain} RustDesk Server
+# -------------------------------
+# ${green} 0.${plain} 返回主菜单
+# -------------------------------
+# "
 }
 
 other_tools_run() {
@@ -2595,32 +2609,60 @@ other_tools_run() {
 }
 
 warp_tools_menu() {
-echo -e "
-▽ 节点管理 ${blue}✈✈✈${plain}
-${yellow}IPv4: ${white}$WAN4${plain}
-${yellow}IPv6: ${white}$WAN6${plain}
-${plain}==============================================================
-${yellow} 1.${plain} ${yellow}Warp(@fscarmen)                  ${green}11.${plain} XRay(@233boy)
-${green} 2.${plain} Warp(@hamid-gh98)                ${green}12.${plain} V2Ray(@233boy)
-${green} 3.${plain} Warp(@Misaka-blog)               ${green}13.${plain} V2Ray-Agent(@mack-a)
-${green} 4.${plain} ArgoX(@fscarmen)                 ${green}14.${plain} Hysteria2(@Misaka)
-${green} 5.${plain} ${cyan}SingBox四合一(@ygkkk)            ${green}15.${plain} TUIC5(@Misaka)
-${yellow} 6.${plain} ${yellow}SingBox全家桶(@fscarmen)         ${green}16.${plain} mianyang()
-${green} 7.${plain} ${plain}SingBox-Argox(@fscarmen)
-${plain}--------------------------------------------------------------
-${green}51.${plain} ${yellow}XRayR(@XrayR-project)            ${green}61.${plain} Set Github(For IPv6 VPS)
-${green}52.${plain} XRayR(@wyx2685)                  ${green}62.${plain} Cloudflare Select IP
-${green}53.${plain} XRayR-Docker(@XrayR-project)     ${green}63.${plain} Cloudflare Select CDN
-${green}54.${plain} ${blue}Bodhi(Hysteria2 to V2board)      ${green}64.${plain} YACD(Yet another Clash Dashboard)
-${yellow}55.${plain} ${yellow}V2bX(Vless&Trojan to V2board)    ${green}65.${plain} ClashDashBoard
-${plain}--------------------------------------------------------------
-${green}91.${plain} Show IP(ip.sb)                   ${green}95.${plain} Check-OpenAI(检测OpenAI解锁)
-${green}92.${plain} Show IPv4(ip addr | grep...)     ${green}96.${plain} Check-Region(检测区域媒体解锁)
-${green}93.${plain} Show IPv6(ip addr | grep...)     ${green}97.${plain} Cloudflare(IPv4)
-${green}94.${plain} Set GitHUB(IPv6)                 ${green}98.${plain} Cloudflare(IPv6)    
-${plain}==============================================================
-${green} 0.${plain} 返回主菜单
-"
+
+txtn $(txbr "▼ 节点管理")$(txbb " ✈✈✈ ")
+txtn "-------------------------------------"
+WANIP_show
+txtn "====================================="
+txtn $(txty "91.Show IP(ip.sb)")$(txtg "✔")"          "$(txty "95.Check-OpenAI(检测OpenAI解锁)")$(txtg "✔")
+txtn $(txtn "92.Show IPv4(local)")$(txtg "✔")"        "$(txtb "96.Check-Region(检测区域媒体解锁)")$(txtg "✔")
+txtn $(txtn "93.Show IPv6(local)")$(txtg "✔")"        "$(txtn "97.Cloudflare(IPv4)")$(txtg "✔")
+txtn $(txtn "94.Set GitHUB(IPv6)")$(txtg "✔")"        "$(txtn "98.Cloudflare(IPv6)")$(txtg "✔")
+txtn "-------------------------------------"
+txtn $(txty " 1.Warp(@fscarmen)")$(txtg "✔")"         "$(txtn "11.XRay(@233boy)")$(txtg "✔")
+txtn $(txtn " 2.Warp(@hamid-gh98)")$(txtg "✔")"       "$(txtn "12.V2Ray(@233boy)")$(txtg "✔")
+txtn $(txtn " 3.Warp(@Misaka-blog)")$(txtg "✔")"      "$(txtn "13.V2Ray-Agent(@mack-a)")$(txtg "✔")
+txtn $(txtn " 4.ArgoX")$(txtg "✔")"                   "$(txtn "14.Hysteria2(@Misaka)")$(txtg "✔")
+txtn $(txtn " 5.SingBox四合一")$(txtg "✔")"            "$(txtn "15.TUIC5(@Misaka)")$(txtg "✔")
+txtn $(txty " 6.SingBox全家桶(@fscarmen)")$(txtg "✔")" "$(txtn "16.mianyang()")$(txtg "✔")
+txtn $(txtn " 7.SingBox-Argox(@fscarmen)")$(txtg "✔")" "$(txtn "")$(txtb "")
+# txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
+txtn "-------------------------------------"
+txtn $(txty "51.XRayR(@XrayR-project)")$(txtg "✔")"         "$(txtn "61.Set Github(For IPv6 VPS)")$(txtg "✔")
+txtn $(txtn "52.XRayR(@wyx2685)")$(txtg "✔")"               "$(txtn "62.Cloudflare Select IP")$(txtg "✔")
+txtn $(txtn "53.XRayR-Docker(@XrayR-project)")$(txtg "✔")"  "$(txtn "63.Cloudflare Select CDN")$(txtg "✔")
+txtn $(txtn "54.Bodhi(Hysteria2 to V2board)")$(txtg "✔")"   "$(txtn "64.YACD(Yet another Clash Dashboard)")$(txtg "✔")
+txtn $(txtn "55.V2bX(Vless&Trojan to V2board)")$(txtg "✔")" "$(txtn "65.ClashDashBoard")$(txtg "✔")
+txtn "====================================="
+txtn $(txtn " 0.返回主菜单")$(txtr "✖")
+txtn " "
+
+# echo -e "
+# ▽ 节点管理 ${blue}✈✈✈${plain}
+# ${yellow}IPv4: ${white}$WAN4${plain}
+# ${yellow}IPv6: ${white}$WAN6${plain}
+# ${plain}==============================================================
+# ${yellow} 1.${plain} ${yellow}Warp(@fscarmen)                  ${green}11.${plain} XRay(@233boy)
+# ${green} 2.${plain} Warp(@hamid-gh98)                ${green}12.${plain} V2Ray(@233boy)
+# ${green} 3.${plain} Warp(@Misaka-blog)               ${green}13.${plain} V2Ray-Agent(@mack-a)
+# ${green} 4.${plain} ArgoX(@fscarmen)                 ${green}14.${plain} Hysteria2(@Misaka)
+# ${green} 5.${plain} ${cyan}SingBox四合一(@ygkkk)            ${green}15.${plain} TUIC5(@Misaka)
+# ${yellow} 6.${plain} ${yellow}SingBox全家桶(@fscarmen)         ${green}16.${plain} mianyang()
+# ${green} 7.${plain} ${plain}SingBox-Argox(@fscarmen)
+# ${plain}--------------------------------------------------------------
+# ${green}51.${plain} ${yellow}XRayR(@XrayR-project)            ${green}61.${plain} Set Github(For IPv6 VPS)
+# ${green}52.${plain} XRayR(@wyx2685)                  ${green}62.${plain} Cloudflare Select IP
+# ${green}53.${plain} XRayR-Docker(@XrayR-project)     ${green}63.${plain} Cloudflare Select CDN
+# ${green}54.${plain} ${blue}Bodhi(Hysteria2 to V2board)      ${green}64.${plain} YACD(Yet another Clash Dashboard)
+# ${yellow}55.${plain} ${yellow}V2bX(Vless&Trojan to V2board)    ${green}65.${plain} ClashDashBoard
+# ${plain}--------------------------------------------------------------
+# ${green}91.${plain} Show IP(ip.sb)                   ${green}95.${plain} Check-OpenAI(检测OpenAI解锁)
+# ${green}92.${plain} Show IPv4(ip addr | grep...)     ${green}96.${plain} Check-Region(检测区域媒体解锁)
+# ${green}93.${plain} Show IPv6(ip addr | grep...)     ${green}97.${plain} Cloudflare(IPv4)
+# ${green}94.${plain} Set GitHUB(IPv6)                 ${green}98.${plain} Cloudflare(IPv6)    
+# ${plain}==============================================================
+# ${green} 0.${plain} 返回主菜单
+# "
 }
 
 warp_tools_run() {
@@ -2699,28 +2741,10 @@ txtn $(txtn "25.S-UI(@alireza0)")$(txtg "✔")"        "$(txtn "")$(txtg "")
 txtn "-------------------------------------"
 txtn $(txty "41.XBoard")$(txtg "✔")"                 "$(txtn "44.LotusBoard")$(txtg "✔")
 txtn $(txtn "42.V2Board")$(txtg "✔")"                "$(txtn "45.SSPanel")$(txtg "✔")
-txtn $(txtn "43.V2Board(wyx2685)")$(txtg "✔")"       "$(txtn "46.Proxypanel")$(txtb "✔")
+txtn $(txtn "43.V2Board(wyx2685)")$(txtg "✔")"       "$(txtn "46.Proxypanel")$(txtg "✔")
 txtn "====================================="
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
 txtn " "
-
-
-# echo -e "
-# ▶ 面板管理
-# ${plain}-------------------------------
-# ${green}21.${plain} ${blue}3X-UI(@mhsanaei)                   ${green}31.${plain} Hiddify
-# ${green}22.${plain} ${yellow}X-UI(@alireza0)                    ${green}32.${plain} V2RayA
-# ${green}23.${plain} X-UI(@FranzKafkaYu)                ${green}33.${plain} Daed
-# ${green}24.${plain} X-UI(@rwkgyg)                      ${green}34.${plain} Daed-Docker
-# ${green}25.${plain} S-UI(@alireza0)
-# ${plain}-------------------------------
-# ${green}41.${plain} XBoard                             ${green}44.${plain} LotusBoard
-# ${green}42.${plain} V2Board                            ${green}45.${plain} SSPanel
-# ${green}43.${plain} V2Board(wyx2685)                   ${green}46.${plain} Proxypanel
-# ${plain}-------------------------------
-# ${green} 0.${plain} 返回主菜单
-# ${plain}-------------------------------
-# "
 }
 
 board_tools_run() {
