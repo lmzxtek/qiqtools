@@ -3467,14 +3467,14 @@ txtn $(txty " 1.系统信息")$(txty "☄")"       "$(txtn "11.容器管理")$(t
 txtn $(txtn " 2.系统更新")$(txtb "☣")"       "$(txty "12.站点管理")$(txtb "◎")
 txtn $(txtn " 3.系统清理")$(txtb "☒")"       "$(txtb "13.站点部署")$(txtb "❈")
 txtn "-------------------------------------"
-txtn $(txtb "21.常用工具")$(txtn "❃")"       "$(txtn "31.面板工具")$(txtb "⊕")
+txtn $(txtn "21.常用工具")$(txtn "❃")"       "$(txtn "31.面板工具")$(txtb "⊕")
 txtn $(txty "22.系统工具")$(txtb "❁")"       "$(txtn "32.其他工具")$(txtb "の")
 txtn $(txtr "23.节点工具")$(txtr "✈")"       "$(txtn "")$(txtb "")
 txtn "-------------------------------------"
-txtn $(txtn "99.重启系统")$(txtb "☢")"       "$(txtb "00.脚本更新")$(txtb "☋")
+txtn $(txtr "99")$(txtb ".重启系统☢")"       "$(txtb "00.脚本更新")$(txtb "☋")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "====================================="
-txtn $(txtn " 0.退出脚本")$(txtb "✖")"       "$(txtb "♧♧ ")$(txtc "QiQTools")$(txtb "$script_version")
+txtn $(txtn " 0.退出脚本")$(txtr "✖")"       "$(txtb "♧♧ ")$(txtc "QiQTools") $(txtb "$script_version")
 txtn " "
 }
 
