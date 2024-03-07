@@ -1827,6 +1827,26 @@ cron_manage(){
 
 # 系统常用工具
 system_tools_menu() {
+  
+txtn $(txbr "▼ 系统工具")$(txbg " ❦ ")
+# txtn "-------------------------------------"
+# WANIP_show
+txtn "====================================="
+txtn $(txtn " 1.修改ROOT密码")$(txtg "✔")"           "$(txtn "11.修改虚拟内存大小")$(txty "✔")
+txtn $(txtn " 2.开启ROOT密码登录模式")$(txtg "✔")"    "$(txtn "12.修改主机名")$(txty "✔")
+txtn $(txtn " 3.开放所有端口")$(txtg "✔")"           "$(txtn "13.切换系统更新源")$(txty "✔")
+txtn $(txtn " 4.修改SSH连接端口")$(txtg "✔")"        "$(txtn "14.系统时区调整")$(txty "✔")
+txtn $(txtn " 5.优化DNS地址")$(txtg "✔")"           "$(txtn "15.开启BBR3加速")$(txty "✔")
+txtn $(txtn " 6.一键重装系统")$(txtg "✔")"           "$(txtn "16.防火墙高级管理器")$(txty "✔")
+txtn $(txtn " 7.禁用ROOT账户创建新账户")$(txtg "✔")" "$(txtn "17.用户管理")$(txty "✔")
+txtn $(txtn " 8.切换优先ipv4/ipv6")$(txtg "✔")"     "$(txtn "18.用户/密码生成器")$(txty "✔")
+txtn $(txtn " 9.查看端口占用状态")$(txtg "✔")"       "$(txtn "19.定时任务管理")$(txty "✔")
+# txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
+txtn "====================================="
+txtn $(txtr "99")$(txtb ".重启服务器☢")
+txtn $(txtn " 0.返回主菜单")$(txtr "✖")
+txtn " "
+
 echo -e "
 ▶ 系统工具
 -------------------------------
@@ -1854,9 +1874,9 @@ system_tools_run() {
     reading "请输入你的选择: " sub_choice
 
     case $sub_choice in
-      1) clear && reading "请输入你的快捷按键: " kuaijiejian && echo "alias $kuaijiejian='~/kejilion.sh'" >> ~/.bashrc && source ~/.bashrc && echo "快捷键已设置" ;;
-      2) clear && echo "设置你的ROOT密码" && passwd ;;
-      3) 
+      # 1) clear && reading "请输入你的快捷按键: " kuaijiejian && echo "alias $kuaijiejian='~/kejilion.sh'" >> ~/.bashrc && source ~/.bashrc && echo "快捷键已设置" ;;
+      1) clear && echo "设置你的ROOT密码" && passwd ;;
+      2) 
         clear && echo "设置你的ROOT密码" && passwd
 
         sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin yes/g' /etc/ssh/sshd_config;
@@ -1872,10 +1892,10 @@ system_tools_run() {
         esac
         ;;
       # 4) clear && install_python ;;
-      4) clear && iptables_open && remove iptables-persistent ufw firewalld iptables-services > /dev/null 2>&1 && echo "端口已全部开放" ;;
-      5) clear && change_ssh_port ;;
-      6) clear && change_dns ;;
-      7) 
+      3) clear && iptables_open && remove iptables-persistent ufw firewalld iptables-services > /dev/null 2>&1 && echo "端口已全部开放" ;;
+      4) clear && change_ssh_port ;;
+      5) clear && change_dns ;;
+      6) 
         clear && echo -e "请备份数据，将为你重装系统，预计花费15分钟。\n${white}感谢MollyLau和MoeClub的脚本支持！${plain}"
         reading "确定继续吗？(Y/N): " choice
         case "$choice" in
@@ -1884,9 +1904,10 @@ system_tools_run() {
              *) echo "无效的选择，请输入 Y 或 N。" ;;
         esac
         ;;
-      8) clear && banroot_with_new_user ;;
-      9) clear && alter_ipv4_ipv6 ;;
-     10) clear && ss -tulnape ;;
+      7) clear && banroot_with_new_user ;;
+      8) clear && alter_ipv4_ipv6 ;;
+      9) clear && ss -tulnape ;;
+
      11) clear && set_swap ;;
      12) clear && change_sys_name  ;;
      13) clear && alter_sourcelist ;;
@@ -1896,7 +1917,6 @@ system_tools_run() {
      17) clear && user_manage ;;
      18) clear && pss_generate ;;
      19) clear && cron_manage ;;
-    #  20) clear && echo "Todo: ..." ;;
 
      99) clear && echo "正在重启服务器，即将断开SSH连接" && reboot ;;
       0) qiqtools ;;
@@ -2569,18 +2589,6 @@ txtn $(txtn " 4.RustDesk Server")$(txtg "✔")" "$(txtn "")$(txtg "")
 txtn "====================================="
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
 txtn " "
-
-# echo -e "
-# ▶ 其他工具
-# -------------------------------
-# ${green} 1.${plain} Docker
-# ${green} 2.${plain} Python
-# ${green} 3.${plain} Conda
-# ${green} 4.${plain} RustDesk Server
-# -------------------------------
-# ${green} 0.${plain} 返回主菜单
-# -------------------------------
-# "
 }
 
 other_tools_run() {
@@ -2636,33 +2644,6 @@ txtn $(txtn "55.V2bX(Vless&Trojan to V2board)")$(txtg "✔")" "$(txtn "65.ClashD
 txtn "====================================="
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
 txtn " "
-
-# echo -e "
-# ▽ 节点管理 ${blue}✈✈✈${plain}
-# ${yellow}IPv4: ${white}$WAN4${plain}
-# ${yellow}IPv6: ${white}$WAN6${plain}
-# ${plain}==============================================================
-# ${yellow} 1.${plain} ${yellow}Warp(@fscarmen)                  ${green}11.${plain} XRay(@233boy)
-# ${green} 2.${plain} Warp(@hamid-gh98)                ${green}12.${plain} V2Ray(@233boy)
-# ${green} 3.${plain} Warp(@Misaka-blog)               ${green}13.${plain} V2Ray-Agent(@mack-a)
-# ${green} 4.${plain} ArgoX(@fscarmen)                 ${green}14.${plain} Hysteria2(@Misaka)
-# ${green} 5.${plain} ${cyan}SingBox四合一(@ygkkk)            ${green}15.${plain} TUIC5(@Misaka)
-# ${yellow} 6.${plain} ${yellow}SingBox全家桶(@fscarmen)         ${green}16.${plain} mianyang()
-# ${green} 7.${plain} ${plain}SingBox-Argox(@fscarmen)
-# ${plain}--------------------------------------------------------------
-# ${green}51.${plain} ${yellow}XRayR(@XrayR-project)            ${green}61.${plain} Set Github(For IPv6 VPS)
-# ${green}52.${plain} XRayR(@wyx2685)                  ${green}62.${plain} Cloudflare Select IP
-# ${green}53.${plain} XRayR-Docker(@XrayR-project)     ${green}63.${plain} Cloudflare Select CDN
-# ${green}54.${plain} ${blue}Bodhi(Hysteria2 to V2board)      ${green}64.${plain} YACD(Yet another Clash Dashboard)
-# ${yellow}55.${plain} ${yellow}V2bX(Vless&Trojan to V2board)    ${green}65.${plain} ClashDashBoard
-# ${plain}--------------------------------------------------------------
-# ${green}91.${plain} Show IP(ip.sb)                   ${green}95.${plain} Check-OpenAI(检测OpenAI解锁)
-# ${green}92.${plain} Show IPv4(ip addr | grep...)     ${green}96.${plain} Check-Region(检测区域媒体解锁)
-# ${green}93.${plain} Show IPv6(ip addr | grep...)     ${green}97.${plain} Cloudflare(IPv4)
-# ${green}94.${plain} Set GitHUB(IPv6)                 ${green}98.${plain} Cloudflare(IPv6)    
-# ${plain}==============================================================
-# ${green} 0.${plain} 返回主菜单
-# "
 }
 
 warp_tools_run() {
