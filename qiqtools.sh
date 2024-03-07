@@ -241,12 +241,12 @@ check_system_ip() {
 }
 
 WANIP_show(){
+  txtn $(txty " IPv4: ")$(txtr $WAN4)"\t"$(txtn $COUNTRY4 "-" $WARPSTATUS4)
+  txtn $(txty " IPv6: ")$(txtb $WAN6)"\t"$(txtn $COUNTRY6 "-" $WARPSTATUS6)
   # txtkvy " IPv4: " "$WAN4" "\t$COUNTRY4 - $ASNORG4"
   # txtkvy " IPv6: " "$WAN6" "\t$COUNTRY4 - $ASNORG6"
   # txtn $(txty " IPv4: ") $(txty "${pink}$WAN4${plain}  ($COUNTRY4 $WARPSTATUS4)")
   # txtn $(txtr " IPv6: ") $(txty "${pink}$WAN6${plain}  ($COUNTRY6 $WARPSTATUS6)")
-  txtn $(txty " IPv4: ") $(txtb $WAN4) $(txtn "\t(" $COUNTRY4 " " $WARPSTATUS4 ")")
-  txtn $(txty " IPv6: ") $(txtb $WAN6) $(txtn "\t(" $COUNTRY6 " " $WARPSTATUS6 ")")
   # info "\t IPv4: $WAN4 $WARPSTATUS4 $COUNTRY4  $ASNORG4 "
   # info "\t IPv6: $WAN6 $WARPSTATUS6 $COUNTRY6  $ASNORG6 "
 }
@@ -3412,7 +3412,7 @@ main_menu() {
   txtn "-------------------------------------"
   txtn $(txtn "99.重启系统")$(txtb "☢")"       "$(txtb "00.脚本更新")$(txtb "☋")
   txtn "====================================="
-  txtn $(txtn " 0.退出脚本")$(txtb "✖")"    "$(txtb "♧♧")"QiQTools"$(txtb "$script_version")
+  txtn $(txtn " 0.退出脚本")$(txtb "✖")"       "$(txtb "♧♧ ")"QiQTools"$(txtb "$script_version")
 }
 
 
