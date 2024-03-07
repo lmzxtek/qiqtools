@@ -2251,7 +2251,9 @@ install_maccms(){
 # 站点工具菜单
 website_tools_menu() {
 echo -e "
-▶ 面板工具
+▶ 站点面板工具
+${yellow}IPv4: ${white}$WAN4${plain}  ($COUNTRY4 $WARPSTATUS4)
+${yellow}IPv6: ${white}$WAN6${plain}  ($COUNTRY6 $WARPSTATUS6)
 ${plain}-------------------------------
 ${green} 1.${yellow}1Panel(新一代管理面板)
 ${green} 2.${plain}aaPanel(宝塔国际版)
@@ -2689,8 +2691,8 @@ warp_tools_run() {
 board_tools_menu() {
 echo -e "
 ▶ 面板管理
-${yellow}IPv4: ${white}$WAN4${plain}
-${yellow}IPv6: ${white}$WAN6${plain}
+${yellow}IPv4: ${white}$WAN4${plain}  ($COUNTRY4 $WARPSTATUS4)
+${yellow}IPv6: ${white}$WAN6${plain}  ($COUNTRY6 $WARPSTATUS6)
 ${plain}-------------------------------
 ${green}21.${plain} ${blue}3X-UI(@mhsanaei)                   ${green}31.${plain} Hiddify
 ${green}22.${plain} ${yellow}X-UI(@alireza0)                    ${green}32.${plain} V2RayA
