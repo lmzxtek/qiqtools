@@ -402,8 +402,8 @@ show_info() {
   txtkvy " 系统时间: " "$current_time"
   txtkvy " 运行时长: " "$runtime"
   txtkvn "---------------------------------"
-  txtkvy " IPv4地址: " "$WAN4" "\t(IP4_INFO)"
-  txtkvy " IPv6地址: " "$WAN6" "\t(IP6_INFO)"
+  txtkvy " IPv4地址: " "$WAN4" "\t($IP4_INFO)"
+  txtkvy " IPv6地址: " "$WAN6" "\t($IP6_INFO)"
   ip_show
   txtkvn "---------------------------------"
   txtkvy "网络拥堵算法: " "${yellow}$congestion_algorithm" "${plain}$queue_algorithm"
