@@ -332,40 +332,37 @@ check_virt(){
 get_sysinfo(){
     # 函数: 获取IPv4和IPv6地址
     
+    txtn " >>> ..."
+    txtn " >>> Start to get system information ..."
+    txtn " >>> ..."
+    txtn " >>> Check IP address ..."
     check_IP_address
 
-    check_virt
+    # country=$(curl -s ipinfo.io/country)
+    # city=$(curl -s ipinfo.io/city)
+    # isp_info=$(curl -s ipinfo.io/org)
 
+    txtn " >>> Check CPU arch ..."
+    cpu_arch=$(uname -m)
+
+    txtn " >>> Check system archtecture ..."
     if [ "$(uname -m)" == "x86_64" ]; then
       cpu_info=$(cat /proc/cpuinfo | grep 'model name' | uniq | sed -e 's/model name[[:space:]]*: //')
     else
       cpu_info=$(lscpu | grep 'BIOS Model name' | awk -F': ' '{print $2}' | sed 's/^[ \t]*//')
     fi
 
-    cpu_usage=$(top -bn1 | grep 'Cpu(s)' | awk '{print $2 + $4}')
-    cpu_usage_percent=$(printf "%.2f" "$cpu_usage")%
-
-    cpu_cores=$(nproc)
-
-    mem_info=$(free -b | awk 'NR==2{printf "%.2f/%.2f MB (%.2f%%)", $3/1024/1024, $2/1024/1024, $3*100/$2}')
-
-    disk_info=$(df -h | awk '$NF=="/"{printf "%s/%s (%s)", $3, $2, $5}')
-
-    country=$(curl -s ipinfo.io/country)
-    city=$(curl -s ipinfo.io/city)
-
-    isp_info=$(curl -s ipinfo.io/org)
-
-    cpu_arch=$(uname -m)
-
+    txtn " >>> Check Hostname ..."
     hostname=$(hostname)
 
+    txtn " >>> Check System kernel version ..."
     kernel_version=$(uname -r)
 
-    congestion_algorithm=$(sysctl -n net.ipv4.tcp_congestion_control)
-    queue_algorithm=$(sysctl -n net.core.default_qdisc)
+    txtn " >>> Check system virtualization ..."
+    check_virt
 
     # 尝试使用 lsb_release 获取系统信息
+    txtn " >>> Check System version ..."
     os_info=$(lsb_release -ds 2>/dev/null)
 
     # 如果 lsb_release 命令失败，则尝试其他方法
@@ -382,6 +379,36 @@ get_sysinfo(){
       fi
     fi
 
+    txtn " >>> Check CPU usage ..."
+    cpu_usage=$(top -bn1 | grep 'Cpu(s)' | awk '{print $2 + $4}')
+    cpu_usage_percent=$(printf "%.2f" "$cpu_usage")%
+
+    txtn " >>> Check CPU cores ..."
+    cpu_cores=$(nproc)
+
+    txtn " >>> Check Memory usage ..."
+    mem_info=$(free -b | awk 'NR==2{printf "%.2f/%.2f MB (%.2f%%)", $3/1024/1024, $2/1024/1024, $3*100/$2}')
+
+    txtn " >>> Check Disk usage ..."
+    disk_info=$(df -h | awk '$NF=="/"{printf "%s/%s (%s)", $3, $2, $5}')
+
+    txtn " >>> Check Swap information ..."
+    swap_used=$(free -m | awk 'NR==3{print $3}')
+    swap_total=$(free -m | awk 'NR==3{print $2}')
+
+    if [ "$swap_total" -eq 0 ]; then
+        swap_percentage=0
+    else
+        swap_percentage=$((swap_used * 100 / swap_total))
+    fi
+
+    swap_info="${swap_used}MB/${swap_total}MB (${swap_percentage}%)"
+
+    txtn " >>> Check Congestion Algorithm ..."
+    congestion_algorithm=$(sysctl -n net.ipv4.tcp_congestion_control)
+    queue_algorithm=$(sysctl -n net.core.default_qdisc)
+
+    txtn " >>> Check Sever data transfer ..."
     txt_data_transfer=$(awk 'BEGIN { rx_total = 0; tx_total = 0 }
         NR > 2 { rx_total += $2; tx_total += $10 }
         END {
@@ -399,20 +426,10 @@ get_sysinfo(){
         }' /proc/net/dev)
 
 
+    txtn " >>> Check Current time ..."
     current_time=$(date "+%Y-%m-%d %I:%M %p")
 
-
-    swap_used=$(free -m | awk 'NR==3{print $3}')
-    swap_total=$(free -m | awk 'NR==3{print $2}')
-
-    if [ "$swap_total" -eq 0 ]; then
-        swap_percentage=0
-    else
-        swap_percentage=$((swap_used * 100 / swap_total))
-    fi
-
-    swap_info="${swap_used}MB/${swap_total}MB (${swap_percentage}%)"
-
+    txtn " >>> Check System running elapsed time ..."
     runtime=$(cat /proc/uptime | awk -F. '{run_days=int($1 / 86400);run_hours=int(($1 % 86400) / 3600);run_minutes=int(($1 % 3600) / 60); if (run_days > 0) printf("%d天 ", run_days); if (run_hours > 0) printf("%d时 ", run_hours); printf("%d分\n", run_minutes)}')
 
 }
@@ -448,35 +465,7 @@ system_info() {
   txtkvn "网络拥堵算法: " "${yellow}$congestion_algorithm" "${plain}$queue_algorithm"
   txtkvn "$txt_data_transfer"
   txtkvn "================================="
-
-#   echo -e "${plain}
-# 系统信息查询
-# =================================
-#    主机名: $hostname
-#    运营商: $isp_info
-#  系统版本: $os_info
-#  内核版本: $kernel_version
-# ---------------------------------
-#   CPU架构: $cpu_arch
-#   CPU型号: $cpu_info
-#    核心数: $cpu_cores
-#    虚拟化: ${yellow}$VIRT${plain}
-# ---------------------------------
-#   CPU占用: $cpu_usage_percent
-#  物理内存: $mem_info
-#  虚拟内存: $swap_info
-#  硬盘占用: $disk_info
-# ---------------------------------
-#  系统时间: $current_time
-#  运行时长: $runtime
-# ---------------------------------
-#  IPv4地址: ${yellow}$WAN4${plain}  $WARPSTATUS4 $COUNTRY4 $CITY4 $ASNORG4
-#  IPv6地址: ${blue}$WAN6${plain}  $WARPSTATUS6 $COUNTRY6 $CITY6 $ASNORG6
-# ---------------------------------
-# 网络拥堵算法: ${yellow}$congestion_algorithm ${plain}$queue_algorithm
-# $txt_data_transfer
-# =================================
-# "
+  # txtn " "
 }
 
 # 更新系统
@@ -2251,12 +2240,12 @@ txtn $(txbr "▼ 站点面板工具")$(txbg " ❤ ")
 txtn "-------------------------------------"
 WANIP_show
 txtn "====================================="
-txtn $(txty " 1.1Panel")$(txty "☑")"             "$(txtn "61.AList多存储文件列表程序")$(txtb "✔")
-txtn $(txtn " 2.aaPanel")$(txtg "✔")"            "$(txtb "62.VScode-Server网页版")$(txtb "✔")
-txtn $(txtn " 3.宝塔面板")$(txtg "✔")"           "$(txtn "63.KodBox可道云在线桌面")$(txtb "✔")
-txtn $(txtn " 4.NginxProxyManager")$(txtg "✔")"  "$(txtn "64.ChatGPT-Next-Web")$(txtb "✔")
-txtn $(txtn " 5.哪吒探针")$(txtg "✔")"           "$(txtn "65.苹果CMS网站")$(txtb "✔")
-txtn $(txtn " 6.OpenLiteSpeed")$(txtb "✘")"      "$(txtn "66.苹果CMS网站(Docker)")$(txtb "✔")
+txtn $(txty " 1.1Panel")$(txty "☑")"             "$(txtn "61.AList多存储文件列表程序")$(txtg "✔")
+txtn $(txtn " 2.aaPanel")$(txtg "✔")"            "$(txtb "62.VScode-Server网页版")$(txtg "✔")
+txtn $(txtn " 3.宝塔面板")$(txtg "✔")"           "$(txtn "63.KodBox可道云在线桌面")$(txtg "✔")
+txtn $(txtn " 4.NginxProxyManager")$(txtg "✔")"  "$(txtn "64.ChatGPT-Next-Web")$(txtg "✔")
+txtn $(txtn " 5.哪吒探针")$(txtg "✔")"           "$(txtn "65.苹果CMS网站")$(txtg "✔")
+txtn $(txtn " 6.OpenLiteSpeed")$(txtb "✘")"      "$(txtn "66.苹果CMS网站(Docker)")$(txtg "✔")
 txtn "-------------------------------------"
 txtn " "
 txtn $(txbr "▼ Docker")$(txbg " ❦ ")
@@ -3451,5 +3440,6 @@ done
 }
 
 # check_IP_address
+clear
 get_sysinfo
 main_loop
