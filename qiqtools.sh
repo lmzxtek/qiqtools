@@ -334,9 +334,11 @@ check_virt(){
 get_sysinfo(){
     # 函数: 获取IPv4和IPv6地址
     
-    txtn " >>> "
+    txtn ""
+    txtn " >>> Welcome for using QiQTools "
+    txtn ""
     txtn " >>> Start to get system information ..."
-    # txtn " >>> ..."
+    txtn ""
 
     txtn " >>> Check CPU arch ..."
     cpu_arch=$(uname -m)
