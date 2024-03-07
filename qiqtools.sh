@@ -34,14 +34,25 @@ yellow='\033[0;33m'
  plain='\033[0m'
 
 # 自定义字体彩色，read 函数
-  warning(){ echo -e "${red}$*${plain}"; }              # 红色
-highlight(){ echo -e "${yellow}$*${plain}"; }           # 黄色
-
  txtr(){ echo -e "${red}$*${plain}"; }                  # 红色字符
  txtb(){ echo -e "${blue}$*${plain}"; }                 # 蓝色字符
- txtg(){ echo -e "${green}$*${plain}"; }                # 红色字符
- txty(){ echo -e "${yellow}$*${plain}"; }               # 黄色字符
+ txtc(){ echo -e "${cyan}$*${plain}"; }                 # 
+ txtp(){ echo -e "${pink}$*${plain}"; }                 # 
+ txtg(){ echo -e "${green}$*${plain}"; }                # 绿色字符
+ txtw(){ echo -e "${white}$*${plain}"; }                # 
  txtn(){ echo -e "${plain}$*${plain}"; }                # 常规字符
+ txty(){ echo -e "${yellow}$*${plain}"; }               # 黄色字符
+
+ txbr(){ echo -e "${red}${bold}$*${plain}"; }           # 红色粗体
+ txbb(){ echo -e "${blue}${bold}$*${plain}"; }          # 粗体
+ txbc(){ echo -e "${cyan}${bold}$*${plain}"; }          # 粗体
+ txbw(){ echo -e "${white}${bold}$*${plain}"; }         # 粗体
+ txbn(){ echo -e "${plain}${bold}$*${plain}"; }         # 粗体
+ txbg(){ echo -e "${green}${bold}$*${plain}"; }         # 粗体
+ txby(){ echo -e "${yellow}${bold}$*${plain}"; }        # 粗体
+
+  warning(){ echo -e "${red}$*${plain}"; }              # 红色
+highlight(){ echo -e "${yellow}$*${plain}"; }           # 黄色
 
  note(){ echo -e "${pink}${bold}$*${plain}"; }          # 品色粗体
  info(){ echo -e "${green}${bold}$*${plain}"; }         # 绿色粗体
@@ -49,38 +60,18 @@ highlight(){ echo -e "${yellow}$*${plain}"; }           # 黄色
 error(){ echo -e "${red}${bold}$*${plain}" && exit 1; } # 红色粗体并退出
 
 # 键值对输出
-txtkvn() {
-  local key="$1" # 获取第一个参数  
-  shift # 将第一个参数从参数列表中删除  
-  local value=$(echo "$*" | tr -d '\n') # 将剩余参数连接成一个字符串
-  echo -e "${plain}${bold}$key${plain}$value${plain}" # 键以常规输出，值则以常规文本输出
-}
-txtkvy() {
-  local key="$1" # 获取第一个参数  
-  shift # 将第一个参数从参数列表中删除  
-  local value=$(echo "$*" | tr -d '\n') # 将剩余参数连接成一个字符串
-  echo -e "${yellow}${bold}$key${plain}$value${plain}" # 键以黄色输出，值则以常规文本输出
-}
-txtkvr() {
-  local key="$1" # 获取第一个参数  
-  shift # 将第一个参数从参数列表中删除  
-  local value=$(echo "$*" | tr -d '\n') # 将剩余参数连接成一个字符串
-  echo -e "${red}${bold}$key${plain}$value${plain}" # 键以红色输出，值则以常规文本输出
-}
+txtkvn() { local key="$1" && shift && local value=$(echo "$*" | tr -d '\n') && echo -e "${plain}$key${plain}$value${plain}"; }
+txtkvr() { local key="$1" && shift && local value=$(echo "$*" | tr -d '\n') && echo -e "${plain}$key${red}$value${plain}";   }
+txtkvb() { local key="$1" && shift && local value=$(echo "$*" | tr -d '\n') && echo -e "${plain}$key${blue}$value${plain}";  }
+txtkvg() { local key="$1" && shift && local value=$(echo "$*" | tr -d '\n') && echo -e "${plain}$key${green}$value${plain}"; }
+txtkvy() { local key="$1" && shift && local value=$(echo "$*" | tr -d '\n') && echo -e "${plain}$key${yellow}$value${plain}";}
 
-# 项目输出: 在第一个字符和后续字符之间加'.'
-txtitem() {
-  local key="$1" # 获取第一个参数  
-  shift # 将第一个参数从参数列表中删除  
-  local value=$(echo "$*" | tr -d '\n') # 将剩余参数连接成一个字符串
-
-  if [ -z "$value"]; then
-    echo -e "${plain}$key${plain}" # 键以黄色输出，值则以常规文本输出
-  else
-    echo -e "${plain}$key${plain}.$value${plain}" # 键以黄色输出，值则以常规文本输出
-  fi
-
-}
+# txtkvy() {
+#   local key="$1" # 获取第一个参数  
+#   shift # 将第一个参数从参数列表中删除  
+#   local value=$(echo "$*" | tr -d '\n') # 将剩余参数连接成一个字符串
+#   echo -e "${yellow}$key${yellow}$value${plain}" # 键以黄色输出，值则以常规文本输出
+# }
 
 reading() { read -rp "$(info "$1")" "$2"; }
 
@@ -249,8 +240,12 @@ check_system_ip() {
 }
 
 WANIP_show(){
-  txtkvy " IPv4: " "$WAN4" "\t$COUNTRY4 - $ASNORG4"
-  txtkvy " IPv6: " "$WAN6" "\t$COUNTRY4 - $ASNORG6"
+  # txtkvy " IPv4: " "$WAN4" "\t$COUNTRY4 - $ASNORG4"
+  # txtkvy " IPv6: " "$WAN6" "\t$COUNTRY4 - $ASNORG6"
+  # txtn $(txty " IPv4: ") $(txty "${pink}$WAN4${plain}  ($COUNTRY4 $WARPSTATUS4)")
+  # txtn $(txtr " IPv6: ") $(txty "${pink}$WAN6${plain}  ($COUNTRY6 $WARPSTATUS6)")
+  txtn $(txty " IPv4: ") $(txtb $WAN4) $(txtn "\t(" $COUNTRY4 " " $WARPSTATUS4 ")")
+  txtn $(txty " IPv6: ") $(txtb $WAN6) $(txtn "\t(" $COUNTRY6 " " $WARPSTATUS6 ")")
   # info "\t IPv4: $WAN4 $WARPSTATUS4 $COUNTRY4  $ASNORG4 "
   # info "\t IPv6: $WAN6 $WARPSTATUS6 $COUNTRY6  $ASNORG6 "
 }
@@ -2250,6 +2245,12 @@ install_maccms(){
 
 # 站点工具菜单
 website_tools_menu() {
+
+  txby "▶ 站点面板工具"
+  txtn $(txtr "-------------------------------")
+  txtn $(txty " IPv4: ") $(txtb $WAN4) $(txtn "\t(" $COUNTRY4 " " $WARPSTATUS4 ")")
+  txtn $(txty " IPv6: ") $(txtb $WAN6) $(txtn "\t(" $COUNTRY6 " " $WARPSTATUS6 ")")
+
 echo -e "
 ▶ 站点面板工具
 ${yellow}IPv4: ${pink}$WAN4${plain}  ($COUNTRY4 $WARPSTATUS4)
@@ -3234,6 +3235,11 @@ caddy_web_manager(){
 
 # 网站管理菜单
 LDNMP_menu() {
+  txby "▼ 站点管理✈️"
+  txtn $(txtr "-------------------------------")
+  txtn $(txty " IPv4: ") $(txtb $WAN4) $(txtn "\t(" $COUNTRY4 " " $WARPSTATUS4 ")")
+  txtn $(txty " IPv6: ") $(txtb $WAN6) $(txtn "\t(" $COUNTRY6 " " $WARPSTATUS6 ")")
+
 echo -e "
 ▼ 站点管理✈️
 ${yellow}IPv4: ${white}$WAN4${plain}
@@ -3389,6 +3395,34 @@ cd ~
 # ${plain}♤♤  输入>> ${yellow}qiq ${plain}<<可快速启动此脚本  ♤♤
 # ${cyan}✟${plain} 一键脚本 ${blue}QiQTools${plain}
 # "
+
+  txby "▶ 站点面板工具"
+  txtn $(txty " IPv4: ") $(txtb $WAN4) $(txtn "\t(" $COUNTRY4 " " $WARPSTATUS4 ")")
+  txtn $(txty " IPv6: ") $(txtb $WAN6) $(txtn "\t(" $COUNTRY6 " " $WARPSTATUS6 ")")
+
+  txtn " " $(txtg "  ░███   ") " " $(txtc "░████") " " $(txtg "  ░███   ")
+  txtn " " $(txtg " ░██ ░██ ") " " $(txtc " ░██ ") " " $(txtg " ░██ ░██ ")
+  txtn " " $(txtg "░██   ░██") " " $(txtc " ░██ ") " " $(txtg "░██   ░██")
+  txtn " " $(txtg " ░██ ░██ ") " " $(txtc " ░██ ") " " $(txtg " ░██ ░██ ")
+  txtn " " $(txtg "   ░██ ██") " " $(txtc "░████") " " $(txtg "   ░██ ██")
+
+  txtn $(txtb "─┬─╭─╮╭─╮┬ ╭─╮")
+  txtn $(txtb " │ │ ││ ││ ╰─╮")
+  txtn $(txtb " │ ╰─╯╰─╯╰─╰─╯") $(txtc "  ✟  ") $(txtn "快捷命令") $(txtc "☞") $(txty " qiq " $(txtc "☜")
+  txtn $(txtr "=====================================")
+  txtn $(txtr "-------------------------------------")
+  txtn $(txtr "=====================================")
+
+
+#  ${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}
+#  ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
+#  ${green}░██   ░██  ${cyan} ░██   ${green}░██   ░██${plain}
+#  ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
+#  ${green}   ░██ ██  ${cyan}░████  ${green}   ░██ ██${plain}
+
+# ${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}  
+# ${blue} │ │ ││ ││ ╰─╮${plain}  
+# ${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}
 
 echo -e "
  ${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}
