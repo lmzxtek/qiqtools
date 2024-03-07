@@ -3399,60 +3399,16 @@ ${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 快捷
 
 # 显示主菜单
 main_menu() {
-cd ~
 
-# echo -e "
-# ${red}${bold}╭─╮ ┬╭─╮  ${plain}${blue}─┬─╭─╮╭─╮┬ ${plain}╭─╮${plain} 
-# ${red}${bold}│ │ ││ │  ${plain}${blue} │ │ ││ ││ ${plain}╰─╮${plain}
-# ${red}${bold}╰─┴╯┴╰─┴╯ ${plain}${blue} │ ╰─╯╰─╯╰─${plain}╰─╯${plain}
-# ${yellow}${bold}QiQTools ${white}一键脚本工具 $script_version
-# ${cyan}(支持Ubuntu|Debian|CentOS|Alpine系统)${plain}
-# ${plain}♤♤  输入>> ${yellow}qiq ${plain}<<可快速启动此脚本  ♤♤
-# ${cyan}✟${plain} 一键脚本 ${blue}QiQTools${plain}
-# "
-
-  # txby "▶ 站点面板工具"
   # txtn $(txty " IPv4: ") $(txtb $WAN4) $(txtn "\t(" $COUNTRY4 " " $WARPSTATUS4 ")")
   # txtn $(txty " IPv6: ") $(txtb $WAN6) $(txtn "\t(" $COUNTRY6 " " $WARPSTATUS6 ")")
-
-  # txtn " " $(txtg "  ░███   ") " " $(txtc "░████") " " $(txtg "  ░███   ")
-  # txtn " " $(txtg " ░██ ░██ ") " " $(txtc " ░██ ") " " $(txtg " ░██ ░██ ")
-  # txtn " " $(txtg "░██   ░██") " " $(txtc " ░██ ") " " $(txtg "░██   ░██")
-  # txtn " " $(txtg " ░██ ░██ ") " " $(txtc " ░██ ") " " $(txtg " ░██ ░██ ")
-  # txtn " " $(txtg "   ░██ ██") " " $(txtc "░████") " " $(txtg "   ░██ ██")
-
-  # txtn $(txtb "─┬─╭─╮╭─╮┬ ╭─╮")
-  # txtn $(txtb " │ │ ││ ││ ╰─╮")
-  # txtn $(txtb " │ ╰─╯╰─╯╰─╰─╯") $(txtc "  ✟  ") $(txtn "快捷命令") $(txtc "☞") $(txty " qiq ") $(txtc "☜")
-  txtn $(txtr "=====================================")
-  txtn $(txtr "-------------------------------------")
-  txtn $(txtr "=====================================")
-
-  txthd=""
-  txthd+="${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}\n"
-  txthd+="${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}\n"
-  txthd+="${green}░██   ░██  ${cyan} ░██   ${green}░██   ░██${plain}\n"
-  txthd+="${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}\n"
-  txthd+="${green}   ░██ ██  ${cyan}░████  ${green}   ░██ ██${plain}"
-
-  txtht="\n
-${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}\n
-${blue} │ │ ││ ││ ╰─╮${plain}\n
-${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}"
-
-  echo -e $txthd $txtht
-  show_header_qiq
+  txtn $(txty "=====================================")
+  WANIP_show
+  txtn $(txtn "-------------------------------------")
+  txtn $(txtn "-------------------------------------")
+  txtn $(txty "=====================================")
 
 echo -e "
- ${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}
- ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
- ${green}░██   ░██  ${cyan} ░██   ${green}░██   ░██${plain}
- ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
- ${green}   ░██ ██  ${cyan}░████  ${green}   ░██ ██${plain}
-
-${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}  
-${blue} │ │ ││ ││ ╰─╮${plain}  
-${blue} │ ╰─╯╰─╯╰─╰─╯${plain}  ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}
 ${white}=====================================${plain}
 ${yellow}IPv4: ${white}$WAN4${plain}  ($COUNTRY4 $WARPSTATUS4)
 ${yellow}IPv6: ${white}$WAN6${plain}  ($COUNTRY6 $WARPSTATUS6)
@@ -3471,15 +3427,11 @@ ${green} 0.${plain}退出脚本${red}✖${plain}       ${green}♧♧ ${blue}QiQ
 "
 }
 
-# ${plain}----------------
-# ${green}12${white}.${plain} 我的工作区 ▶ (Todo...)
-# ${green}13${white}.${plain} 测试脚本合集 ▶ (Todo...)
-# ${green}14${white}.${plain} 甲骨文云脚本合集 ▶ (Todo...)
 
 # Main Loops for the scripts
 main_loop(){
 while true; do 
-  clear && main_menu 
+  clear && cd ~ && show_header_qiq && main_menu 
   reading "请输入你的选择: " choice
 
   case $choice in
