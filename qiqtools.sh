@@ -439,6 +439,9 @@ get_sysinfo(){
     # city=$(curl -s ipinfo.io/city)
     # isp_info=$(curl -s ipinfo.io/org)
 
+    txtn ""
+    txtn " >>> System information check Done ..."
+    txtn ""
 }
 
 # 显示系统信息
