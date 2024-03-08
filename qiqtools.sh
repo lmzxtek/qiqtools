@@ -2639,8 +2639,9 @@ txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "51.XRayR(@XrayR-project)")$(txtg "✔")"         "$(txtn "61.Set Github(For IPv6 VPS)")$(txtg "✔")
 txtn $(txtn "52.XRayR(@wyx2685)")$(txtg "✔")"               "$(txtn "62.Cloudflare Select IP")$(txtg "✔")
 txtn $(txtn "53.XRayR-Docker(@XrayR-project)")$(txtg "✔")"  "$(txtn "63.Cloudflare Select CDN")$(txtg "✔")
-txtn $(txtn "54.Bodhi(Hysteria2 to V2board)")$(txtg "✔")"   "$(txtn "64.YACD(Yet another Clash Dashboard)")$(txtg "✔")
+txtn $(txtn "54.XRayR(Alpine)")$(txtg "✔")"                 "$(txtn "64.YACD(Yet another Clash Dashboard)")$(txtg "✔")
 txtn $(txtn "55.V2bX(Vless&Trojan to V2board)")$(txtg "✔")" "$(txtn "65.ClashDashBoard")$(txtg "✔")
+txtn $(txtn "56.Bodhi(Hysteria2 to V2board)")$(txtg "✔")"   "$(txtn "")$(txtg "")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
 txtn " "
@@ -2680,8 +2681,9 @@ warp_tools_run() {
      51) clear && wget -N https://raw.githubusercontent.com/XrayR-project/XrayR-release/master/install.sh && bash install.sh && cd /etc/XrayR ;;
      52) clear && wget -N https://raw.githubusercontent.com/wyx2685/XrayR-release/master/install.sh && bash install.sh ;;
      53) clear && cd ~ && git clone https://github.com/XrayR-project/XrayR-release xrayr && cd xrayr ;;
-     54) clear && cd ~ && git clone https://github.com/lotusnetwork/bodhi-docker.git && cd bodhi-docker ;;
+     54) clear && apk add wget sudo curl && wget -N https://github.com/Cd1s/alpineXrayR/releases/download/one-click/install-xrayr.sh && chmod +x install-xrayr.sh && bash install-xrayr.sh ;;
      55) clear && wget -N https://raw.githubusercontent.com/wyx2685/V2bX-script/master/install.sh && bash install.sh ;;
+     56) clear && cd ~ && git clone https://github.com/lotusnetwork/bodhi-docker.git && cd bodhi-docker ;;
 
      61) set_ipv6_github ;;
     #  61) echo -e "nameserver 2001:67c:2b0::4\nnameserver 2001:67c:2b0::6" > /etc/resolv.conf ;;
