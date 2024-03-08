@@ -1860,8 +1860,8 @@ txtn " "
 txtn $(txbr "▼ 系统工具")$(txbg " ❦ ")
 txtn "—————————————————————————————————————"
 # WANIP_show
-txtn $(txty "\t  主机名: ")$(txtb "$hostname")
-txtn $(txty "\t系统版本: ")$(txtb "$os_info")
+txtn $(txty "     主机名: ")$(txtb "$hostname")
+txtn $(txty "   系统版本: ")$(txtb "$os_info")
 txtn "====================================="
 txtn $(txtn " 1.修改ROOT密码")$(txtg "✔")"           "$(txby "11.修改虚拟内存大小")$(txty "✔")
 txtn $(txtn " 2.开启ROOT密码登录模式")$(txtg "✔")"   "$(txtn "12.修改主机名")$(txty "✔")
