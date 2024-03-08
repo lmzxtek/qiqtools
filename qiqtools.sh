@@ -870,8 +870,8 @@ ${green}   ${blue} Windows: ${yellow}Teddysun.com ${plain}(minumum Disk is 15G)
 dd_system_run() {
   
   clear
-  txtr "\n请备份数据，将为你重装系统，预计花费15分钟。"
-  txtn "\n \t虚拟化：${red}$VIRT${plain} \n"
+  txty "\n请备份数据，将为你重装系统，预计花费15分钟。"
+  txtn " \t虚拟化：${red}$VIRT${plain} \n"
   read -p "\n确定继续吗？(Y/N): " choice
   
   case "$choice" in
