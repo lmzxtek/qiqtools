@@ -868,10 +868,21 @@ ${green}   ${blue} Windows: ${yellow}Teddysun.com ${plain}(minumum Disk is 15G)
 }
 
 dd_system_run() {
+  
+  clear
+  txtr "请备份数据，将为你重装系统，预计花费15分钟。"
+  txtn "\n \t虚拟化： ${red}$VIRT${plain} \n"
+  read -p "确定继续吗？(Y/N): " choice
+  
+  case "$choice" in
+    [Yy]) clear ;;
+    [Nn]) echo "已取消" && return 1 ;;
+       *) echo "无效的选择，请输入 Y 或 N，返回..." && return 1 ;;
+  esac
+
 
   if [ "$VIRT" =~ ^KVM$ ]; then
     # 如果系统虚拟化不是KVM，则使用OsMutation进行DD系统
-    txtr " 虚拟化类型为： $VIRT"
     wget -qO OsMutation.sh https://raw.githubusercontent.com/LloydAsp/OsMutation/main/OsMutation.sh && chmod u+x OsMutation.sh && ./OsMutation.sh
     return 1
   fi 
