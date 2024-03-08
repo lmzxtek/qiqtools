@@ -252,8 +252,8 @@ check_system_ip() {
 
 # Output IP details to shell
 WANIP_show(){
-  txtn $(txty " IPv4: ")$(txtr $WAN4)"\t"$(txtn $COUNTRY4 $WARPSTATUS4)
-  txtn $(txty " IPv6: ")$(txtb $WAN6)"\t"$(txtn $COUNTRY6 $WARPSTATUS6)
+  txtn $(txty " IPv4:") $(txtr $WAN4)"\t"$(txtn $COUNTRY4) $(txtp $WARPSTATUS4)
+  txtn $(txty " IPv6:") $(txtb $WAN6)"\t"$(txtn $COUNTRY6) $(txtp $WARPSTATUS6)
 }
 
 check_root() { [[ $EUID -ne 0 ]] && echo -e "${red}错误：${plain} 必须使用root用户运行此脚本！\n" && exit 1; }
