@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.3.5
+script_version=v0.3.6
 #==========================
 
 # Language
@@ -2622,18 +2622,18 @@ txtn $(txbr "▼ 节点管理")$(txbb " ✈✈✈ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
-txtn $(txty "91.Show IP(ip.sb)")$(txtg "✔")"          "$(txty "95.Check-OpenAI(检测OpenAI解锁)")$(txtg "✔")
-txtn $(txtn "92.Show IPv4(local)")$(txtg "✔")"        "$(txtb "96.Check-Region(检测区域媒体解锁)")$(txtg "✔")
-txtn $(txtn "93.Show IPv6(local)")$(txtg "✔")"        "$(txtn "97.Cloudflare(IPv4)")$(txtg "✔")
-txtn $(txtn "94.Set GitHUB(IPv6)")$(txtg "✔")"        "$(txtn "98.Cloudflare(IPv6)")$(txtg "✔")
+txtn $(txty "91.Show IP(ip.sb)")$(txtg "✔")"           "$(txty "95.Check-OpenAI(检测OpenAI解锁)")$(txtg "✔")
+txtn $(txtn "92.Show IPv4(local)")$(txtg "✔")"         "$(txtb "96.Check-Region(检测区域媒体解锁)")$(txtg "✔")
+txtn $(txtn "93.Show IPv6(local)")$(txtg "✔")"         "$(txtn "97.Cloudflare(IPv4)")$(txtg "✔")
+txtn $(txtn "94.Set GitHUB(IPv6)")$(txtg "✔")"         "$(txtn "98.Cloudflare(IPv6)")$(txtg "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txty " 1.Warp(@fscarmen)")$(txtg "✔")"         "$(txtn "11.XRay(@233boy)")$(txtg "✔")
-txtn $(txtn " 2.Warp(@hamid-gh98)")$(txtg "✔")"       "$(txtn "12.V2Ray(@233boy)")$(txtg "✔")
-txtn $(txtn " 3.Warp(@Misaka-blog)")$(txtg "✔")"      "$(txtn "13.V2Ray-Agent(@mack-a)")$(txtg "✔")
-txtn $(txtn " 4.ArgoX")$(txtg "✔")"                   "$(txtn "14.Hysteria2(@Misaka)")$(txtg "✔")
-txtn $(txtn " 5.SingBox四合一")$(txtg "✔")"            "$(txtn "15.TUIC5(@Misaka)")$(txtg "✔")
-txtn $(txty " 6.SingBox全家桶(@fscarmen)")$(txtg "✔")" "$(txtn "16.mianyang()")$(txtg "✔")
-txtn $(txtn " 7.SingBox-Argox(@fscarmen)")$(txtg "✔")" "$(txtn "")$(txtb "")
+txtn $(txty " 1.Warp(@fscarmen)")$(txtg "✔")"          "$(txtn "11.XRay(@233boy)")$(txtg "✔")
+txtn $(txtn " 2.Warp(@hamid-gh98)")$(txtg "✔")"        "$(txtn "12.V2Ray(@233boy)")$(txtg "✔")
+txtn $(txtn " 3.Warp(@Misaka-blog)")$(txtg "✔")"       "$(txtn "13.V2Ray-Agent(@mack-a)")$(txtg "✔")
+txtn $(txtn " 4.ArgoX")$(txtg "✔")"                    "$(txtn "14.Hysteria2(@Misaka)")$(txtg "✔")
+txtn $(txtn " 5.SingBox四合一")$(txtg "✔")"             "$(txtn "15.TUIC5(@Misaka)")$(txtg "✔")
+txtn $(txty " 6.SingBox全家桶(@fscarmen)")$(txtg "✔")"  "$(txtn "16.mianyang()")$(txtg "✔")
+txtn $(txtn " 7.SingBox-Argox(@fscarmen)")$(txtg "✔")"  "$(txtn "")$(txtb "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "51.XRayR(@XrayR-project)")$(txtg "✔")"         "$(txtn "61.Set Github(For IPv6 VPS)")$(txtg "✔")
