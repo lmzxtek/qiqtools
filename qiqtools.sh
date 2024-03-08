@@ -840,7 +840,7 @@ dd_xitong_2() {
 
 dd_system_menu() {
 echo -e "
-▶ 可选系统菜单    系统虚拟化：${red}$VIRT}
+▶ 可选系统菜单\t系统虚拟化：${red}$VIRT
 -------------------------------
 ${green} 1.${plain} CentOS 9                 ${green} 3.${plain} CentOS 7
 ${green} 2.${plain} CentOS 8                 
@@ -870,9 +870,9 @@ ${green}   ${blue} Windows: ${yellow}Teddysun.com ${plain}(minumum Disk is 15G)
 dd_system_run() {
   
   clear
-  txtr "请备份数据，将为你重装系统，预计花费15分钟。"
-  txtn "\n \t虚拟化： ${red}$VIRT${plain} \n"
-  read -p "确定继续吗？(Y/N): " choice
+  txtr "\n请备份数据，将为你重装系统，预计花费15分钟。"
+  txtn "\n \t虚拟化：${red}$VIRT${plain} \n"
+  read -p "\n确定继续吗？(Y/N): " choice
   
   case "$choice" in
     [Yy]) clear ;;
