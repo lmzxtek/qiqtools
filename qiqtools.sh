@@ -840,7 +840,7 @@ dd_xitong_2() {
 
 dd_system_menu() {
 echo -e "
-▶ 可选系统菜单
+▶ 可选系统菜单    系统虚拟化：${red}$VIRT}
 -------------------------------
 ${green} 1.${plain} CentOS 9                 ${green} 3.${plain} CentOS 7
 ${green} 2.${plain} CentOS 8                 
@@ -868,6 +868,15 @@ ${green}   ${blue} Windows: ${yellow}Teddysun.com ${plain}(minumum Disk is 15G)
 }
 
 dd_system_run() {
+
+  if [ "$VIRT" =~ ^KVM$ ]; then
+    # 如果系统虚拟化不是KVM，则使用OsMutation进行DD系统
+    txtr " 虚拟化类型为： $VIRT"
+    wget -qO OsMutation.sh https://raw.githubusercontent.com/LloydAsp/OsMutation/main/OsMutation.sh && chmod u+x OsMutation.sh && ./OsMutation.sh
+    return 1
+  fi 
+
+  # 机器基于KVM，则使用LeitboGi0ro的有脚本进行DD
   while true; do
     clear && dd_system_menu
     reading "请选择要重装的系统: " sys_choice
