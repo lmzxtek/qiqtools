@@ -2623,7 +2623,7 @@ txtn $(txbr "▼ 节点管理")$(txbb " ✈✈✈ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
-txtn $(txty "81.Show IP(ip.sb)")$(txtg "✔")"           "$(txty "91.Set GitHUB(IPv6)")$(txtg "✔")
+txtn $(txtn "81.Show IP(ip.sb)")$(txtg "✔")"           "$(txtn "91.Set GitHUB(IPv6)")$(txtg "✔")
 txtn $(txtn "82.Show IPv4(local)")$(txtg "✔")"         "$(txtb "92.Cloudflare Select IP")$(txtg "✔")
 txtn $(txtn "83.Show IPv6(local)")$(txtg "✔")"         "$(txtn "93.Cloudflare Select CDN")$(txtg "✔")
 txtn $(txtp "84.Cloudflare(IPv4)")$(txtg "✔")"         "$(txtr "94.Check-OpenAI(OpenAI解锁)")$(txtg "✔")
@@ -2682,9 +2682,9 @@ warp_tools_run() {
      52) clear && wget -N https://raw.githubusercontent.com/wyx2685/XrayR-release/master/install.sh && bash install.sh ;;
      53) clear && cd ~ && git clone https://github.com/XrayR-project/XrayR-release xrayr && cd xrayr ;;
      54) clear && apk add wget sudo curl && wget -N https://github.com/Cd1s/alpineXrayR/releases/download/one-click/install-xrayr.sh && chmod +x install-xrayr.sh && bash install-xrayr.sh ;;
+
      61) clear && wget -N https://raw.githubusercontent.com/wyx2685/V2bX-script/master/install.sh && bash install.sh ;;
      62) clear && cd ~ && git clone https://github.com/lotusnetwork/bodhi-docker.git && cd bodhi-docker ;;
-
     #  64) clear && docker run -p 1234:80 -d --name yacd --rm ghcr.io/haishanh/yacd:master ;;
     #  65) clear && echo -e "\n Todo: ... \n" ;;
 
@@ -2720,7 +2720,7 @@ txtn $(txtn "21.3X-UI(@mhsanaei)")$(txtg "✔")"       "$(txtn "31.Hiddify")$(tx
 txtn $(txtb "22.X-UI(@alireza0)")$(txtg "✔")"        "$(txty "32.V2RayA")$(txtg "✔")
 txtn $(txtn "23.X-UI(@FranzKafkaYu)")$(txtg "✔")"    "$(txtn "33.Daed")$(txtg "✔")
 txtn $(txtn "24.X-UI(@rwkgyg)")$(txtg "✔")"          "$(txtn "34.Daed-Docker")$(txtg "✔")
-txtn $(txtb "25.X-UI(alpine)")$(txtg "✔")"           "$(txtn "35.S-UI(@alireza0)")$(txtg "✔")
+txtn $(txtc "25.X-UI(alpine)")$(txtg "✔")"           "$(txtn "35.S-UI(@alireza0)")$(txtg "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "41.XBoard")$(txtg "✔")"                 "$(txtn "44.LotusBoard")$(txtg "✔")
 txtn $(txtn "42.V2Board")$(txtg "✔")"                "$(txtn "45.SSPanel")$(txtg "✔")
