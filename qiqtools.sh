@@ -880,7 +880,7 @@ dd_system_run() {
        *) echo "无效的选择，请输入 Y 或 N，返回..." && return 1 ;;
   esac
 
-  if [ "$VIRT" =~ ^KVM$ ]; then
+  if [[ "$VIRT" =~ ^KVM$ ]]; then
     # 如果系统虚拟化不是KVM，则使用OsMutation进行DD系统
     wget -qO OsMutation.sh https://raw.githubusercontent.com/LloydAsp/OsMutation/main/OsMutation.sh && chmod u+x OsMutation.sh && ./OsMutation.sh
     return 1
