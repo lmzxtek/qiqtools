@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.3.7
+script_version=v0.3.8
 #==========================
 
 # Language
@@ -2295,13 +2295,18 @@ EOF
 
   cd /root/npm && docker-compose up -d
 
+  clear
+  txtn ""
   txtn "MacCMS容器启动成功，以下为配置信息..."
+  txtn ""
+  txtn "访问链接: https://$WAN4:7878"
+  txtn "访问链接: https://[$WAN6]:7878"
   txtn ""
   txtn "默认账户: admin"
   txtn "默认密码: admin123"
 
   txtn ""
-  txtn "后台自定义菜单管理主题: mxoneX主题,/admin123.php/admin/mxone/mxoneset"
+  txtn "后台管理主题: mxoneX主题,/admin123.php/admin/mxone/mxoneset"
   txtn "解析接口更换：https://svip.ffzyplay.com/?url="
 
   txtn ""
