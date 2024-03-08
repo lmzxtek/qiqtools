@@ -344,7 +344,7 @@ get_sysinfo(){
     
     clear
     txby "\n Welcome to QiQTools "
-    txtp "\n >>> Start to get system Info."
+    txtp "\n >>> Start get system Info."
 
     txtn "\n >>> Check Hostname ..."
     hostname=$(hostname)
@@ -2277,6 +2277,8 @@ txtn $(txtb "17.SearXNG聚合搜索站")$(txtg "✔")"               "$(txtn "")
 txtn $(txtn "18.StirlingPDF工具大全")$(txtg "✔")"             "$(txtn "")$(txtb "")
 txtn $(txty "19.IT-Tools常用工具")$(txtg "✔")"                "$(txtn "")$(txtb "")
 txtn $(txtn "20.Next-Terminal资产管理")$(txtg "✔")"           "$(txtn "")$(txtb "")
+txtn $(txtn "21.YACD(Yet another Clash Dashboard)")$(txtg "✔")"           "$(txtn "")$(txtb "")
+txtn $(txtn "22.ClashDashBoard")$(txtg "✘")"           "$(txtn "")$(txtb "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
@@ -2542,6 +2544,8 @@ website_deploy_run(){
       cd ~
       ;;
 
+     21) clear && docker run -p 1234:80 -d --name yacd --rm ghcr.io/haishanh/yacd:master  ;;
+
      61) clear && install curl && curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s install  ;;
      62) clear && install curl && curl -fsSL https://code-server.dev/install.sh | sh  ;;
      63) clear && install_kodbox  ;;   
@@ -2619,10 +2623,11 @@ txtn $(txbr "▼ 节点管理")$(txbb " ✈✈✈ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
-txtn $(txty "91.Show IP(ip.sb)")$(txtg "✔")"           "$(txty "95.Check-OpenAI(检测OpenAI解锁)")$(txtg "✔")
-txtn $(txtn "92.Show IPv4(local)")$(txtg "✔")"         "$(txtb "96.Check-Region(检测区域媒体解锁)")$(txtg "✔")
-txtn $(txtn "93.Show IPv6(local)")$(txtg "✔")"         "$(txtn "97.Cloudflare(IPv4)")$(txtg "✔")
-txtn $(txtn "94.Set GitHUB(IPv6)")$(txtg "✔")"         "$(txtn "98.Cloudflare(IPv6)")$(txtg "✔")
+txtn $(txty "81.Show IP(ip.sb)")$(txtg "✔")"           "$(txty "91.Set GitHUB(IPv6)")$(txtg "✔")
+txtn $(txtn "82.Show IPv4(local)")$(txtg "✔")"         "$(txtb "92.Cloudflare Select IP")$(txtg "✔")
+txtn $(txtn "83.Show IPv6(local)")$(txtg "✔")"         "$(txtn "93.Cloudflare Select CDN")$(txtg "✔")
+txtn $(txtp "84.Cloudflare(IPv4)")$(txtg "✔")"         "$(txtr "94.Check-OpenAI(OpenAI解锁)")$(txtg "✔")
+txtn $(txtn "85.Cloudflare(IPv6)")$(txtg "✔")"         "$(txtb "95.Check-Region(区域媒体解锁)")$(txtg "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty " 1.Warp(@fscarmen)")$(txtg "✔")"          "$(txtn "11.XRay(@233boy)")$(txtg "✔")
 txtn $(txtn " 2.Warp(@hamid-gh98)")$(txtg "✔")"        "$(txtn "12.V2Ray(@233boy)")$(txtg "✔")
@@ -2633,12 +2638,10 @@ txtn $(txty " 6.SingBox全家桶(@fscarmen)")$(txtg "✔")"  "$(txtn "16.mianyan
 txtn $(txtn " 7.SingBox-Argox(@fscarmen)")$(txtg "✔")"  "$(txtn "")$(txtb "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txty "51.XRayR(@XrayR-project)")$(txtg "✔")"         "$(txtn "61.Set Github(For IPv6 VPS)")$(txtg "✔")
-txtn $(txtn "52.XRayR(@wyx2685)")$(txtg "✔")"               "$(txtn "62.Cloudflare Select IP")$(txtg "✔")
-txtn $(txtn "53.XRayR-Docker(@XrayR-project)")$(txtg "✔")"  "$(txtn "63.Cloudflare Select CDN")$(txtg "✔")
-txtn $(txtn "54.XRayR(Alpine)")$(txtg "✔")"                 "$(txtn "64.YACD(Yet another Clash Dashboard)")$(txtg "✔")
-txtn $(txtn "55.V2bX(Vless&Trojan to V2board)")$(txtg "✔")" "$(txtn "65.ClashDashBoard")$(txtg "✔")
-txtn $(txtn "56.Bodhi(Hysteria2 to V2board)")$(txtg "✔")"   "$(txtn "")$(txtg "")
+txtn $(txty "51.XRayR(@XrayR-project)")$(txtg "✔")"         "$(txtn "61.V2bX(Vless&Trojan to V2board)")$(txtg "")
+txtn $(txtn "52.XRayR(@wyx2685)")$(txtg "✔")"               "$(txtn "62.Bodhi(Hysteria2 to V2board)")$(txtg "")
+txtn $(txtn "53.XRayR-Docker(@XrayR-project)")$(txtg "✔")"  "$(txtn "")$(txtg "")
+txtn $(txtb "54.XRayR(Alpine)")$(txtg "✔")"                 "$(txtn "")$(txtg "")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
 txtn " "
@@ -2679,25 +2682,23 @@ warp_tools_run() {
      52) clear && wget -N https://raw.githubusercontent.com/wyx2685/XrayR-release/master/install.sh && bash install.sh ;;
      53) clear && cd ~ && git clone https://github.com/XrayR-project/XrayR-release xrayr && cd xrayr ;;
      54) clear && apk add wget sudo curl && wget -N https://github.com/Cd1s/alpineXrayR/releases/download/one-click/install-xrayr.sh && chmod +x install-xrayr.sh && bash install-xrayr.sh ;;
-     55) clear && wget -N https://raw.githubusercontent.com/wyx2685/V2bX-script/master/install.sh && bash install.sh ;;
-     56) clear && cd ~ && git clone https://github.com/lotusnetwork/bodhi-docker.git && cd bodhi-docker ;;
+     61) clear && wget -N https://raw.githubusercontent.com/wyx2685/V2bX-script/master/install.sh && bash install.sh ;;
+     62) clear && cd ~ && git clone https://github.com/lotusnetwork/bodhi-docker.git && cd bodhi-docker ;;
 
-     61) set_ipv6_github ;;
-    #  61) echo -e "nameserver 2001:67c:2b0::4\nnameserver 2001:67c:2b0::6" > /etc/resolv.conf ;;
-     62) clear && cd ~ && mkdir -p cfip && cd cfip && curl -sSL https://gitlab.com/rwkgyg/CFwarp/raw/main/point/cfip.sh -o cfip.sh && chmod +x cfip.sh && bash cfip.sh ;;
-     63) clear && cd ~ && mkdir -p cfip && cd cfip && curl -sSL https://gitlab.com/rwkgyg/CFwarp/raw/main/point/CFcdnym.sh -o CFcdnym.sh && chmod +x CFcdnym.sh && bash CFcdnym.sh ;;
-     64) clear && docker run -p 1234:80 -d --name yacd --rm ghcr.io/haishanh/yacd:master ;;
-     65) clear && echo -e "\n Todo: ... \n" ;;
+    #  64) clear && docker run -p 1234:80 -d --name yacd --rm ghcr.io/haishanh/yacd:master ;;
+    #  65) clear && echo -e "\n Todo: ... \n" ;;
 
-     91) echo -e "\nIP: $(curl -s ip.sb)\n"  ;;
-     92) echo -e "\n$(ip addr | grep "inet ")\n"  ;;
-     93) echo -e "\n$(ip addr | grep "inet6")\n"  ;;
-     94) set_ipv6_github ;;
+     81) echo -e "\nIP: $(curl -s ip.sb)\n"  ;;
+     82) echo -e "\n$(ip addr | grep "inet ")\n"  ;;
+     83) echo -e "\n$(ip addr | grep "inet6")\n"  ;;
+     84) clear && curl -s4m5 https://www.cloudflare.com/cdn-cgi/trace ;;
+     85) clear && curl -s6m5 https://www.cloudflare.com/cdn-cgi/trace ;;
 
-     95) clear && bash <(curl -Ls https://cdn.jsdelivr.net/gh/missuo/OpenAI-Checker/openai.sh) ;;
-     96) clear && bash <(curl -Ls check.unlock.media) ;;
-     97) clear && curl -s4m5 https://www.cloudflare.com/cdn-cgi/trace ;;
-     98) clear && curl -s6m5 https://www.cloudflare.com/cdn-cgi/trace ;;
+     91) set_ipv6_github ;;
+     92) clear && cd ~ && mkdir -p cfip && cd cfip && curl -sSL https://gitlab.com/rwkgyg/CFwarp/raw/main/point/cfip.sh -o cfip.sh && chmod +x cfip.sh && bash cfip.sh ;;
+     93) clear && cd ~ && mkdir -p cfip && cd cfip && curl -sSL https://gitlab.com/rwkgyg/CFwarp/raw/main/point/CFcdnym.sh -o CFcdnym.sh && chmod +x CFcdnym.sh && bash CFcdnym.sh ;;
+     94) clear && bash <(curl -Ls https://cdn.jsdelivr.net/gh/missuo/OpenAI-Checker/openai.sh) ;;
+     95) clear && bash <(curl -Ls check.unlock.media) ;;
 
       0) qiqtools ;;
       *) echo "无效的输入!" ;;
