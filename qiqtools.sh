@@ -2306,8 +2306,9 @@ EOF
   txtn "默认密码: admin123"
 
   txtn ""
-  txtn "后台管理主题: mxoneX主题,/admin123.php/admin/mxone/mxoneset"
-  txtn "解析接口更换：https://svip.ffzyplay.com/?url="
+  txtn "参考教程: https://www.tweek.top/archives/1706060591396"
+  txtn "后台主题: mxoneX主题,/admin123.php/admin/mxone/mxoneset"
+  txtn "解析接口：https://svip.ffzyplay.com/?url="
 
   txtn ""
   txtn "暴风采集站：https://publish.bfzy.tv/"
