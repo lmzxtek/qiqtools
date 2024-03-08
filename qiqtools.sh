@@ -880,7 +880,6 @@ dd_system_run() {
        *) echo "无效的选择，请输入 Y 或 N，返回..." && return 1 ;;
   esac
 
-
   if [ "$VIRT" =~ ^KVM$ ]; then
     # 如果系统虚拟化不是KVM，则使用OsMutation进行DD系统
     wget -qO OsMutation.sh https://raw.githubusercontent.com/LloydAsp/OsMutation/main/OsMutation.sh && chmod u+x OsMutation.sh && ./OsMutation.sh
@@ -1907,15 +1906,15 @@ system_tools_run() {
       3) clear && iptables_open && remove iptables-persistent ufw firewalld iptables-services > /dev/null 2>&1 && echo "端口已全部开放" ;;
       4) clear && change_ssh_port ;;
       5) clear && change_dns ;;
-      6) 
-        clear && echo -e "请备份数据，将为你重装系统，预计花费15分钟。\n${white}感谢MollyLau和MoeClub的脚本支持！${plain}"
-        reading "确定继续吗？(Y/N): " choice
-        case "$choice" in
-          [Yy]) dd_system_run ;;
-          [Nn]) echo "已取消" ;;
-             *) echo "无效的选择，请输入 Y 或 N。" ;;
-        esac
-        ;;
+      6) clear && dd_system_run ;;
+        # clear && echo -e "请备份数据，将为你重装系统，预计花费15分钟。\n${white}感谢MollyLau和MoeClub的脚本支持！${plain}"
+        # reading "确定继续吗？(Y/N): " choice
+        # case "$choice" in
+        #   [Yy]) dd_system_run ;;
+        #   [Nn]) echo "已取消" ;;
+        #      *) echo "无效的选择，请输入 Y 或 N。" ;;
+        # esac
+        # ;;
       7) clear && banroot_with_new_user ;;
       8) clear && alter_ipv4_ipv6 ;;
       9) clear && ss -tulnape ;;
