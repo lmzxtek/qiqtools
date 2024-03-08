@@ -1356,14 +1356,14 @@ alter_timezone(){
     read -p "请输入你的选择: " sub_choice
 
     case $sub_choice in
-          1) timedatectl set-timezone Asia/Shanghai ;;
-          2) timedatectl set-timezone Asia/Hong_Kong ;;
-          3) timedatectl set-timezone Asia/Tokyo ;;
-          4) timedatectl set-timezone Asia/Seoul ;;
-          5) timedatectl set-timezone Asia/Singapore ;;
-          6) timedatectl set-timezone Asia/Kolkata ;;
-          7) timedatectl set-timezone Asia/Dubai ;;
-          8) timedatectl set-timezone Australia/Sydney ;;
+         1) timedatectl set-timezone Asia/Shanghai ;;
+         2) timedatectl set-timezone Asia/Hong_Kong ;;
+         3) timedatectl set-timezone Asia/Tokyo ;;
+         4) timedatectl set-timezone Asia/Seoul ;;
+         5) timedatectl set-timezone Asia/Singapore ;;
+         6) timedatectl set-timezone Asia/Kolkata ;;
+         7) timedatectl set-timezone Asia/Dubai ;;
+         8) timedatectl set-timezone Australia/Sydney ;;
         11) timedatectl set-timezone Europe/London ;;
         12) timedatectl set-timezone Europe/Paris ;;
         13) timedatectl set-timezone Europe/Berlin ;;
@@ -2271,6 +2271,48 @@ install_maccms(){
   # nginx_status
 }
 
+# 使用Docker安装苹果CMS内容管理系统
+install_maccms_docker_tweek(){
+  
+  mkdir npm && cd /root/npm && touch docker-compose.yml
+
+  cat > /root/npm/docker-compose.yml << EOF
+version: '3'
+services:
+  maccms10:
+      volumes:
+          - ./mnt/maccms:/data
+          - ./mnt/maccms/template:/opt/maccms10/template
+      ports:
+          - '7878:7878'
+      image: gs0245/maccms10
+        #network_mode: host (optional)
+      restart: always
+EOF
+
+  # 下载影视主题到/root/npm/mnt/docker/maccms/template
+  cd /root/npm/mnt/maccms/template && wget https://github.com/dockkkk/mxone/releases/download/mxone/mxone.zip && unzip mxone.zip && rm /root/npm/mnt/maccms/template/mxone.zip
+
+  cd /root/npm && docker-compose up -d
+
+  txtn "MacCMS容器启动成功，以下为配置信息..."
+  txtn ""
+  txtn "默认账户: admin"
+  txtn "默认密码: admin123"
+
+  txtn ""
+  txtn "后台自定义菜单管理主题: mxoneX主题,/admin123.php/admin/mxone/mxoneset"
+  txtn "解析接口更换：https://svip.ffzyplay.com/?url="
+
+  txtn ""
+  txtn "暴风采集站：https://publish.bfzy.tv/"
+  txtn "非凡采集站：http://ffzy5.tv/"
+  txtn "快看采集站：https://kuaikanzy.net/"
+  txtn "乐视采集站：https://www.leshizy1.com/"
+
+  txtn ""
+}
+
 # 站点工具菜单
 website_deploy_menu() {
 
@@ -2572,7 +2614,7 @@ website_deploy_run(){
      63) clear && install_kodbox  ;;   
      64) clear && install curl && bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh) ;;
      65) clear && install_maccms ;;
-     66) clear && install_maccms ;;
+     66) clear && install_maccms_docker_tweek ;;
 
       0) qiqtools ;;
      99) echo -e "重新启动系统，SSH连接将断开..." && reboot && exit ;;
