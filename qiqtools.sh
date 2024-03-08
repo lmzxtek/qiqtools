@@ -361,14 +361,14 @@ get_sysinfo(){
     txtn "\n >>> Check Hostname ..."
     hostname=$(hostname)
 
-    txtn "\n >>> Check System kernel version ..."
+    txtn " >>> Check System kernel version ..."
     kernel_version=$(uname -r)
 
-    txtn "\n >>> Check system virtualization ..."
+    txtn " >>> Check system virtualization ..."
     check_virt
 
     # 尝试使用 lsb_release 获取系统信息
-    txtn "\n >>> Check System version ..."
+    txtn " >>> Check System version ..."
     os_info=$(lsb_release -ds 2>/dev/null)
 
     # 如果 lsb_release 命令失败，则尝试其他方法
@@ -389,16 +389,16 @@ get_sysinfo(){
     cpu_usage=$(top -bn1 | grep 'Cpu(s)' | awk '{print $2 + $4}')
     cpu_usage_percent=$(printf "%.2f" "$cpu_usage")%
 
-    txtn "\n >>> Check CPU cores ..."
+    txtn " >>> Check CPU cores ..."
     cpu_cores=$(nproc)
 
     txtn "\n >>> Check Memory usage ..."
     mem_info=$(free -b | awk 'NR==2{printf "%.2f/%.2f MB (%.2f%%)", $3/1024/1024, $2/1024/1024, $3*100/$2}')
 
-    txtn "\n >>> Check Disk usage ..."
+    txtn " >>> Check Disk usage ..."
     disk_info=$(df -h | awk '$NF=="/"{printf "%s/%s (%s)", $3, $2, $5}')
 
-    txtn "\n >>> Check Swap information ..."
+    txtn " >>> Check Swap information ..."
     swap_used=$(free -m | awk 'NR==3{print $3}')
     swap_total=$(free -m | awk 'NR==3{print $2}')
 
@@ -414,7 +414,7 @@ get_sysinfo(){
     congestion_algorithm=$(sysctl -n net.ipv4.tcp_congestion_control)
     queue_algorithm=$(sysctl -n net.core.default_qdisc)
 
-    txtn "\n >>> Check Sever data transfer ..."
+    txtn " >>> Check Sever data transfer ..."
     txt_data_transfer=$(awk 'BEGIN { rx_total = 0; tx_total = 0 }
         NR > 2 { rx_total += $2; tx_total += $10 }
         END {
@@ -433,8 +433,7 @@ get_sysinfo(){
 
     txtn "\n >>> Check Current time ..."
     current_time=$(date "+%Y-%m-%d %I:%M %p")
-
-    txtn "\n >>> Check System running elapsed time ..."
+    txtn " >>> Check System running elapsed time ..."
     runtime=$(cat /proc/uptime | awk -F. '{run_days=int($1 / 86400);run_hours=int(($1 % 86400) / 3600);run_minutes=int(($1 % 3600) / 60); if (run_days > 0) printf("%d天 ", run_days); if (run_hours > 0) printf("%d时 ", run_hours); printf("%d分\n", run_minutes)}')
 
     txtn "\n >>> Check IP address ..."
