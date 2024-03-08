@@ -348,27 +348,27 @@ get_sysinfo(){
     txtn " >>> Start to get system information ..."
     txtn ""
 
-    txtn " >>> Check CPU arch ..."
+    txtn "\n >>> Check CPU arch ..."
     cpu_arch=$(uname -m)
 
-    txtn " >>> Check system archtecture ..."
+    txtn "\n >>> Check system archtecture ..."
     if [ "$(uname -m)" == "x86_64" ]; then
       cpu_info=$(cat /proc/cpuinfo | grep 'model name' | uniq | sed -e 's/model name[[:space:]]*: //')
     else
       cpu_info=$(lscpu | grep 'BIOS Model name' | awk -F': ' '{print $2}' | sed 's/^[ \t]*//')
     fi
 
-    txtn " >>> Check Hostname ..."
+    txtn "\n >>> Check Hostname ..."
     hostname=$(hostname)
 
-    txtn " >>> Check System kernel version ..."
+    txtn "\n >>> Check System kernel version ..."
     kernel_version=$(uname -r)
 
-    txtn " >>> Check system virtualization ..."
+    txtn "\n >>> Check system virtualization ..."
     check_virt
 
     # 尝试使用 lsb_release 获取系统信息
-    txtn " >>> Check System version ..."
+    txtn "\n >>> Check System version ..."
     os_info=$(lsb_release -ds 2>/dev/null)
 
     # 如果 lsb_release 命令失败，则尝试其他方法
@@ -385,20 +385,20 @@ get_sysinfo(){
       fi
     fi
 
-    txtn " >>> Check CPU usage ..."
+    txtn "\n >>> Check CPU usage ..."
     cpu_usage=$(top -bn1 | grep 'Cpu(s)' | awk '{print $2 + $4}')
     cpu_usage_percent=$(printf "%.2f" "$cpu_usage")%
 
-    txtn " >>> Check CPU cores ..."
+    txtn "\n >>> Check CPU cores ..."
     cpu_cores=$(nproc)
 
-    txtn " >>> Check Memory usage ..."
+    txtn "\n >>> Check Memory usage ..."
     mem_info=$(free -b | awk 'NR==2{printf "%.2f/%.2f MB (%.2f%%)", $3/1024/1024, $2/1024/1024, $3*100/$2}')
 
-    txtn " >>> Check Disk usage ..."
+    txtn "\n >>> Check Disk usage ..."
     disk_info=$(df -h | awk '$NF=="/"{printf "%s/%s (%s)", $3, $2, $5}')
 
-    txtn " >>> Check Swap information ..."
+    txtn "\n >>> Check Swap information ..."
     swap_used=$(free -m | awk 'NR==3{print $3}')
     swap_total=$(free -m | awk 'NR==3{print $2}')
 
@@ -410,11 +410,11 @@ get_sysinfo(){
 
     swap_info="${swap_used}MB/${swap_total}MB (${swap_percentage}%)"
 
-    txtn " >>> Check Congestion Algorithm ..."
+    txtn "\n >>> Check Congestion Algorithm ..."
     congestion_algorithm=$(sysctl -n net.ipv4.tcp_congestion_control)
     queue_algorithm=$(sysctl -n net.core.default_qdisc)
 
-    txtn " >>> Check Sever data transfer ..."
+    txtn "\n >>> Check Sever data transfer ..."
     txt_data_transfer=$(awk 'BEGIN { rx_total = 0; tx_total = 0 }
         NR > 2 { rx_total += $2; tx_total += $10 }
         END {
@@ -431,20 +431,20 @@ get_sysinfo(){
             printf("    总接收: %.2f %s\n    总发送: %.2f %s\n", rx_total, rx_units, tx_total, tx_units);
         }' /proc/net/dev)
 
-    txtn " >>> Check Current time ..."
+    txtn "\n >>> Check Current time ..."
     current_time=$(date "+%Y-%m-%d %I:%M %p")
 
-    txtn " >>> Check System running elapsed time ..."
+    txtn "\n >>> Check System running elapsed time ..."
     runtime=$(cat /proc/uptime | awk -F. '{run_days=int($1 / 86400);run_hours=int(($1 % 86400) / 3600);run_minutes=int(($1 % 3600) / 60); if (run_days > 0) printf("%d天 ", run_days); if (run_hours > 0) printf("%d时 ", run_hours); printf("%d分\n", run_minutes)}')
 
-    txtn " >>> Check IP address ..."
+    txtn "\n >>> Check IP address ..."
     check_IP_address
     # country=$(curl -s ipinfo.io/country)
     # city=$(curl -s ipinfo.io/city)
     # isp_info=$(curl -s ipinfo.io/org)
 
     txtn ""
-    txtn " >>> System information check Done ..."
+    txtn "\n >>> System information check Done ...\n"
     txtn ""
 }
 
