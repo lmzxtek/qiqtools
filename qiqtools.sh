@@ -343,8 +343,8 @@ get_sysinfo(){
     # 函数: 获取IPv4和IPv6地址
     
     clear
-    txtn "\n Welcome for using QiQTools "
-    txtn "\n >>> Start to get system information ..."
+    txby "\n Welcome for using QiQTools "
+    txtp "\n >>> Start to get system information ..."
 
     txtn "\n >>> Check Hostname ..."
     hostname=$(hostname)
