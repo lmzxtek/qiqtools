@@ -179,7 +179,7 @@ check_IPV4(){
     COUNTRY4=$iso2_code4
     ASNORG4=$local_isp4
     isp_info=$local_isp4
-    [[ -n "$WAN4" ]] && IP4_INFO="$WARPSTATUS4 $iso2_code4 -> $local_isp4"
+    [[ -n "$WAN4" ]] && IP4_INFO="($WARPSTATUS4 $iso2_code4 -> $local_isp4)"
 	fi
 }
 
@@ -204,7 +204,7 @@ check_IPV6(){
     COUNTRY6=$iso2_code6
     ASNORG6=$local_isp6
     isp_info=$local_isp6
-    [[ -n "$WAN6" ]] && IP6_INFO="$WARPSTATUS6 $iso2_code6 -> $local_isp6"
+    [[ -n "$WAN6" ]] && IP6_INFO="($WARPSTATUS6 $iso2_code6 -> $local_isp6)"
 	fi
 }
 
@@ -467,8 +467,8 @@ system_info() {
   txtkvn " 系统时间: " "$current_time"
   txtkvn " 运行时长: " "$runtime"
   txtkvn "——————————————————————————————————————"
-  txtkvy " IPv4地址: " "$WAN4" "\t($IP4_INFO)"
-  txtkvy " IPv6地址: " "$WAN6" "\t($IP6_INFO)"
+  txtkvy " IPv4地址: " "$WAN4\t$IP4_INFO"
+  txtkvy " IPv6地址: " "$WAN6\t$IP6_INFO"
   # WANIP_show
   txtkvn "——————————————————————————————————————"
   txtkvn " 拥堵算法: " "${yellow}$congestion_algorithm" "${plain}$queue_algorithm"
