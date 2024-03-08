@@ -2297,7 +2297,7 @@ EOF
 
   clear
   txtn ""
-  txtn "MacCMS容器启动成功，以下为配置信息..."
+  txtn "MacCMS部署成功，以下为配置信息..."
   txtn ""
   txtn "访问链接: https://$WAN4:7878"
   txtn "访问链接: https://[$WAN6]:7878"
