@@ -174,11 +174,11 @@ check_IPV4(){
 		# local iso2_code4=$(curl -4 -sS https://www.cloudflare.com/cdn-cgi/trace | grep "loc=" | awk -F= '{print $2}')
 		# local warp_code4=$(curl -4 -sS https://www.cloudflare.com/cdn-cgi/trace | grep "warp=" | awk -F= '{print $2}')
 
-    [[ "$warp_ipv4" =~ ^on$ ]] && WARPSTATUS4="${red}${bold}warp${plain}"
     WAN4=$local_ipv4
     COUNTRY4=$iso2_code4
     ASNORG4=$local_isp4
-    [[ -n "$local_isp4" ]] && isp_info=$local_isp4
+    [[ "$warp_ipv4" =~ ^on$ ]] && WARPSTATUS4="${red}${bold}warp${plain}"
+    [[ "$warp_ipv4" =~ ^off$ ]] && [[ -n "$local_isp4" ]] && isp_info=$local_isp4
     [[ -n "$WAN4" ]] && IP4_INFO="($WARPSTATUS4 $iso2_code4 -> $local_isp4)"
 	fi
 }
@@ -199,11 +199,11 @@ check_IPV6(){
 		local warp_ipv6=$( echo -e "$res_ipv6"  | grep "warp=" | awk -F= '{print $2}')
 		local local_isp6=$(curl -s -6 --max-time 10 --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36" "https://api.ip.sb/geoip/${local_ipv6}" | grep organization | cut -f4 -d '"')
     
-    [[ "$warp_ipv6" =~ ^on$ ]] && WARPSTATUS6="${red}${bold}warp${plain}"
     WAN6=$local_ipv6
     COUNTRY6=$iso2_code6
     ASNORG6=$local_isp6
-    [[ -n "$local_isp6" ]] && isp_info=$local_isp6
+    [[ "$warp_ipv6" =~ ^on$ ]] && WARPSTATUS6="${red}${bold}warp${plain}"
+    [[ "$warp_ipv6" =~ ^off$ ]] && [[ -n "$local_isp6" ]] && isp_info=$local_isp6
     [[ -n "$WAN6" ]] && IP6_INFO="($WARPSTATUS6 $iso2_code6 -> $local_isp6)"
 	fi
 }
