@@ -2643,25 +2643,25 @@ txtn $(txbr "▼ 节点管理")$(txbb " ✈✈✈ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
-txtn $(txtn "81.Show IP(ip.sb)")$(txtg "✔")"           "$(txtn "91.Set GitHUB(IPv6)")$(txtg "✔")
-txtn $(txtn "82.Show IPv4(local)")$(txtg "✔")"         "$(txtb "92.Cloudflare Select IP")$(txtg "✔")
-txtn $(txtn "83.Show IPv6(local)")$(txtg "✔")"         "$(txtn "93.Cloudflare Select CDN")$(txtg "✔")
-txtn $(txtp "84.Cloudflare(IPv4)")$(txtg "✔")"         "$(txtr "94.Check-OpenAI(OpenAI解锁)")$(txtg "✔")
-txtn $(txtn "85.Cloudflare(IPv6)")$(txtg "✔")"         "$(txtb "95.Check-Region(区域媒体解锁)")$(txtg "✔")
+txtn $(txtn "81.Show IP(ip.sb)")$(txtg "✔")"                "$(txtn "91.Set GitHUB(IPv6)")$(txtg "✔")
+txtn $(txtn "82.Show IPv4(local)")$(txtg "✔")"              "$(txtb "92.Cloudflare Select IP")$(txtg "✔")
+txtn $(txtn "83.Show IPv6(local)")$(txtg "✔")"              "$(txtn "93.Cloudflare Select CDN")$(txtg "✔")
+txtn $(txtp "84.Cloudflare(IPv4)")$(txtg "✔")"              "$(txtr "94.Check-OpenAI(OpenAI解锁)")$(txtg "✔")
+txtn $(txtn "85.Cloudflare(IPv6)")$(txtg "✔")"              "$(txtn "95.Check-Region(区域媒体解锁)")$(txtg "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txty " 1.Warp(@fscarmen)")$(txtg "✔")"          "$(txtn "11.XRay(@233boy)")$(txtg "✔")
-txtn $(txtn " 2.Warp(@hamid-gh98)")$(txtg "✔")"        "$(txtn "12.V2Ray(@233boy)")$(txtg "✔")
-txtn $(txtn " 3.Warp(@Misaka-blog)")$(txtg "✔")"       "$(txtn "13.V2Ray-Agent(@mack-a)")$(txtg "✔")
-txtn $(txtn " 4.ArgoX")$(txtg "✔")"                    "$(txtn "14.Hysteria2(@Misaka)")$(txtg "✔")
-txtn $(txtn " 5.SingBox四合一")$(txtg "✔")"             "$(txtn "15.TUIC5(@Misaka)")$(txtg "✔")
-txtn $(txty " 6.SingBox全家桶(@fscarmen)")$(txtg "✔")"  "$(txtn "16.mianyang()")$(txtg "✔")
-txtn $(txtn " 7.SingBox-Argox(@fscarmen)")$(txtg "✔")"  "$(txtn "")$(txtb "")
+txtn $(txty " 1.Warp(@fscarmen)")$(txtg "✔")"               "$(txtn "11.XRay(@233boy)")$(txtg "✔")
+txtn $(txtn " 2.Warp(@hamid-gh98)")$(txtg "✔")"             "$(txtn "12.V2Ray(@233boy)")$(txtg "✔")
+txtn $(txtn " 3.Warp(@Misaka-blog)")$(txtg "✔")"            "$(txtn "13.V2Ray-Agent(@mack-a)")$(txtg "✔")
+txtn $(txtn " 4.ArgoX")$(txtg "✔")"                         "$(txtn "14.Hysteria2(@Misaka)")$(txtg "✔")
+txtn $(txtn " 5.SingBox四合一(yg)")$(txtg "✔")"              "$(txtn "15.TUIC5(@Misaka)")$(txtg "✔")
+txtn $(txtn " 6.SingBox-Argox(@fscarmen)")$(txtg "✔")"      "$(txtn "16.mianyang()")$(txtg "✔")
+txtn $(txby " 7.SingBox全家桶(@fscarmen)")$(txtr "✔")"      "$(txtn "")$(txtb "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "51.XRayR(@XrayR-project)")$(txtg "✔")"         "$(txtn "61.V2bX(Vless&Trojan to V2board)")$(txtg "")
 txtn $(txtn "52.XRayR(@wyx2685)")$(txtg "✔")"               "$(txtn "62.Bodhi(Hysteria2 to V2board)")$(txtg "")
 txtn $(txtn "53.XRayR-Docker(@XrayR-project)")$(txtg "✔")"  "$(txtn "")$(txtg "")
-txtn $(txtb "54.XRayR(Alpine)")$(txtg "✔")"                 "$(txtn "")$(txtg "")
+txtn $(txtc "54.XRayR(Alpine)")$(txtg "✔")"                 "$(txtn "")$(txtg "")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
 txtn " "
@@ -2687,8 +2687,8 @@ warp_tools_run() {
         ;;
       4) clear && bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/argox/main/argox.sh)  ;;
       5) clear && bash <(curl -Ls https://gitlab.com/rwkgyg/sing-box-yg/raw/main/sb.sh)  ;;
-      6) clear && bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/sing-box/main/sing-box.sh) ;;
-      7) clear && bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/sba/main/sba.sh) ;;
+      6) clear && bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/sba/main/sba.sh) ;;
+      7) clear && bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/sing-box/main/sing-box.sh) ;;
       # 8) clear && bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/argox/main/argox.sh) ;;
 
      11) clear && bash <(wget -qO- -o- https://github.com/233boy/Xray/raw/main/install.sh) ;;
