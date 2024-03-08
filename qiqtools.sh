@@ -872,7 +872,7 @@ dd_system_run() {
   clear
   txty "\n请备份数据，将为你重装系统，预计花费15分钟。"
   txtn " \t虚拟化：${red}$VIRT${plain} \n"
-  read -p "\n确定继续吗？(Y/N): " choice
+  read -p "确定继续吗？(Y/N): " choice
   
   case "$choice" in
     [Yy]) clear ;;
