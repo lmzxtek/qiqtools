@@ -166,7 +166,7 @@ check_IPV4(){
 	else
     txtn " >>> Check IPv4 info ..."
 		# local_ipv4=$(curl -4 -s --max-time 10 api64.ipify.org)
-    local res_ipv4=$(curl -4 -sS --retry 2 --max-time 3 https://www.cloudflare.com/cdn-cgi/trace)
+    local res_ipv4=$(curl -4 -sS --retry 2 --max-time 1 https://www.cloudflare.com/cdn-cgi/trace)
 		local local_ipv4=$( echo -e "$res_ipv4" | grep "ip="   | awk -F= '{print $2}')
 		local iso2_code4=$( echo -e "$res_ipv4" | grep "loc="  | awk -F= '{print $2}')
 		local warp_ipv4=$( echo -e "$res_ipv4"  | grep "warp=" | awk -F= '{print $2}')
@@ -193,7 +193,7 @@ check_IPV6(){
 	else
     txtn " >>> Check IPv6 info ..."
 		# local_ipv6=$(curl -6 -s --max-time 20 api64.ipify.org)
-    local res_ipv6=$(curl -6 -sS --retry 2 --max-time 3 https://www.cloudflare.com/cdn-cgi/trace)
+    local res_ipv6=$(curl -6 -sS --retry 2 --max-time 1 https://www.cloudflare.com/cdn-cgi/trace)
 		local local_ipv6=$( echo -e "$res_ipv6" | grep "ip="   | awk -F= '{print $2}')
 		local iso2_code6=$( echo -e "$res_ipv6" | grep "loc="  | awk -F= '{print $2}')
 		local warp_ipv6=$( echo -e "$res_ipv6"  | grep "warp=" | awk -F= '{print $2}')
