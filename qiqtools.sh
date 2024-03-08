@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.3.6
+script_version=v0.3.7
 #==========================
 
 # Language
@@ -427,7 +427,7 @@ get_sysinfo(){
             if (tx_total > 1024) { tx_total /= 1024; tx_units = "MB"; }
             if (tx_total > 1024) { tx_total /= 1024; tx_units = "GB"; }
 
-            printf("    总接收: %.2f %s\n    总发送: %.2f %s\n", rx_total, rx_units, tx_total, tx_units);
+            printf("   总接收: %.2f %s\n   总发送: %.2f %s\n", rx_total, rx_units, tx_total, tx_units);
         }' /proc/net/dev)
 
     txtn "\n >>> Check Current time ..."
