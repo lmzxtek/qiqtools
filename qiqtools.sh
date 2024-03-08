@@ -1339,45 +1339,46 @@ ${plain}-------------------------------
 # 修改系统时区
 alter_timezone(){
   while true; do
-      echo "系统时间信息"
+    clear
+    echo "系统时间信息"
 
-      # 获取当前系统时区
-      current_timezone=$(timedatectl show --property=Timezone --value)
+    # 获取当前系统时区
+    current_timezone=$(timedatectl show --property=Timezone --value)
 
-      # 获取当前系统时间
-      current_time=$(date +"%Y-%m-%d %H:%M:%S")
+    # 获取当前系统时间
+    current_time=$(date +"%Y-%m-%d %H:%M:%S")
 
-      # 显示时区和时间
-      echo "当前系统时区：$current_timezone"
-      echo "当前系统时间：$current_time"
+    # 显示时区和时间
+    echo "当前系统时区：$current_timezone"
+    echo "当前系统时间：$current_time"
 
-      timezone_menu
-      read -p "请输入你的选择: " sub_choice
+    timezone_menu
+    read -p "请输入你的选择: " sub_choice
 
-      case $sub_choice in
-           1) timedatectl set-timezone Asia/Shanghai ;;
-           2) timedatectl set-timezone Asia/Hong_Kong ;;
-           3) timedatectl set-timezone Asia/Tokyo ;;
-           4) timedatectl set-timezone Asia/Seoul ;;
-           5) timedatectl set-timezone Asia/Singapore ;;
-           6) timedatectl set-timezone Asia/Kolkata ;;
-           7) timedatectl set-timezone Asia/Dubai ;;
-           8) timedatectl set-timezone Australia/Sydney ;;
-          11) timedatectl set-timezone Europe/London ;;
-          12) timedatectl set-timezone Europe/Paris ;;
-          13) timedatectl set-timezone Europe/Berlin ;;
-          14) timedatectl set-timezone Europe/Moscow ;;
-          15) timedatectl set-timezone Europe/Amsterdam ;;
-          16) timedatectl set-timezone Europe/Madrid ;;
-          21) timedatectl set-timezone America/Los_Angeles ;;
-          22) timedatectl set-timezone America/New_York ;;
-          23) timedatectl set-timezone America/Vancouver ;;
-          24) timedatectl set-timezone America/Mexico_City ;;
-          25) timedatectl set-timezone America/Sao_Paulo ;;
-          26) timedatectl set-timezone America/Argentina/Buenos_Aires ;;
-          0) break ;; # 跳出循环，退出菜单
-          *) break ;; # 跳出循环，退出菜单
-      esac
+    case $sub_choice in
+          1) timedatectl set-timezone Asia/Shanghai ;;
+          2) timedatectl set-timezone Asia/Hong_Kong ;;
+          3) timedatectl set-timezone Asia/Tokyo ;;
+          4) timedatectl set-timezone Asia/Seoul ;;
+          5) timedatectl set-timezone Asia/Singapore ;;
+          6) timedatectl set-timezone Asia/Kolkata ;;
+          7) timedatectl set-timezone Asia/Dubai ;;
+          8) timedatectl set-timezone Australia/Sydney ;;
+        11) timedatectl set-timezone Europe/London ;;
+        12) timedatectl set-timezone Europe/Paris ;;
+        13) timedatectl set-timezone Europe/Berlin ;;
+        14) timedatectl set-timezone Europe/Moscow ;;
+        15) timedatectl set-timezone Europe/Amsterdam ;;
+        16) timedatectl set-timezone Europe/Madrid ;;
+        21) timedatectl set-timezone America/Los_Angeles ;;
+        22) timedatectl set-timezone America/New_York ;;
+        23) timedatectl set-timezone America/Vancouver ;;
+        24) timedatectl set-timezone America/Mexico_City ;;
+        25) timedatectl set-timezone America/Sao_Paulo ;;
+        26) timedatectl set-timezone America/Argentina/Buenos_Aires ;;
+        0) break ;; # 跳出循环，退出菜单
+        *) break ;; # 跳出循环，退出菜单
+    esac
   done
 }
 
@@ -1870,7 +1871,7 @@ txtn $(txtn " 4.修改SSH连接端口")$(txtg "✔")"        "$(txtb "14.系统�
 txtn $(txty " 5.优化DNS地址")$(txtg "✔")"            "$(txtn "15.开启BBR3加速")$(txty "✔")
 txtn $(txtn " 6.一键重装系统")$(txtg "✔")"           "$(txtn "16.防火墙高级管理器")$(txty "✔")
 txtn $(txtn " 7.禁用ROOT账户创建新账户")$(txtg "✔")" "$(txtn "17.用户管理")$(txty "✔")
-txtn $(txtb " 8.切换优先ipv4/ipv6")$(txtg "✔")"      "$(txtn "18.用户/密码生成器")$(txty "✔")
+txtn $(txtp " 8.切换优先ipv4/ipv6")$(txtg "✔")"      "$(txtn "18.用户/密码生成器")$(txty "✔")
 txtn $(txtn " 9.查看端口占用状态")$(txtg "✔")"       "$(txtn "19.定时任务管理")$(txty "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
@@ -3467,7 +3468,7 @@ txtn $(txtn "21.常用工具")$(txtn "❃")"       "$(txtn "31.面板工具")$(t
 txtn $(txty "22.系统工具")$(txtp "❁")"       "$(txtn "32.其他工具")$(txtb "の")
 txtn $(txtr "23.节点工具")$(txty "✈")"       "$(txtn "")$(txtb "")
 txtn "====================================="
-txtn $(txtr "99")$(txtb ".重启系统☢")"       "$(txtb "00.脚本更新")$(txtb "☋")
+txtn $(txty "99")$(txtb ".重启系统☢")"       "$(txtb "00.脚本更新")$(txtb "☋")
 txtn "—————————————————————————————————————"
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 # txtn $(txtn " 0.退出脚本")$(txtr "✖")"       "$(txtb "♧♧ ")$(txtc "QiQTools") $(txtb "$script_version")
