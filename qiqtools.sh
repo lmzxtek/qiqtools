@@ -166,7 +166,7 @@ check_IPV4(){
 	else
     txtn " >>> Check IPv4 info ..."
 		# local_ipv4=$(curl -4 -s --max-time 10 api64.ipify.org)
-    local res_ipv4=$(curl -4 -sS --retry 2 --max-time 5 https://www.cloudflare.com/cdn-cgi/trace)
+    local res_ipv4=$(curl -4 -sS --retry 2 --max-time 3 https://www.cloudflare.com/cdn-cgi/trace)
 		local local_ipv4=$( echo -e "$res_ipv4" | grep "ip="   | awk -F= '{print $2}')
 		local iso2_code4=$( echo -e "$res_ipv4" | grep "loc="  | awk -F= '{print $2}')
 		local warp_ipv4=$( echo -e "$res_ipv4"  | grep "warp=" | awk -F= '{print $2}')
@@ -193,7 +193,7 @@ check_IPV6(){
 	else
     txtn " >>> Check IPv6 info ..."
 		# local_ipv6=$(curl -6 -s --max-time 20 api64.ipify.org)
-    local res_ipv6=$(curl -6 -sS --retry 2 --max-time 5 https://www.cloudflare.com/cdn-cgi/trace)
+    local res_ipv6=$(curl -6 -sS --retry 2 --max-time 3 https://www.cloudflare.com/cdn-cgi/trace)
 		local local_ipv6=$( echo -e "$res_ipv6" | grep "ip="   | awk -F= '{print $2}')
 		local iso2_code6=$( echo -e "$res_ipv6" | grep "loc="  | awk -F= '{print $2}')
 		local warp_ipv6=$( echo -e "$res_ipv6"  | grep "warp=" | awk -F= '{print $2}')
@@ -210,7 +210,7 @@ check_IPV6(){
 
 # 获取当前服务器的IP地址
 check_IP_address() {
-  if [[ $(curl -sS --retry 2 --max-time 5 https://www.cloudflare.com/ -I | grep "text/plain") != "" ]]; then 
+  if [[ $(curl -sS --retry 2 --max-time 3 https://www.cloudflare.com/ -I | grep "text/plain") != "" ]]; then 
     echo "Your IP is BLOCKED!"
     txtn " >>> Check IP failed ..."
     return 1
@@ -2720,7 +2720,7 @@ txtn $(txtn "21.3X-UI(@mhsanaei)")$(txtg "✔")"       "$(txtn "31.Hiddify")$(tx
 txtn $(txtb "22.X-UI(@alireza0)")$(txtg "✔")"        "$(txty "32.V2RayA")$(txtg "✔")
 txtn $(txtn "23.X-UI(@FranzKafkaYu)")$(txtg "✔")"    "$(txtn "33.Daed")$(txtg "✔")
 txtn $(txtn "24.X-UI(@rwkgyg)")$(txtg "✔")"          "$(txtn "34.Daed-Docker")$(txtg "✔")
-txtn $(txtn "25.S-UI(@alireza0)")$(txtg "✔")"        "$(txtn "")$(txtg "")
+txtn $(txtb "25.X-UI(alpine)")$(txtg "✔")"           "$(txtn "35.S-UI(@alireza0)")$(txtg "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "41.XBoard")$(txtg "✔")"                 "$(txtn "44.LotusBoard")$(txtg "✔")
 txtn $(txtn "42.V2Board")$(txtg "✔")"                "$(txtn "45.SSPanel")$(txtg "✔")
@@ -2741,12 +2741,13 @@ board_tools_run() {
      22) clear && bash <(curl -Ls https://raw.githubusercontent.com/alireza0/x-ui/master/install.sh) ;;
      23) clear && bash <(curl -Ls https://raw.githubusercontent.com/FranzKafkaYu/x-ui/master/install.sh) ;;
      24) clear && bash <(curl -Ls https://gitlab.com/rwkgyg/x-ui-yg/raw/main/install.sh)  ;;
-     25) clear && bash <(curl -Ls https://raw.githubusercontent.com/alireza0/s-ui/master/install.sh)  ;;
+     25) clear && apk add curl && apk add bash && bash <(curl -Ls https://raw.githubusercontent.com/Lynn-Becky/Alpine-x-ui/main/alpine-xui.sh)  ;;
 
      31) clear && bash -c "$(curl -Lfo- https://raw.githubusercontent.com/hiddify/hiddify-config/main/common/download_install.sh)" ;;
      32) clear && echo -e "\n Todo: ... \n" ;;
      33) clear && sh -c "$(curl -sL https://github.com/daeuniverse/dae-installer/raw/main/installer.sh)" @ update-geoip update-geosite ;;
      34) clear && docker run -d --privileged --network=host --pid=host --restart=unless-stopped  -v /sys:/sys  -v /etc/daed:/etc/daed --name=daed ghcr.io/daeuniverse/daed:latest ;;
+     35) clear && bash <(curl -Ls https://raw.githubusercontent.com/alireza0/s-ui/master/install.sh)  ;;
 
       0) qiqtools ;;
       *) echo "无效的输入!" ;;
