@@ -342,24 +342,22 @@ check_virt(){
 get_sysinfo(){
     # 函数: 获取IPv4和IPv6地址
     
-    txtn ""
-    txtn " Welcome for using QiQTools "
-    txtn ""
-    txtn " >>> Start to get system information ..."
-    txtn ""
+    clear
+    txtn "\n Welcome for using QiQTools "
+    txtn "\n >>> Start to get system information ..."
+
+    txtn "\n >>> Check Hostname ..."
+    hostname=$(hostname)
 
     txtn "\n >>> Check CPU arch ..."
     cpu_arch=$(uname -m)
 
-    txtn "\n >>> Check system archtecture ..."
+    txtn " >>> Check system archtecture ..."
     if [ "$(uname -m)" == "x86_64" ]; then
       cpu_info=$(cat /proc/cpuinfo | grep 'model name' | uniq | sed -e 's/model name[[:space:]]*: //')
     else
       cpu_info=$(lscpu | grep 'BIOS Model name' | awk -F': ' '{print $2}' | sed 's/^[ \t]*//')
     fi
-
-    txtn "\n >>> Check Hostname ..."
-    hostname=$(hostname)
 
     txtn " >>> Check System kernel version ..."
     kernel_version=$(uname -r)
