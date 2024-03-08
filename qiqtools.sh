@@ -2274,7 +2274,7 @@ install_maccms(){
 # 使用Docker安装苹果CMS内容管理系统
 install_maccms_docker_tweek(){
   
-  mkdir npm && cd /root/npm && touch docker-compose.yml
+  cd /root && mkdir npm && cd /root/npm && touch docker-compose.yml
 
   cat > /root/npm/docker-compose.yml << EOF
 version: '3'
@@ -2290,17 +2290,18 @@ services:
       restart: always
 EOF
 
+  cd /root/npm && docker-compose up -d
+  
   # 下载影视主题到/root/npm/mnt/docker/maccms/template
   cd /root/npm/mnt/maccms/template && wget https://github.com/dockkkk/mxone/releases/download/mxone/mxone.zip && unzip mxone.zip && rm /root/npm/mnt/maccms/template/mxone.zip
 
-  cd /root/npm && docker-compose up -d
 
   clear
   txtn ""
   txtn "MacCMS部署成功，以下为配置信息..."
   txtn ""
-  txtn "访问链接: https://$WAN4:7878"
-  txtn "访问链接: https://[$WAN6]:7878"
+  txtn "IPv4链接: https://$WAN4:7878/admin123.php"
+  txtn "IPv6链接: https://[$WAN6]:7878/admin123.php"
   txtn ""
   txtn "默认账户: admin"
   txtn "默认密码: admin123"
