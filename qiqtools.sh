@@ -344,7 +344,7 @@ get_sysinfo(){
     
     clear
     txby "\n Welcome to QiQTools "
-    txtp "\n >>> Start to get system information ..."
+    txtp "\n >>> Start to get system Info."
 
     txtn "\n >>> Check Hostname ..."
     hostname=$(hostname)
