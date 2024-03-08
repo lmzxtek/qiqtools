@@ -336,6 +336,7 @@ check_virt(){
   elif [ $(type -p virt-what) ]; then
     VIRT=$(virt-what)
   fi
+  VIRT=${VIRT^^} || VIRT="UNKNOWN"
 }
 
 # 获取系统信息
