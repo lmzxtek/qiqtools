@@ -881,6 +881,7 @@ dd_system_run() {
   esac
 
   if [[ "$VIRT" =~ ^KVM$ ]]; then
+    clear
   else
     # 如果系统虚拟化不是KVM，则使用OsMutation进行DD系统
     wget -qO OsMutation.sh https://raw.githubusercontent.com/LloydAsp/OsMutation/main/OsMutation.sh && chmod u+x OsMutation.sh && ./OsMutation.sh
