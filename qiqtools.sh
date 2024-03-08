@@ -456,7 +456,7 @@ system_info() {
   txtkvn "  系统版本: " "$os_info"
   txtkvy "  内核版本: " "$kernel_version"
   txtkvn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-  txtkvn "  CPU架构: " "$cpu_arch   核心数: ${yellow}$cpu_cores${plain}"
+  txtkvn "  CPU架构: " "${yellow}$cpu_arch${plain}   核心数: ${yellow}$cpu_cores${plain}"
   txtkvn "  CPU型号: " "$cpu_info"
   txtkvn "  CPU占用: " "$cpu_usage_percent"
   txtkvn "——————————————————————————————————————"
