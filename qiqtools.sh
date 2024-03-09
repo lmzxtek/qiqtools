@@ -580,7 +580,7 @@ gather_sysinfo(){
   echo -e "Disk       : $TOTAL_DISK"
   echo -e "Distro     : $DISTRO"
   echo -e "Kernel     : $KERNEL"
-  echo -e "VM Type    : $VIRT"
+  echo -e "VM Type    : ${red}$VIRT"
   echo -e "IPv4|IPv6  : $ONLINE"
 
 }
