@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.3.8
+script_version=v0.3.9
 #==========================
 
 # Language
@@ -1883,6 +1883,7 @@ txtn $(txty " 6.一键DD系统")$(txtr "✔")"             "$(txtn "16.防火墙
 txtn $(txtn " 7.禁用ROOT账户")$(txtg "✔")"           "$(txtn "17.用户管理")$(txtn "✔")
 txtn $(txtp " 8.切换优先ipv4/ipv6")$(txtg "✔")"      "$(txtn "18.用户/密码生成器")$(txtn "✔")
 txtn $(txtn " 9.查看端口占用状态")$(txtg "✔")"       "$(txtn "19.定时任务管理")$(txtn "✔")
+txtn $(txtn "10.系统测速(NodeBench)")$(txtg "✔")"    "$(txtn "")$(txtn "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")"             "$(txtr "99")$(txtb ".重启服务器")$(txtc "☢")
@@ -1929,6 +1930,7 @@ system_tools_run() {
       7) clear && banroot_with_new_user ;;
       8) clear && alter_ipv4_ipv6 ;;
       9) clear && ss -tulnape ;;
+     10) clear && bash <(curl -sL https://raw.githubusercontent.com/LloydAsp/NodeBench/main/NodeBench.sh) ;;
 
      11) clear && set_swap ;;
      12) clear && change_sys_name  ;;
