@@ -580,13 +580,17 @@ gather_sysinfo(){
   echo -e "Disk       : $TOTAL_DISK"
   echo -e "Distro     : $DISTRO"
   echo -e "Kernel     : $KERNEL"
-  echo -e "VM Type    : ${red}$VIRT"
+  echo -e "VM Type    : ${red}$VIRT${plain}"
   echo -e "IPv4|IPv6  : $ONLINE"
 
 }
 
 # Function to get information from IP Address using ip-api.com free API
 function ip_info() {
+
+  command -v ping >/dev/null 2>&1 && LOCAL_PING=true || unset LOCAL_PING
+  command -v curl >/dev/null 2>&1 && LOCAL_CURL=true || unset LOCAL_CURL
+  [[ ! -z $LOCAL_CURL ]] && IP_CHECK_CMD="curl -s -m 4" || IP_CHECK_CMD="wget -qO- -T 4"
   IPV4_CHECK=$( (ping -4 -c 1 -W 4 ipv4.google.com >/dev/null 2>&1 && echo true) || $IP_CHECK_CMD -4 icanhazip.com 2> /dev/null)
   IPV6_CHECK=$( (ping -6 -c 1 -W 4 ipv6.google.com >/dev/null 2>&1 && echo true) || $IP_CHECK_CMD -6 icanhazip.com 2> /dev/null)
 
