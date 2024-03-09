@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.3.9
+script_version=v0.4.0
 #==========================
 
 # Language
@@ -480,67 +480,67 @@ system_info() {
 
 gather_sysinfo(){
 
-# gather basic system information (inc. CPU, AES-NI/virt status, RAM + swap + disk size)
+  # gather basic system information (inc. CPU, AES-NI/virt status, RAM + swap + disk size)
 
-UPTIME=$(uptime | awk -F'( |,|:)+' '{d=h=m=0; if ($7=="min") m=$6; else {if ($7~/^day/) {d=$6;h=$8;m=$9} else {h=$6;m=$7}}} {print d+0,"days,",h+0,"hours,",m+0,"minutes"}')
+  UPTIME=$(uptime | awk -F'( |,|:)+' '{d=h=m=0; if ($7=="min") m=$6; else {if ($7~/^day/) {d=$6;h=$8;m=$9} else {h=$6;m=$7}}} {print d+0,"days,",h+0,"hours,",m+0,"minutes"}')
 
-# check for local lscpu installs
-command -v lscpu >/dev/null 2>&1 && LOCAL_LSCPU=true || unset LOCAL_LSCPU
-if [[ $ARCH = *aarch64* || $ARCH = *arm* ]] && [[ ! -z $LOCAL_LSCPU ]]; then
-	CPU_PROC=$(lscpu | grep "Model name" | sed 's/Model name: *//g')
-else
-	CPU_PROC=$(awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
-fi
+  # check for local lscpu installs
+  command -v lscpu >/dev/null 2>&1 && LOCAL_LSCPU=true || unset LOCAL_LSCPU
+  if [[ $ARCH = *aarch64* || $ARCH = *arm* ]] && [[ ! -z $LOCAL_LSCPU ]]; then
+    CPU_PROC=$(lscpu | grep "Model name" | sed 's/Model name: *//g')
+  else
+    CPU_PROC=$(awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
+  fi
 
-if [[ $ARCH = *aarch64* || $ARCH = *arm* ]] && [[ ! -z $LOCAL_LSCPU ]]; then
-	CPU_CORES=$(lscpu | grep "^[[:blank:]]*CPU(s):" | sed 's/CPU(s): *//g')
-	CPU_FREQ=$(lscpu | grep "CPU max MHz" | sed 's/CPU max MHz: *//g')
-	[[ -z "$CPU_FREQ" ]] && CPU_FREQ="???"
-	CPU_FREQ="${CPU_FREQ} MHz"
-else
-	CPU_CORES=$(awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo)
-	CPU_FREQ=$(awk -F: ' /cpu MHz/ {freq=$2} END {print freq " MHz"}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
-fi
+  if [[ $ARCH = *aarch64* || $ARCH = *arm* ]] && [[ ! -z $LOCAL_LSCPU ]]; then
+    CPU_CORES=$(lscpu | grep "^[[:blank:]]*CPU(s):" | sed 's/CPU(s): *//g')
+    CPU_FREQ=$(lscpu | grep "CPU max MHz" | sed 's/CPU max MHz: *//g')
+    [[ -z "$CPU_FREQ" ]] && CPU_FREQ="???"
+    CPU_FREQ="${CPU_FREQ} MHz"
+  else
+    CPU_CORES=$(awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo)
+    CPU_FREQ=$(awk -F: ' /cpu MHz/ {freq=$2} END {print freq " MHz"}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
+  fi
 
-CPU_AES=$(cat /proc/cpuinfo | grep aes)
-[[ -z "$CPU_AES" ]] && CPU_AES="\xE2\x9D\x8C Disabled" || CPU_AES="\xE2\x9C\x94 Enabled"
-CPU_VIRT=$(cat /proc/cpuinfo | grep 'vmx\|svm')
-[[ -z "$CPU_VIRT" ]] && CPU_VIRT="\xE2\x9D\x8C Disabled" || CPU_VIRT="\xE2\x9C\x94 Enabled"
+  CPU_AES=$(cat /proc/cpuinfo | grep aes)
+  [[ -z "$CPU_AES" ]] && CPU_AES="\xE2\x9D\x8C Disabled" || CPU_AES="\xE2\x9C\x94 Enabled"
+  CPU_VIRT=$(cat /proc/cpuinfo | grep 'vmx\|svm')
+  [[ -z "$CPU_VIRT" ]] && CPU_VIRT="\xE2\x9D\x8C Disabled" || CPU_VIRT="\xE2\x9C\x94 Enabled"
 
-TOTAL_RAM_RAW=$(free | awk 'NR==2 {print $2}')
-TOTAL_RAM=$(format_size $TOTAL_RAM_RAW)
-TOTAL_SWAP_RAW=$(free | grep Swap | awk '{ print $2 }')
-TOTAL_SWAP=$(format_size $TOTAL_SWAP_RAW)
+  TOTAL_RAM_RAW=$(free | awk 'NR==2 {print $2}')
+  TOTAL_RAM=$(format_size $TOTAL_RAM_RAW)
+  TOTAL_SWAP_RAW=$(free | grep Swap | awk '{ print $2 }')
+  TOTAL_SWAP=$(format_size $TOTAL_SWAP_RAW)
 
-# total disk size is calculated by adding all partitions of the types listed below (after the -t flags)
-TOTAL_DISK_RAW=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total 2>/dev/null | grep total | awk '{ print $2 }')
-TOTAL_DISK=$(format_size $TOTAL_DISK_RAW)
-DISTRO=$(grep 'PRETTY_NAME' /etc/os-release | cut -d '"' -f 2 )
+  # total disk size is calculated by adding all partitions of the types listed below (after the -t flags)
+  TOTAL_DISK_RAW=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total 2>/dev/null | grep total | awk '{ print $2 }')
+  TOTAL_DISK=$(format_size $TOTAL_DISK_RAW)
+  DISTRO=$(grep 'PRETTY_NAME' /etc/os-release | cut -d '"' -f 2 )
 
-KERNEL=$(uname -r)
-VIRT=$(systemd-detect-virt 2>/dev/null)
-VIRT=${VIRT^^} || VIRT="UNKNOWN"
+  KERNEL=$(uname -r)
+  VIRT=$(systemd-detect-virt 2>/dev/null)
+  VIRT=${VIRT^^} || VIRT="UNKNOWN"
 
-[[ -z "$IPV4_CHECK" ]] && ONLINE="\xE2\x9D\x8C Offline | " || ONLINE="\xE2\x9C\x94 Online | "
-[[ -z "$IPV6_CHECK" ]] && ONLINE+="\xE2\x9D\x8C Offline" || ONLINE+="\xE2\x9C\x94 Online"
-# [[ -z "$IPV6_CHECK" ]] && ONLINE+="❌ Offline" || ONLINE+="✔ Online"
+  [[ -z "$IPV4_CHECK" ]] && ONLINE="\xE2\x9D\x8C Offline | " || ONLINE="\xE2\x9C\x94 Online | "
+  [[ -z "$IPV6_CHECK" ]] && ONLINE+="\xE2\x9D\x8C Offline" || ONLINE+="\xE2\x9C\x94 Online"
+  # [[ -z "$IPV6_CHECK" ]] && ONLINE+="❌ Offline" || ONLINE+="✔ Online"
 
-echo -e 
-echo -e "Basic System Information:"
-echo -e "---------------------------------"
+  echo -e 
+  echo -e "Basic System Information:"
+  echo -e "---------------------------------"
 
-echo -e "Uptime     : $UPTIME"
-echo -e "Processor  : $CPU_PROC"
-echo -e "CPU cores  : $CPU_CORES @ $CPU_FREQ"
-echo -e "AES-NI     : $CPU_AES"
-echo -e "VM-x/AMD-V : $CPU_VIRT"
-echo -e "RAM        : $TOTAL_RAM"
-echo -e "Swap       : $TOTAL_SWAP"
-echo -e "Disk       : $TOTAL_DISK"
-echo -e "Distro     : $DISTRO"
-echo -e "Kernel     : $KERNEL"
-echo -e "VM Type    : $VIRT"
-echo -e "IPv4|IPv6  : $ONLINE"
+  echo -e "Uptime     : $UPTIME"
+  echo -e "Processor  : $CPU_PROC"
+  echo -e "CPU cores  : $CPU_CORES @ $CPU_FREQ"
+  echo -e "AES-NI     : $CPU_AES"
+  echo -e "VM-x/AMD-V : $CPU_VIRT"
+  echo -e "RAM        : $TOTAL_RAM"
+  echo -e "Swap       : $TOTAL_SWAP"
+  echo -e "Disk       : $TOTAL_DISK"
+  echo -e "Distro     : $DISTRO"
+  echo -e "Kernel     : $KERNEL"
+  echo -e "VM Type    : $VIRT"
+  echo -e "IPv4|IPv6  : $ONLINE"
 
 }
 
@@ -595,16 +595,16 @@ function ip_info() {
 	[[ ! -z $JSON ]] && JSON_RESULT+=',"ip_info":{"protocol":"'$net_type'","isp":"'$isp'","asn":"'$as'","org":"'$org'","city":"'$city'","region":"'$region'","region_code":"'$region_code'","country":"'$country'"}'
 }
 
-if [ ! -z $JSON ]; then
-	UPTIME_S=$(awk '{print $1}' /proc/uptime)
-	IPV4=$([ ! -z $IPV4_CHECK ] && echo "true" || echo "false")
-	IPV6=$([ ! -z $IPV6_CHECK ] && echo "true" || echo "false")
-	AES=$([[ "$CPU_AES" = *Enabled* ]] && echo "true" || echo "false")
-	CPU_VIRT_BOOL=$([[ "$CPU_VIRT" = *Enabled* ]] && echo "true" || echo "false")
-	JSON_RESULT='{"version":"'$YABS_VERSION'","time":"'$TIME_START'","os":{"arch":"'$ARCH'","distro":"'$DISTRO'","kernel":"'$KERNEL'",'
-	JSON_RESULT+='"uptime":'$UPTIME_S',"vm":"'$VIRT'"},"net":{"ipv4":'$IPV4',"ipv6":'$IPV6'},"cpu":{"model":"'$CPU_PROC'","cores":'$CPU_CORES','
-	JSON_RESULT+='"freq":"'$CPU_FREQ'","aes":'$AES',"virt":'$CPU_VIRT_BOOL'},"mem":{"ram":'$TOTAL_RAM_RAW',"ram_units":"KiB","swap":'$TOTAL_SWAP_RAW',"swap_units":"KiB","disk":'$TOTAL_DISK_RAW',"disk_units":"KB"}'
-fi
+# if [ ! -z $JSON ]; then
+# 	UPTIME_S=$(awk '{print $1}' /proc/uptime)
+# 	IPV4=$([ ! -z $IPV4_CHECK ] && echo "true" || echo "false")
+# 	IPV6=$([ ! -z $IPV6_CHECK ] && echo "true" || echo "false")
+# 	AES=$([[ "$CPU_AES" = *Enabled* ]] && echo "true" || echo "false")
+# 	CPU_VIRT_BOOL=$([[ "$CPU_VIRT" = *Enabled* ]] && echo "true" || echo "false")
+# 	JSON_RESULT='{"version":"'$YABS_VERSION'","time":"'$TIME_START'","os":{"arch":"'$ARCH'","distro":"'$DISTRO'","kernel":"'$KERNEL'",'
+# 	JSON_RESULT+='"uptime":'$UPTIME_S',"vm":"'$VIRT'"},"net":{"ipv4":'$IPV4',"ipv6":'$IPV6'},"cpu":{"model":"'$CPU_PROC'","cores":'$CPU_CORES','
+# 	JSON_RESULT+='"freq":"'$CPU_FREQ'","aes":'$AES',"virt":'$CPU_VIRT_BOOL'},"mem":{"ram":'$TOTAL_RAM_RAW',"ram_units":"KiB","swap":'$TOTAL_SWAP_RAW',"swap_units":"KiB","disk":'$TOTAL_DISK_RAW',"disk_units":"KB"}'
+# fi
 
 
 # 更新系统
@@ -2111,7 +2111,7 @@ system_test_run() {
 
     case $sub_choice in
       # 1) clear && reading "请输入你的快捷按键: " kuaijiejian && echo "alias $kuaijiejian='~/kejilion.sh'" >> ~/.bashrc && source ~/.bashrc && echo "快捷键已设置" ;;
-      1) clear && gather_sysinfo ;;
+      1) clear && gather_sysinfo && ip_info ;;
 
      99) clear && echo -e "\n正在重启服务器，即将断开SSH连接..." && reboot ;;
       0) qiqtools ;;
