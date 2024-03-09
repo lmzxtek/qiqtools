@@ -3471,7 +3471,7 @@ WebSites_manager_run(){
 # 脚本更新
 script_update(){
   cd ~
-  echo -e "\n脚本链接: ${blue}https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh${plain}"
+  echo -e "\n脚本链接:\n  ${blue}https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh${plain}"
   curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && chmod +x qiqtools.sh
   echo -e "\n脚本已更新至最新版本！"
   echo -e "\n按任意键重新加载版脚本...\n"
