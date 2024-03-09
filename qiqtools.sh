@@ -1089,7 +1089,8 @@ set_swap() {
 
   if [[ "$VIRT" != *"KVM"* ]]; then 
     WARPSTATUS6="${red}${bold}warp${plain}"
-    txtn "\nThe server type is: $(txbr $VIRT) (Only KVM server can set swap)\n"
+    txtn "\nThe server type is: $(txbr $VIRT)"
+    txtn "\n(Only KVM server can set swap)\n"
     return 1
   fi
 
@@ -1111,9 +1112,9 @@ set_swap() {
 
   swap_info="${swap_used}MB/${swap_total}MB (${swap_percentage}%)"
 
-  echo "当前虚拟内存: $swap_info"
+  echo "\n当前虚拟内存: $swap_info\n"
 
-  read -p "是否调整大小?(Y/N): " choice
+  read -p "是否调整大小?[Y|N]: " choice
 
   case "$choice" in
     [Yy])
