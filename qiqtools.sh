@@ -1084,6 +1084,15 @@ alter_ipv4_ipv6() {
 
 # 设置系统虚拟内存
 set_swap() {
+
+  # 当机器为虚拟化为非KVM化，则不进行设置
+
+  if [[ "$VIRT" != ^KVM$ ]]; then 
+    WARPSTATUS6="${red}${bold}warp${plain}"
+    txtr "\nThe server type is: $(txbr $VIRT), cannot set swap storage.\n"
+    return 1
+  fi
+
   if [ "$EUID" -ne 0 ]; then
     echo "请以 root 权限运行此脚本。"
     exit 1
@@ -2699,7 +2708,7 @@ txtn $(txtn "83.Show IPv6(local)")$(txtg "✔")"              "$(txtn "93.Cloudf
 txtn $(txtp "84.Cloudflare(IPv4)")$(txtg "✔")"              "$(txtr "94.Check-OpenAI(OpenAI解锁)")$(txtg "✔")
 txtn $(txtn "85.Cloudflare(IPv6)")$(txtg "✔")"              "$(txtn "95.Check-Region(区域媒体解锁)")$(txtg "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txty " 1.Warp(@fscarmen)")$(txtg "✔")"               "$(txtn "11.XRay(@233boy)")$(txtg "✔")
+txtn $(txty " 1.Warp(@fscarmen)")$(txtr "✔")"               "$(txtn "11.XRay(@233boy)")$(txtg "✔")
 txtn $(txtn " 2.Warp(@hamid-gh98)")$(txtg "✔")"             "$(txtn "12.V2Ray(@233boy)")$(txtg "✔")
 txtn $(txtn " 3.Warp(@Misaka-blog)")$(txtg "✔")"            "$(txtn "13.V2Ray-Agent(@mack-a)")$(txtg "✔")
 txtn $(txtn " 4.ArgoX")$(txtg "✔")"                         "$(txtn "14.Hysteria2(@Misaka)")$(txtg "✔")
