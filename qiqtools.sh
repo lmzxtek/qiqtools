@@ -1885,7 +1885,7 @@ txtn $(txtp " 8.切换优先ipv4/ipv6")$(txtg "✔")"      "$(txtn "18.用户/�
 txtn $(txtn " 9.查看端口占用状态")$(txtg "✔")"       "$(txtn "19.定时任务管理")$(txtn "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
-txtn $(txtn " 0.返回主菜单")$(txtr "✖")"             "$(txtr "99")$(txtb ".重启服务器☢")
+txtn $(txtn " 0.返回主菜单")$(txtr "✖")"             "$(txtr "99")$(txtb ".重启服务器")$(txtc "☢")
 txtn " "
 
 }
