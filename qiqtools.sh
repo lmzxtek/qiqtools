@@ -3731,7 +3731,7 @@ while true; do
 
     31) board_tools_run  ;;
     32) other_tools_run  ;;
-    32) system_test_run  ;;
+    33) system_test_run  ;;
 
     00) script_update ;;
     99) echo "正在重启服务器，即将断开SSH连接" && reboot  ;;
