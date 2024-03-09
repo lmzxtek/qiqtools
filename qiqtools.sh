@@ -567,7 +567,7 @@ gather_sysinfo(){
   # [[ -z "$IPV6_CHECK" ]] && ONLINE+="❌ Offline" || ONLINE+="✔ Online"
 
   echo -e 
-  echo -e "Basic System Information:"
+  echo -e "${yellow}Basic System Information:${plain}"
   echo -e "---------------------------------"
 
   echo -e "Uptime     : $UPTIME"
@@ -610,7 +610,7 @@ function ip_info() {
 	local as=$(echo "$response" | sed -e 's/[{}]/''/g' | awk -v RS=',"' -F: '/^as/ {print $2}' | sed 's/^"\(.*\)"$/\1/')
 	
 	echo
-	echo "$net_type Network Information:"
+	echo "${yellow}$net_type Network Information:${plain}"
 	echo "---------------------------------"
 
 	if [[ -n "$isp" ]]; then
