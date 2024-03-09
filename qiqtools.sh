@@ -478,6 +478,47 @@ system_info() {
   # txtn " "
 }
 
+
+# format_size
+# Purpose: Formats raw disk and memory sizes from kibibytes (KiB) to largest unit
+# Parameters:
+#          1. RAW - the raw memory size (RAM/Swap) in kibibytes
+# Returns:
+#          Formatted memory size in KiB, MiB, GiB, or TiB
+function format_size {
+	RAW=$1 # mem size in KiB
+	RESULT=$RAW
+	local DENOM=1
+	local UNIT="KiB"
+
+	# ensure the raw value is a number, otherwise return blank
+	re='^[0-9]+$'
+	if ! [[ $RAW =~ $re ]] ; then
+		echo "" 
+		return 0
+	fi
+
+	if [ "$RAW" -ge 1073741824 ]; then
+		DENOM=1073741824
+		UNIT="TiB"
+	elif [ "$RAW" -ge 1048576 ]; then
+		DENOM=1048576
+		UNIT="GiB"
+	elif [ "$RAW" -ge 1024 ]; then
+		DENOM=1024
+		UNIT="MiB"
+	fi
+
+	# divide the raw result to get the corresponding formatted result (based on determined unit)
+	RESULT=$(awk -v a="$RESULT" -v b="$DENOM" 'BEGIN { print a / b }')
+	# shorten the formatted result to two decimal places (i.e. x.x)
+	RESULT=$(echo $RESULT | awk -F. '{ printf "%0.1f",$1"."substr($2,1,2) }')
+	# concat formatted result value with units and return result
+	RESULT="$RESULT $UNIT"
+	echo $RESULT
+}
+
+
 gather_sysinfo(){
 
   # gather basic system information (inc. CPU, AES-NI/virt status, RAM + swap + disk size)
@@ -591,8 +632,9 @@ function ip_info() {
 	if [[ -n "$country" ]]; then
 		echo "Country    : $country"
 	fi 
+	echo
 
-	[[ ! -z $JSON ]] && JSON_RESULT+=',"ip_info":{"protocol":"'$net_type'","isp":"'$isp'","asn":"'$as'","org":"'$org'","city":"'$city'","region":"'$region'","region_code":"'$region_code'","country":"'$country'"}'
+	# [[ ! -z $JSON ]] && JSON_RESULT+=',"ip_info":{"protocol":"'$net_type'","isp":"'$isp'","asn":"'$as'","org":"'$org'","city":"'$city'","region":"'$region'","region_code":"'$region_code'","country":"'$country'"}'
 }
 
 # if [ ! -z $JSON ]; then
@@ -2088,13 +2130,14 @@ txtn $(txbr "▼ 性能测试")$(txbg " ☯☯☯ ")
 txtn "—————————————————————————————————————"
 txtn "     主机名: "$(txtp "$hostname")
 txtn "   系统版本: "$(txtp "$os_info")
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 WANIP_show 
 txtn "====================================="
 txtn $(txtn " 1.服务器基本信息")$(txtg "✔")"         "$(txtn "21.ChatGPT解锁状态检测")$(txtn "✔")
 txtn $(txtn " 2.性能测试(NodeBench)")$(txtg "✔")"    "$(txtn "22.Region流媒体解锁测试")$(txtn "✔")
 txtn $(txtn " 3.带宽性能(yabs)")$(txtg "✔")"         "$(txtn "23.yeahwu流媒体解锁测试")$(txtn "✔")
-txtn $(txtn " 4.三网测速(Superspeed)")$(txtg "✔")"   "$(txtn "")$(txtn "")
-txtn $(txtn " 5.回程延迟(bestrace)")$(txtg "✔")"     "$(txtn "")$(txtn "")
+txtn $(txtn " 4.三网测速(Superspeed)")$(txty "✔")"   "$(txtn "")$(txtn "")
+txtn $(txtn " 5.回程延迟(bestrace)")$(txtr "✔")"     "$(txtn "")$(txtn "")
 txtn $(txtn " 6.回程线路(mtr_trace)")$(txtg "✔")"    "$(txtn "")$(txtn "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.融合怪测评(spiritysdx)")$(txtg "✔")" "$(txtn "")$(txtn "")
@@ -2114,7 +2157,7 @@ system_test_run() {
       1) clear && gather_sysinfo && ip_info ;;
 
      99) clear && echo -e "\n正在重启服务器，即将断开SSH连接..." && reboot ;;
-      0) qiqtools ;;
+      0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
     esac
     break_end
@@ -3721,17 +3764,17 @@ while true; do
      2) clear && update_and_upgrade ;;
      3) clear && clean_sys ;;
 
-    11) docker_run ;;
-    12) WebSites_manager_run ;;
-    13) website_deploy_run  ;;
+    11) clear && docker_run ;;
+    12) clear && WebSites_manager_run ;;
+    13) clear && website_deploy_run  ;;
 
-    21) common_apps_run  ;;
-    22) system_tools_run ;;
-    23) warp_tools_run   ;;
+    21) clear && common_apps_run  ;;
+    22) clear && system_tools_run ;;
+    23) clear && warp_tools_run   ;;
 
-    31) board_tools_run  ;;
-    32) other_tools_run  ;;
-    33) system_test_run  ;;
+    31) clear && board_tools_run  ;;
+    32) clear && other_tools_run  ;;
+    33) clear && system_test_run  ;;
 
     00) script_update ;;
     99) echo "正在重启服务器，即将断开SSH连接" && reboot  ;;
