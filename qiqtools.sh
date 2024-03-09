@@ -1090,7 +1090,7 @@ set_swap() {
   if [[ "$VIRT" != *"KVM"* ]]; then 
     WARPSTATUS6="${red}${bold}warp${plain}"
     txtn "\nThe server type is: $(txbr $VIRT)"
-    txtn "\n(Only KVM server can set swap)\n"
+    txtn "(Only KVM server can set swap)\n"
     return 1
   fi
 
@@ -3471,9 +3471,10 @@ WebSites_manager_run(){
 # 脚本更新
 script_update(){
   cd ~
-  echo ""
+  echo -e "\nFetch latest script from ${blue}https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh${plain}"
   curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && chmod +x qiqtools.sh
-  echo -e "脚本已更新到最新版本！\n"
+  echo -e "\n脚本已更新至最新版本！\n"
+  echo -e "\n按任意键加载最新版脚本...\n"
   break_end #&& exit && qiq
   qiq_reload
 }
