@@ -1871,16 +1871,16 @@ txtn " "
 txtn $(txbr "▼ 系统工具")$(txbg " ❦ ")
 txtn "—————————————————————————————————————"
 # WANIP_show
-txtn "     主机名: "$(txtb "$hostname")
-txtn "   系统版本: "$(txtb "$os_info")
+txtn "     主机名: "$(txtp "$hostname")
+txtn "   系统版本: "$(txtp "$os_info")
 txtn "====================================="
 txtn $(txtn " 1.修改ROOT密码")$(txtg "✔")"           "$(txby "11.修改虚拟内存")$(txty "✔")
-txtn $(txtn " 2.开启ROOT密码登录模式")$(txtg "✔")"   "$(txtn "12.修改主机名")$(txty "✔")
+txtn $(txtn " 2.开启ROOT密码登录")$(txtg "✔")"       "$(txtn "12.修改主机名")$(txty "✔")
 txtn $(txtn " 3.开放所有端口")$(txtg "✔")"           "$(txtn "13.切换系统更新源")$(txty "✔")
-txtn $(txtn " 4.修改SSH连接端口")$(txtg "✔")"        "$(txtb "14.系统时区调整")$(txty "✔")
-txtn $(txty " 5.优化DNS地址")$(txtg "✔")"            "$(txtn "15.开启BBR3加速")$(txty "✔")
-txtn $(txtn " 6.一键重装系统")$(txtg "✔")"           "$(txtn "16.防火墙高级管理器")$(txty "✔")
-txtn $(txtn " 7.禁用ROOT账户创建新账户")$(txtg "✔")" "$(txtn "17.用户管理")$(txty "✔")
+txtn $(txtn " 4.修改SSH端口")$(txtg "✔")"            "$(txtb "14.系统时区调整")$(txty "✔")
+txtn $(txty " 5.优化DNS")$(txtg "✔")"               "$(txtn "15.开启BBR3加速")$(txty "✔")
+txtn $(txty " 6.一键DD系统")$(txtr "✔")"             "$(txtn "16.防火墙管理器")$(txty "✔")
+txtn $(txtn " 7.禁用ROOT账户")$(txtg "✔")"           "$(txtn "17.用户管理")$(txty "✔")
 txtn $(txtp " 8.切换优先ipv4/ipv6")$(txtg "✔")"      "$(txtn "18.用户/密码生成器")$(txty "✔")
 txtn $(txtn " 9.查看端口占用状态")$(txtg "✔")"       "$(txtn "19.定时任务管理")$(txty "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
