@@ -3474,7 +3474,7 @@ script_update(){
   echo -e "\n脚本链接: ${blue}https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh${plain}"
   curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && chmod +x qiqtools.sh
   echo -e "\n脚本已更新至最新版本！"
-  echo -e "\n按任意键加载最新版脚本...\n"
+  echo -e "\n按任意键重新加载版脚本...\n"
   break_end #&& exit && qiq
   qiq_reload
 }
