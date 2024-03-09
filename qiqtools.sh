@@ -609,9 +609,9 @@ function ip_info() {
 	local org=$(echo "$response" | sed -e 's/[{}]/''/g' | awk -v RS=',"' -F: '/^org/ {print $2}' | sed 's/^"\(.*\)"$/\1/')
 	local as=$(echo "$response" | sed -e 's/[{}]/''/g' | awk -v RS=',"' -F: '/^as/ {print $2}' | sed 's/^"\(.*\)"$/\1/')
 	
-	echo
-	echo "${yellow} $net_type Network Information:${plain}"
-	echo "---------------------------------"
+	echo "${yellow}"
+	echo "$net_type Network Information:"
+	echo "${plain}---------------------------------"
 
 	if [[ -n "$isp" ]]; then
 		echo "ISP        : $isp"
@@ -2116,7 +2116,7 @@ system_tools_run() {
 
      88) clear && system_test_run ;;
      99) clear && echo -e "\n正在重启服务器，即将断开SSH连接..." && reboot ;;
-      0) qiqtools ;;
+      0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
     esac
     break_end
@@ -2849,7 +2849,7 @@ website_deploy_run(){
      65) clear && install_maccms ;;
      66) clear && install_maccms_docker_tweek ;;
 
-      0) qiqtools ;;
+      0) clear && clear && clear && clear && clear && clear && clear && qiqtools ;;
      99) echo -e "重新启动系统，SSH连接将断开..." && reboot && exit ;;
       *) echo "无效的输入!" ;;
     esac
@@ -2905,7 +2905,7 @@ other_tools_run() {
         ;;
       4) clear && install wget && wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
 
-      0) qiqtools ;;
+      0) clear && clear && clear && clear && clear && clear && qiqtools ;;
       *) echo "无效的输入!" ;;
     esac  
     break_end
@@ -2996,7 +2996,7 @@ warp_tools_run() {
      94) clear && bash <(curl -Ls https://cdn.jsdelivr.net/gh/missuo/OpenAI-Checker/openai.sh) ;;
      95) clear && bash <(curl -Ls check.unlock.media) ;;
 
-      0) qiqtools ;;
+      0) clear && clear && clear && clear && clear && qiqtools ;;
       *) echo "无效的输入!" ;;
     esac
     # recheck_ip_address
@@ -3045,7 +3045,7 @@ board_tools_run() {
      34) clear && docker run -d --privileged --network=host --pid=host --restart=unless-stopped  -v /sys:/sys  -v /etc/daed:/etc/daed --name=daed ghcr.io/daeuniverse/daed:latest ;;
      35) clear && bash <(curl -Ls https://raw.githubusercontent.com/alireza0/s-ui/master/install.sh)  ;;
 
-      0) qiqtools ;;
+      0) clear && clear && clear && clear && qiqtools ;;
       *) echo "无效的输入!" ;;
     esac  
     break_end
@@ -3213,7 +3213,7 @@ docker_run() {
         ;;
       9) clear && set_docker_1ckl "dcc" ;;
       # 9) clear && chmod a+x /usr/local/bin/docker-compose && rm -rf `which dcc` && ln -s /usr/local/bin/docker-compose /usr/bin/dcc ;;
-      0) qiqtools ;;
+      0) clear && clear && clear && qiqtools ;;
       *) echo "无效的输入!" ;;
     esac  
     break_end    
@@ -3241,7 +3241,7 @@ check_port() {
             echo -e "\e[1;31m端口 $PORT 已被占用，无法安装环境，卸载以下程序后重试！\e[0m"
             echo "$result"
             break_end
-            qiqtools
+            clear && clear && qiqtools
         fi
     else
         echo ""
@@ -3349,8 +3349,8 @@ caddy_install(){
   mkdir -p /home/web/{caddy,html}
   # touch /home/web/caddy/Caddyfile
   # touch /home/web/html/index.html
-  wget -O /home/web/html/index.html https://gitlab.com/lmzxtek/qiqtools/-/raw/main/src/caddy/index.html
-  wget -O /home/web/caddy/default.conf https://gitlab.com/lmzxtek/qiqtools/-/raw/main/src/caddy/default.conf
+  wget -O /home/web/html/index.html https://gitlab.com/lmzxtek/clear && qiqtools/-/raw/main/src/caddy/index.html
+  wget -O /home/web/caddy/default.conf https://gitlab.com/lmzxtek/clear && qiqtools/-/raw/main/src/caddy/default.conf
 
   sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https curl && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list && sudo apt update && sudo apt install -y caddy
 
@@ -3677,7 +3677,7 @@ WebSites_manager_run(){
         echo ""
         ;;
 
-      0) qiqtools ;;
+      0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
     esac  
     break_end    
