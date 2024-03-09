@@ -609,9 +609,9 @@ function ip_info() {
 	local org=$(echo "$response" | sed -e 's/[{}]/''/g' | awk -v RS=',"' -F: '/^org/ {print $2}' | sed 's/^"\(.*\)"$/\1/')
 	local as=$(echo "$response" | sed -e 's/[{}]/''/g' | awk -v RS=',"' -F: '/^as/ {print $2}' | sed 's/^"\(.*\)"$/\1/')
 	
-	echo "${yellow}"
-	echo "$net_type Network Information:"
-	echo "${plain}---------------------------------"
+	echo -e ""
+	echo -e "${yellow}$net_type Network Information:${plain}"
+	echo -e "---------------------------------"
 
 	if [[ -n "$isp" ]]; then
 		echo "ISP        : $isp"
