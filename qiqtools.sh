@@ -518,7 +518,6 @@ function format_size {
 	echo $RESULT
 }
 
-
 command -v ping >/dev/null 2>&1 && LOCAL_PING=true || unset LOCAL_PING
 command -v curl >/dev/null 2>&1 && LOCAL_CURL=true || unset LOCAL_CURL
 [[ ! -z $LOCAL_CURL ]] && IP_CHECK_CMD="curl -s -m 4" || IP_CHECK_CMD="wget -qO- -T 4"
@@ -2130,6 +2129,19 @@ system_tools_run() {
   done
 }
 
+
+function fetch(){
+    download_url="$1"
+    if [ -n "$(command -v wget)" ] ; then
+        wget -qO- $download_url
+    elif [ -n "$(command -v curl)" ] ; then
+        curl -sLo- $download_url
+    else
+        install wget
+        wget -qO- $download_url
+    fi
+}
+
 # 性能测试工具
 system_test_menu() {  
 txtn " "
@@ -2140,14 +2152,15 @@ txtn "   系统版本: "$(txtp "$os_info")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 WANIP_show 
 txtn "====================================="
-txtn $(txtn " 1.服务器基本信息")$(txtg "✔")"         "$(txtn "21.ChatGPT解锁状态检测")$(txtn "✔")
-txtn $(txtn " 2.性能测试(NodeBench)")$(txtg "✔")"    "$(txtn "22.Region流媒体解锁测试")$(txtn "✔")
-txtn $(txtn " 3.带宽性能(yabs)")$(txtg "✔")"         "$(txtn "23.yeahwu流媒体解锁测试")$(txtn "✔")
-txtn $(txtn " 4.三网测速(Superspeed)")$(txty "✔")"   "$(txtn "")$(txtn "")
-txtn $(txtn " 5.回程延迟(bestrace)")$(txtr "✔")"     "$(txtn "")$(txtn "")
-txtn $(txtn " 6.回程线路(mtr_trace)")$(txtg "✔")"    "$(txtn "")$(txtn "")
+txtn $(txtn " 1.服务器基本信息")$(txtg "✔")"         "$(txtn "11.ChatGPT解锁状态检测")$(txtn "✔")
+txtn $(txtn " 2.NodeBench性能测试")$(txtg "✔")"      "$(txtn "12.Region流媒体解锁测试")$(txtn "✔")
+txtn $(txtn " 3.behch性能测试")$(txtg "✔")"          "$(txtn "13.yeahwu流媒体解锁测试")$(txtn "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "31.融合怪测评(spiritysdx)")$(txtg "✔")" "$(txtn "")$(txtn "")
+txtn $(txtn "21.带宽性能(yabs)")$(txtp "✔")"         "$(txtn "24.单线程测速")$(txtn "✔")
+txtn $(txty "22.回程延迟(bestrace)")$(txtr "✔")"     "$(txtn "25.三网测速(Superspeed)")$(txtn "✔")
+txtn $(txtn "23.回程线路(mtr_trace)")$(txtg "✔")"    "$(txtn "")$(txtn "")
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+txtn $(txtn "41.融合怪测评(spiritysdx)")$(txtg "✔")" "$(txtn "")$(txtn "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")"             "$(txtr "99")$(txtb ".重启服务器")$(txtc "☢")
@@ -2162,6 +2175,22 @@ system_test_run() {
     case $sub_choice in
       # 1) clear && reading "请输入你的快捷按键: " kuaijiejian && echo "alias $kuaijiejian='~/kejilion.sh'" >> ~/.bashrc && source ~/.bashrc && echo "快捷键已设置" ;;
       1) clear && gather_sysinfo && ip_info ;;
+
+      2) clear && install curl && curl -Lso- bench.sh | bash ;;
+      3) clear && fetch bench.sh | bash ;;
+
+     21) clear && install curl && curl -sL yabs.sh | bash -s -- -i -5 ;;
+     22) clear && install wget && wget -qO- git.io/besttrace | bash ;;
+     23) clear && install curl && curl https://raw.githubusercontent.com/zhucaidan/mtr_trace/main/mtr_trace.sh | bash ;;
+
+     11) clear && install curl && bash <(curl -Ls https://cdn.jsdelivr.net/gh/missuo/OpenAI-Checker/openai.sh) ;;
+     12) clear && install curl && bash <(curl -L -s check.unlock.media) ;;
+     13) clear && install wget && wget -qO- https://github.com/yeahwu/check/raw/main/check.sh | bash ;;
+
+     24) clear && bash <(fetch https://bench.im/hyperspeed) ;;
+     25) clear && install curl && bash <(curl -Lso- https://git.io/superspeed_uxh) ;;
+
+     41) clear && install curl && curl -L https://gitlab.com/spiritysdx/za/-/raw/main/ecs.sh -o ecs.sh && chmod +x ecs.sh && bash ecs.sh ;;
 
      99) clear && echo -e "\n正在重启服务器，即将断开SSH连接..." && reboot ;;
       0) clear && qiqtools ;;
@@ -2929,8 +2958,8 @@ txtn "====================================="
 txtn $(txtn "81.Show IP(ip.sb)")$(txtg "✔")"                "$(txtn "91.Set GitHUB(IPv6)")$(txtg "✔")
 txtn $(txtn "82.Show IPv4(local)")$(txtg "✔")"              "$(txtb "92.Cloudflare Select IP")$(txtg "✔")
 txtn $(txtn "83.Show IPv6(local)")$(txtg "✔")"              "$(txtn "93.Cloudflare Select CDN")$(txtg "✔")
-txtn $(txtp "84.Cloudflare(IPv4)")$(txtg "✔")"              "$(txtr "94.Check-OpenAI(OpenAI解锁)")$(txtg "✔")
-txtn $(txtn "85.Cloudflare(IPv6)")$(txtg "✔")"              "$(txtn "95.Check-Region(区域媒体解锁)")$(txtg "✔")
+txtn $(txtp "84.Cloudflare(IPv4)")$(txtg "✔")"              "$(txtr "")$(txtg "")
+txtn $(txtn "85.Cloudflare(IPv6)")$(txtg "✔")"              "$(txtn "")$(txtg "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty " 1.Warp(@fscarmen)")$(txtr "✔")"               "$(txtn "11.XRay(@233boy)")$(txtg "✔")
 txtn $(txtn " 2.Warp(@hamid-gh98)")$(txtg "✔")"             "$(txtn "12.V2Ray(@233boy)")$(txtg "✔")
@@ -3000,8 +3029,8 @@ warp_tools_run() {
      91) set_ipv6_github ;;
      92) clear && cd ~ && mkdir -p cfip && cd cfip && curl -sSL https://gitlab.com/rwkgyg/CFwarp/raw/main/point/cfip.sh -o cfip.sh && chmod +x cfip.sh && bash cfip.sh ;;
      93) clear && cd ~ && mkdir -p cfip && cd cfip && curl -sSL https://gitlab.com/rwkgyg/CFwarp/raw/main/point/CFcdnym.sh -o CFcdnym.sh && chmod +x CFcdnym.sh && bash CFcdnym.sh ;;
-     94) clear && bash <(curl -Ls https://cdn.jsdelivr.net/gh/missuo/OpenAI-Checker/openai.sh) ;;
-     95) clear && bash <(curl -Ls check.unlock.media) ;;
+    #  94) clear && bash <(curl -Ls https://cdn.jsdelivr.net/gh/missuo/OpenAI-Checker/openai.sh) ;;
+    #  95) clear && bash <(curl -Ls check.unlock.media) ;;
 
       0) clear && clear && clear && clear && clear && qiqtools ;;
       *) echo "无效的输入!" ;;
