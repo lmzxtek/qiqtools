@@ -610,7 +610,7 @@ function ip_info() {
 	local as=$(echo "$response" | sed -e 's/[{}]/''/g' | awk -v RS=',"' -F: '/^as/ {print $2}' | sed 's/^"\(.*\)"$/\1/')
 	
 	echo
-	echo "${yellow}$net_type Network Information:${plain}"
+	echo "${yellow} $net_type Network Information:${plain}"
 	echo "---------------------------------"
 
 	if [[ -n "$isp" ]]; then
