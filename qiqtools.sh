@@ -1089,7 +1089,7 @@ set_swap() {
 
   if [[ "$VIRT" != ^KVM$ ]]; then 
     WARPSTATUS6="${red}${bold}warp${plain}"
-    txtr "\nThe server type is: $(txbr $VIRT), cannot set swap storage.\n"
+    txtn "\nThe server type is: $(txbr $VIRT), Not KVM server cannot set swap.\n"
     return 1
   fi
 
