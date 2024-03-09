@@ -2157,7 +2157,7 @@ txtn $(txtn " 2.NodeBench性能测试")$(txtg "✔")"      "$(txtn "12.Region流
 txtn $(txtn " 3.behch性能测试")$(txtg "✔")"          "$(txtn "13.yeahwu流媒体解锁测试")$(txtn "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "21.带宽性能(yabs)")$(txtp "✔")"         "$(txtn "24.单线程测速")$(txtn "✔")
-txtn $(txty "22.回程延迟(bestrace)")$(txtr "✔")"     "$(txtn "25.三网测速(Superspeed)")$(txtn "✔")
+txtn $(txty "22.三网测速(Superspeed)")$(txtp "✔")"   "$(txtn "25.三网回程(bestrace)")$(txtn "✔")
 txtn $(txtn "23.回程线路(mtr_trace)")$(txtg "✔")"    "$(txtn "")$(txtn "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "41.融合怪测评(spiritysdx)")$(txtg "✔")" "$(txtn "")$(txtn "")
@@ -2178,17 +2178,16 @@ system_test_run() {
 
       2) clear && install curl && curl -Lso- bench.sh | bash ;;
       3) clear && fetch bench.sh | bash ;;
-
-     21) clear && install curl && curl -sL yabs.sh | bash -s -- -i -5 ;;
-     22) clear && install wget && wget -qO- git.io/besttrace | bash ;;
-     23) clear && install curl && curl https://raw.githubusercontent.com/zhucaidan/mtr_trace/main/mtr_trace.sh | bash ;;
-
+     
      11) clear && install curl && bash <(curl -Ls https://cdn.jsdelivr.net/gh/missuo/OpenAI-Checker/openai.sh) ;;
      12) clear && install curl && bash <(curl -L -s check.unlock.media) ;;
      13) clear && install wget && wget -qO- https://github.com/yeahwu/check/raw/main/check.sh | bash ;;
 
+     21) clear && install curl && curl -sL yabs.sh | bash -s -- -i -5 ;;
+     22) clear && install curl && bash <(curl -Lso- https://git.io/superspeed_uxh) ;;
+     23) clear && install curl && curl https://raw.githubusercontent.com/zhucaidan/mtr_trace/main/mtr_trace.sh | bash ;;
      24) clear && bash <(fetch https://bench.im/hyperspeed) ;;
-     25) clear && install curl && bash <(curl -Lso- https://git.io/superspeed_uxh) ;;
+     25) clear && install wget && wget -qO- git.io/besttrace | bash ;;
 
      41) clear && install curl && curl -L https://gitlab.com/spiritysdx/za/-/raw/main/ecs.sh -o ecs.sh && chmod +x ecs.sh && bash ecs.sh ;;
 
@@ -2197,6 +2196,7 @@ system_test_run() {
       *) echo "无效的输入!" ;;
     esac
     break_end
+    clear
   done
 }
 
@@ -3778,7 +3778,7 @@ txtn $(txtn " 3.系统清理")$(txtb "☒")"       "$(txtb "13.站点部署")$(t
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "21.常用工具")$(txtn "❃")"       "$(txtn "31.面板工具")$(txtb "⊕")
 txtn $(txty "22.系统工具")$(txtp "❁")"       "$(txtn "32.其他工具")$(txtb "の")
-txtn $(txtr "23.节点工具")$(txty "✈")"       "$(txtn "33.性能测试")$(txtb "☯")
+txtn $(txtr "23.节点工具")$(txty "✈")"       "$(txtp "33.性能测试")$(txty "☯")
 txtn "====================================="
 txtn $(txty "99")$(txtb ".重启系统☢")"       "$(txtb "00.脚本更新")$(txtb "☋")
 txtn "—————————————————————————————————————"
