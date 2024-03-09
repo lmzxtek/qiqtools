@@ -450,7 +450,7 @@ get_sysinfo(){
 system_info() {
   txtn " "
     info "系统信息查询"
-  txtkvn "====================================="
+  txtkvn "↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓"
   txtkvn "    主机名: " "$hostname"
   txtkvn "    运营商: " "$isp_info"
   txtkvy "    ${blue}虚拟化: " "${yellow}${bold}$VIRT${plain}"
@@ -474,7 +474,7 @@ system_info() {
   txtkvn "——————————————————————————————————————"
   txtkvn " 拥堵算法: " "${yellow}$congestion_algorithm" "${plain}$queue_algorithm"
   txtkvn "$txt_data_transfer"
-  txtkvn "====================================="
+  txtkvn "↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑"
   # txtn " "
 }
 
@@ -755,7 +755,7 @@ install_docker() {
 # 安装常用工具
 common_apps_menu() {
 echo -e "
-▶ 安装常用工具
+▶ 安装常用工具 ❃❃❃
 -------------------------------
 ${green} 1.${plain} curl   下载工具
 ${green} 2.${plain} wget   下载工具
@@ -2586,7 +2586,7 @@ EOF
 website_deploy_menu() {
 
 txtn " "
-txtn $(txbr "▼ 站点面板工具")$(txbg " ❤ ")
+txtn $(txbr "▼ 站点面板工具")$(txbg " ❤❤❤ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
@@ -2597,7 +2597,7 @@ txtn $(txtn " 4.NginxProxyManager")$(txtg "✔")"  "$(txtn "64.ChatGPT-Next-Web"
 txtn $(txtn " 5.哪吒探针")$(txtg "✔")"           "$(txtn "65.苹果CMS网站")$(txtg "✔")
 txtn $(txtn " 6.OpenLiteSpeed")$(txtb "✘")"      "$(txtn "66.苹果CMS网站(Docker)")$(txtg "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txbr "▼ Docker")$(txbg " ❦ ")
+txtn $(txbr "▼ Docker")$(txbg " ❦❦❦ ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "11.Ubuntu远程桌面网页版")$(txtg "✔")"             "$(txtn "")$(txtb "")
 txtn $(txtn "12.AuroPanel极光面板")$(txtg "✔")"               "$(txtn "")$(txtb "")
@@ -2897,7 +2897,7 @@ website_deploy_run(){
 other_tools_menu() {
   
 txtn " "
-txtn $(txbr "▼ 其他工具")$(txbg " ❦ ")
+txtn $(txbr "▼ 其他工具")$(txbg " ののの ")
 # txtn "-------------------------------------"
 # WANIP_show
 txtn "—————————————————————————————————————"
@@ -3044,7 +3044,7 @@ warp_tools_run() {
 board_tools_menu() {
 
 txtn " "
-txtn $(txbr "▼ 面板管理")$(txbg " ❦ ")
+txtn $(txbr "▼ 面板管理")$(txbg " ⊕⊕⊕ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
@@ -3542,7 +3542,7 @@ clear
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
-txtn $(txbr "▼ 站点目录")$(txbg " ✉ ")
+txtn $(txbr "▼ 站点目录")$(txbg " ✉✉✉ ")
 txtb "-------------------------------------"
 txtn $(txtn " 数据：")$(txtb " /home/web/html ")
 txtn $(txtn " 配置：")$(txtb " /home/web/caddy")
@@ -3774,7 +3774,7 @@ WANIP_show
 txtn "====================================="
 txtn $(txty " 1.系统信息")$(txty "☄")"       "$(txtn "11.容器管理")$(txtb "☪")
 txtn $(txtn " 2.系统更新")$(txtb "☣")"       "$(txty "12.站点管理")$(txtr "◎")
-txtn $(txtn " 3.系统清理")$(txtb "☒")"       "$(txtb "13.站点部署")$(txtb "❈")
+txtn $(txtn " 3.系统清理")$(txtb "☒")"       "$(txtp "13.站点部署")$(txtb "❈")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "21.常用工具")$(txtn "❃")"       "$(txtn "31.面板工具")$(txtb "⊕")
 txtn $(txty "22.系统工具")$(txtp "❁")"       "$(txtn "32.其他工具")$(txtb "の")
