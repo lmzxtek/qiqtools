@@ -1087,9 +1087,9 @@ set_swap() {
 
   # 当机器为虚拟化为非KVM化，则不进行设置
 
-  if [[ "$VIRT" != ^KVM$ ]]; then 
+  if [[ "$VIRT" != *"KVM"* ]]; then 
     WARPSTATUS6="${red}${bold}warp${plain}"
-    txtn "\nThe server type is: $(txbr $VIRT), Not KVM server cannot set swap.\n"
+    txtn "\nThe server type is: $(txbr $VIRT) (Only KVM server can set swap)\n"
     return 1
   fi
 
