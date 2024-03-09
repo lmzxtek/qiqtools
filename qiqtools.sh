@@ -519,6 +519,12 @@ function format_size {
 }
 
 
+command -v ping >/dev/null 2>&1 && LOCAL_PING=true || unset LOCAL_PING
+command -v curl >/dev/null 2>&1 && LOCAL_CURL=true || unset LOCAL_CURL
+[[ ! -z $LOCAL_CURL ]] && IP_CHECK_CMD="curl -s -m 4" || IP_CHECK_CMD="wget -qO- -T 4"
+IPV4_CHECK=$( (ping -4 -c 1 -W 4 ipv4.google.com >/dev/null 2>&1 && echo true) || $IP_CHECK_CMD -4 icanhazip.com 2> /dev/null)
+IPV6_CHECK=$( (ping -6 -c 1 -W 4 ipv6.google.com >/dev/null 2>&1 && echo true) || $IP_CHECK_CMD -6 icanhazip.com 2> /dev/null)
+
 gather_sysinfo(){
 
   # gather basic system information (inc. CPU, AES-NI/virt status, RAM + swap + disk size)
@@ -587,12 +593,6 @@ gather_sysinfo(){
 
 # Function to get information from IP Address using ip-api.com free API
 function ip_info() {
-
-  command -v ping >/dev/null 2>&1 && LOCAL_PING=true || unset LOCAL_PING
-  command -v curl >/dev/null 2>&1 && LOCAL_CURL=true || unset LOCAL_CURL
-  [[ ! -z $LOCAL_CURL ]] && IP_CHECK_CMD="curl -s -m 4" || IP_CHECK_CMD="wget -qO- -T 4"
-  IPV4_CHECK=$( (ping -4 -c 1 -W 4 ipv4.google.com >/dev/null 2>&1 && echo true) || $IP_CHECK_CMD -4 icanhazip.com 2> /dev/null)
-  IPV6_CHECK=$( (ping -6 -c 1 -W 4 ipv6.google.com >/dev/null 2>&1 && echo true) || $IP_CHECK_CMD -6 icanhazip.com 2> /dev/null)
 
 	# check for curl vs wget
 	[[ ! -z $LOCAL_CURL ]] && DL_CMD="curl -s" || DL_CMD="wget -qO-"
