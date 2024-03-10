@@ -721,8 +721,10 @@ clean_sys() {
 
 # 设置docker-compose快捷命令
 docker_set_1ckl(){
+
   tcmd="dcc"
   reading "\n 请输入要设置的快捷键[dcc]: " ccmd
+
   [[ -n $ccmd ]] && tcmd=$ccmd
   chmod a+x /usr/local/bin/docker-compose 
   rm -rf `which $tcmd` 
@@ -764,6 +766,56 @@ docker_install() {
     echo -e ""
   fi
 }
+
+# Docker卸载
+docker_uninstall() {
+  clear
+  read -p "确定卸载docker环境吗？(Y/N): " choice
+  case "$choice" in
+    [Yy])
+      docker rm $(docker ps -a -q) && docker rmi $(docker images -q) && docker network prune
+      remove docker docker-ce docker-compose > /dev/null 2>&1
+      ;;
+    [Nn]) ;;
+       *) echo "无效的选择，请输入 Y 或 N。" ;;
+  esac
+}
+
+# Docker清理不用的镜像和网络
+docker_clean() {
+  clear
+  read -p "确定清理无用的容器镜像和容器网络吗？[Y|N]: " choice
+  case "$choice" in
+    [Yy]) docker system prune -af --volumes ;;
+    [Nn]) echo "操作取消..." ;;
+        *) echo "无效的选择，请输入 Y 或 N" ;;
+  esac
+}
+
+
+# Docker列表：版本，镜像，网络和卷
+docker_info_list() {
+  clear
+  echo -e "\n ☞☞☞ Dcoker版本"
+  echo "Dcoker版本"
+  docker --version
+  docker-compose --version
+  
+  echo -e "\n ☞☞☞ Dcoker镜像列表"
+  docker image ls
+  
+  echo -e "\n ☞☞☞ Dcoker容器列表"
+  docker ps -a
+
+  echo -e "\n ☞☞☞ Dcoker卷列表"
+  docker volume ls
+  
+  echo -e "\n ☞☞☞ Dcoker网络列表"
+  docker network ls
+
+  echo ""
+}
+
 
 
 # 安装常用工具
@@ -3058,22 +3110,21 @@ warp_tools_run() {
 }
 
 board_panels_menu() {
-
 txtn " "
 txtn $(txbr "▼ 节点面板")$(txbg " ⊕⊕⊕ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
-txtn $(txtn "21.3X-UI(@mhsanaei)")$(txtg "✔")"       "$(txtn "31.Hiddify")$(txtg "✔")
-txtn $(txtb "22.X-UI(@alireza0)")$(txtg "✔")"        "$(txty "32.V2RayA")$(txtg "✔")
-txtn $(txtn "23.X-UI(@FranzKafkaYu)")$(txtg "✔")"    "$(txtn "33.Daed")$(txtg "✔")
-txtn $(txtn "24.X-UI(@rwkgyg)")$(txtg "✔")"          "$(txtn "34.Daed-Docker")$(txtg "✔")
-txtn $(txtc "25.X-UI(alpine)")$(txtg "✔")"           "$(txtn "35.S-UI(@alireza0)")$(txtg "✔")
+txtn $(txtn " 1.3X-UI(@mhsanaei)")$(txtg "✔")"       "$(txtn "11.Hiddify")$(txtg "✔")
+txtn $(txtb " 2.X-UI(@alireza0)")$(txtg "✔")"        "$(txty "12.V2RayA")$(txtg "✔")
+txtn $(txtn " 3.X-UI(@FranzKafkaYu)")$(txtg "✔")"    "$(txtn "13.Daed")$(txtg "✔")
+txtn $(txtn " 4.X-UI(@rwkgyg)")$(txtg "✔")"          "$(txtn "14.Daed-Docker")$(txtg "✔")
+txtn $(txtc " 5.X-UI(alpine)")$(txtg "✔")"           "$(txtn "15.S-UI(@alireza0)")$(txtg "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txty "41.XBoard")$(txtg "✔")"                 "$(txtn "44.LotusBoard")$(txtg "✘")
-txtn $(txtn "42.V2Board")$(txtg "✔")"                "$(txtn "45.SSPanel")$(txtg "✘")
-txtn $(txtn "43.V2Board(wyx2685)")$(txtg "✔")"       "$(txtn "46.Proxypanel")$(txtg "✘")
-txtn $(txtn "44.AirGo")$(txtg "✔")"                  "$(txtn "")$(txtg "")
+txtn $(txty "21.XBoard")$(txtb "✘")"                 "$(txtn "44.LotusBoard")$(txtb "✘")
+txtn $(txtn "22.V2Board")$(txtb "✘")"                "$(txtn "45.SSPanel")$(txtb "✘")
+txtn $(txtn "23.V2Board(wyx2685)")$(txtb "✘")"       "$(txtn "46.Proxypanel")$(txtb "✘")
+txtn $(txtn "24.AirGo")$(txtg "✔")"                  "$(txtn "")$(txtb "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
@@ -3086,19 +3137,19 @@ board_panels_run() {
     reading "请选择面板代码: " choice
     
     case $choice in
-     21) clear && bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh) ;;
-     22) clear && bash <(curl -Ls https://raw.githubusercontent.com/alireza0/x-ui/master/install.sh) ;;
-     23) clear && bash <(curl -Ls https://raw.githubusercontent.com/FranzKafkaYu/x-ui/master/install.sh) ;;
-     24) clear && bash <(curl -Ls https://gitlab.com/rwkgyg/x-ui-yg/raw/main/install.sh)  ;;
-     25) clear && apk add curl && apk add bash && bash <(curl -Ls https://raw.githubusercontent.com/Lynn-Becky/Alpine-x-ui/main/alpine-xui.sh)  ;;
+      1) clear && bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh) ;;
+      2) clear && bash <(curl -Ls https://raw.githubusercontent.com/alireza0/x-ui/master/install.sh) ;;
+      3) clear && bash <(curl -Ls https://raw.githubusercontent.com/FranzKafkaYu/x-ui/master/install.sh) ;;
+      4) clear && bash <(curl -Ls https://gitlab.com/rwkgyg/x-ui-yg/raw/main/install.sh)  ;;
+      5) clear && apk add curl && apk add bash && bash <(curl -Ls https://raw.githubusercontent.com/Lynn-Becky/Alpine-x-ui/main/alpine-xui.sh)  ;;
 
-     31) clear && bash -c "$(curl -Lfo- https://raw.githubusercontent.com/hiddify/hiddify-config/main/common/download_install.sh)" ;;
-     32) clear && echo -e "\n Todo: ... \n" ;;
-     33) clear && sh -c "$(curl -sL https://github.com/daeuniverse/dae-installer/raw/main/installer.sh)" @ update-geoip update-geosite ;;
-     34) clear && docker run -d --privileged --network=host --pid=host --restart=unless-stopped  -v /sys:/sys  -v /etc/daed:/etc/daed --name=daed ghcr.io/daeuniverse/daed:latest ;;
-     35) clear && bash <(curl -Ls https://raw.githubusercontent.com/alireza0/s-ui/master/install.sh)  ;;
+     11) clear && bash -c "$(curl -Lfo- https://raw.githubusercontent.com/hiddify/hiddify-config/main/common/download_install.sh)" ;;
+     12) clear && echo -e "\n Todo: ... \n" ;;
+     13) clear && sh -c "$(curl -sL https://github.com/daeuniverse/dae-installer/raw/main/installer.sh)" @ update-geoip update-geosite ;;
+     14) clear && docker run -d --privileged --network=host --pid=host --restart=unless-stopped  -v /sys:/sys  -v /etc/daed:/etc/daed --name=daed ghcr.io/daeuniverse/daed:latest ;;
+     15) clear && bash <(curl -Ls https://raw.githubusercontent.com/alireza0/s-ui/master/install.sh)  ;;
 
-     44) clear && bash <(curl -Ls https://raw.githubusercontent.com/ppoonk/AirGo/main/server/scripts/install.sh)  ;;
+     24) clear && bash <(curl -Ls https://raw.githubusercontent.com/ppoonk/AirGo/main/server/scripts/install.sh)  ;;
 
       0) clear && clear && clear && clear && qiqtools ;;
       *) echo "无效的输入!" ;;
@@ -3108,91 +3159,362 @@ board_panels_run() {
 
 }
 
-docker_app() {
-if docker inspect "$docker_name" &>/dev/null; then
-    clear
-    echo "$docker_name 已安装，访问地址: "
-    check_IP_address
-    echo "http://$WAN4:$docker_port"
-    echo "http://[$WAN6]:$docker_port"
-    echo ""
-    echo "应用操作"
-    echo "------------------------"
-    echo "1. 更新应用             2. 卸载应用"
-    echo "------------------------"
-    echo "0. 返回上一级选单"
-    echo "------------------------"
-    read -p "请输入你的选择: " sub_choice
+# 更新容器镜像
+docker_container_update(){
 
-    case $sub_choice in
-        1)
-            clear
-            docker rm -f "$docker_name"
-            docker rmi -f "$docker_img"
+  local dc_name=$1
+  local dc_imag=$2
+  local dc_port=$3
+  local dc_user=$4
+  local dc_pass=$5
+  
+  clear
+  txtn " "
+  txtn " >>> 删除容器$dc_name ..."
+  docker rm -f "$dc_name"
+  txtn " >>> 删除镜像$dc_imag ..."
+  docker rmi -f "$dc_imag"
 
-            $docker_rum
-            clear
-            echo "$docker_name 已经安装完成"
-            echo "------------------------"
-            # 获取外部 IP 地址
-            check_IP_address
-            echo "您可以使用以下地址访问:"
-            echo "http:$WAN4:$docker_port"
-            $docker_use
-            $docker_passwd
-            ;;
-        2)
-            clear
-            docker rm -f "$docker_name"
-            docker rmi -f "$docker_img"
-            rm -rf "/home/docker/$docker_name"
-            echo "应用已卸载"
-            ;;
-        0)
-            # 跳出循环，退出菜单
-            ;;
-        *)
-            # 跳出循环，退出菜单
-            ;;
-    esac
-else
-    clear
-    echo "安装提示"
-    echo "$docker_describe"
-    echo "$docker_url"
-    echo ""
+  txtn " >>> 重新构建容器$dc_name ..."
+  $docker_rum
 
-    # 提示用户确认安装
-    read -p "确定安装吗？(Y/N): " choice
-    case "$choice" in
-        [Yy])
-            clear
-            # 安装 Docker（请确保有 docker_install 函数）
-            docker_install
-            $docker_rum
-            clear
-            echo "$docker_name 已经安装完成"
-            echo "------------------------"
-            # 获取外部 IP 地址
-            check_IP_address
-            echo "您可以使用以下地址访问:"
-            echo "http://$WAN4:$docker_port"
-            echo "http://[$WAN6]:$docker_port"
-            echo "------------------------"
-            $docker_use
-            $docker_passwd
-            ;;
-        [Nn])
-            # 用户选择不安装
-            ;;
-        *)
-            # 无效输入
-            ;;
-    esac
-fi
+  clear
+  txtn " "
+  txtn " $dc_name 更新完成"
+  txtn "↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓"
 
+  if [[ -n "$dc_port"]]; then
+    echo " 使用以下地址访问:"
+    echo "http://$WAN4:$dc_port"
+    echo "http://$[WAN6]:$dc_port"
+  fi
+
+  [[ -n "$dc_user" ]] && echo -e "     User: $dc_user"
+  [[ -n "$dc_pass" ]] && echo -e " Password: $dc_pass"
+  txtn "↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑"
+  txtn " "
 }
 
+docker_app() {
+  if docker inspect "$docker_name" &>/dev/null; then
+      clear
+      echo "$docker_name 已安装，访问地址: "
+      # check_IP_address
+      echo "http://$WAN4:$docker_port"
+      echo "http://[$WAN6]:$docker_port"
+      echo ""
+      echo "应用操作"
+      echo "------------------------"
+      echo "1. 更新应用             2. 卸载应用"
+      echo "------------------------"
+      echo "0. 返回上一级选单"
+      echo "------------------------"
+      read -p "请输入你的选择: " sub_choice
+
+      case $sub_choice in
+          1)
+              clear
+              docker rm -f "$docker_name"
+              docker rmi -f "$docker_img"
+
+              $docker_rum
+
+              clear
+              echo "$docker_name 已经安装完成"
+              echo "------------------------"
+              # 获取外部 IP 地址
+              # check_IP_address
+              echo "您可以使用以下地址访问:"
+              echo "http://$WAN4:$docker_port"
+              $docker_use
+              $docker_passwd
+              ;;
+          2)
+              clear
+              docker rm -f "$docker_name"
+              docker rmi -f "$docker_img"
+              rm -rf "/home/docker/$docker_name"
+              echo "应用已卸载"
+              ;;
+          0) ;; # 跳出循环，退出菜单
+          *) ;; # 跳出循环，退出菜单
+      esac
+  else
+      clear
+      echo "安装提示"
+      echo "$docker_describe"
+      echo "$docker_url"
+      echo ""
+
+      # 提示用户确认安装
+      read -p "确定安装吗？(Y/N): " choice
+      case "$choice" in
+          [Yy])
+              clear
+              # 安装 Docker（请确保有 docker_install 函数）
+              docker_install
+              $docker_rum
+
+              clear
+              echo "$docker_name 已经安装完成"
+              echo "------------------------"
+              # 获取外部 IP 地址
+              # check_IP_address
+              echo "您可以使用以下地址访问:"
+              echo "http://$WAN4:$docker_port"
+              echo "http://[$WAN6]:$docker_port"
+              echo "------------------------"
+              $docker_use
+              $docker_passwd
+
+              ;;
+          [Nn]) ;; # 用户选择不安装
+            *) ;; # 无效输入
+      esac
+  fi
+}
+
+docker_container_list_menu(){
+txtn " "
+txtn $(txbr "▼ Docker容器列表")$(txbg " ☪☪☪ ")
+txtn "—————————————————————————————————————"
+docker ps -a
+txtn "====================================="
+txtn $(txtn " 1.创建新的容器")$(txtg "✔")"       "$(txtn "11.启动所有容器")$(txtn "✔")
+txtn $(txtn " 2.启动指定容器")$(txtg "✔")"       "$(txtn "12.暂停所有容器")$(txtn "✔")
+txtn $(txtn " 3.停止指定容器")$(txtg "✔")"       "$(txtn "13.重启所有容器")$(txtn "✔")
+txtn $(txtn " 4.重启指定容器")$(txtg "✔")"       "$(txtn "14.删除所有容器")$(txtn "✔")
+txtn $(txtn " 5.删除指定容器")$(txtg "✔")"       "$(txtn "")$(txtn "")
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+txtn $(txtn "21.进入指定容器")$(txtp "✔")"       "$(txtn "")$(txtn "")
+txtn $(txty "22.查看容器日志")$(txtp "✔")"       "$(txtn "")$(txtn "")
+txtn $(txty "22.查看容器网络")$(txtp "✔")"       "$(txtn "")$(txtn "")
+# txtn $(txtn " 1.Docker")$(txtg "✔")"      "$(txtn "11.Test")$(txtb "✘")
+txtn "—————————————————————————————————————"
+txtn $(txtn " 0.返回上级菜单")$(txtr "✖")"           "$(txtr "")$(txtb "")$(txtc "")
+txtn " "  
+}
+
+docker_container_list_run() {
+  while true; do
+    clear && docker_container_list_menu
+    reading "请选择: " choice
+
+    case $choice in
+      1) 
+        read -p "请输入创建命令: " docker_cmd
+        $docker_cmd
+        ;;
+
+      2) 
+        read -p "请输入要启动的容器名: " dockername
+        docker start $dockername
+        ;;
+      3) 
+        read -p "请输入要停止的容器名: " dockername
+        docker stop $dockername
+        ;;
+      4) 
+        read -p "请输入要重启的容器名: " dockername
+        docker restart $dockername
+        ;;
+      5) 
+        clear 
+        read -p "请输入要删除的容器名: " dockername
+        docker rm $dockername
+        ;;
+
+     11) clear && docker start $(docker ps -a -q) ;;
+     12) clear && docker stop $(docker ps -a -q) ;;
+     13) clear && docker restart $(docker ps -a -q) ;;
+     14) 
+      read -p "确定删除所有容器吗？(Y/N): " choice
+      case "$choice" in
+        [Yy]) docker rm -f $(docker ps -a -q) ;;
+        [Nn]) ;;
+          *) echo "无效的选择，请输入 Y 或 N。" ;;
+      esac
+      ;;
+
+     21) 
+      read -p "请输入容器名: " dockername
+      docker exec -it $dockername /bin/bash
+      ;;
+     22) 
+      read -p "请输入容器名: " dockername
+      docker logs $dockername
+      ;;
+     23) 
+      echo ""
+      container_ids=$(docker ps -q)
+
+      echo "------------------------------------------------------------"
+      printf "%-25s %-25s %-25s\n" "容器名称" "网络名称" "IP地址"
+
+      for container_id in $container_ids; do
+          container_info=$(docker inspect --format '{{ .Name }}{{ range $network, $config := .NetworkSettings.Networks }} {{ $network }} {{ $config.IPAddress }}{{ end }}' "$container_id")
+
+          container_name=$(echo "$container_info" | awk '{print $1}')
+          network_info=$(echo "$container_info" | cut -d' ' -f2-)
+
+          while IFS= read -r line; do
+              network_name=$(echo "$line" | awk '{print $1}')
+              ip_address=$(echo "$line" | awk '{print $2}')
+
+              printf "%-20s %-20s %-15s\n" "$container_name" "$network_name" "$ip_address"
+          done <<< "$network_info"
+      done
+      ;;
+     
+      0) clear && docker_run ;;
+      *) echo "无效的输入!" ;;
+    esac  
+    break_end    
+  done 
+}
+
+docker_images_list_menu(){
+txtn " "
+txtn $(txbr "▼ Docker镜像列表")$(txbg " ☪☪☪ ")
+txtn "—————————————————————————————————————"
+docker image ls
+txtn "====================================="
+txtn $(txtn " 1.获取指定镜像")$(txtg "✔")"       "$(txtn "")$(txtn "")
+txtn $(txtn " 2.更新指定镜像")$(txtg "✔")"       "$(txtn "")$(txtn "")
+txtn $(txtn " 3.删除指定镜像")$(txtg "✔")"       "$(txtn "")$(txtn "")
+txtn $(txtn " 4.删除所有镜像")$(txtg "✔")"       "$(txtn "")$(txtn "")
+# txtn $(txtn " 1.Docker")$(txtg "✔")"      "$(txtn "11.Test")$(txtb "✘")
+txtn "—————————————————————————————————————"
+txtn $(txtn " 0.返回上级菜单")$(txtr "✖")"           "$(txtr "")$(txtb "")$(txtc "")
+txtn " "  
+}
+
+docker_images_list_run() {
+  while true; do
+    clear && docker_images_list_menu
+    reading "请选择: " choice
+
+    case $choice in
+      1) read -p "请输入要获取的镜像名: " dockername && docker pull $dockername ;;
+      2) read -p "请输入要更新的镜像名: " dockername && docker pull $dockername ;;
+      3) read -p "请输入要删除的镜像名: " dockername && docker rmi -f $dockername ;;
+      4) 
+        read -p "确定删除所有镜像吗？(Y/N): " choice
+        case "$choice" in
+          [Yy]) docker rmi -f $(docker images -q) ;;
+          [Nn]) ;;
+             *)  echo "无效的选择，请输入 Y 或 N。" ;;
+        esac
+        ;;
+     
+      0) clear && docker_run ;;
+      *) echo "无效的输入!" ;;
+    esac  
+    break_end    
+  done 
+}
+
+docker_network_list_menu(){
+txtn " "
+txtn $(txbr "▼ Docker网络列表")$(txbg " ☪☪☪ ")
+txtn "—————————————————————————————————————"
+docker network ls
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+container_ids=$(docker ps -q)
+printf "%-25s %-25s %-25s\n" "容器名称" "网络名称" "IP地址"
+
+for container_id in $container_ids; do
+    container_info=$(docker inspect --format '{{ .Name }}{{ range $network, $config := .NetworkSettings.Networks }} {{ $network }} {{ $config.IPAddress }}{{ end }}' "$container_id")
+
+    container_name=$(echo "$container_info" | awk '{print $1}')
+    network_info=$(echo "$container_info" | cut -d' ' -f2-)
+
+    while IFS= read -r line; do
+        network_name=$(echo "$line" | awk '{print $1}')
+        ip_address=$(echo "$line" | awk '{print $2}')
+
+        printf "%-20s %-20s %-15s\n" "$container_name" "$network_name" "$ip_address"
+    done <<< "$network_info"
+done
+
+txtn " "
+txtn "====================================="
+txtn $(txtn " 1.创建网络")$(txtg "✔")"       "$(txtn "")$(txtn "")
+txtn $(txtn " 2.加入网络")$(txtg "✔")"       "$(txtn "")$(txtn "")
+txtn $(txtn " 3.退出网络")$(txtg "✔")"       "$(txtn "")$(txtn "")
+txtn $(txtn " 4.删除网络")$(txtg "✔")"       "$(txtn "")$(txtn "")
+# txtn $(txtn " 1.Docker")$(txtg "✔")"      "$(txtn "11.Test")$(txtb "✘")
+txtn "—————————————————————————————————————"
+txtn $(txtn " 0.返回上级菜单")$(txtr "✖")"           "$(txtr "")$(txtb "")$(txtc "")
+txtn " "  
+}
+
+docker_network_list_run() {
+  while true; do
+    clear && docker_network_list_menu
+    reading "请选择: " choice
+
+    case $choice in
+      1) read -p "设置新网络名: " dockernetwork && docker network create $dockernetwork ;;
+      2) 
+        read -p "加入网络名: " dockernetwork 
+        read -p "那些容器加入该网络: " dockername 
+        docker network connect $dockernetwork $dockername 
+        ;;
+      3) 
+        read -p "退出网络名: " dockernetwork
+        read -p "那些容器退出该网络: " dockername
+        docker network disconnect $dockernetwork $dockername
+        echo ""
+        ;;
+      4) 
+        read -p "请输入要删除的网络名: " dockernetwork
+        docker network rm $dockernetwork
+        ;;
+     
+      0) clear && docker_run ;;
+      *) echo "无效的输入!" ;;
+    esac  
+    break_end    
+  done 
+}
+
+docker_volume_list_menu(){
+txtn " "
+txtn $(txbr "▼ Docker卷列表")$(txbg " ☪☪☪ ")
+txtn "—————————————————————————————————————"
+docker volume ls
+txtn "====================================="
+txtn $(txtn " 1.创建新卷")$(txtg "✔")"       "$(txtn "")$(txtn "")
+txtn $(txtn " 2.删除卷")$(txtg "✔")"       "$(txtn "")$(txtn "")
+# txtn $(txtn " 1.Docker")$(txtg "✔")"      "$(txtn "11.Test")$(txtb "✘")
+txtn "—————————————————————————————————————"
+txtn $(txtn " 0.返回上级菜单")$(txtr "✖")"           "$(txtr "")$(txtb "")$(txtc "")
+txtn " "  
+}
+
+docker_volume_list_run() {
+  while true; do
+    clear && docker_volume_list_menu
+    reading "请选择: " choice
+
+    case $choice in
+      1) 
+        read -p "设置新卷名: " dockerjuan
+        docker volume create $dockerjuan
+        ;;
+      
+      2) 
+        read -p "输入删除卷名: " dockerjuan
+        docker volume rm $dockerjuan
+        ;;
+     
+      0) clear && docker_run ;;
+      *) echo "无效的输入!" ;;
+    esac  
+    break_end    
+  done 
+}
 docker_menu() {
 txtn " "
 txtn $(txbr "▼ 容器管理")$(txbg " ☪☪☪ ")
@@ -3210,27 +3532,6 @@ txtn $(txtn "88.设置快捷键[dcc]")$(txtg "✔")"      "$(txtn "")$(txtn "")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")"           "$(txtr "")$(txtb "")$(txtc "")
 txtn " "
-
-# echo -e "
-# ▶ 容器管理
-# ${yellow}IPv4: ${white}$WAN4${plain}
-# ${yellow}IPv6: ${white}$WAN6${plain}
-# -------------------------------
-# ${green} 1.${plain} Docker环境安装
-# ${green} 2.${plain} Docker环境卸载
-# ${green} 3.${plain} Docker查看状态
-# ${green} 4.${plain} Docker清理
-# -------------------------------        
-# ${green} 5.${plain} Docker容器管理 ▶  
-# ${green} 6.${plain} Docker镜像管理 ▶  
-# ${green} 7.${plain} Docker网络管理 ▶  
-# ${green} 8.${plain} Docker卷管理  ▶
-# -------------------------------
-# ${green} 9.${plain} 设置docker-compose快捷键[默认为: ${yellow}dcc${plain}]
-# -------------------------------
-# ${green} 0.${plain} 返回主菜单
-# -------------------------------
-# "
 }
 
 docker_run() {
@@ -3239,57 +3540,17 @@ docker_run() {
     reading "请选择: " choice
 
     case $choice in
-      1) clear && install_add_docker ;;
-      2) 
-        clear
-        read -p "确定卸载docker环境吗？(Y/N): " choice
-        case "$choice" in
-          [Yy])
-            docker rm $(docker ps -a -q) && docker rmi $(docker images -q) && docker network prune
-            remove docker docker-ce docker-compose > /dev/null 2>&1
-            ;;
-          [Nn])
-            ;;
-          *)
-            echo "无效的选择，请输入 Y 或 N。"
-            ;;
-        esac
-        ;;
-     11) 
-        clear
-        echo ""
-        echo "Dcoker版本"
-        docker --version
-        docker-compose --version
-        echo ""
-        echo "Dcoker镜像列表"
-        docker image ls
-        echo ""
-        echo "Dcoker容器列表"
-        docker ps -a
-        echo ""
-        echo "Dcoker卷列表"
-        docker volume ls
-        echo ""
-        echo "Dcoker网络列表"
-        docker network ls
-        echo ""
-        ;;
-     12)
-        clear
-        read -p "确定清理无用的镜像容器网络吗？[Y|N]: " choice
-        case "$choice" in
-          [Yy]) docker system prune -af --volumes ;;
-          [Nn]) echo "操作取消..." ;;
-             *) echo "无效的选择，请输入 Y 或 N" ;;
-        esac
-        ;;
+      1) clear && docker_install ;;
+      2) clear && docker_uninstall ;;
 
-     21) clear && docker_set_1ckl "dcc" ;;
-     22) clear && docker_set_1ckl "dcc" ;;
+     11) clear && docker_info_list ;;
+     12) clear && docker_clean ;;
 
-     31) clear && docker_set_1ckl "dcc" ;;
-     32) clear && docker_set_1ckl "dcc" ;;
+     21) clear && docker_container_list_run ;;
+     22) clear && docker_images_list_run ;;
+
+     31) clear && docker_network_list_run ;;
+     32) clear && docker_volume_list_run ;;
 
      88) clear && docker_set_1ckl "dcc" ;;
       # 9) clear && chmod a+x /usr/local/bin/docker-compose && rm -rf `which dcc` && ln -s /usr/local/bin/docker-compose /usr/bin/dcc ;;
@@ -3299,7 +3560,6 @@ docker_run() {
     esac  
     break_end    
   done 
-
 }
 
 
@@ -3496,39 +3756,15 @@ caddy_newcaddyfile(){
   fi
 }
 
-caddy_reload(){  
-  caddy_newcaddyfile
-
-  # sudo systemctl stop caddy
-  # cd /etc/caddy
-  caddy reload
-  # cd -
-}
-
-caddy_start(){
-  # sudo systemctl stop caddy
-  # cd /etc/caddy
-  caddy start
-  # caddy run
-  # cd -
-}
-
-caddy_stop(){
-  # sudo systemctl stop caddy
-  # cd /etc/caddy
-  caddy stop
-  # cd -
-}
-
-caddy_status(){
-  sudo systemctl status caddy
-}
+caddy_start(){ caddy start; }
+caddy_stop(){  caddy stop;  }
+caddy_status(){ sudo systemctl status caddy; }
+caddy_reload(){ caddy_newcaddyfile; caddy reload; }
 
 # 站点列表（不包含default.conf)
 caddy_web_list(){
   # ls -t /home/web/caddy | grep -v "default.conf" | sed 's/\.[^.]*$//'
   dm_list=$(ls -t /home/web/caddy | grep -v "default.conf" | sed 's/\.[^.]*$//')
-
   # clear
   echo -e "\n >> ${red}站点列表\n${plain}-------------------------------\n"
   for dm_file in $dm_list; do
@@ -3564,18 +3800,15 @@ caddy_delete_domain(){
   read -p "请输入要删除的域名: " dm_old
   rm /home/web/caddy/$dm_old.conf
   
-  caddy_reload  
+  caddy_reload
 }
 
 # 清理站点缓存
-caddy_clean_cache(){
-  echo "Caddy会自动清除过期的缓存条目。"
-  # caddy adapt
-}
+caddy_clean_cache(){ echo "Caddy会自动清除过期的缓存条目，无需额外操作。"; }
 
 caddy_version(){
   caddy_version=$(caddy -v)
-  caddy_version=$(echo "$caddy_version" | grep -oP "caddy/\K[0-9]+\.[0-9]+\.[0-9]+")
+  caddy_version=$(echo "$caddy_version" | grep -oP "v/\K[0-9]+\.[0-9]+\.[0-9]+")
   echo -n "Caddy : v$caddy_version"
 }
 
