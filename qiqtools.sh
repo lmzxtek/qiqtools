@@ -2672,35 +2672,30 @@ EOF
 website_deploy_menu() {
 
 txtn " "
-txtn $(txbr "▼ 站点部署")$(txbp " ✌✌✌ ")
+txtn $(txbr "▼ 站点部署")$(txbp " ♨♨♨ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
-txtn $(txty " 1.1Panel")$(txty "☑")"                 "$(txtn "61.AList多存储文件列表程序")$(txtg "✔")
-txtn $(txtn " 2.aaPanel")$(txtg "✔")"                "$(txtb "62.VScode-Server网页版")$(txtg "✔")
-txtn $(txtn " 3.宝塔面板")$(txtg "✔")"               "$(txtn "63.KodBox可道云在线桌面")$(txtg "✔")
+txtn $(txty " 1.1Panel")$(txty "〠")"                "$(txtn "61.AList")$(txtg "✔")
+txtn $(txtn " 2.aaPanel")$(txtg "✔")"                "$(txtb "62.Code-Server")$(txtg "✔")
+txtn $(txtn " 3.宝塔面板")$(txtg "✔")"               "$(txtn "63.KodBox")$(txtg "✔")
 txtn $(txtn " 4.哪吒探针")$(txtg "✔")"               "$(txtn "64.ChatGPT-Next-Web")$(txtg "✔")
-txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"          "$(txtn "65.苹果CMS网站")$(txtg "✔")
-txtn $(txtn " 6.NginxProxyManager")$(txtb "✘")"      "$(txtn "66.苹果CMS网站(Docker)")$(txtg "✔")
+txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"          "$(txtn "65.MacCMS")$(txtg "✔")
+# txtn $(txtn " 6.NginxProxyManager")$(txtb "✘")"      "$(txtn "")$(txtg "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txbr "▼ Docker")$(txbg " ❦❦❦ ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "11.Ubuntu远程桌面网页版")$(txtg "✔")"             "$(txtn "")$(txtb "")
-txtn $(txtn "12.AuroPanel极光面板")$(txtg "✔")"               "$(txtn "")$(txtb "")
-txtn $(txtn "13.Portainer容器管理面板")$(txtg "✔")"           "$(txtn "")$(txtb "")
-txtn $(txtn "14.Memos网页备忘录")$(txtg "✔")"                 "$(txtn "")$(txtb "")
-txtn $(txtn "15.QBittorrent")$(txtg "✔")"                    "$(txtn "")$(txtb "")
-txtn $(txtn "16.RocketChat在线聊天系统")$(txtg "✔")"          "$(txtn "")$(txtb "")
-txtn $(txtb "17.SearXNG聚合搜索站")$(txtg "✔")"               "$(txtn "")$(txtb "")
-txtn $(txtn "18.StirlingPDF工具大全")$(txtg "✔")"             "$(txtn "")$(txtb "")
-txtn $(txty "19.IT-Tools常用工具")$(txtg "✔")"                "$(txtn "")$(txtb "")
-txtn $(txtn "20.Next-Terminal资产管理")$(txtg "✔")"           "$(txtn "")$(txtb "")
-txtn $(txtn "21.YACD")$(txtg "✔")"                           "$(txtn "")$(txtb "")
-txtn $(txtn "22.ClashDashBoard")$(txtg "✘")"                 "$(txtn "")$(txtb "")
-txtn $(txtn "23.ChatGPT-Next-Web")$(txtg "✔")"               "$(txtn "")$(txtb "")
+txtn $(txtn "11.Ubuntu-RDP-Web")$(txtg "✔")"         "$(txtn "31.Portainer")$(txtn "✔")
+txtn $(txtn "12.AuroPanel")$(txtg "✔")"              "$(txtn "32.Next-Terminal")$(txtn "✔")
+txtn $(txtn "13.Memos")$(txtg "✔")"                  "$(txtn "33.YACD")$(txtn "✔")
+txtn $(txtb "14.SearXNG")$(txtg "✔")"                "$(txtn "34.QBittorrent")$(txtn "✔")
+txtn $(txtn "15.StirlingPDF")$(txtg "✔")"            "$(txtn "35.RocketChat")$(txtn "✔")
+txtn $(txty "16.IT-Tools")$(txtg "✔")"               "$(txtn "36.ClashDashBoard")$(txtn "✔")
+txtn $(txtn "17.MyIP(IPChecking)")$(txtg "✔")"       "$(txtn "37.MacCMS")$(txtn "✔")
+txtn $(txtn "18.ChatGPT-Next-Web")$(txtg "✔")"       "$(txtn "38.NginxProxyManager")$(txtn "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
-txtn $(txtn " 0.返回主菜单")$(txtr "✖")
+txtn $(txtn " 0.返回主菜单")$(txtr "✖")"              "$(txtr "88.")$(txtb "容器管理")$(txtc "☪")
 txtn " "
 }
 
@@ -2716,7 +2711,8 @@ website_deploy_run(){
       3) clear && install_baota_cn ;;
       4) clear && install curl && curl -L https://raw.githubusercontent.com/naiba/nezha/master/script/install.sh  -o nezha.sh && chmod +x nezha.sh && ./nezha.sh  ;;
       5) clear && install wget && wget https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh && bash ols1clk.sh  ;;
-      6) 
+
+     38) 
         clear 
         docker_name="npm"
         docker_img="jc21/nginx-proxy-manager:latest"
@@ -2760,7 +2756,7 @@ website_deploy_run(){
 
      12) clear && install curl && bash <(curl -fsSL https://raw.githubusercontent.com/Aurora-Admin-Panel/deploy/main/install.sh)  ;;
 
-     13) 
+     31) 
         clear 
         docker_name="portainer"
         docker_img="portainer/portainer"
@@ -2779,7 +2775,7 @@ website_deploy_run(){
         docker_app
         ;;
 
-     14) 
+     13) 
       clear 
       docker_name="memos"
       docker_img="ghcr.io/usememos/memos:latest"
@@ -2792,7 +2788,7 @@ website_deploy_run(){
       docker_app
       ;;
 
-     15) 
+     34) 
         docker_name="qbittorrent"
         docker_img="lscr.io/linuxserver/qbittorrent:latest"
         docker_port=8081
@@ -2816,7 +2812,7 @@ website_deploy_run(){
 
         docker_app
         ;;
-     16) 
+     35) 
       clear 
       if docker inspect rocketchat &>/dev/null; then
               clear
@@ -2906,7 +2902,7 @@ website_deploy_run(){
       fi
       ;;
 
-     17) 
+     14) 
       clear 
       docker_name="searxng"
       docker_img="alandoyle/searxng:latest"
@@ -2926,7 +2922,7 @@ website_deploy_run(){
       docker_app
       ;;
 
-     18) 
+     15) 
       clear
       docker_name="s-pdf"
       docker_img="frooodle/s-pdf:latest"
@@ -2947,13 +2943,13 @@ website_deploy_run(){
       docker_app
       ;;
       
-     19) 
+     16) 
       clear 
       docker run -d --name it-tools --restart unless-stopped -p 8080:80 corentinth/it-tools:latest
       # docker run -d --name it-tools --restart unless-stopped -p 8080:80 ghcr.io/corentinth/it-tools:latest
       ;;
 
-     20) 
+     32) 
       clear
       cd ~
       mkdir next-terminal-docker && cd next-terminal-docker
@@ -2963,8 +2959,10 @@ website_deploy_run(){
       cd ~
       ;;
 
-     21) clear && docker run -p 1234:80 -d --name yacd --rm ghcr.io/haishanh/yacd:master  ;;
-     23) clear && docker_deploy_chatgptnextweb ;;
+     33) clear && docker run -p 1234:80 -d --name yacd --rm ghcr.io/haishanh/yacd:master  ;;
+
+     17) clear && docker_deploy_myip ;;
+     18) clear && docker_deploy_chatgptnextweb ;;
 
      61) clear && install curl && curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s install  ;;
      62) clear && install curl && curl -fsSL https://code-server.dev/install.sh | sh  ;;
@@ -3311,7 +3309,7 @@ services:
   chatgpt-next-web-g:
     # profiles: [ "no-proxy" ]
     container_name: ${dcc_name}
-    image: yidadaa/chatgpt-next-web
+    image: $dcc_image
     restart: unless-stopped
     ports:
       - $dcc_port:3000
@@ -3352,17 +3350,10 @@ EOF
 # 使用Docker compose部署MyIP
 docker_deploy_myip(){
 
-  local dcc_name=chatgptnextweb
-  local dcc_image=yidadaa/chatgpt-next-web
+  local dcc_name=myip
+  local dcc_image=ghcr.io/jason5ng32/myip:latest
 
-  local dcc_port=3001
-  local dcc_code=""
-
-  reading "请输入OpenAI密钥：" OPENAI_API_KEY
-  reading "请输入Gemini密钥：" GOOGLE_API_KEY
-
-  # local OPENAI_API_KEY=$1
-  # local GOOGLE_API_KEY=$2
+  local dcc_port=18966
 
   mkdir -p /home/dcc.d/${dcc_name}
   cd /home/dcc.d/${dcc_name}
@@ -3371,25 +3362,12 @@ docker_deploy_myip(){
   cat > /home/dcc.d/${dcc_name}/docker-compose.yml << EOF
 version: "3.9"
 services:
-  chatgpt-next-web-g:
-    # profiles: [ "no-proxy" ]
+  myip:
     container_name: ${dcc_name}
-    image: yidadaa/chatgpt-next-web
+    image: $dcc_image
     restart: unless-stopped
     ports:
-      - $dcc_port:3000
-    environment:
-      - OPENAI_API_KEY=$OPENAI_API_KEY
-      - GOOGLE_API_KEY=$GOOGLE_API_KEY
-      - CODE=$dcc_code
-      - BASE_URL=$BASE_URL
-      - OPENAI_ORG_ID=$OPENAI_ORG_ID
-      - HIDE_USER_API_KEY=$HIDE_USER_API_KEY
-      - DISABLE_GPT4=$DISABLE_GPT4
-      - ENABLE_BALANCE_QUERY=$ENABLE_BALANCE_QUERY
-      - DISABLE_FAST_LINK=$DISABLE_FAST_LINK
-      - OPENAI_SB=$OPENAI_SB
-      - CUSTOM_MODELS=-all,+gemini-pro
+      - $dcc_port:18966
 EOF
 
   # 启动容器
