@@ -3280,19 +3280,17 @@ docker_app() {
 
 docker_container_list_menu(){
 txtn " "
-txtn $(txbr "▼ Docker容器列表")$(txbg " ☪☪☪ ")
+txtn $(txbr "▼ Docker容器")$(txbg " ☪☪☪ ")
 txtn "—————————————————————————————————————"
 docker ps -a
 txtn "====================================="
 txtn $(txtn " 1.创建新的容器")$(txtg "✔")"       "$(txtn "11.启动所有容器")$(txtn "✔")
 txtn $(txtn " 2.启动指定容器")$(txtg "✔")"       "$(txtn "12.暂停所有容器")$(txtn "✔")
 txtn $(txtn " 3.停止指定容器")$(txtg "✔")"       "$(txtn "13.重启所有容器")$(txtn "✔")
-txtn $(txtn " 4.重启指定容器")$(txtg "✔")"       "$(txtn "14.删除所有容器")$(txtn "✔")
-txtn $(txtn " 5.删除指定容器")$(txtg "✔")"       "$(txtn "")$(txtn "")
+txtn $(txty " 4.重启指定容器")$(txtc "✔")"       "$(txtn "14.删除所有容器")$(txtn "✔")
+txtn $(txtn " 5.删除指定容器")$(txtg "✔")"       "$(txtp "15.进入指定容器")$(txtn "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "21.进入指定容器")$(txtp "✔")"       "$(txtn "")$(txtn "")
-txtn $(txty "22.查看容器日志")$(txtp "✔")"       "$(txtn "")$(txtn "")
-txtn $(txty "22.查看容器网络")$(txtp "✔")"       "$(txtn "")$(txtn "")
+txtn $(txty "21.查看容器日志")$(txtp "✔")"       "$(txtn "31.查看容器网络")$(txtn "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"      "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回上级菜单")$(txtr "✖")"           "$(txtr "")$(txtb "")$(txtc "")
@@ -3340,15 +3338,10 @@ docker_container_list_run() {
       esac
       ;;
 
-     21) 
-      read -p "请输入容器名: " dockername
-      docker exec -it $dockername /bin/bash
-      ;;
-     22) 
-      read -p "请输入容器名: " dockername
-      docker logs $dockername
-      ;;
-     23) 
+     15) read -p "请输入容器名: " dockername && docker exec -it $dockername /bin/bash ;;
+
+     21)  read -p "请输入容器名: " dockername && docker logs $dockername ;;
+     31) 
       echo ""
       container_ids=$(docker ps -q)
 
