@@ -2348,7 +2348,7 @@ install_baota_cn() {
 
 }
 
-install__baota_aa(){
+install_baota_aa(){
   if [ -f "/etc/init.d/bt" ] && [ -d "/www/server/panel" ]; then
       clear
       echo "aaPanel已安装，应用操作"
@@ -2911,69 +2911,7 @@ docker_deploy_clashdashboard(){
   clear 
 }
 
-
-# 站点工具菜单
-website_deploy_menu() {
-
-txtn " "
-txtn $(txbr "▼ 站点部署")$(txtp " ♨♨♨ ")
-txtn "—————————————————————————————————————"
-WANIP_show
-txtn "====================================="
-txtn $(txty " 1.1Panel")$(txtc "〠")"                "$(txtn "61.AList")$(txtg "✔")
-txtn $(txtn " 2.aaPanel")$(txtg "✔")"                "$(txtb "62.Code-Server")$(txtg "✔")
-txtn $(txtn " 3.宝塔面板")$(txtg "✔")"               "$(txtn "63.KodBox")$(txtg "✔")
-txtn $(txtn " 4.哪吒探针")$(txtg "✔")"               "$(txtn "64.ChatGPT-Next-Web")$(txtg "✔")
-txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"          "$(txtn "65.MacCMS")$(txtg "✔")
-# txtn $(txtn " 6.NginxProxyManager")$(txtb "✘")"      "$(txtn "")$(txtg "")
-txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txbr "▼ Docker")$(txbg " ❦❦❦ ")
-txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "11.AuroPanel")$(txtg "✔")"              "$(txtn "31.Portainer")$(txtn "✔")
-txtn $(txtn "12.Ubuntu-RDP-Web")$(txtg "✔")"         "$(txtn "32.Next-Terminal")$(txtn "✔")
-txtn $(txtn "13.Memos")$(txtg "✔")"                  "$(txtn "33.YACD")$(txtn "✔")
-txtn $(txtb "14.SearXNG")$(txtg "✔")"                "$(txtn "34.QBittorrent")$(txtn "✔")
-txtn $(txtn "15.StirlingPDF")$(txtg "✔")"            "$(txtn "35.RocketChat")$(txtn "✔")
-txtn $(txty "16.IT-Tools")$(txtg "✔")"               "$(txtn "36.ClashDashBoard")$(txtn "✔")
-txtn $(txtn "17.MyIP(IPChecking)")$(txtg "✔")"       "$(txtn "37.MacCMS")$(txtn "✔")
-txtn $(txtn "18.ChatGPT-Next-Web")$(txtg "✔")"       "$(txtn "38.NginxProxyManager")$(txtn "✔")
-# txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
-txtn "—————————————————————————————————————"
-txtn $(txtn " 0.返回主菜单")$(txtr "✖")"              "$(txtp "88.")$(txtb "容器管理")$(txty "☪")
-txtn " "
-}
-
-# 面板工具
-website_deploy_run(){
-  while true; do
-    clear && website_deploy_menu
-    read -p "请输入你的选择: " sub_choice
-
-    case $sub_choice in
-      1) clear && install_1panel  ;;
-      2) clear && install__baota_aa ;;
-      3) clear && install_baota_cn ;;
-      4) clear && install curl && curl -L https://raw.githubusercontent.com/naiba/nezha/master/script/install.sh  -o nezha.sh && chmod +x nezha.sh && ./nezha.sh  ;;
-      5) clear && install wget && wget https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh && bash ols1clk.sh  ;;
-
-     11) clear && install curl && bash <(curl -fsSL https://raw.githubusercontent.com/Aurora-Admin-Panel/deploy/main/install.sh)  ;;
-     12) clear && docker_deploy_ubunturdpweb ;;
-     13) clear && docker_deploy_memos ;;
-     14) clear && docker_deploy_searxng ;;
-     15) clear && docker_deploy_spdf ;;
-     16) clear && docker_deploy_ittools ;;
-     17) clear && docker_deploy_myip ;;
-     18) clear && docker_deploy_chatgptnextweb ;;
-
-     31) clear && docker_deploy_portainer ;;
-     32) clear && docker_deploy_nextterminal ;;
-     33) clear && docker_deploy_yacd ;;
-     34) clear && docker_deploy_qbittorrent ;;
-     35) clear && docker_deploy_rocketchat ;;
-     36) clear && docker_deploy_clashdashboard;;
-     37) clear && docker_deploy_maccms_tweek ;;
-
-     38) 
+docker_deploy_npm(){
         clear 
         docker_name="npm"
         docker_img="jc21/nginx-proxy-manager:latest"
@@ -2992,13 +2930,76 @@ website_deploy_run(){
         docker_use="echo \"初始用户名: admin@example.com\""
         docker_passwd="echo \"初始密码: changeme\""
         docker_app
-        ;;
+}
 
-     61) clear && install curl && curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s install  ;;
-     62) clear && install curl && curl -fsSL https://code-server.dev/install.sh | sh  ;;
-     63) clear && install_kodbox  ;;   
-     64) clear && install curl && bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh) ;;
-     65) clear && install_maccms ;;
+
+# 站点工具菜单
+website_deploy_menu() {
+
+txtn " "
+txtn $(txbr "▼ 站点部署")$(txtp " ♨♨♨ ")
+txtn "—————————————————————————————————————"
+WANIP_show
+txtn "====================================="
+txtn $(txty " 1.1Panel")$(txtc "〠")"                "$(txtn "11.AList")$(txtg "✔")
+txtn $(txtn " 2.aaPanel")$(txtg "✔")"                "$(txtb "12.MacCMS")$(txtg "✔")
+txtn $(txtn " 3.宝塔面板")$(txtg "✔")"               "$(txtn "13.KodBox")$(txtg "✔")
+txtn $(txtn " 4.哪吒探针")$(txtg "✔")"               "$(txtn "14.Code-Server")$(txtg "✔")
+txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"          "$(txtn "15.ChatGPT-Next-Web")$(txtg "✔")
+# txtn $(txtn " 6.NginxProxyManager")$(txtb "✘")"      "$(txtn "")$(txtg "")
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+txtn $(txbr "▼ Docker")$(txbg " ❦❦❦ ")
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+txtn $(txtn "21.AuroPanel")$(txtg "✔")"              "$(txtn "41.Portainer")$(txtn "✔")
+txtn $(txtn "22.Ubuntu-RDP-Web")$(txtg "✔")"         "$(txtn "42.Next-Terminal")$(txtn "✔")
+txtn $(txtn "23.Memos")$(txtg "✔")"                  "$(txtn "43.YACD")$(txtn "✔")
+txtn $(txtb "24.SearXNG")$(txtg "✔")"                "$(txtn "44.QBittorrent")$(txtn "✔")
+txtn $(txtn "25.StirlingPDF")$(txtg "✔")"            "$(txtn "45.RocketChat")$(txtn "✔")
+txtn $(txty "26.IT-Tools")$(txtg "✔")"               "$(txtn "46.ClashDashBoard")$(txtn "✔")
+txtn $(txtn "27.MyIP(IPChecking)")$(txtg "✔")"       "$(txtn "47.MacCMS")$(txtn "✔")
+txtn $(txtn "28.ChatGPT-Next-Web")$(txtg "✔")"       "$(txtn "48.NginxProxyManager")$(txtn "✔")
+# txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
+txtn "—————————————————————————————————————"
+txtn $(txtn " 0.返回主菜单")$(txtr "✖")"              "$(txtp "88.")$(txtb "容器管理")$(txty "☪")
+txtn " "
+}
+
+# 面板工具
+website_deploy_run(){
+  while true; do
+    clear && website_deploy_menu
+    read -p "请输入你的选择: " sub_choice
+
+    case $sub_choice in
+      1) clear && install_1panel  ;;
+      2) clear && install_baota_aa ;;
+      3) clear && install_baota_cn ;;
+      4) clear && install curl && curl -L https://raw.githubusercontent.com/naiba/nezha/master/script/install.sh  -o nezha.sh && chmod +x nezha.sh && ./nezha.sh  ;;
+      5) clear && install wget && wget https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh && bash ols1clk.sh  ;;
+
+     11) clear && install curl && curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s install  ;;
+     12) clear && install_maccms ;;
+     13) clear && install_kodbox  ;;
+     14) clear && install curl && curl -fsSL https://code-server.dev/install.sh | sh  ;;
+     15) clear && install curl && bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh) ;;
+
+     21) clear && install curl && bash <(curl -fsSL https://raw.githubusercontent.com/Aurora-Admin-Panel/deploy/main/install.sh)  ;;
+     22) clear && docker_deploy_ubunturdpweb ;;
+     23) clear && docker_deploy_memos ;;
+     24) clear && docker_deploy_searxng ;;
+     25) clear && docker_deploy_spdf ;;
+     26) clear && docker_deploy_ittools ;;
+     27) clear && docker_deploy_myip ;;
+     28) clear && docker_deploy_chatgptnextweb ;;
+
+     41) clear && docker_deploy_portainer ;;
+     42) clear && docker_deploy_nextterminal ;;
+     43) clear && docker_deploy_yacd ;;
+     44) clear && docker_deploy_qbittorrent ;;
+     45) clear && docker_deploy_rocketchat ;;
+     46) clear && docker_deploy_clashdashboard;;
+     47) clear && docker_deploy_maccms_tweek ;;
+     48) clear && docker_deploy_npm ;;
 
      88) clear && docker_run ;;
       0) clear && qiqtools ;;
