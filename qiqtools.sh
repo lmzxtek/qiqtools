@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.4.0
+script_version=v0.4.1
 #==========================
 
 # Language
@@ -720,7 +720,7 @@ clean_sys() {
 }
 
 # 设置docker-compose快捷命令
-set_docker_1ckl(){
+docker_set_1ckl(){
   tcmd="dcc"
   reading "\n 请输入要设置的快捷键[dcc]: " ccmd
   [[ -n $ccmd ]] && tcmd=$ccmd
@@ -730,25 +730,39 @@ set_docker_1ckl(){
 }
 
 install_add_docker() {
-    if [ -f "/etc/alpine-release" ]; then
-        apk update
-        apk add docker docker-compose
-        rc-update add docker default
-        service docker start
-    else
-        curl -fsSL https://get.docker.com | sh && ln -s /usr/libexec/docker/cli-plugins/docker-compose /usr/local/bin
-        systemctl start docker
-        systemctl enable docker
-    fi
+  
+  if [[ "$VIRT" != *"LXC"* ]]; then
+    echo -e "\n >>> 检测到${red}LXC${plain}服务器，不建议安装Docker。\n"
+    read -p " 安装docker环境吗？(输入Y[y]继续): " choice
+    case "$choice" in
+      [Yy]) clear ;;
+      # [Nn]) return 1 ;;
+         *) echo -e " 安装取消..." && return 1 ;;
+    esac
+  fi
+
+  echo -e "\n >>> 开始安装Docker ...\n"
+  if [ -f "/etc/alpine-release" ]; then
+    apk update
+    apk add docker docker-compose
+    rc-update add docker default
+    service docker start
+  else
+    curl -fsSL https://get.docker.com | sh && ln -s /usr/libexec/docker/cli-plugins/docker-compose /usr/local/bin
+    systemctl start docker
+    systemctl enable docker
+  fi
 }
 
-# 定义安装 Docker 的函数
-install_docker() {
-    if ! command -v docker &>/dev/null; then
-        install_add_docker
-    else
-        echo "Docker 已经安装"
-    fi
+# Docker安装
+docker_install() {
+  if ! command -v docker &>/dev/null; then
+      install_add_docker
+  else
+    echo -e "\n >>> Docker已安装 ..."
+    docker --version
+    echo -e ""
+  fi
 }
 
 
@@ -1204,7 +1218,7 @@ dd_system_run() {
         reboot 
         exit ;;
       #============================== 
-      0) system_tools_run && exit ;;
+      0) system_setting_run && exit ;;
       *) echo "无效的选择，请重新输入。" && break_end ;;
     esac    
   done
@@ -2069,7 +2083,7 @@ txtn " "
 
 }
 
-system_tools_run() {
+system_setting_run() {
   while true; do 
     clear && system_tools_menu
     reading "请输入你的选择: " sub_choice
@@ -2120,7 +2134,7 @@ system_tools_run() {
      18) clear && pss_generate ;;
      19) clear && cron_manage ;;
 
-     88) clear && system_test_run ;;
+     88) clear && server_test_run ;;
      99) clear && echo -e "\n正在重启服务器，即将断开SSH连接..." && reboot ;;
       0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
@@ -2143,7 +2157,7 @@ function fetch(){
 }
 
 # 性能测试工具
-system_test_menu() {  
+server_test_menu() {  
 txtn " "
 txtn $(txbr "▼ 性能测试")$(txbg " ☯☯☯ ")
 txtn "—————————————————————————————————————"
@@ -2167,9 +2181,9 @@ txtn $(txtn " 0.返回主菜单")$(txtr "✖")"             "$(txtr "99")$(txtb 
 txtn " "
 }
 
-system_test_run() {
+server_test_run() {
   while true; do 
-    clear && system_test_menu
+    clear && server_test_menu
     reading "请输入你的选择: " sub_choice
 
     case $sub_choice in
@@ -2392,7 +2406,7 @@ install_1panel() {
         case "$choice" in
           [Yy])
             iptables_open
-            install_docker
+            docker_install
             if [ "$system_type" == "centos" ]; then
               curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && sh quick_start.sh
             elif [ "$system_type" == "ubuntu" ]; then
@@ -2792,7 +2806,7 @@ website_deploy_run(){
           case "$choice" in
               [Yy])
               clear
-              install_docker
+              docker_install
               docker run --name db -d --restart=always \
                   -v /home/docker/mongo/dump:/dump \
                   mongo:latest --replSet rs5 --oplogSize 256
@@ -2921,8 +2935,8 @@ other_tools_run() {
     case $choice in
       1) 
         clear 
-        install_docker
-        set_docker_1ckl "dcc"
+        docker_install
+        docker_set_1ckl "dcc"
         # install curl 
         # curl -fsSL https://get.docker.com | sh 
         # curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -3148,8 +3162,8 @@ else
     case "$choice" in
         [Yy])
             clear
-            # 安装 Docker（请确保有 install_docker 函数）
-            install_docker
+            # 安装 Docker（请确保有 docker_install 函数）
+            docker_install
             $docker_rum
             clear
             echo "$docker_name 已经安装完成"
@@ -3175,26 +3189,43 @@ fi
 }
 
 docker_menu() {
-echo -e "
-▶ 容器管理
-${yellow}IPv4: ${white}$WAN4${plain}
-${yellow}IPv6: ${white}$WAN6${plain}
--------------------------------
-${green} 1.${plain} Docker环境安装
-${green} 2.${plain} Docker环境卸载
-${green} 3.${plain} Docker查看状态
-${green} 4.${plain} Docker清理
--------------------------------        
-${green} 5.${plain} Docker容器管理 ▶  
-${green} 6.${plain} Docker镜像管理 ▶  
-${green} 7.${plain} Docker网络管理 ▶  
-${green} 8.${plain} Docker卷管理  ▶
--------------------------------
-${green} 9.${plain} 设置docker-compose快捷键[默认为: ${yellow}dcc${plain}]
--------------------------------
-${green} 0.${plain} 返回主菜单
--------------------------------
-"
+txtn " "
+txtn $(txbr "▼ 容器管理")$(txbg " ☪☪☪ ")
+txtn "—————————————————————————————————————"
+WANIP_show 
+txtn "====================================="
+txtn $(txtn " 1.Docker环境安装")$(txtg "✔")"       "$(txtn "11.Docker查看状态")$(txtn "✔")
+txtn $(txtn " 2.Docker环境卸载")$(txtg "✔")"       "$(txtn "12.Docker清理")$(txtn "✔")
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+txtn $(txtn "21.Docker容器管理")$(txtp "✔")"       "$(txtn "31.Docker网络管理")$(txtn "✔")
+txtn $(txty "22.Docker镜像管理")$(txtp "✔")"       "$(txtn "32.Docker卷管理")$(txtn "✔")
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+txtn $(txtn "88.设置快捷键[dcc]")$(txtg "✔")"      "$(txtn "")$(txtn "")
+# txtn $(txtn " 1.Docker")$(txtg "✔")"      "$(txtn "11.Test")$(txtb "✘")
+txtn "—————————————————————————————————————"
+txtn $(txtn " 0.返回主菜单")$(txtr "✖")"           "$(txtr "")$(txtb "")$(txtc "")
+txtn " "
+
+# echo -e "
+# ▶ 容器管理
+# ${yellow}IPv4: ${white}$WAN4${plain}
+# ${yellow}IPv6: ${white}$WAN6${plain}
+# -------------------------------
+# ${green} 1.${plain} Docker环境安装
+# ${green} 2.${plain} Docker环境卸载
+# ${green} 3.${plain} Docker查看状态
+# ${green} 4.${plain} Docker清理
+# -------------------------------        
+# ${green} 5.${plain} Docker容器管理 ▶  
+# ${green} 6.${plain} Docker镜像管理 ▶  
+# ${green} 7.${plain} Docker网络管理 ▶  
+# ${green} 8.${plain} Docker卷管理  ▶
+# -------------------------------
+# ${green} 9.${plain} 设置docker-compose快捷键[默认为: ${yellow}dcc${plain}]
+# -------------------------------
+# ${green} 0.${plain} 返回主菜单
+# -------------------------------
+# "
 }
 
 docker_run() {
@@ -3219,8 +3250,9 @@ docker_run() {
             ;;
         esac
         ;;
-      3) 
+     11) 
         clear
+        echo ""
         echo "Dcoker版本"
         docker --version
         docker-compose --version
@@ -3238,18 +3270,26 @@ docker_run() {
         docker network ls
         echo ""
         ;;
-      4)
+     12)
         clear
-        read -p "确定清理无用的镜像容器网络吗？(Y/N): " choice
+        read -p "确定清理无用的镜像容器网络吗？[Y|N]: " choice
         case "$choice" in
           [Yy]) docker system prune -af --volumes ;;
-          [Nn]) ;;
-          *) echo "无效的选择，请输入 Y 或 N。" ;;
+          [Nn]) echo "操作取消..." ;;
+             *) echo "无效的选择，请输入 Y 或 N" ;;
         esac
         ;;
-      9) clear && set_docker_1ckl "dcc" ;;
+
+     21) clear && docker_set_1ckl "dcc" ;;
+     22) clear && docker_set_1ckl "dcc" ;;
+
+     31) clear && docker_set_1ckl "dcc" ;;
+     32) clear && docker_set_1ckl "dcc" ;;
+
+     88) clear && docker_set_1ckl "dcc" ;;
       # 9) clear && chmod a+x /usr/local/bin/docker-compose && rm -rf `which dcc` && ln -s /usr/local/bin/docker-compose /usr/bin/dcc ;;
-      0) clear && clear && clear && qiqtools ;;
+      
+      0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
     esac  
     break_end    
@@ -3805,12 +3845,12 @@ while true; do
     13) clear && website_deploy_run  ;;
 
     21) clear && common_apps_run  ;;
-    22) clear && system_tools_run ;;
+    22) clear && system_setting_run ;;
     23) clear && warp_tools_run   ;;
 
     31) clear && board_tools_run  ;;
     32) clear && other_tools_run  ;;
-    33) clear && system_test_run  ;;
+    33) clear && server_test_run  ;;
 
     00) script_update ;;
     99) echo "正在重启服务器，即将断开SSH连接" && reboot  ;;
