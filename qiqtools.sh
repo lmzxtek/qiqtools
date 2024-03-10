@@ -3116,18 +3116,20 @@ EOF
   read -p "\n是否需要绑定域名？[Y|n] " choice
   case "$choice" in
     [Yy]) 
-      echo -e "先将域名解析到本机IP: ${red}$WAN4  ${blue}$WAN6${plain}"
-      read -p "\n请输入解析的域名: " dc_domain
+      echo -e "\n先将域名解析到本机IP: ${red}$WAN4  ${blue}$WAN6${plain}"
+      echo -e "(注意：初始时不开启CDN，绑定成功之后再开启。)\n"
+      read -p "请输入解析的域名: " dc_domain
       caddy_reproxy $dc_domain "127.0.0.1" $dc_port
       caddy_reload
       # echo -e "\n您的反向代理网站做好了！"      
       ;;
     # [Nn]) ;;
-       *)  echo "暂不绑定域名..." ;;
+       *)  echo "\n暂不绑定域名..." ;;
   esac  
 
   # 保存配置信息和访问链接
-  read -p "\n是否保存配置文件？[N|n]($LFLD/${dc_name}.conf)" choice
+  echo ""
+  read -p "是否保存配置文件？[N|n]($LFLD/${dc_name}.conf)" choice
   case "$choice" in
     [Nn]) echo "不保存配置文件..." ;;
        *)  
@@ -3147,9 +3149,9 @@ EOF
   # cat $LFLD/${dc_name}.conf
   echoR "    service: ${dc_name}              "     
   echoR "  container: ${dc_name}              "     
-  echoR "  URL(IPV4): http://$WAN4:$dc_port   "                
-  echoR "  URL(IPV6): http://[$WAN6]:$dc_port "                  
-  echoR "    Domain: $dc_domain               "    
+  [[ -n "$WAN4"      ]] && echoR "  URL(IPV4): http://$WAN4:$dc_port   "                
+  [[ -n "$WAN6"      ]] && echoR "  URL(IPV6): http://[$WAN6]:$dc_port "                  
+  [[ -n "$dc_domain" ]] && echoR "    Domain: $dc_domain               "    
   echoT ""
 }
 
