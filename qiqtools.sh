@@ -3109,25 +3109,48 @@ services:
     restart: always
 EOF
 
+  # 构建并启动容器
   docker-compose up -d
-
-  # 容器运行成功
   
   # 是否绑定域名？
-  echoR "是否需要绑定域名？[Y|N]"
+  read -p "\n是否需要绑定域名？[Y|n] " choice
+  case "$choice" in
+    [Yy]) 
+      echo -e "先将域名解析到本机IP: ${red}$WAN4  ${blue}$WAN6${plain}"
+      read -p "\n请输入解析的域名: " dc_domain
+      caddy_reproxy $dc_domain "127.0.0.1" $dc_port
+      caddy_reload
+      # echo -e "\n您的反向代理网站做好了！"      
+      ;;
+    # [Nn]) ;;
+       *)  echo "暂不绑定域名..." ;;
+  esac  
 
   # 保存配置信息和访问链接
-  touch $LFLD/${dc_name}.conf
-  echoG "是否保存配置文件？[Y|N]($LFLD/${dc_name}.conf)"
-  cat > $LFLD/${dc_name}.conf << EOF
-    container_name = ${dc_name}
-    URL(IPV4) = http://$WAN4:$dc_port
-    URL(IPV6) = http://[$WAN6]:$dc_port
-    OPENAI_API_KEY = $OPENAI_API_KEY
-    GOOGLE_API_KEY = $GOOGLE_API_KEY
-    CODE = $dcc_code
+  read -p "\n是否保存配置文件？[N|n]($LFLD/${dc_name}.conf)" choice
+  case "$choice" in
+    [Nn]) echo "不保存配置文件..." ;;
+       *)  
+      touch $LFLD/${dc_name}.conf
+      cat > $LFLD/${dc_name}.conf << EOF
+      service: ${dc_name}
+    container: ${dc_name}
+    URL(IPV4): http://$WAN4:$dc_port
+    URL(IPV6): http://[$WAN6]:$dc_port
+      Domain: $dc_domain
 EOF
-  cat $LFLD/${dc_name}.conf
+      ;;
+  esac  
+
+  # 显示配置文件信息
+  echoR "\n${dc_name}容器的配置信息和访问链接如下："
+  # cat $LFLD/${dc_name}.conf
+  echoR "    service: ${dc_name}              "     
+  echoR "  container: ${dc_name}              "     
+  echoR "  URL(IPV4): http://$WAN4:$dc_port   "                
+  echoR "  URL(IPV6): http://[$WAN6]:$dc_port "                  
+  echoR "    Domain: $dc_domain               "    
+  echoT ""
 }
 
 docker_deploy_nextterminal(){
@@ -4472,7 +4495,7 @@ txtn $(txtn "31.站点列表")$(txtg "✔")"           "$(txtn "41.重启服务"
 txtn $(txtn "32.站点管理")$(txtg "✔")"           "$(txtn "42.停止服务")$(txtg "✔")
 txtn $(txtn "33.添加重定向")$(txtg "✔")"         "$(txtn "43.更新服务")$(txtg "✔")
 txtn $(txty "34.添加反向代理")$(txtg "✔")"       "$(txtn "44.删除服务")$(txtb "✘")
-txtn $(txtn "34.添加静态站点")$(txtg "✔")"       "$(txtn "") $(txtb "")
+txtn $(txtn "35.添加静态站点")$(txtg "✔")"       "$(txtn "") $(txtb "")
 txtn "====================================="
 txtn $(txtn "61.安装Redis")$(txtg "✔")"          "$(txtn "")$(txtb "")
 txtn $(txtn "62.安装MySQL")$(txtb "✘")"          "$(txtn "")$(txtb "")
@@ -4529,15 +4552,6 @@ WebSites_manager_run(){
      21) clear && install_php83 ;;
      22) clear && install_php74 ;;
 
-     61) clear && install_redis ;;
-     62) clear && mysql_install ;;
-     63) clear && install_mariadb ;;
-
-     41) caddy_reload ;;
-     42) caddy_start ;;
-     43) caddy_stop ;;
-     44) caddy_uninstall ;;
-
      31) caddy_web_list ;;
      32) caddy_web_manager ;;
      33)
@@ -4556,7 +4570,6 @@ WebSites_manager_run(){
         ;;
 
      34)
-        # check_IP_address
         add_yuming
         read -p "请输入你的反代IP: " reverseproxy
         read -p "请输入你的反代端口: " port 
@@ -4572,7 +4585,6 @@ WebSites_manager_run(){
         ;;
 
      35)
-        # check_IP_address
         add_yuming
         read -p "请输入web概目录: " rootpath 
 
@@ -4586,9 +4598,18 @@ WebSites_manager_run(){
         echo ""
         ;;
 
-     61) clear && install redis-server ;;
-     62) clear && install mysql-server ;;
-     63) clear && install mariadb-server ;;
+     41) caddy_reload ;;
+     42) caddy_start ;;
+     43) caddy_stop ;;
+     44) caddy_uninstall ;;
+
+     61) clear && install_redis ;;
+     62) clear && mysql_install ;;
+     63) clear && install_mariadb ;;
+
+    #  61) clear && install redis-server ;;
+    #  62) clear && install mysql-server ;;
+    #  63) clear && install mariadb-server ;;
 
       0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
