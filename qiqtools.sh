@@ -29,6 +29,7 @@ yellow='\033[0;33m'
   pink='\033[0;35m'
   cyan='\033[0;36m'
  white='\033[0;37m'
+ default='\033[0;39m'
  blue2='\033[96m'
   bold='\033[01m'
  plain='\033[0m'
@@ -43,6 +44,15 @@ yellow='\033[0;33m'
  txtg(){ echo -e "${green}$*${plain}"; }                # 绿色字符
  txtw(){ echo -e "${white}$*${plain}"; }                # 
  txty(){ echo -e "${yellow}$*${plain}"; }               # 黄色字符
+
+echoT(){ FLAG=$1 && shift && echo -e "\033[39m$FLAG\033[39m$@";}
+echoY(){ FLAG=$1 && shift && echo -e "\033[38;5;148m$FLAG\033[39m$@";}
+echoG(){ FLAG=$1 && shift && echo -e "\033[38;5;71m$FLAG\033[39m$@"; }
+echoB(){ FLAG=$1 && shift && echo -e "\033[38;1;34m$FLAG\033[39m$@" ;}
+echoR(){ FLAG=$1 && shift && echo -e "\033[38;5;203m$FLAG\033[39m$@"; }
+echoW(){ FLAG=${1} && shift && echo -e "\033[1m${EPACE}${FLAG}\033[0m${@}"; }
+echoNW(){ FLAG=${1} && shift && echo -e "\033[1m${FLAG}\033[0m${@}"; }
+echoCYAN(){ FLAG=$1 && shift && echo -e "\033[1;36m$FLAG\033[0m$@"; }
 
  txbr(){ echo -e "${red}${bold}$*${plain}"; }           # 红色粗体
  txbb(){ echo -e "${blue}${bold}$*${plain}"; }          # 粗体
@@ -66,13 +76,6 @@ txtkvr() { local key="$1" && shift && local value=$(echo "$*" | tr -d '\n') && e
 txtkvb() { local key="$1" && shift && local value=$(echo "$*" | tr -d '\n') && echo -e "${plain}$key${blue}$value${plain}";  }
 txtkvg() { local key="$1" && shift && local value=$(echo "$*" | tr -d '\n') && echo -e "${plain}$key${green}$value${plain}"; }
 txtkvy() { local key="$1" && shift && local value=$(echo "$*" | tr -d '\n') && echo -e "${plain}$key${yellow}$value${plain}";}
-
-# txtkvy() {
-#   local key="$1" # 获取第一个参数  
-#   shift # 将第一个参数从参数列表中删除  
-#   local value=$(echo "$*" | tr -d '\n') # 将剩余参数连接成一个字符串
-#   echo -e "${yellow}$key${yellow}$value${plain}" # 键以黄色输出，值则以常规文本输出
-# }
 
 reading() { read -rp "$(info "$1")" "$2"; }
 
@@ -100,27 +103,27 @@ translate() {
 
 # 安装应用程序
 install() {
-    if [ $# -eq 0 ]; then
-        echo "未提供软件包参数!"
+  if [ $# -eq 0 ]; then
+    echo "未提供软件包参数!"
+    return 1
+  fi
+
+  for package in "$@"; do
+    if ! command -v "$package" &>/dev/null; then
+      if command -v apt &>/dev/null; then
+        apt update -y && apt install -y "$package"
+      elif command -v yum &>/dev/null; then
+        yum -y update && yum -y install "$package"
+      elif command -v apk &>/dev/null; then
+        apk update && apk add "$package"
+      else
+        echo "未知的包管理器!"
         return 1
+      fi
     fi
+  done
 
-    for package in "$@"; do
-        if ! command -v "$package" &>/dev/null; then
-            if command -v apt &>/dev/null; then
-                apt update -y && apt install -y "$package"
-            elif command -v yum &>/dev/null; then
-                yum -y update && yum -y install "$package"
-            elif command -v apk &>/dev/null; then
-                apk update && apk add "$package"
-            else
-                echo "未知的包管理器!"
-                return 1
-            fi
-        fi
-    done
-
-    return 0
+  return 0
 }
 
 remove() {
@@ -2606,9 +2609,17 @@ install_maccms(){
 }
 
 # 使用Docker安装苹果CMS内容管理系统
-install_maccms_docker_tweek(){
+dc_deploy_maccms_tweek(){
   
-  cd /root && mkdir npm && cd /root/npm && touch docker-compose.yml
+  local LFLD="/root/dcc.d"
+  local LPTH="/root/dcc.d"
+
+  local dc_name=$1
+  local dc_port=$2
+
+  LPTH=$FLD"/"$dc_name
+
+  mkdir -p /root/npm && cd /root/npm && touch docker-compose.yml
 
   cat > /root/npm/docker-compose.yml << EOF
 version: '3'
@@ -2658,16 +2669,16 @@ EOF
 website_deploy_menu() {
 
 txtn " "
-txtn $(txbr "▼ 站点面板工具")$(txbg " ❤❤❤ ")
+txtn $(txbr "▼ 站点部署")$(txbp " ✌✌✌ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
-txtn $(txty " 1.1Panel")$(txty "☑")"             "$(txtn "61.AList多存储文件列表程序")$(txtg "✔")
-txtn $(txtn " 2.aaPanel")$(txtg "✔")"            "$(txtb "62.VScode-Server网页版")$(txtg "✔")
-txtn $(txtn " 3.宝塔面板")$(txtg "✔")"           "$(txtn "63.KodBox可道云在线桌面")$(txtg "✔")
-txtn $(txtn " 4.NginxProxyManager")$(txtg "✔")"  "$(txtn "64.ChatGPT-Next-Web")$(txtg "✔")
-txtn $(txtn " 5.哪吒探针")$(txtg "✔")"           "$(txtn "65.苹果CMS网站")$(txtg "✔")
-txtn $(txtn " 6.OpenLiteSpeed")$(txtb "✘")"      "$(txtn "66.苹果CMS网站(Docker)")$(txtg "✔")
+txtn $(txty " 1.1Panel")$(txty "☑")"                 "$(txtn "61.AList多存储文件列表程序")$(txtg "✔")
+txtn $(txtn " 2.aaPanel")$(txtg "✔")"                "$(txtb "62.VScode-Server网页版")$(txtg "✔")
+txtn $(txtn " 3.宝塔面板")$(txtg "✔")"               "$(txtn "63.KodBox可道云在线桌面")$(txtg "✔")
+txtn $(txtn " 4.哪吒探针")$(txtg "✔")"               "$(txtn "64.ChatGPT-Next-Web")$(txtg "✔")
+txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"          "$(txtn "65.苹果CMS网站")$(txtg "✔")
+txtn $(txtn " 6.NginxProxyManager")$(txtb "✘")"      "$(txtn "66.苹果CMS网站(Docker)")$(txtg "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txbr "▼ Docker")$(txbg " ❦❦❦ ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
@@ -2699,7 +2710,9 @@ website_deploy_run(){
       1) clear && install_1panel  ;;
       2) clear && install__baota_aa ;;
       3) clear && install_baota_cn ;;
-      4) 
+      4) clear && install curl && curl -L https://raw.githubusercontent.com/naiba/nezha/master/script/install.sh  -o nezha.sh && chmod +x nezha.sh && ./nezha.sh  ;;
+      5) clear && install wget && wget https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh && bash ols1clk.sh  ;;
+      6) 
         clear 
         docker_name="npm"
         docker_img="jc21/nginx-proxy-manager:latest"
@@ -2720,7 +2733,6 @@ website_deploy_run(){
         docker_app
         ;;
 
-      5) clear && install curl && curl -L https://raw.githubusercontent.com/naiba/nezha/master/script/install.sh  -o nezha.sh && chmod +x nezha.sh && ./nezha.sh  ;;
      11) 
         clear 
         docker_name="ubuntu-novnc"
@@ -2822,7 +2834,6 @@ website_deploy_run(){
                       clear
                       docker rm -f rocketchat
                       docker rmi -f rocket.chat:6.3
-
 
                       docker run --name rocketchat --restart=always -p 3897:3000 --link db --env ROOT_URL=http://localhost --env MONGO_OPLOG_URL=mongodb://db:27017/rs5 -d rocket.chat
 
@@ -2955,9 +2966,9 @@ website_deploy_run(){
      63) clear && install_kodbox  ;;   
      64) clear && install curl && bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh) ;;
      65) clear && install_maccms ;;
-     66) clear && install_maccms_docker_tweek ;;
+     66) clear && dc_deploy_maccms_tweek ;;
 
-      0) clear && clear && clear && clear && clear && clear && clear && qiqtools ;;
+      0) clear && qiqtools ;;
      99) echo -e "重新启动系统，SSH连接将断开..." && reboot && exit ;;
       *) echo "无效的输入!" ;;
     esac
@@ -2991,17 +3002,7 @@ other_tools_run() {
     reading "请选择代码: " choice
 
     case $choice in
-      1) 
-        clear 
-        docker_install
-        docker_set_1ckl
-        # install curl 
-        # curl -fsSL https://get.docker.com | sh 
-        # curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-        # chmod +x /usr/local/bin/docker-compose
-        # 
-        ;;
-
+      1) clear && docker_install ;;
       2) clear && install_python ;;
       3) 
         clear 
@@ -3280,6 +3281,47 @@ docker_app() {
   fi
 }
 
+# 使用Docker compose部署ChatGPT-Next-Web
+docker_deploy_chatgptnextweb(){
+
+  local dcc_name=chatgptnextweb
+  local dcc_port=3000
+  local dcc_code="543212345,7654321234567"
+  local dcc_image=yidadaa/chatgpt-next-web
+
+  local OPENAI_API_KEY=$1
+  local GOOGLE_API_KEY=$2
+
+  mkdir -p /home/dcc.d/${dcc_name}
+  cd /home/dcc.d/${dcc_name}
+  touch /home/dcc.d/${dcc_name}/docker-compose.yml
+
+  cat > /home/dcc.d/chatgptnextweb/docker-compose.yml << EOF
+version: "3.9"
+services:
+  chatgpt-next-web-g:
+    # profiles: [ "no-proxy" ]
+    container_name: ${dcc_name}
+    image: yidadaa/chatgpt-next-web
+    restart: unless-stopped
+    ports:
+      - $dcc_port:3000
+    environment:
+      - OPENAI_API_KEY=$OPENAI_API_KEY
+      - GOOGLE_API_KEY=$GOOGLE_API_KEY
+      - CODE=$dcc_code
+      - BASE_URL=$BASE_URL
+      - OPENAI_ORG_ID=$OPENAI_ORG_ID
+      - HIDE_USER_API_KEY=$HIDE_USER_API_KEY
+      - DISABLE_GPT4=$DISABLE_GPT4
+      - ENABLE_BALANCE_QUERY=$ENABLE_BALANCE_QUERY
+      - DISABLE_FAST_LINK=$DISABLE_FAST_LINK
+      - OPENAI_SB=$OPENAI_SB
+      - CUSTOM_MODELS=-all,+gemini-pro
+EOF
+
+}
+
 docker_container_list_menu(){
 txtn " "
 txtn $(txbr "▼ Docker容器")$(txbg " ☪☪☪ ")
@@ -3526,7 +3568,7 @@ txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "21.Docker容器管理")$(txtp "✔")"       "$(txtn "31.Docker网络管理")$(txtn "✔")
 txtn $(txty "22.Docker镜像管理")$(txtp "✔")"       "$(txtn "32.Docker卷管理")$(txtn "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "88.设置快捷键[dcc]")$(txtg "✔")"      "$(txtn "")$(txtn "")
+txtn $(txtn "88.设置快捷键[dcc]")$(txtg "✔")"      "$(txtp "66.站点部署")$(txty "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"      "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")"           "$(txtr "")$(txtb "")$(txtc "")
@@ -3551,6 +3593,7 @@ docker_run() {
      31) clear && docker_network_list_run ;;
      32) clear && docker_volume_list_run ;;
 
+     88) clear && website_deploy_run ;;
      88) clear && docker_set_1ckl "dcc" ;;
       # 9) clear && chmod a+x /usr/local/bin/docker-compose && rm -rf `which dcc` && ln -s /usr/local/bin/docker-compose /usr/bin/dcc ;;
       
@@ -4057,7 +4100,7 @@ txtn $(txty "21.系统工具")$(txtp "❁")"       "$(txtn "31.性能测试")$(t
 txtn $(txtn "22.常用工具")$(txtn "❃")"       "$(txtp "32.节点搭建")$(txty "✈")
 txtn $(txtn "23.其他工具")$(txtb "の")"      "$(txtc "33.节点面板")$(txty "⊕")
 txtn "====================================="
-txtn $(txty "99")$(txtb ".重启系统☢")"       "$(txtb "00.脚本更新")$(txtb "☋")
+txtn $(txty "99")$(txtc ".重启系统☢")"       "$(txtb "00.脚本更新")$(txtb "☋")
 txtn "—————————————————————————————————————"
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 # txtn $(txtn " 0.退出脚本")$(txtr "✖")"       "$(txtb "♧♧ ")$(txtc "QiQTools") $(txtb "$script_version")
