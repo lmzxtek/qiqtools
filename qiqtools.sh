@@ -2613,7 +2613,7 @@ install_maccms(){
 
 # 使用Docker安装苹果CMS内容管理系统
 docker_deploy_maccms_tweek(){
-  local BFLD="/root/dcc.d"
+  local BFLD="/home/dcc.d"
   local dc_name=macms10
   local dc_port=7878
   local dc_image=gs0245/maccms10
@@ -2628,7 +2628,7 @@ docker_deploy_maccms_tweek(){
 version: '3'
 services:
   maccms10:
-    container_name: ${dcc_name}
+    container_name: ${dc_name}
     image: $dc_image
     volumes:
         - $LPTH:/data
@@ -2669,7 +2669,7 @@ EOF
 
 docker_deploy_ubunturdpweb(){
 
-  local BFLD="/root/dcc.d"
+  local BFLD="/home/dcc.d"
 
   local dc_name=ubuntu_novnc
   local dc_port=6080
@@ -2687,8 +2687,8 @@ docker_deploy_ubunturdpweb(){
   cat > $LFLD/docker-compose.yml << EOF
 version: '3'
 services:
-  ${dcc_name}:
-    container_name: ${dcc_name}
+  ${dc_name}:
+    container_name: ${dc_name}
     image: $dc_image
     environment:
       - HTTP_PASSWORD=$rootpasswd
@@ -2723,7 +2723,7 @@ EOF
 
 docker_deploy_portainer(){
   
-  local BFLD="/root/dcc.d"
+  local BFLD="/home/dcc.d"
 
   local dc_name=portainer
   local dc_port=9050
@@ -2738,8 +2738,8 @@ docker_deploy_portainer(){
   cat > $LFLD/docker-compose.yml << EOF
 version: '3'
 services:
-  ${dcc_name}:
-    container_name: ${dcc_name}
+  ${dc_name}:
+    container_name: ${dc_name}
     image: $dc_image
     volumes:
         - $LPTH:/data
@@ -2771,7 +2771,7 @@ EOF
 
 docker_deploy_memos(){
   
-  local BFLD="/root/dcc.d"
+  local BFLD="/home/dcc.d"
 
   local dc_name=memos
   local dc_port=5230
@@ -2786,8 +2786,8 @@ docker_deploy_memos(){
   cat > $LFLD/docker-compose.yml << EOF
 version: '3'
 services:
-  ${dcc_name}:
-    container_name: ${dcc_name}
+  ${dc_name}:
+    container_name: ${dc_name}
     image: $dc_image
     volumes:
         - $LPTH:/var/opt/memos
@@ -2812,7 +2812,7 @@ EOF
 
 docker_deploy_qbittorrent(){
   
-  local BFLD="/root/dcc.d"
+  local BFLD="/home/dcc.d"
 
   local dc_port=8081
   local dc_name=qbittorrent
@@ -2828,8 +2828,8 @@ docker_deploy_qbittorrent(){
   cat > $LFLD/docker-compose.yml << EOF
 version: '3'
 services:
-  ${dcc_name}:
-    container_name: ${dcc_name}
+  ${dc_name}:
+    container_name: ${dc_name}
     image: $dc_image
     environment:
       - PUID=1000
@@ -2876,7 +2876,7 @@ docker_deploy_rocketchat(){
   
   echoR "Docker-compose.yml is not test. Todo..." &&  return 1 
 
-  local BFLD="/root/dcc.d"
+  local BFLD="/home/dcc.d"
 
   local dc_port=3897
   local dc_name=rocketchat
@@ -2984,7 +2984,7 @@ docker_deploy_rocketchat(){
 
 docker_deploy_searxng(){
   
-  local BFLD="/root/dcc.d"
+  local BFLD="/home/dcc.d"
 
   local dc_name=searxng
   local dc_port=8700
@@ -2999,8 +2999,8 @@ docker_deploy_searxng(){
   cat > $LFLD/docker-compose.yml << EOF
 version: '3'
 services:
-  ${dcc_name}:
-    container_name: ${dcc_name}
+  ${dc_name}:
+    container_name: ${dc_name}
     image: $dc_image
     volumes:
         - $LPTH:/etc/searxng
@@ -3034,7 +3034,7 @@ EOF
 
 docker_deploy_spdf(){
   
-  local BFLD="/root/dcc.d"
+  local BFLD="/home/dcc.d"
 
   local dc_name=spdf
   local dc_port=8020
@@ -3049,8 +3049,8 @@ docker_deploy_spdf(){
   cat > $LFLD/docker-compose.yml << EOF
 version: '3'
 services:
-  ${dcc_name}:
-    container_name: ${dcc_name}
+  ${dc_name}:
+    container_name: ${dc_name}
     image: $dc_image
     volumes:
         - $LPTH:/usr/share/tesseract-ocr/5/tessdata
@@ -3085,15 +3085,15 @@ EOF
 
 docker_deploy_ittools(){
   
-  local BFLD="/root/dcc.d"
+  local BFLD="/home/dcc.d"
 
-  local dc_name=ittools
-  local dc_port=8080
-  local dc_image=corentinth/it-tools:latest
+  local dc_name="ittools"
+  local dc_port="8080"
+  local dc_image="corentinth/it-tools:latest"
   # local dc_image=ghcr.io/corentinth/it-tools:latest
 
   local LFLD="$BFLD/$dc_name"
-  local LPTH="$BFLD/$dc_name/trainingData"
+  local LPTH="$BFLD/$dc_name"
 
   [[ -d $LPTH ]] || mkdir -p $LPTH
   cd $LFLD && touch docker-compose.yml
@@ -3101,8 +3101,8 @@ docker_deploy_ittools(){
   cat > $LFLD/docker-compose.yml << EOF
 version: '3'
 services:
-  ${dcc_name}:
-    container_name: ${dcc_name}
+  ${dc_name}:
+    container_name: ${dc_name}
     image: $dc_image
     ports:
         - '$dc_port:80'
@@ -3119,7 +3119,7 @@ EOF
 
 docker_deploy_nextterminal(){
   
-  local BFLD="/root/dcc.d"
+  local BFLD="/home/dcc.d"
 
   local dc_port=8081
   local dc_name=nextterminal
@@ -3146,7 +3146,7 @@ docker_deploy_nextterminal(){
 
 docker_deploy_yacd(){
 
-  local BFLD="/root/dcc.d"
+  local BFLD="/home/dcc.d"
 
   local dc_port=1234
   local dc_name=yacd
@@ -3163,8 +3163,8 @@ docker_deploy_yacd(){
   cat > $LFLD/docker-compose.yml << EOF
 version: '3'
 services:
-  ${dcc_name}:
-    container_name: ${dcc_name}
+  ${dc_name}:
+    container_name: ${dc_name}
     image: $dc_image
     volumes:
         - $LFLD/config:/config
@@ -3180,7 +3180,7 @@ EOF
 
 docker_deploy_clashdashboard(){
 
-  local BFLD="/root/dcc.d"
+  local BFLD="/home/dcc.d"
 
   local dc_port=7893
   local dc_name=clash_web
@@ -3208,8 +3208,8 @@ services:
         - 8792:9090 
     restart: always
 
-  ${dcc_name}:
-    container_name: ${dcc_name}
+  ${dc_name}:
+    container_name: ${dc_name}
     image: $dc_image
     depends_on:
       # 依赖于clash服务，在clash启动后，web才启动
@@ -3227,7 +3227,7 @@ EOF
 
 docker_deploy_npm(){
 
-  local BFLD="/root/dcc.d"
+  local BFLD="/home/dcc.d"
 
   local dc_port=81
   local dc_name=npm
@@ -3243,8 +3243,8 @@ docker_deploy_npm(){
   cat > $LFLD/docker-compose.yml << EOF
 version: '3'
 services:
-  ${dcc_name}:
-    container_name: ${dcc_name}
+  ${dc_name}:
+    container_name: ${dc_name}
     image: $dc_image
     volumes:
         - $LPTH:/data
@@ -3281,7 +3281,7 @@ EOF
 
 docker_deploy_gptacademic(){
 
-  local BFLD="/root/dcc.d"
+  local BFLD="/home/dcc.d"
 
   local dc_port=50923
   local dc_name=gpt_academic
@@ -3297,8 +3297,8 @@ docker_deploy_gptacademic(){
   cat > $LFLD/docker-compose.yml << EOF
 version: '3'
 services:
-  ${dcc_name}:
-    container_name: ${dcc_name}
+  ${dc_name}:
+    container_name: ${dc_name}
     image: $dc_image
     environment:
       - WEB_PORT=$dc_port
@@ -3325,7 +3325,7 @@ EOF
 
 docker_deploy_chunhuchat(){
 
-  local BFLD="/root/dcc.d"
+  local BFLD="/home/dcc.d"
 
   local dc_port=7860
   local dc_name=changhuchat
@@ -3345,8 +3345,8 @@ docker_deploy_chunhuchat(){
   cat > $LFLD/docker-compose.yml << EOF
 version: '3'
 services:
-  ${dcc_name}:
-    container_name: ${dcc_name}
+  ${dc_name}:
+    container_name: ${dc_name}
     image: $dc_image
     # build:
     #   context: . 
@@ -3753,7 +3753,7 @@ docker_app() {
 # 使用Docker compose部署ChatGPT-Next-Web
 docker_deploy_chatgptnextweb(){
 
-  local dcc_name=chatgptnextweb
+  local dc_name=chatgptnextweb
   local dcc_image=yidadaa/chatgpt-next-web
 
   local dcc_port=3001
@@ -3765,16 +3765,16 @@ docker_deploy_chatgptnextweb(){
   # local OPENAI_API_KEY=$1
   # local GOOGLE_API_KEY=$2
 
-  mkdir -p /home/dcc.d/${dcc_name}
-  cd /home/dcc.d/${dcc_name}
-  touch /home/dcc.d/${dcc_name}/docker-compose.yml
+  mkdir -p /home/dcc.d/${dc_name}
+  cd /home/dcc.d/${dc_name}
+  touch /home/dcc.d/${dc_name}/docker-compose.yml
 
-  cat > /home/dcc.d/${dcc_name}/docker-compose.yml << EOF
+  cat > /home/dcc.d/${dc_name}/docker-compose.yml << EOF
 version: "3.9"
 services:
   chatgpt-next-web-g:
     # profiles: [ "no-proxy" ]
-    container_name: ${dcc_name}
+    container_name: ${dc_name}
     image: $dcc_image
     restart: unless-stopped
     ports:
@@ -3800,36 +3800,36 @@ EOF
   echoR "是否需要绑定域名？[Y|N]"
 
   # 保存配置信息和访问链接
-  touch /home/dcc.d/${dcc_name}/${dcc_name}.conf
-  cat > /home/dcc.d/${dcc_name}/${dcc_name}.conf << EOF
-    container_name = ${dcc_name}
+  touch /home/dcc.d/${dc_name}/${dc_name}.conf
+  cat > /home/dcc.d/${dc_name}/${dc_name}.conf << EOF
+    container_name = ${dc_name}
     URL(IPV4) = http://$WAN4:$dc_port
     URL(IPV6) = http://[$WAN6]:$dc_port
     OPENAI_API_KEY = $OPENAI_API_KEY
     GOOGLE_API_KEY = $GOOGLE_API_KEY
     CODE = $dcc_code
 EOF
-  echoG "是否保存配置文件？[Y|N](/home/dcc.d/${dcc_name}/${dcc_name}.conf)"
+  echoG "是否保存配置文件？[Y|N](/home/dcc.d/${dc_name}/${dc_name}.conf)"
 
 }
 
 # 使用Docker compose部署MyIP
 docker_deploy_myip(){
 
-  local dcc_name=myip
+  local dc_name=myip
   local dcc_image=ghcr.io/jason5ng32/myip:latest
 
   local dcc_port=18966
 
-  mkdir -p /home/dcc.d/${dcc_name}
-  cd /home/dcc.d/${dcc_name}
-  touch /home/dcc.d/${dcc_name}/docker-compose.yml
+  mkdir -p /home/dcc.d/${dc_name}
+  cd /home/dcc.d/${dc_name}
+  touch /home/dcc.d/${dc_name}/docker-compose.yml
 
-  cat > /home/dcc.d/${dcc_name}/docker-compose.yml << EOF
+  cat > /home/dcc.d/${dc_name}/docker-compose.yml << EOF
 version: "3.9"
 services:
   myip:
-    container_name: ${dcc_name}
+    container_name: ${dc_name}
     image: $dcc_image
     restart: unless-stopped
     ports:
@@ -3843,16 +3843,16 @@ EOF
   echoR "是否需要绑定域名？[Y|N]"
 
   # 保存配置信息和访问链接
-  touch /home/dcc.d/${dcc_name}/${dcc_name}.conf
-  cat > /home/dcc.d/${dcc_name}/${dcc_name}.conf << EOF
-    container_name = ${dcc_name}
+  touch /home/dcc.d/${dc_name}/${dc_name}.conf
+  cat > /home/dcc.d/${dc_name}/${dc_name}.conf << EOF
+    container_name = ${dc_name}
     URL(IPV4) = http://$WAN4:$dc_port
     URL(IPV6) = http://[$WAN6]:$dc_port
     OPENAI_API_KEY = $OPENAI_API_KEY
     GOOGLE_API_KEY = $GOOGLE_API_KEY
     CODE = $dcc_code
 EOF
-  echoG "是否保存配置文件？[Y|N](/home/dcc.d/${dcc_name}/${dcc_name}.conf)"
+  echoG "是否保存配置文件？[Y|N](/home/dcc.d/${dc_name}/${dc_name}.conf)"
 
 }
 
