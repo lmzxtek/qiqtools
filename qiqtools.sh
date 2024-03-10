@@ -3088,7 +3088,7 @@ docker_deploy_ittools(){
   local BFLD="/home/dcc.d"
 
   local dc_name="ittools"
-  local dc_port="8080"
+  local dc_port="3380"
   local dc_image="corentinth/it-tools:latest"
   # local dc_image=ghcr.io/corentinth/it-tools:latest
 
@@ -3111,10 +3111,23 @@ EOF
 
   docker-compose up -d
 
-      # clear 
-      # docker run -d --name it-tools --restart unless-stopped -p 8080:80 corentinth/it-tools:latest
-      # docker run -d --name it-tools --restart unless-stopped -p 8080:80 ghcr.io/corentinth/it-tools:latest
-      
+  # 容器运行成功
+  
+  # 是否绑定域名？
+  echoR "是否需要绑定域名？[Y|N]"
+
+  # 保存配置信息和访问链接
+  touch $LFLD/${dc_name}.conf
+  echoG "是否保存配置文件？[Y|N]($LFLD/${dc_name}.conf)"
+  cat > $LFLD/${dc_name}.conf << EOF
+    container_name = ${dc_name}
+    URL(IPV4) = http://$WAN4:$dc_port
+    URL(IPV6) = http://[$WAN6]:$dc_port
+    OPENAI_API_KEY = $OPENAI_API_KEY
+    GOOGLE_API_KEY = $GOOGLE_API_KEY
+    CODE = $dcc_code
+EOF
+  cat $LFLD/${dc_name}.conf
 }
 
 docker_deploy_nextterminal(){
