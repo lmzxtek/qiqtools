@@ -797,20 +797,24 @@ docker_clean() {
 docker_info_list() {
   clear
   echo -e "\n ☞☞☞ Dcoker版本"
-  echo "Dcoker版本"
+  txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
   docker --version
   docker-compose --version
   
   echo -e "\n ☞☞☞ Dcoker镜像列表"
+  txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
   docker image ls
   
   echo -e "\n ☞☞☞ Dcoker容器列表"
+  txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
   docker ps -a
 
   echo -e "\n ☞☞☞ Dcoker卷列表"
+  txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
   docker volume ls
   
   echo -e "\n ☞☞☞ Dcoker网络列表"
+  txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
   docker network ls
 
   echo ""
@@ -4050,7 +4054,7 @@ main_menu() {
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
-txtn $(txty " 1.系统信息")$(txty "☄")"       "$(txtn "11.容器管理")$(txtb "☪")
+txtn $(txty " 1.系统信息")$(txty "☄")"       "$(txtn "11.容器管理")$(txtp "☪")
 txtn $(txtn " 2.系统更新")$(txtb "☣")"       "$(txty "12.站点管理")$(txtr "◎")
 txtn $(txtn " 3.系统清理")$(txtb "☒")"       "$(txtp "13.站点部署")$(txtb "❈")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
