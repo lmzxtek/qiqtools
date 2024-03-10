@@ -4013,10 +4013,11 @@ txtn "====================================="
 txtn $(txtn " 1.安装LDNMP环境")$(txtb "✘")"      "$(txtn "11.更新LDNMP环境")$(txtb "✘")
 txtn $(txtn " 2.卸载LDNMP环境")$(txtb "✘")"      "$(txtn "12.优化LDNMP环境")$(txtb "✘")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txty "11.安装Caddy")$(txtg "✔")"          "$(txtn "21.安装PHP8.3")$(txtg "✔")
-txtn $(txtn "12.安装Nginx")$(txtg "✔")"          "$(txtn "22.安装PHP7.4")$(txtg "✔")
-txtn $(txtn "13.安装OpenLiteSpeed")$(txtg "✔")"  "$(txtn "23.安装MariaDB")$(txtb "✔")
-txtn $(txtn "14.查看状态")$(txtg "✔")"           "$(txtn "24.安装Redis")$(txtb "✔")
+txtn $(txty "11.查看状态")$(txtg "✔")"           "$(txtn "21.安装PHP8.3")$(txtg "✔")
+txtn $(txtn "12.安装Caddy")$(txtg "✔")"          "$(txtn "22.安装PHP8.2")$(txtg "✘")
+txtn $(txtn "13.安装Nginx")$(txtg "✔")"          "$(txtn "23.安装PHP8.1")$(txtb "✘")
+txtn $(txtn "14.安装OpenLiteSpeed")$(txtg "✔")"  "$(txtn "24.安装PHP7.4")$(txtb "✔")
+txtn $(txtn "15.安装Nginx")$(txtb "✘")"          "$(txtn "")$(txtb "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.站点列表")$(txtg "✔")"           "$(txtn "41.重启服务")$(txtg "✔")
 txtn $(txtn "32.站点管理")$(txtg "✔")"           "$(txtn "42.停止服务")$(txtg "✔")
@@ -4024,11 +4025,14 @@ txtn $(txtn "33.添加重定向")$(txtg "✔")"         "$(txtn "43.更新服务
 txtn $(txty "34.添加反向代理")$(txtg "✔")"       "$(txtn "44.删除服务")$(txtb "✘")
 txtn $(txtn "34.添加静态站点")$(txtg "✔")"       "$(txtn "") $(txtb "")
 txtn "====================================="
+txtn $(txtn "61.安装Redis")$(txtg "✔")"          "$(txtn "")$(txtb "")
+txtn $(txtn "62.安装MySQL")$(txtb "✘")"          "$(txtn "")$(txtb "")
+txtn $(txtn "63.安装MariaDB")$(txtb "✘")"        "$(txtn "")$(txtb "")
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "88.站点防御程序")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
 txtn " "
-
 }
 
 WebSites_manager_run(){
@@ -4072,9 +4076,11 @@ WebSites_manager_run(){
       ;;
 
      14) caddy_status ;;
+     15) clear && install nginx ;;
 
      21) clear && install_php83 ;;
      22) clear && install_php74 ;;
+
      23) clear && mariadb_install ;;
      24) clear && redis_install ;;
 
@@ -4130,6 +4136,10 @@ WebSites_manager_run(){
         echo "https://$yuming"
         echo ""
         ;;
+
+     61) clear && install redis-server ;;
+     62) clear && install mysql-server ;;
+     63) clear && install mariadb-server ;;
 
       0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
