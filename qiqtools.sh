@@ -3058,7 +3058,7 @@ warp_tools_run() {
 board_tools_menu() {
 
 txtn " "
-txtn $(txbr "▼ 面板管理")$(txbg " ⊕⊕⊕ ")
+txtn $(txbr "▼ 节点面板")$(txbg " ⊕⊕⊕ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
@@ -3816,9 +3816,9 @@ txtn $(txty " 1.系统信息")$(txty "☄")"       "$(txtn "11.容器管理")$(t
 txtn $(txtn " 2.系统更新")$(txtb "☣")"       "$(txty "12.站点管理")$(txtr "◎")
 txtn $(txtn " 3.系统清理")$(txtb "☒")"       "$(txtp "13.站点部署")$(txtb "❈")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "21.常用工具")$(txtn "❃")"       "$(txtn "31.面板工具")$(txtb "⊕")
-txtn $(txty "22.系统工具")$(txtp "❁")"       "$(txtn "32.其他工具")$(txtb "の")
-txtn $(txtr "23.节点工具")$(txty "✈")"       "$(txtp "33.性能测试")$(txty "☯")
+txtn $(txty "21.系统工具")$(txtp "❁")"       "$(txtn "31.性能测试")$(txtb "☯")
+txtn $(txtn "22.常用工具")$(txtn "❃")"       "$(txtr "32.节点搭建")$(txty "✈")
+txtn $(txtn "23.其他工具")$(txtb "の")"       "$(txtp "33.节点面板")$(txty "⊕")
 txtn "====================================="
 txtn $(txty "99")$(txtb ".重启系统☢")"       "$(txtb "00.脚本更新")$(txtb "☋")
 txtn "—————————————————————————————————————"
@@ -3844,13 +3844,13 @@ while true; do
     12) clear && WebSites_manager_run ;;
     13) clear && website_deploy_run  ;;
 
-    21) clear && common_apps_run  ;;
-    22) clear && system_setting_run ;;
-    23) clear && warp_tools_run   ;;
+    21) clear && system_setting_run ;;
+    22) clear && common_apps_run  ;;
+    23) clear && other_tools_run  ;;
 
-    31) clear && board_tools_run  ;;
-    32) clear && other_tools_run  ;;
-    33) clear && server_test_run  ;;
+    31) clear && server_test_run  ;;
+    32) clear && warp_tools_run   ;;
+    33) clear && board_tools_run  ;;
 
     00) script_update ;;
     99) echo "正在重启服务器，即将断开SSH连接" && reboot  ;;
