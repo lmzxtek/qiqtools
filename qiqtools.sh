@@ -760,9 +760,11 @@ install_add_docker() {
 docker_install() {
   if ! command -v docker &>/dev/null; then
       install_add_docker
+      docker_set_1ckl
   else
     echo -e "\n >>> Docker已安装 ..."
     docker --version
+    docker-compose --version
     echo -e ""
   fi
 }
@@ -2992,7 +2994,7 @@ other_tools_run() {
       1) 
         clear 
         docker_install
-        docker_set_1ckl "dcc"
+        docker_set_1ckl
         # install curl 
         # curl -fsSL https://get.docker.com | sh 
         # curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -4052,7 +4054,7 @@ txtn $(txtn " 2.系统更新")$(txtb "☣")"       "$(txty "12.站点管理")$(t
 txtn $(txtn " 3.系统清理")$(txtb "☒")"       "$(txtp "13.站点部署")$(txtb "❈")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "21.系统工具")$(txtp "❁")"       "$(txtn "31.性能测试")$(txtb "☯")
-txtn $(txtn "22.常用工具")$(txtn "❃")"       "$(txtp "32.节点搭建")$(txtr "✈")
+txtn $(txtn "22.常用工具")$(txtn "❃")"       "$(txtp "32.节点搭建")$(txty "✈")
 txtn $(txtn "23.其他工具")$(txtb "の")"      "$(txtc "33.节点面板")$(txty "⊕")
 txtn "====================================="
 txtn $(txty "99")$(txtb ".重启系统☢")"       "$(txtb "00.脚本更新")$(txtb "☋")
