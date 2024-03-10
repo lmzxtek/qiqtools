@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.4.2
+script_version=v0.4.3
 #==========================
 
 # Language
@@ -2613,36 +2613,36 @@ install_maccms(){
 
 # 使用Docker安装苹果CMS内容管理系统
 docker_deploy_maccms_tweek(){
-  
-  local LFLD="/root/dcc.d"
-  local LPTH="/root/dcc.d"
+  local BFLD="/root/dcc.d"
+  local dc_name=macms10
+  local dc_port=7878
+  local dc_image=gs0245/maccms10
 
-  local dc_name=$1
-  local dc_port=$2
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/data"
 
-  LPTH=$FLD"/"$dc_name
+  [[ -d $LPTH ]] || mkdir -p $LPTH
+  cd $LFLD && touch docker-compose.yml
 
-  mkdir -p /root/npm && cd /root/npm && touch docker-compose.yml
-
-  cat > /root/npm/docker-compose.yml << EOF
+  cat > $LFLD/docker-compose.yml << EOF
 version: '3'
 services:
   maccms10:
-      volumes:
-          - ./mnt/maccms:/data
-          - ./mnt/maccms/template:/opt/maccms10/template
-      ports:
-          - '7878:7878'
-      image: gs0245/maccms10
-        #network_mode: host (optional)
-      restart: always
+    container_name: ${dcc_name}
+    image: $dc_image
+    volumes:
+        - $LPTH:/data
+        - $LPTH/template:/opt/maccms10/template
+    ports:
+        - '$dc_port:7878'
+      #network_mode: host (optional)
+    restart: always
 EOF
 
-  cd /root/npm && docker-compose up -d
+  docker-compose up -d
   
   # 下载影视主题到/root/npm/mnt/docker/maccms/template
-  cd /root/npm/mnt/maccms/template && wget https://github.com/dockkkk/mxone/releases/download/mxone/mxone.zip && unzip mxone.zip && rm /root/npm/mnt/maccms/template/mxone.zip
-
+  cd $LPTH/template && wget https://github.com/dockkkk/mxone/releases/download/mxone/mxone.zip && unzip mxone.zip && rm /root/npm/mnt/maccms/template/mxone.zip
 
   clear
   txtn ""
@@ -2651,107 +2651,248 @@ EOF
   txtn "IPv4链接: https://$WAN4:7878/admin123.php"
   txtn "IPv6链接: https://[$WAN6]:7878/admin123.php"
   txtn ""
-  txtn "默认账户: admin"
-  txtn "默认密码: admin123"
+  txtn "默认账户: admin@admin123"
 
   txtn ""
-  txtn "参考教程: https://www.tweek.top/archives/1706060591396"
+  txtn "解析接口: https://svip.ffzyplay.com/?url="
   txtn "后台主题: mxoneX主题,/admin123.php/admin/mxone/mxoneset"
-  txtn "解析接口：https://svip.ffzyplay.com/?url="
+  txtn "参考教程: https://www.tweek.top/archives/1706060591396"
 
   txtn ""
-  txtn "暴风采集站：https://publish.bfzy.tv/"
-  txtn "非凡采集站：http://ffzy5.tv/"
-  txtn "快看采集站：https://kuaikanzy.net/"
-  txtn "乐视采集站：https://www.leshizy1.com/"
+  txtn "非凡采集站: http://ffzy5.tv/"
+  txtn "快看采集站: https://kuaikanzy.net/"
+  txtn "暴风采集站: https://publish.bfzy.tv/"
+  txtn "乐视采集站: https://www.leshizy1.com/"
 
   txtn ""
 }
 
 docker_deploy_ubunturdpweb(){
 
-        clear 
-        docker_name="ubuntu-novnc"
-        docker_img="fredblgr/ubuntu-novnc:20.04"
-        docker_port=6080
-        rootpasswd=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c16)
-        docker_rum="docker run -d \
-                            --name ubuntu-novnc \
-                            -p 6080:80 \
-                            -v /home/docker/ubuntu-novnc:/workspace:rw \
-                            -e HTTP_PASSWORD=$rootpasswd \
-                            -e RESOLUTION=1280x720 \
-                            --restart=always \
-                            fredblgr/ubuntu-novnc:20.04"
-        docker_describe="一个网页版Ubuntu远程桌面，挺好用的！"
-        docker_url="官网介绍: https://hub.docker.com/r/fredblgr/ubuntu-novnc"
-        docker_use="echo \"用户名: root\""
-        docker_passwd="echo \"密码: $rootpasswd\""
-        docker_app
+  local BFLD="/root/dcc.d"
+
+  local dc_name=ubuntu_novnc
+  local dc_port=6080
+  local dc_image=fredblgr/ubuntu-novnc:20.04
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/data"
+
+  [[ -d $LPTH ]] || mkdir -p $LPTH
+  cd $LFLD && touch docker-compose.yml
+
+  rootpasswd=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c16)
+  resolution=1280x720
+
+  cat > $LFLD/docker-compose.yml << EOF
+version: '3'
+services:
+  ${dcc_name}:
+    container_name: ${dcc_name}
+    image: $dc_image
+    environment:
+      - HTTP_PASSWORD=$rootpasswd
+      - RESOLUTION=$resolution
+    volumes:
+        - $LPTH:/workspace:rw
+    ports:
+        - '$dc_port:80'
+    restart: always
+EOF
+
+  docker-compose up -d
+
+        # clear 
+        # docker_name="ubuntu-novnc"
+        # docker_img="fredblgr/ubuntu-novnc:20.04"
+        # docker_port=6080
+        # docker_rum="docker run -d \
+        #                     --name ubuntu-novnc \
+        #                     -p 6080:80 \
+        #                     -v /home/docker/ubuntu-novnc:/workspace:rw \
+        #                     -e HTTP_PASSWORD=$rootpasswd \
+        #                     -e RESOLUTION=1280x720 \
+        #                     --restart=always \
+        #                     fredblgr/ubuntu-novnc:20.04"
+        # docker_describe="一个网页版Ubuntu远程桌面，挺好用的！"
+        # docker_url="官网介绍: https://hub.docker.com/r/fredblgr/ubuntu-novnc"
+        # docker_use="echo \"用户名: root\""
+        # docker_passwd="echo \"密码: $rootpasswd\""
+        # docker_app
 }
 
 docker_deploy_portainer(){
   
-        clear 
-        docker_name="portainer"
-        docker_img="portainer/portainer"
-        docker_port=9050
-        docker_rum="docker run -d \
-                --name portainer \
-                -p 9050:9000 \
-                -v /var/run/docker.sock:/var/run/docker.sock \
-                -v /home/docker/portainer:/data \
-                --restart always \
-                portainer/portainer"
-        docker_describe="portainer是一个轻量级的docker容器管理面板"
-        docker_url="官网介绍: https://www.portainer.io/"
-        docker_use=""
-        docker_passwd=""
-        docker_app
+  local BFLD="/root/dcc.d"
+
+  local dc_name=portainer
+  local dc_port=9050
+  local dc_image=portainer/portainer
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/data"
+
+  [[ -d $LPTH ]] || mkdir -p $LPTH
+  cd $LFLD && touch docker-compose.yml
+
+  cat > $LFLD/docker-compose.yml << EOF
+version: '3'
+services:
+  ${dcc_name}:
+    container_name: ${dcc_name}
+    image: $dc_image
+    volumes:
+        - $LPTH:/data
+        - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+        - '$dc_port:9000'
+    restart: always
+EOF
+
+  docker-compose up -d
+
+        # clear 
+        # docker_name="portainer"
+        # docker_img="portainer/portainer"
+        # docker_port=9050
+        # docker_rum="docker run -d \
+        #         --name portainer \
+        #         -p 9050:9000 \
+        #         -v /var/run/docker.sock:/var/run/docker.sock \
+        #         -v /home/docker/portainer:/data \
+        #         --restart always \
+        #         portainer/portainer"
+        # docker_describe="portainer是一个轻量级的docker容器管理面板"
+        # docker_url="官网介绍: https://www.portainer.io/"
+        # docker_use=""
+        # docker_passwd=""
+        # docker_app
 }
 
 docker_deploy_memos(){
   
-      clear 
-      docker_name="memos"
-      docker_img="ghcr.io/usememos/memos:latest"
-      docker_port=5230
-      docker_rum="docker run -d --name memos -p 5230:5230 -v /home/docker/memos:/var/opt/memos --restart always ghcr.io/usememos/memos:latest"
-      docker_describe="Memos是一款轻量级、自托管的备忘录中心"
-      docker_url="官网介绍: https://github.com/usememos/memos"
-      docker_use=""
-      docker_passwd=""
-      docker_app
+  local BFLD="/root/dcc.d"
+
+  local dc_name=memos
+  local dc_port=5230
+  local dc_image=ghcr.io/usememos/memos:latest
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/data"
+
+  [[ -d $LPTH ]] || mkdir -p $LPTH
+  cd $LFLD && touch docker-compose.yml
+
+  cat > $LFLD/docker-compose.yml << EOF
+version: '3'
+services:
+  ${dcc_name}:
+    container_name: ${dcc_name}
+    image: $dc_image
+    volumes:
+        - $LPTH:/var/opt/memos
+    ports:
+        - '$dc_port:5230'
+    restart: always
+EOF
+
+  docker-compose up -d
+
+      # clear 
+      # docker_name="memos"
+      # docker_img="ghcr.io/usememos/memos:latest"
+      # docker_port=5230
+      # docker_rum="docker run -d --name memos -p 5230:5230 -v /home/docker/memos:/var/opt/memos --restart always ghcr.io/usememos/memos:latest"
+      # docker_describe="Memos是一款轻量级、自托管的备忘录中心"
+      # docker_url="官网介绍: https://github.com/usememos/memos"
+      # docker_use=""
+      # docker_passwd=""
+      # docker_app
 }
 
 docker_deploy_qbittorrent(){
   
-        docker_name="qbittorrent"
-        docker_img="lscr.io/linuxserver/qbittorrent:latest"
-        docker_port=8081
-        docker_rum="docker run -d \
-                              --name=qbittorrent \
-                              -e PUID=1000 \
-                              -e PGID=1000 \
-                              -e TZ=Etc/UTC \
-                              -e WEBUI_PORT=8081 \
-                              -p 8081:8081 \
-                              -p 6881:6881 \
-                              -p 6881:6881/udp \
-                              -v /home/docker/qbittorrent/config:/config \
-                              -v /home/docker/qbittorrent/downloads:/downloads \
-                              --restart unless-stopped \
-                              lscr.io/linuxserver/qbittorrent:latest"
-        docker_describe="qbittorrent离线BT磁力下载服务"
-        docker_url="官网介绍: https://hub.docker.com/r/linuxserver/qbittorrent"
-        docker_use="sleep 3"
-        docker_passwd="docker logs qbittorrent"
+  local BFLD="/root/dcc.d"
 
-        docker_app
+  local dc_port=8081
+  local dc_name=qbittorrent
+  local dc_image=lscr.io/linuxserver/qbittorrent:latest
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/downloads"
+
+  [[ -d $LPTH ]] || mkdir -p $LPTH
+  [[ -d $LFLD/config ]] || mkdir -p $LFLD/config
+  cd $LFLD && touch docker-compose.yml
+
+  cat > $LFLD/docker-compose.yml << EOF
+version: '3'
+services:
+  ${dcc_name}:
+    container_name: ${dcc_name}
+    image: $dc_image
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - WEBUI_PORT=$dc_port
+    volumes:
+        - $LFLD/config:/config
+        - $LPTH:/downloads
+    ports:
+        - '$dc_port:8081'
+        - '6881:6881'
+        - '6881:6881/udp'
+    restart: unless-stopped
+EOF
+
+  docker-compose up -d
+
+        # docker_name="qbittorrent"
+        # docker_img="lscr.io/linuxserver/qbittorrent:latest"
+        # docker_port=8081
+        # docker_rum="docker run -d \
+        #                       --name=qbittorrent \
+        #                       -e PUID=1000 \
+        #                       -e PGID=1000 \
+        #                       -e TZ=Etc/UTC \
+        #                       -e WEBUI_PORT=8081 \
+        #                       -p 8081:8081 \
+        #                       -p 6881:6881 \
+        #                       -p 6881:6881/udp \
+        #                       -v /home/docker/qbittorrent/config:/config \
+        #                       -v /home/docker/qbittorrent/downloads:/downloads \
+        #                       --restart unless-stopped \
+        #                       lscr.io/linuxserver/qbittorrent:latest"
+        # docker_describe="qbittorrent离线BT磁力下载服务"
+        # docker_url="官网介绍: https://hub.docker.com/r/linuxserver/qbittorrent"
+        # docker_use="sleep 3"
+        # docker_passwd="docker logs qbittorrent"
+
+        # docker_app
 }
 
 docker_deploy_rocketchat(){
   
+  echoR "Docker-compose.yml is not test. Todo..." &&  return 1 
+
+  local BFLD="/root/dcc.d"
+
+  local dc_port=3897
+  local dc_name=rocketchat
+  local dc_image=lscr.io/linuxserver/qbittorrent:latest
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/downloads"
+
+  [[ -d $LPTH ]] || mkdir -p $LPTH
+  [[ -d $LFLD/config ]] || mkdir -p $LFLD/config
+  # cd $LFLD && touch docker-compose.yml
+  cd $LFLD 
+  curl -L https://raw.githubusercontent.com/RocketChat/Docker.Official.Image/master/compose.yml -O
+
+  docker-compose up -d
+
       clear 
       if docker inspect rocketchat &>/dev/null; then
               clear
@@ -2843,96 +2984,388 @@ docker_deploy_rocketchat(){
 
 docker_deploy_searxng(){
   
-      clear 
-      docker_name="searxng"
-      docker_img="alandoyle/searxng:latest"
-      docker_port=8700
-      docker_rum="docker run --name=searxng \
-                      -d --init \
-                      --restart=unless-stopped \
-                      -v /home/docker/searxng/config:/etc/searxng \
-                      -v /home/docker/searxng/templates:/usr/local/searxng/searx/templates/simple \
-                      -v /home/docker/searxng/theme:/usr/local/searxng/searx/static/themes/simple \
-                      -p 8700:8080/tcp \
-                      alandoyle/searxng:latest"
-      docker_describe="searxng是一个私有且隐私的搜索引擎站点"
-      docker_url="官网介绍: https://hub.docker.com/r/alandoyle/searxng"
-      docker_use=""
-      docker_passwd=""
-      docker_app
+  local BFLD="/root/dcc.d"
+
+  local dc_name=searxng
+  local dc_port=8700
+  local dc_image=alandoyle/searxng:latest
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/config"
+
+  [[ -d $LPTH ]] || mkdir -p $LPTH
+  cd $LFLD && touch docker-compose.yml
+
+  cat > $LFLD/docker-compose.yml << EOF
+version: '3'
+services:
+  ${dcc_name}:
+    container_name: ${dcc_name}
+    image: $dc_image
+    volumes:
+        - $LPTH:/etc/searxng
+        - $LFLD/templates:/usr/local/searxng/searx/templates/simple
+        - $LFLD/theme:/usr/local/searxng/searx/static/themes/simple
+    ports:
+        - '$dc_port:8080/tcp'
+    restart: unless-stopped
+EOF
+
+  docker-compose up -d
+
+      # clear 
+      # docker_name="searxng"
+      # docker_img="alandoyle/searxng:latest"
+      # docker_port=8700
+      # docker_rum="docker run --name=searxng \
+      #                 -d --init \
+      #                 --restart=unless-stopped \
+      #                 -v /home/docker/searxng/config:/etc/searxng \
+      #                 -v /home/docker/searxng/templates:/usr/local/searxng/searx/templates/simple \
+      #                 -v /home/docker/searxng/theme:/usr/local/searxng/searx/static/themes/simple \
+      #                 -p 8700:8080/tcp \
+      #                 alandoyle/searxng:latest"
+      # docker_describe="searxng是一个私有且隐私的搜索引擎站点"
+      # docker_url="官网介绍: https://hub.docker.com/r/alandoyle/searxng"
+      # docker_use=""
+      # docker_passwd=""
+      # docker_app
 }
 
 docker_deploy_spdf(){
   
-      clear
-      docker_name="s-pdf"
-      docker_img="frooodle/s-pdf:latest"
-      docker_port=8020
-      docker_rum="docker run -d \
-                      --name s-pdf \
-                      --restart=always \
-                        -p 8020:8080 \
-                        -v /home/docker/s-pdf/trainingData:/usr/share/tesseract-ocr/5/tessdata \
-                        -v /home/docker/s-pdf/extraConfigs:/configs \
-                        -v /home/docker/s-pdf/logs:/logs \
-                        -e DOCKER_ENABLE_SECURITY=false \
-                        frooodle/s-pdf:latest"
-      docker_describe="这是一个强大的本地托管基于 Web 的 PDF 操作工具，使用 docker，允许您对 PDF 文件执行各种操作，例如拆分合并、转换、重新组织、添加图像、旋转、压缩等。"
-      docker_url="官网介绍: https://github.com/Stirling-Tools/Stirling-PDF"
-      docker_use=""
-      docker_passwd=""
-      docker_app
+  local BFLD="/root/dcc.d"
+
+  local dc_name=spdf
+  local dc_port=8020
+  local dc_image=frooodle/s-pdf:latest
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/trainingData"
+
+  [[ -d $LPTH ]] || mkdir -p $LPTH
+  cd $LFLD && touch docker-compose.yml
+
+  cat > $LFLD/docker-compose.yml << EOF
+version: '3'
+services:
+  ${dcc_name}:
+    container_name: ${dcc_name}
+    image: $dc_image
+    volumes:
+        - $LPTH:/usr/share/tesseract-ocr/5/tessdata
+        - $LFLD/extraConfigs:/configs
+        - $LFLD/logs:/logs
+    ports:
+        - '$dc_port:8080'
+    restart: always
+EOF
+
+  docker-compose up -d
+
+      # clear
+      # docker_name="s-pdf"
+      # docker_img="frooodle/s-pdf:latest"
+      # docker_port=8020
+      # docker_rum="docker run -d \
+      #                 --name s-pdf \
+      #                 --restart=always \
+      #                   -p 8020:8080 \
+      #                   -v /home/docker/s-pdf/trainingData:/usr/share/tesseract-ocr/5/tessdata \
+      #                   -v /home/docker/s-pdf/extraConfigs:/configs \
+      #                   -v /home/docker/s-pdf/logs:/logs \
+      #                   -e DOCKER_ENABLE_SECURITY=false \
+      #                   frooodle/s-pdf:latest"
+      # docker_describe="这是一个强大的本地托管基于 Web 的 PDF 操作工具，使用 docker，允许您对 PDF 文件执行各种操作，例如拆分合并、转换、重新组织、添加图像、旋转、压缩等。"
+      # docker_url="官网介绍: https://github.com/Stirling-Tools/Stirling-PDF"
+      # docker_use=""
+      # docker_passwd=""
+      # docker_app
 }
 
 docker_deploy_ittools(){
   
-      clear 
-      docker run -d --name it-tools --restart unless-stopped -p 8080:80 corentinth/it-tools:latest
+  local BFLD="/root/dcc.d"
+
+  local dc_name=ittools
+  local dc_port=8080
+  local dc_image=corentinth/it-tools:latest
+  # local dc_image=ghcr.io/corentinth/it-tools:latest
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/trainingData"
+
+  [[ -d $LPTH ]] || mkdir -p $LPTH
+  cd $LFLD && touch docker-compose.yml
+
+  cat > $LFLD/docker-compose.yml << EOF
+version: '3'
+services:
+  ${dcc_name}:
+    container_name: ${dcc_name}
+    image: $dc_image
+    ports:
+        - '$dc_port:80'
+    restart: always
+EOF
+
+  docker-compose up -d
+
+      # clear 
+      # docker run -d --name it-tools --restart unless-stopped -p 8080:80 corentinth/it-tools:latest
       # docker run -d --name it-tools --restart unless-stopped -p 8080:80 ghcr.io/corentinth/it-tools:latest
       
 }
 
 docker_deploy_nextterminal(){
   
-      clear
-      cd ~
-      mkdir next-terminal-docker && cd next-terminal-docker
-      curl -sSL https://f.typesafe.cn/next-terminal/docker-compose.yml > docker-compose.yml
-      # curl -sSL https://f.typesafe.cn/next-terminal/aliyuns/docker-compose.yml > docker-compose.yml # 阿里镜像
-      docker-compose up -d
-      cd ~
+  local BFLD="/root/dcc.d"
+
+  local dc_port=8081
+  local dc_name=nextterminal
+  # local dc_image=lscr.io/linuxserver/qbittorrent:latest
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/downloads"
+
+  [[ -d $LPTH ]] || mkdir -p $LPTH
+  [[ -d $LFLD/config ]] || mkdir -p $LFLD/config
+  # cd $LFLD && touch docker-compose.yml
+  curl -sSL https://f.typesafe.cn/next-terminal/docker-compose.yml > docker-compose.yml
+
+  docker-compose up -d
+
+      # clear
+      # cd ~
+      # mkdir next-terminal-docker && cd next-terminal-docker
+      # curl -sSL https://f.typesafe.cn/next-terminal/docker-compose.yml > docker-compose.yml
+      # # curl -sSL https://f.typesafe.cn/next-terminal/aliyuns/docker-compose.yml > docker-compose.yml # 阿里镜像
+      # docker-compose up -d
+      # cd ~
 }
 
 docker_deploy_yacd(){
-  docker run -p 1234:80 -d --name yacd --rm ghcr.io/haishanh/yacd:master 
+
+  local BFLD="/root/dcc.d"
+
+  local dc_port=1234
+  local dc_name=yacd
+  # local dc_image=haishanh/yacd
+  local dc_image=ghcr.io/haishanh/yacd:master
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name"
+
+  [[ -d $LPTH ]] || mkdir -p $LPTH
+  [[ -d $LFLD/config ]] || mkdir -p $LFLD/config
+  cd $LFLD && touch docker-compose.yml
+
+  cat > $LFLD/docker-compose.yml << EOF
+version: '3'
+services:
+  ${dcc_name}:
+    container_name: ${dcc_name}
+    image: $dc_image
+    volumes:
+        - $LFLD/config:/config
+    ports:
+        - '$dc_port:80
+    restart: unless-stopped
+EOF
+
+  docker-compose up -d
+
+  # docker run -p 1234:80 -d --name yacd --rm ghcr.io/haishanh/yacd:master 
 }
 
 docker_deploy_clashdashboard(){
-  clear 
+
+  local BFLD="/root/dcc.d"
+
+  local dc_port=7893
+  local dc_name=clash_web
+  local dc_image=haishanh/yacd
+  # local dc_image=ghcr.io/haishanh/yacd
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name"
+
+  [[ -d $LPTH ]] || mkdir -p $LPTH
+  [[ -d $LFLD/config ]] || mkdir -p $LFLD/config
+  cd $LFLD && touch docker-compose.yml
+
+  cat > $LFLD/docker-compose.yml << EOF
+version: '3'
+services:
+  clash:
+    container_name: clash
+    image: dreamacro/clash
+    volumes:
+        - $LFLD/.config:/root/.config/clash
+    ports:
+        - 8790:7890
+        - 8791:7891
+        - 8792:9090 
+    restart: always
+
+  ${dcc_name}:
+    container_name: ${dcc_name}
+    image: $dc_image
+    depends_on:
+      # 依赖于clash服务，在clash启动后，web才启动
+      - clash
+    volumes:
+        - $LFLD/config:/config
+    ports:
+        - '$dc_port:90'
+    restart: always
+EOF
+
+  docker-compose up -d
+
 }
 
 docker_deploy_npm(){
-        clear 
-        docker_name="npm"
-        docker_img="jc21/nginx-proxy-manager:latest"
-        docker_port=81
-        docker_rum="docker run -d \
-                      --name=$docker_name \
-                      -p 80:80 \
-                      -p 81:$docker_port \
-                      -p 443:443 \
-                      -v /home/docker/npm/data:/data \
-                      -v /home/docker/npm/letsencrypt:/etc/letsencrypt \
-                      --restart=always \
-                      $docker_img"
-        docker_describe="如果您已经安装了其他面板工具或者LDNMP建站环境，建议先卸载，再安装npm！"
-        docker_url="官网介绍: https://nginxproxymanager.com/"
-        docker_use="echo \"初始用户名: admin@example.com\""
-        docker_passwd="echo \"初始密码: changeme\""
-        docker_app
+
+  local BFLD="/root/dcc.d"
+
+  local dc_port=81
+  local dc_name=npm
+  local dc_image=lscr.io/linuxserver/qbittorrent:latest
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/data"
+
+  [[ -d $LPTH ]] || mkdir -p $LPTH
+  [[ -d $LFLD/letsencrypt ]] || mkdir -p $LFLD/letsencrypt
+  cd $LFLD && touch docker-compose.yml
+
+  cat > $LFLD/docker-compose.yml << EOF
+version: '3'
+services:
+  ${dcc_name}:
+    container_name: ${dcc_name}
+    image: $dc_image
+    volumes:
+        - $LPTH:/data
+        - $LFLD/letsencrypt:/etc/letsencrypt
+    ports:
+        - '$dc_port:81'
+        - '80:80'
+        - '443:443'
+    restart: always
+EOF
+
+  docker-compose up -d
+
+
+        # clear 
+        # docker_name="npm"
+        # docker_img="jc21/nginx-proxy-manager:latest"
+        # docker_port=81
+        # docker_rum="docker run -d \
+        #               --name=$docker_name \
+        #               -p 80:80 \
+        #               -p 81:$docker_port \
+        #               -p 443:443 \
+        #               -v /home/docker/npm/data:/data \
+        #               -v /home/docker/npm/letsencrypt:/etc/letsencrypt \
+        #               --restart=always \
+        #               $docker_img"
+        # docker_describe="如果您已经安装了其他面板工具或者LDNMP建站环境，建议先卸载，再安装npm！"
+        # docker_url="官网介绍: https://nginxproxymanager.com/"
+        # docker_use="echo \"初始用户名: admin@example.com\""
+        # docker_passwd="echo \"初始密码: changeme\""
+        # docker_app
 }
 
+docker_deploy_gptacademic(){
 
+  local BFLD="/root/dcc.d"
+
+  local dc_port=50923
+  local dc_name=gpt_academic
+  local dc_image=ghcr.io/binary-husky/gpt_academic_nolocal:master
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/downloads"
+
+  [[ -d $LPTH ]] || mkdir -p $LPTH
+  [[ -d $LFLD/config ]] || mkdir -p $LFLD/config
+  cd $LFLD && touch docker-compose.yml
+
+  cat > $LFLD/docker-compose.yml << EOF
+version: '3'
+services:
+  ${dcc_name}:
+    container_name: ${dcc_name}
+    image: $dc_image
+    environment:
+      - WEB_PORT=$dc_port
+      - API_KEY=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
+      - GEMINI_API_KEY=AIzaSyDUfCAZB9snVfDaPoii1GRZfjJsLnIUjA7
+      - DEFAULT_WORKER_NUM=30
+      - AUTHENTICATION=[("usr1", "54321"), ("usr2", "adsfd")]  
+      - AVAIL_LLM_MODELS=["gpt-3.5-turbo", "gpt-4","gemini-pro"]   
+      - LLM_MODEL=gemini-pro
+      - AUTO_CLEAR_TXT=False
+      - ADD_WAIFU=True
+    volumes:
+        - $LFLD/config:/config
+        - $LPTH:/downloads
+    ports:
+        - '$dc_port:$dc_port'  # 50923必须与WEB_PORT相互对应
+    restart: unless-stopped
+EOF
+
+  docker-compose up -d
+
+
+}
+
+docker_deploy_chunhuchat(){
+
+  local BFLD="/root/dcc.d"
+
+  local dc_port=7860
+  local dc_name=changhuchat
+  local dc_image=ghcr.io/gaizhenbiao/chuanhuchatgpt:latest
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/history"
+
+  [[ -d $LPTH ]] || mkdir -p $LPTH
+  [[ -d $LFLD/config ]] || mkdir -p $LFLD/config
+  cd $LFLD && touch docker-compose.yml
+
+  # git clone https://github.com/GaiZhenbiao/ChuanhuChatGPT.git .
+  # cp config_example.json config.json
+  # curl -o config.json https://raw.githubusercontent.com/GaiZhenbiao/ChuanhuChatGPT/main/config_example.json
+
+  cat > $LFLD/docker-compose.yml << EOF
+version: '3'
+services:
+  ${dcc_name}:
+    container_name: ${dcc_name}
+    image: $dc_image
+    # build:
+    #   context: . 
+    #   dockerfile: Dockerfile
+
+    environment:
+      - PUID=0
+    volumes:
+        - $LFLD/config.json:/app/config.json
+        - $LPTH:/app/history
+    ports:
+        - '$dc_port:7860'
+    restart: unless-stopped
+EOF
+
+  docker-compose up -d
+
+
+}
 # 站点工具菜单
 website_deploy_menu() {
 
@@ -2958,6 +3391,7 @@ txtn $(txtn "25.StirlingPDF")$(txtg "✔")"            "$(txtn "45.RocketChat")$
 txtn $(txty "26.IT-Tools")$(txtg "✔")"               "$(txtn "46.ClashDashBoard")$(txtn "✔")
 txtn $(txtn "27.MyIP(IPChecking)")$(txtg "✔")"       "$(txtn "47.MacCMS")$(txtn "✔")
 txtn $(txtn "28.ChatGPT-Next-Web")$(txtg "✔")"       "$(txtn "48.NginxProxyManager")$(txtn "✔")
+txtn $(txtn "29.GPT_Academic")$(txtg "✔")"           "$(txtn "49.ChunhuChat")$(txtn "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")"             "$(txtp "88.")$(txtb "容器管理")$(txty "☪")
@@ -2991,6 +3425,7 @@ website_deploy_run(){
      26) clear && docker_deploy_ittools ;;
      27) clear && docker_deploy_myip ;;
      28) clear && docker_deploy_chatgptnextweb ;;
+     29) clear && docker_deploy_gptacademic ;;
 
      41) clear && docker_deploy_portainer ;;
      42) clear && docker_deploy_nextterminal ;;
@@ -3000,6 +3435,7 @@ website_deploy_run(){
      46) clear && docker_deploy_clashdashboard;;
      47) clear && docker_deploy_maccms_tweek ;;
      48) clear && docker_deploy_npm ;;
+     49) clear && docker_deploy_chunhuchat ;;
 
      88) clear && docker_run ;;
       0) clear && qiqtools ;;
@@ -3767,7 +4203,7 @@ install_php74(){
   # php -m
 }
 
-mariadb_install(){
+install_mariadb(){
   apt install apt-transport-https curl
   mkdir -p /etc/apt/keyrings
   curl -o /etc/apt/keyrings/mariadb-keyring.pgp 'https://mariadb.org/mariadb_release_signing_key.pgp'
@@ -3790,7 +4226,7 @@ EOF
 
 }
 
-redis_install(){
+install_redis(){
   curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
   echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
 
@@ -4017,7 +4453,7 @@ txtn $(txty "11.查看状态")$(txtg "✔")"           "$(txtn "21.安装PHP8.3"
 txtn $(txtn "12.安装Caddy")$(txtg "✔")"          "$(txtn "22.安装PHP8.2")$(txtg "✘")
 txtn $(txtn "13.安装Nginx")$(txtg "✔")"          "$(txtn "23.安装PHP8.1")$(txtb "✘")
 txtn $(txtn "14.安装OpenLiteSpeed")$(txtg "✔")"  "$(txtn "24.安装PHP7.4")$(txtb "✔")
-txtn $(txtn "15.安装Nginx")$(txtb "✘")"          "$(txtn "")$(txtb "")
+# txtn $(txtn "15.安装Nginx")$(txtb "✘")"          "$(txtn "")$(txtb "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.站点列表")$(txtg "✔")"           "$(txtn "41.重启服务")$(txtg "✔")
 txtn $(txtn "32.站点管理")$(txtg "✔")"           "$(txtn "42.停止服务")$(txtg "✔")
@@ -4048,12 +4484,14 @@ WebSites_manager_run(){
     reading "请选择: " choice
 
     case $choice in
-     11) clear && caddy_install ;;
-     12) 
+     11) caddy_status ;;
+     12) clear && caddy_install ;;
+     13) 
         #  安装Nginx
 
         # nginx_docker
         nginx_install
+        # install nginx
 
         clear
         # nginx_version=$(docker exec nginx nginx -v 2>&1)
@@ -4075,14 +4513,12 @@ WebSites_manager_run(){
       echo -e " >>> 设置用户名和密码：/usr/local/lsws/admin/misc/admpass.sh"
       ;;
 
-     14) caddy_status ;;
-     15) clear && install nginx ;;
-
      21) clear && install_php83 ;;
      22) clear && install_php74 ;;
 
-     23) clear && mariadb_install ;;
-     24) clear && redis_install ;;
+     61) clear && install_redis ;;
+     62) clear && mysql_install ;;
+     63) clear && install_mariadb ;;
 
      41) caddy_reload ;;
      42) caddy_start ;;
