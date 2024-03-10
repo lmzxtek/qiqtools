@@ -2692,8 +2692,9 @@ txtn $(txtb "17.SearXNG聚合搜索站")$(txtg "✔")"               "$(txtn "")
 txtn $(txtn "18.StirlingPDF工具大全")$(txtg "✔")"             "$(txtn "")$(txtb "")
 txtn $(txty "19.IT-Tools常用工具")$(txtg "✔")"                "$(txtn "")$(txtb "")
 txtn $(txtn "20.Next-Terminal资产管理")$(txtg "✔")"           "$(txtn "")$(txtb "")
-txtn $(txtn "21.YACD(Yet another Clash Dashboard)")$(txtg "✔")"           "$(txtn "")$(txtb "")
-txtn $(txtn "22.ClashDashBoard")$(txtg "✘")"           "$(txtn "")$(txtb "")
+txtn $(txtn "21.YACD")$(txtg "✔")"                           "$(txtn "")$(txtb "")
+txtn $(txtn "22.ClashDashBoard")$(txtg "✘")"                 "$(txtn "")$(txtb "")
+txtn $(txtn "23.ChatGPT-Next-Web")$(txtg "✔")"               "$(txtn "")$(txtb "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
@@ -2960,6 +2961,7 @@ website_deploy_run(){
       ;;
 
      21) clear && docker run -p 1234:80 -d --name yacd --rm ghcr.io/haishanh/yacd:master  ;;
+     23) clear && docker_deploy_chatgptnextweb ;;
 
      61) clear && install curl && curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s install  ;;
      62) clear && install curl && curl -fsSL https://code-server.dev/install.sh | sh  ;;
