@@ -2612,7 +2612,7 @@ install_maccms(){
 }
 
 # 使用Docker安装苹果CMS内容管理系统
-dc_deploy_maccms_tweek(){
+docker_deploy_maccms_tweek(){
   
   local LFLD="/root/dcc.d"
   local LPTH="/root/dcc.d"
@@ -2668,72 +2668,8 @@ EOF
   txtn ""
 }
 
-# 站点工具菜单
-website_deploy_menu() {
+docker_deploy_ubunturdpweb(){
 
-txtn " "
-txtn $(txbr "▼ 站点部署")$(txbp " ♨♨♨ ")
-txtn "—————————————————————————————————————"
-WANIP_show
-txtn "====================================="
-txtn $(txty " 1.1Panel")$(txty "〠")"                "$(txtn "61.AList")$(txtg "✔")
-txtn $(txtn " 2.aaPanel")$(txtg "✔")"                "$(txtb "62.Code-Server")$(txtg "✔")
-txtn $(txtn " 3.宝塔面板")$(txtg "✔")"               "$(txtn "63.KodBox")$(txtg "✔")
-txtn $(txtn " 4.哪吒探针")$(txtg "✔")"               "$(txtn "64.ChatGPT-Next-Web")$(txtg "✔")
-txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"          "$(txtn "65.MacCMS")$(txtg "✔")
-# txtn $(txtn " 6.NginxProxyManager")$(txtb "✘")"      "$(txtn "")$(txtg "")
-txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txbr "▼ Docker")$(txbg " ❦❦❦ ")
-txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "11.Ubuntu-RDP-Web")$(txtg "✔")"         "$(txtn "31.Portainer")$(txtn "✔")
-txtn $(txtn "12.AuroPanel")$(txtg "✔")"              "$(txtn "32.Next-Terminal")$(txtn "✔")
-txtn $(txtn "13.Memos")$(txtg "✔")"                  "$(txtn "33.YACD")$(txtn "✔")
-txtn $(txtb "14.SearXNG")$(txtg "✔")"                "$(txtn "34.QBittorrent")$(txtn "✔")
-txtn $(txtn "15.StirlingPDF")$(txtg "✔")"            "$(txtn "35.RocketChat")$(txtn "✔")
-txtn $(txty "16.IT-Tools")$(txtg "✔")"               "$(txtn "36.ClashDashBoard")$(txtn "✔")
-txtn $(txtn "17.MyIP(IPChecking)")$(txtg "✔")"       "$(txtn "37.MacCMS")$(txtn "✔")
-txtn $(txtn "18.ChatGPT-Next-Web")$(txtg "✔")"       "$(txtn "38.NginxProxyManager")$(txtn "✔")
-# txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
-txtn "—————————————————————————————————————"
-txtn $(txtn " 0.返回主菜单")$(txtr "✖")"              "$(txtr "88.")$(txtb "容器管理")$(txtc "☪")
-txtn " "
-}
-
-# 面板工具
-website_deploy_run(){
-  while true; do
-    clear && website_deploy_menu
-    read -p "请输入你的选择: " sub_choice
-
-    case $sub_choice in
-      1) clear && install_1panel  ;;
-      2) clear && install__baota_aa ;;
-      3) clear && install_baota_cn ;;
-      4) clear && install curl && curl -L https://raw.githubusercontent.com/naiba/nezha/master/script/install.sh  -o nezha.sh && chmod +x nezha.sh && ./nezha.sh  ;;
-      5) clear && install wget && wget https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh && bash ols1clk.sh  ;;
-
-     38) 
-        clear 
-        docker_name="npm"
-        docker_img="jc21/nginx-proxy-manager:latest"
-        docker_port=81
-        docker_rum="docker run -d \
-                      --name=$docker_name \
-                      -p 80:80 \
-                      -p 81:$docker_port \
-                      -p 443:443 \
-                      -v /home/docker/npm/data:/data \
-                      -v /home/docker/npm/letsencrypt:/etc/letsencrypt \
-                      --restart=always \
-                      $docker_img"
-        docker_describe="如果您已经安装了其他面板工具或者LDNMP建站环境，建议先卸载，再安装npm！"
-        docker_url="官网介绍: https://nginxproxymanager.com/"
-        docker_use="echo \"初始用户名: admin@example.com\""
-        docker_passwd="echo \"初始密码: changeme\""
-        docker_app
-        ;;
-
-     11) 
         clear 
         docker_name="ubuntu-novnc"
         docker_img="fredblgr/ubuntu-novnc:20.04"
@@ -2752,11 +2688,10 @@ website_deploy_run(){
         docker_use="echo \"用户名: root\""
         docker_passwd="echo \"密码: $rootpasswd\""
         docker_app
-        ;;
+}
 
-     12) clear && install curl && bash <(curl -fsSL https://raw.githubusercontent.com/Aurora-Admin-Panel/deploy/main/install.sh)  ;;
-
-     31) 
+docker_deploy_portainer(){
+  
         clear 
         docker_name="portainer"
         docker_img="portainer/portainer"
@@ -2773,9 +2708,10 @@ website_deploy_run(){
         docker_use=""
         docker_passwd=""
         docker_app
-        ;;
+}
 
-     13) 
+docker_deploy_memos(){
+  
       clear 
       docker_name="memos"
       docker_img="ghcr.io/usememos/memos:latest"
@@ -2786,9 +2722,10 @@ website_deploy_run(){
       docker_use=""
       docker_passwd=""
       docker_app
-      ;;
+}
 
-     34) 
+docker_deploy_qbittorrent(){
+  
         docker_name="qbittorrent"
         docker_img="lscr.io/linuxserver/qbittorrent:latest"
         docker_port=8081
@@ -2811,8 +2748,10 @@ website_deploy_run(){
         docker_passwd="docker logs qbittorrent"
 
         docker_app
-        ;;
-     35) 
+}
+
+docker_deploy_rocketchat(){
+  
       clear 
       if docker inspect rocketchat &>/dev/null; then
               clear
@@ -2900,9 +2839,10 @@ website_deploy_run(){
                   ;;
           esac
       fi
-      ;;
+}
 
-     14) 
+docker_deploy_searxng(){
+  
       clear 
       docker_name="searxng"
       docker_img="alandoyle/searxng:latest"
@@ -2920,9 +2860,10 @@ website_deploy_run(){
       docker_use=""
       docker_passwd=""
       docker_app
-      ;;
+}
 
-     15) 
+docker_deploy_spdf(){
+  
       clear
       docker_name="s-pdf"
       docker_img="frooodle/s-pdf:latest"
@@ -2941,15 +2882,18 @@ website_deploy_run(){
       docker_use=""
       docker_passwd=""
       docker_app
-      ;;
-      
-     16) 
+}
+
+docker_deploy_ittools(){
+  
       clear 
       docker run -d --name it-tools --restart unless-stopped -p 8080:80 corentinth/it-tools:latest
       # docker run -d --name it-tools --restart unless-stopped -p 8080:80 ghcr.io/corentinth/it-tools:latest
-      ;;
+      
+}
 
-     32) 
+docker_deploy_nextterminal(){
+  
       clear
       cd ~
       mkdir next-terminal-docker && cd next-terminal-docker
@@ -2957,22 +2901,107 @@ website_deploy_run(){
       # curl -sSL https://f.typesafe.cn/next-terminal/aliyuns/docker-compose.yml > docker-compose.yml # 阿里镜像
       docker-compose up -d
       cd ~
-      ;;
+}
 
-     33) clear && docker run -p 1234:80 -d --name yacd --rm ghcr.io/haishanh/yacd:master  ;;
+docker_deploy_yacd(){
+  docker run -p 1234:80 -d --name yacd --rm ghcr.io/haishanh/yacd:master 
+}
 
+docker_deploy_clashdashboard(){
+  clear 
+}
+
+
+# 站点工具菜单
+website_deploy_menu() {
+
+txtn " "
+txtn $(txbr "▼ 站点部署")$(txtp " ♨♨♨ ")
+txtn "—————————————————————————————————————"
+WANIP_show
+txtn "====================================="
+txtn $(txty " 1.1Panel")$(txtc "〠")"                "$(txtn "61.AList")$(txtg "✔")
+txtn $(txtn " 2.aaPanel")$(txtg "✔")"                "$(txtb "62.Code-Server")$(txtg "✔")
+txtn $(txtn " 3.宝塔面板")$(txtg "✔")"               "$(txtn "63.KodBox")$(txtg "✔")
+txtn $(txtn " 4.哪吒探针")$(txtg "✔")"               "$(txtn "64.ChatGPT-Next-Web")$(txtg "✔")
+txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"          "$(txtn "65.MacCMS")$(txtg "✔")
+# txtn $(txtn " 6.NginxProxyManager")$(txtb "✘")"      "$(txtn "")$(txtg "")
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+txtn $(txbr "▼ Docker")$(txbg " ❦❦❦ ")
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+txtn $(txtn "11.AuroPanel")$(txtg "✔")"              "$(txtn "31.Portainer")$(txtn "✔")
+txtn $(txtn "12.Ubuntu-RDP-Web")$(txtg "✔")"         "$(txtn "32.Next-Terminal")$(txtn "✔")
+txtn $(txtn "13.Memos")$(txtg "✔")"                  "$(txtn "33.YACD")$(txtn "✔")
+txtn $(txtb "14.SearXNG")$(txtg "✔")"                "$(txtn "34.QBittorrent")$(txtn "✔")
+txtn $(txtn "15.StirlingPDF")$(txtg "✔")"            "$(txtn "35.RocketChat")$(txtn "✔")
+txtn $(txty "16.IT-Tools")$(txtg "✔")"               "$(txtn "36.ClashDashBoard")$(txtn "✔")
+txtn $(txtn "17.MyIP(IPChecking)")$(txtg "✔")"       "$(txtn "37.MacCMS")$(txtn "✔")
+txtn $(txtn "18.ChatGPT-Next-Web")$(txtg "✔")"       "$(txtn "38.NginxProxyManager")$(txtn "✔")
+# txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
+txtn "—————————————————————————————————————"
+txtn $(txtn " 0.返回主菜单")$(txtr "✖")"              "$(txtp "88.")$(txtb "容器管理")$(txty "☪")
+txtn " "
+}
+
+# 面板工具
+website_deploy_run(){
+  while true; do
+    clear && website_deploy_menu
+    read -p "请输入你的选择: " sub_choice
+
+    case $sub_choice in
+      1) clear && install_1panel  ;;
+      2) clear && install__baota_aa ;;
+      3) clear && install_baota_cn ;;
+      4) clear && install curl && curl -L https://raw.githubusercontent.com/naiba/nezha/master/script/install.sh  -o nezha.sh && chmod +x nezha.sh && ./nezha.sh  ;;
+      5) clear && install wget && wget https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh && bash ols1clk.sh  ;;
+
+     11) clear && install curl && bash <(curl -fsSL https://raw.githubusercontent.com/Aurora-Admin-Panel/deploy/main/install.sh)  ;;
+     12) clear && docker_deploy_ubunturdpweb ;;
+     13) clear && docker_deploy_memos ;;
+     14) clear && docker_deploy_searxng ;;
+     15) clear && docker_deploy_spdf ;;
+     16) clear && docker_deploy_ittools ;;
      17) clear && docker_deploy_myip ;;
      18) clear && docker_deploy_chatgptnextweb ;;
+
+     31) clear && docker_deploy_portainer ;;
+     32) clear && docker_deploy_nextterminal ;;
+     33) clear && docker_deploy_yacd ;;
+     34) clear && docker_deploy_qbittorrent ;;
+     35) clear && docker_deploy_rocketchat ;;
+     36) clear && docker_deploy_clashdashboard;;
+     37) clear && docker_deploy_maccms_tweek ;;
+
+     38) 
+        clear 
+        docker_name="npm"
+        docker_img="jc21/nginx-proxy-manager:latest"
+        docker_port=81
+        docker_rum="docker run -d \
+                      --name=$docker_name \
+                      -p 80:80 \
+                      -p 81:$docker_port \
+                      -p 443:443 \
+                      -v /home/docker/npm/data:/data \
+                      -v /home/docker/npm/letsencrypt:/etc/letsencrypt \
+                      --restart=always \
+                      $docker_img"
+        docker_describe="如果您已经安装了其他面板工具或者LDNMP建站环境，建议先卸载，再安装npm！"
+        docker_url="官网介绍: https://nginxproxymanager.com/"
+        docker_use="echo \"初始用户名: admin@example.com\""
+        docker_passwd="echo \"初始密码: changeme\""
+        docker_app
+        ;;
 
      61) clear && install curl && curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s install  ;;
      62) clear && install curl && curl -fsSL https://code-server.dev/install.sh | sh  ;;
      63) clear && install_kodbox  ;;   
      64) clear && install curl && bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh) ;;
      65) clear && install_maccms ;;
-     66) clear && dc_deploy_maccms_tweek ;;
 
+     88) clear && docker_run ;;
       0) clear && qiqtools ;;
-     99) echo -e "重新启动系统，SSH连接将断开..." && reboot && exit ;;
       *) echo "无效的输入!" ;;
     esac
     break_end
@@ -3636,7 +3665,7 @@ txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "21.Docker容器管理")$(txtp "✔")"       "$(txtn "31.Docker网络管理")$(txtn "✔")
 txtn $(txty "22.Docker镜像管理")$(txtp "✔")"       "$(txtn "32.Docker卷管理")$(txtn "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "88.设置快捷键[dcc]")$(txtg "✔")"      "$(txtp "66.站点部署")$(txty "✔")
+txtn $(txtn "66.设置快捷键[dcc]")$(txtg "✔")"      "$(txtp "88.站点部署")$(txty "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"      "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")"           "$(txtr "")$(txtb "")$(txtc "")
@@ -3661,8 +3690,8 @@ docker_run() {
      31) clear && docker_network_list_run ;;
      32) clear && docker_volume_list_run ;;
 
-     66) clear && website_deploy_run ;;
-     88) clear && docker_set_1ckl "dcc" ;;
+     66) clear && docker_set_1ckl "dcc" ;;
+     88) clear && website_deploy_run ;;
       # 9) clear && chmod a+x /usr/local/bin/docker-compose && rm -rf `which dcc` && ln -s /usr/local/bin/docker-compose /usr/bin/dcc ;;
       
       0) clear && qiqtools ;;
