@@ -591,6 +591,9 @@ gather_sysinfo(){
   echo -e "VM Type    : ${red}$VIRT${plain}"
   echo -e "IPv4|IPv6  : $ONLINE"
 
+  # echoT "VM Type    :" ${red}$VIRT${plain}
+  # echoG "IPv4|IPv6  :" $ONLINE
+
 }
 
 # Function to get information from IP Address using ip-api.com free API
@@ -3287,18 +3290,22 @@ docker_app() {
 docker_deploy_chatgptnextweb(){
 
   local dcc_name=chatgptnextweb
-  local dcc_port=3000
-  local dcc_code="543212345,7654321234567"
   local dcc_image=yidadaa/chatgpt-next-web
 
-  local OPENAI_API_KEY=$1
-  local GOOGLE_API_KEY=$2
+  local dcc_port=3001
+  local dcc_code="543212345,7654321234567"
+
+  reading "请输入OpenAI密钥：" OPENAI_API_KEY
+  reading "请输入Gemini密钥：" GOOGLE_API_KEY
+
+  # local OPENAI_API_KEY=$1
+  # local GOOGLE_API_KEY=$2
 
   mkdir -p /home/dcc.d/${dcc_name}
   cd /home/dcc.d/${dcc_name}
   touch /home/dcc.d/${dcc_name}/docker-compose.yml
 
-  cat > /home/dcc.d/chatgptnextweb/docker-compose.yml << EOF
+  cat > /home/dcc.d/${dcc_name}/docker-compose.yml << EOF
 version: "3.9"
 services:
   chatgpt-next-web-g:
@@ -3321,6 +3328,87 @@ services:
       - OPENAI_SB=$OPENAI_SB
       - CUSTOM_MODELS=-all,+gemini-pro
 EOF
+
+  # 启动容器
+  docker-compose up -d
+
+  # 是否绑定域名？
+  echoR "是否需要绑定域名？[Y|N]"
+
+  # 保存配置信息和访问链接
+  touch /home/dcc.d/${dcc_name}/${dcc_name}.conf
+  cat > /home/dcc.d/${dcc_name}/${dcc_name}.conf << EOF
+    container_name = ${dcc_name}
+    URL(IPV4) = http://$WAN4:$dc_port
+    URL(IPV6) = http://[$WAN6]:$dc_port
+    OPENAI_API_KEY = $OPENAI_API_KEY
+    GOOGLE_API_KEY = $GOOGLE_API_KEY
+    CODE = $dcc_code
+EOF
+  echoG "是否保存配置文件？[Y|N](/home/dcc.d/${dcc_name}/${dcc_name}.conf)"
+
+}
+
+# 使用Docker compose部署MyIP
+docker_deploy_myip(){
+
+  local dcc_name=chatgptnextweb
+  local dcc_image=yidadaa/chatgpt-next-web
+
+  local dcc_port=3001
+  local dcc_code=""
+
+  reading "请输入OpenAI密钥：" OPENAI_API_KEY
+  reading "请输入Gemini密钥：" GOOGLE_API_KEY
+
+  # local OPENAI_API_KEY=$1
+  # local GOOGLE_API_KEY=$2
+
+  mkdir -p /home/dcc.d/${dcc_name}
+  cd /home/dcc.d/${dcc_name}
+  touch /home/dcc.d/${dcc_name}/docker-compose.yml
+
+  cat > /home/dcc.d/${dcc_name}/docker-compose.yml << EOF
+version: "3.9"
+services:
+  chatgpt-next-web-g:
+    # profiles: [ "no-proxy" ]
+    container_name: ${dcc_name}
+    image: yidadaa/chatgpt-next-web
+    restart: unless-stopped
+    ports:
+      - $dcc_port:3000
+    environment:
+      - OPENAI_API_KEY=$OPENAI_API_KEY
+      - GOOGLE_API_KEY=$GOOGLE_API_KEY
+      - CODE=$dcc_code
+      - BASE_URL=$BASE_URL
+      - OPENAI_ORG_ID=$OPENAI_ORG_ID
+      - HIDE_USER_API_KEY=$HIDE_USER_API_KEY
+      - DISABLE_GPT4=$DISABLE_GPT4
+      - ENABLE_BALANCE_QUERY=$ENABLE_BALANCE_QUERY
+      - DISABLE_FAST_LINK=$DISABLE_FAST_LINK
+      - OPENAI_SB=$OPENAI_SB
+      - CUSTOM_MODELS=-all,+gemini-pro
+EOF
+
+  # 启动容器
+  docker-compose up -d
+
+  # 是否绑定域名？
+  echoR "是否需要绑定域名？[Y|N]"
+
+  # 保存配置信息和访问链接
+  touch /home/dcc.d/${dcc_name}/${dcc_name}.conf
+  cat > /home/dcc.d/${dcc_name}/${dcc_name}.conf << EOF
+    container_name = ${dcc_name}
+    URL(IPV4) = http://$WAN4:$dc_port
+    URL(IPV6) = http://[$WAN6]:$dc_port
+    OPENAI_API_KEY = $OPENAI_API_KEY
+    GOOGLE_API_KEY = $GOOGLE_API_KEY
+    CODE = $dcc_code
+EOF
+  echoG "是否保存配置文件？[Y|N](/home/dcc.d/${dcc_name}/${dcc_name}.conf)"
 
 }
 
