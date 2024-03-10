@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.4.1
+script_version=v0.4.2
 #==========================
 
 # Language
@@ -3183,10 +3183,10 @@ docker_container_update(){
   txtn " $dc_name 更新完成"
   txtn "↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓"
 
-  if [[ -n "$dc_port"]]; then
-    echo " 使用以下地址访问:"
-    echo "http://$WAN4:$dc_port"
-    echo "http://$[WAN6]:$dc_port"
+  if [ -n "$dc_port"]; then
+    echo -e " 使用以下地址访问:"
+    echo -e "http://$WAN4:$dc_port"
+    echo -e "http://$[WAN6]:$dc_port"
   fi
 
   [[ -n "$dc_user" ]] && echo -e "     User: $dc_user"
