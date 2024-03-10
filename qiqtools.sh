@@ -736,7 +736,7 @@ docker_set_1ckl(){
 
 install_add_docker() {
   
-  if [[ "$VIRT" != *"LXC"* ]]; then
+  if [[ "$VIRT" =~ "LXC" ]]; then
     echo -e "\n >>> 检测到${red}LXC${plain}服务器，不建议安装Docker。\n"
     read -p " 安装docker环境吗？(输入Y[y]继续): " choice
     case "$choice" in
@@ -3595,7 +3595,7 @@ docker_run() {
      31) clear && docker_network_list_run ;;
      32) clear && docker_volume_list_run ;;
 
-     88) clear && website_deploy_run ;;
+     66) clear && website_deploy_run ;;
      88) clear && docker_set_1ckl "dcc" ;;
       # 9) clear && chmod a+x /usr/local/bin/docker-compose && rm -rf `which dcc` && ln -s /usr/local/bin/docker-compose /usr/bin/dcc ;;
       
