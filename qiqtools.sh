@@ -2987,6 +2987,7 @@ txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "51.XRayR(@XrayR-project)")$(txtg "✔")"         "$(txtn "61.V2bX(Vless&Trojan to V2board)")$(txtg "")
 txtn $(txtn "52.XRayR(@wyx2685)")$(txtg "✔")"               "$(txtn "62.Bodhi(Hysteria2 to V2board)")$(txtg "")
 txtn $(txtc "53.XRayR(Alpine)")$(txtg "✔")"                 "$(txtn "63.XRayR-Docker(@XrayR-project)")$(txtg "✔")
+txtn $(txtc "54.XRayR(AirGo)")$(txtg "✔")"                  "$(txtn "")$(txtg "")
 # txtn $(txtc "")$(txtg "✔")"                 "$(txtn "")$(txtg "✔")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
@@ -3027,6 +3028,7 @@ warp_tools_run() {
      51) clear && wget -N https://raw.githubusercontent.com/XrayR-project/XrayR-release/master/install.sh && bash install.sh && cd /etc/XrayR ;;
      52) clear && wget -N https://raw.githubusercontent.com/wyx2685/XrayR-release/master/install.sh && bash install.sh ;;
      53) clear && apk add wget sudo curl && wget -N https://github.com/Cd1s/alpineXrayR/releases/download/one-click/install-xrayr.sh && chmod +x install-xrayr.sh && bash install-xrayr.sh ;;
+     54) clear && bash <(curl -Ls https://raw.githubusercontent.com/ppoonk/XrayR-for-AirGo/main/scripts/manage.sh) ;;
 
      61) clear && wget -N https://raw.githubusercontent.com/wyx2685/V2bX-script/master/install.sh && bash install.sh ;;
      62) clear && cd ~ && git clone https://github.com/lotusnetwork/bodhi-docker.git && cd bodhi-docker ;;
@@ -3055,7 +3057,7 @@ warp_tools_run() {
 
 }
 
-board_tools_menu() {
+board_panels_menu() {
 
 txtn " "
 txtn $(txbr "▼ 节点面板")$(txbg " ⊕⊕⊕ ")
@@ -3068,18 +3070,19 @@ txtn $(txtn "23.X-UI(@FranzKafkaYu)")$(txtg "✔")"    "$(txtn "33.Daed")$(txtg 
 txtn $(txtn "24.X-UI(@rwkgyg)")$(txtg "✔")"          "$(txtn "34.Daed-Docker")$(txtg "✔")
 txtn $(txtc "25.X-UI(alpine)")$(txtg "✔")"           "$(txtn "35.S-UI(@alireza0)")$(txtg "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txty "41.XBoard")$(txtg "✔")"                 "$(txtn "44.LotusBoard")$(txtg "✔")
-txtn $(txtn "42.V2Board")$(txtg "✔")"                "$(txtn "45.SSPanel")$(txtg "✔")
-txtn $(txtn "43.V2Board(wyx2685)")$(txtg "✔")"       "$(txtn "46.Proxypanel")$(txtg "✔")
+txtn $(txty "41.XBoard")$(txtg "✔")"                 "$(txtn "44.LotusBoard")$(txtg "✘")
+txtn $(txtn "42.V2Board")$(txtg "✔")"                "$(txtn "45.SSPanel")$(txtg "✘")
+txtn $(txtn "43.V2Board(wyx2685)")$(txtg "✔")"       "$(txtn "46.Proxypanel")$(txtg "✘")
+txtn $(txtn "44.AirGo")$(txtg "✔")"                  "$(txtn "")$(txtg "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
 txtn " "
 }
 
-board_tools_run() {
+board_panels_run() {
   while true; do
-    clear && board_tools_menu
+    clear && board_panels_menu
     reading "请选择面板代码: " choice
     
     case $choice in
@@ -3094,6 +3097,8 @@ board_tools_run() {
      33) clear && sh -c "$(curl -sL https://github.com/daeuniverse/dae-installer/raw/main/installer.sh)" @ update-geoip update-geosite ;;
      34) clear && docker run -d --privileged --network=host --pid=host --restart=unless-stopped  -v /sys:/sys  -v /etc/daed:/etc/daed --name=daed ghcr.io/daeuniverse/daed:latest ;;
      35) clear && bash <(curl -Ls https://raw.githubusercontent.com/alireza0/s-ui/master/install.sh)  ;;
+
+     44) clear && bash <(curl -Ls https://raw.githubusercontent.com/ppoonk/AirGo/main/server/scripts/install.sh)  ;;
 
       0) clear && clear && clear && clear && qiqtools ;;
       *) echo "无效的输入!" ;;
@@ -3850,7 +3855,7 @@ while true; do
 
     31) clear && server_test_run  ;;
     32) clear && warp_tools_run   ;;
-    33) clear && board_tools_run  ;;
+    33) clear && board_panels_run  ;;
 
     00) script_update ;;
     99) echo "正在重启服务器，即将断开SSH连接" && reboot  ;;
