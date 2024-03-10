@@ -2960,7 +2960,7 @@ txtn $(txtn "27.MyIP(IPChecking)")$(txtg "✔")"       "$(txtn "47.MacCMS")$(txt
 txtn $(txtn "28.ChatGPT-Next-Web")$(txtg "✔")"       "$(txtn "48.NginxProxyManager")$(txtn "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
-txtn $(txtn " 0.返回主菜单")$(txtr "✖")"              "$(txtp "88.")$(txtb "容器管理")$(txty "☪")
+txtn $(txtn " 0.返回主菜单")$(txtr "✖")"             "$(txtp "88.")$(txtb "容器管理")$(txty "☪")
 txtn " "
 }
 
@@ -4198,7 +4198,7 @@ txtn $(txty "21.系统工具")$(txtp "❁")"       "$(txtn "31.性能测试")$(t
 txtn $(txtn "22.常用工具")$(txtn "❃")"       "$(txtp "32.节点搭建")$(txty "✈")
 txtn $(txtn "23.其他工具")$(txtb "の")"      "$(txtc "33.节点面板")$(txty "⊕")
 txtn "====================================="
-txtn $(txty "99")$(txtc ".重启系统☢")"       "$(txtb "00.脚本更新")$(txtb "☋")
+txtn $(txtb "00.脚本更新")$(txtb "☋")"       "$(txty "99")$(txtc ".重启系统☢")
 txtn "—————————————————————————————————————"
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 # txtn $(txtn " 0.退出脚本")$(txtr "✖")"       "$(txtb "♧♧ ")$(txtc "QiQTools") $(txtb "$script_version")
