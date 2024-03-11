@@ -4040,10 +4040,11 @@ txtn $(txtn " 3.停止指定容器")$(txtg "✔")"       "$(txtn "13.重启所�
 txtn $(txty " 4.重启指定容器")$(txtc "✔")"       "$(txtn "14.删除所有容器")$(txtn "✔")
 txtn $(txtn " 5.删除指定容器")$(txtg "✔")"       "$(txtp "15.进入指定容器")$(txtn "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txty "21.查看容器日志")$(txtp "✔")"       "$(txtn "31.查看容器网络")$(txtn "✔")
+txtn $(txty "21.查看容器日志")$(txtp "✔")"       "$(txtr "31.清理容器")$(txtc "㉿")
+txtn $(txty "22.查看容器日志")$(txtp "✔")"       "$(txtn "")$(txtn "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"      "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
-txtn $(txtn " 0.返回上级菜单")$(txtr "✖")"           "$(txtr "")$(txtb "")$(txtc "")
+txtn $(txtn " 0.返回上级菜单")$(txtr "✖")"       "$(txtr "77.")$(txtb "清理容器")$(txtc "")
 txtn " "  
 }
 
@@ -4071,7 +4072,7 @@ docker_container_list_run() {
         docker restart $dockername
         ;;
       5) 
-        clear 
+        # clear 
         read -p "请输入要删除的容器名: " dockername
         docker rm $dockername
         ;;
@@ -4090,8 +4091,8 @@ docker_container_list_run() {
 
      15) read -p "请输入容器名: " dockername && docker exec -it $dockername /bin/bash ;;
 
-     21)  read -p "请输入容器名: " dockername && docker logs $dockername ;;
-     31) 
+     21) read -p "请输入容器名: " dockername && docker logs $dockername ;;
+     22) 
       echo ""
       container_ids=$(docker ps -q)
 
@@ -4113,6 +4114,8 @@ docker_container_list_run() {
       done
       ;;
      
+     31) clear && docker_clean ;;
+
       0) clear && docker_run ;;
       *) echo "无效的输入!" ;;
     esac  
@@ -4268,7 +4271,7 @@ txtn $(txbr "▼ 容器管理")$(txbg " ☪☪☪ ")
 txtn "—————————————————————————————————————"
 WANIP_show 
 txtn "====================================="
-txtn $(txtn " 1.Docker环境安装")$(txtg "✔")"       "$(txtn "11.Docker查看状态")$(txtn "✔")
+txtn $(txtn " 1.Docker环境安装")$(txtg "✔")"       "$(txty "11.Docker查看状态")$(txtn "✔")
 txtn $(txtn " 2.Docker环境卸载")$(txtg "✔")"       "$(txtn "12.Docker清理")$(txtn "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "21.Docker容器管理")$(txtp "✔")"       "$(txtn "31.Docker网络管理")$(txtn "✔")
