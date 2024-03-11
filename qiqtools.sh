@@ -3207,14 +3207,14 @@ docker_deploy_yacd(){
 
   local LFLD="$BFLD/$dc_name"
   local LPTH="$BFLD/$dc_name"
-  local FYML="$FLD/docker-compose.yml"
-  local FCONF="$FLD/${dc_name}.conf"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
 
   ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
   [[ -d $LFLD/config ]] || mkdir -p $LFLD/config
   [[ -f "$FYML"  ]] || touch $FYML
 
-  echo -e "\n >>> 现在开始部署YACD ... \n"
+  echoR "\n >>>" " 现在开始部署YACD ... \n"
   read -p "请输入监听端口(默认为:${dc_port}): " ptmp
   # [[ (check_port ptmp ) ]] && dc_port=ptmp
   [[ -z "$ptmp" ]] || dc_port=$ptmp
@@ -3229,7 +3229,7 @@ services:
     volumes:
         - $LFLD/config:/config
     ports:
-        - '$dc_port:80
+        - $dc_port:80
     restart: unless-stopped
 EOF
 
@@ -3442,15 +3442,15 @@ docker_deploy_start(){
   local CONF="${BFLD}/${NAME}/${NAME}.conf"
 
   # 先检测一下Docker安装状态
-  echoR "\n >>> Check Docker status ... "
+  echoR "\n >>>" " Check Docker status ... "
   docker_install
 
-  echoR "\n >>> Start to build and run Docker ($NAME) ... "
+  echoR "\n >>>" " Start to build and run Docker ($NAME) ... "
   cd ${BFLD}/${NAME}
   docker-compose up -d
 
   # 是否绑定域名？
-  echoR "\n >>> Start set domain ... "
+  echoR "\n >>>" " Start set domain ... "
   read -p "  是否需要绑定域名？[Y|n] " choice
   case "$choice" in
     [Yy]) 
@@ -3465,11 +3465,11 @@ docker_deploy_start(){
   esac  
 
   # 保存配置信息和访问链接
-  echoR "\n >>> Start save config file ... "
+  echoR "\n >>>" " Start save config file ... "
   read -p "是否保存配置文件？[Y|n](${CONF})" choice
   case "$choice" in
     [Nn]) 
-        echo "不保存配置文件..." 
+        echoR " 不保存配置文件 ... " 
         ;;
        *) 
         # [[ -f "$CONF"  ]] || touch $CONF
@@ -3485,7 +3485,7 @@ EOF
   esac  
 
   # 显示配置文件信息
-  echoR "\n${NAME}容器的配置信息和访问链接如下："
+  echoR "\n${NAME}" "容器的配置信息和访问链接如下："
   # cat $LFLD/${NAME}.conf
   echoR "    service:" "${NAME}"
   echoR "  container:" "${NAME}"
@@ -3493,7 +3493,7 @@ EOF
   [[ -n "$WAN6"      ]] && echoR " URL-IPV6:" "http://[$WAN6]:$PORT "
   [[ -n "$DOMAIN"    ]] && echoY "   Domain:" "$DOMAIN              "
 
-  echoR "\n >>> Great! Deploy ${NAME} Done."
+  echoR "\n >>>" " Great! Deploy ${NAME} Done."
   echoT ""
 }
 
