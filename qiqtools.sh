@@ -3566,7 +3566,9 @@ docker_deploy_start(){
 
   # 是否绑定域名？
   echoR "\n >>>" " Start set domain ... "
+  txtb "—————————————————————————————————————"
   WANIP_show
+  txtb "—————————————————————————————————————"
   read -p "  请输入要绑定域名(输入为空则不绑定域名): " DOMAIN
   if [[ -n "$DOMAIN" ]]; then
     echo -e "(注意: 此时域名解析应不开CDN, 绑定成功之后，能正常访问时再开启。)\n"
