@@ -454,15 +454,15 @@ system_info() {
   txtn " "
     info "系统信息查询"
   txtkvn "↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓"
+  txtkvy "    ${blue}虚拟化: " "${yellow}${bold}$VIRT${plain}"
   txtkvn "    主机名: " "$hostname"
   txtkvn "    运营商: " "$isp_info"
-  txtkvy "    ${blue}虚拟化: " "${yellow}${bold}$VIRT${plain}"
   txtkvn "  系统版本: " "$os_info"
   txtkvy "  内核版本: " "$kernel_version"
   txtkvn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+  txtkvn "  CPU占用: " "$cpu_usage_percent"
   txtkvn "  CPU架构: " "${yellow}$cpu_arch${plain}   核心数: ${yellow}$cpu_cores${plain}"
   txtkvn "  CPU型号: " "$cpu_info"
-  txtkvn "  CPU占用: " "$cpu_usage_percent"
   txtkvn "——————————————————————————————————————"
   txtkvy " 物理内存: " "$mem_info"
   txtkvn " 虚拟内存: " "$swap_info"
@@ -3087,72 +3087,85 @@ docker_deploy_ittools(){
   
   local BFLD="/home/dcc.d"
 
-  local dc_name="ittools"
-  local dc_port="3380"
-  local dc_image="corentinth/it-tools:latest"
-  # local dc_image=ghcr.io/corentinth/it-tools:latest
+  local dc_port=3380
+  local dc_name=ittools
+  local dc_imag=corentinth/it-tools:latest
+  local dc_desc="IT-Tools常用工具箱"
+  # local dc_imag=ghcr.io/corentinth/it-tools:latest
 
   local LFLD="$BFLD/$dc_name"
   local LPTH="$BFLD/$dc_name"
+  local FYML="$FLD/docker-compose.yml"
+  local FCONF="$FLD/${dc_name}.conf"
 
-  [[ -d $LPTH ]] || mkdir -p $LPTH
-  cd $LFLD && touch docker-compose.yml
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
 
-  cat > $LFLD/docker-compose.yml << EOF
+  echo ""
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ (check_port ptmp ) ]] && dc_port=ptmp
+  
+  cat > "$FYML" << EOF
 version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
-    image: $dc_image
+    image: $dc_imag
     ports:
         - '$dc_port:80'
     restart: always
 EOF
 
-  # 构建并启动容器
-  docker-compose up -d
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  # 输出容器的额外信息
+  # [[ -f "$CONF"]] || touch $FCONF
+  # echo "New line of data" >> $FCONF
+
+#   # 构建并启动容器
+#   docker-compose up -d
   
-  # 是否绑定域名？
-  read -p "\n是否需要绑定域名？[Y|n] " choice
-  case "$choice" in
-    [Yy]) 
-      echo -e "\n先将域名解析到本机IP: ${red}$WAN4  ${blue}$WAN6${plain}"
-      echo -e "(注意：初始时不开启CDN，绑定成功之后再开启。)\n"
-      read -p "请输入解析的域名: " dc_domain
-      caddy_reproxy $dc_domain "127.0.0.1" $dc_port
-      caddy_reload
-      # echo -e "\n您的反向代理网站做好了！"      
-      ;;
-    # [Nn]) ;;
-       *)  echo "\n暂不绑定域名..." ;;
-  esac  
+#   # 是否绑定域名？
+#   read -p "\n是否需要绑定域名？[Y|n] " choice
+#   case "$choice" in
+#     [Yy]) 
+#       echo -e "\n先将域名解析到本机IP: ${red}$WAN4  ${blue}$WAN6${plain}"
+#       echo -e "(注意: 初始时不开启CDN, 绑定成功之后再开启。)\n"
+#       read -p "请输入解析的域名: " dc_domain
+#       caddy_reproxy $dc_domain "127.0.0.1" $dc_port
+#       caddy_reload
+#       # echo -e "\n您的反向代理网站做好了！"      
+#       ;;
+#     # [Nn]) ;;
+#        *)  echo "\n暂不绑定域名..." ;;
+#   esac  
 
-  # 保存配置信息和访问链接
-  echo ""
-  read -p "是否保存配置文件？[N|n]($LFLD/${dc_name}.conf)" choice
-  case "$choice" in
-    [Nn]) echo "不保存配置文件..." ;;
-       *)  
-      touch $LFLD/${dc_name}.conf
-      cat > $LFLD/${dc_name}.conf << EOF
-      service: ${dc_name}
-    container: ${dc_name}
-    URL(IPV4): http://$WAN4:$dc_port
-    URL(IPV6): http://[$WAN6]:$dc_port
-      Domain: $dc_domain
-EOF
-      ;;
-  esac  
+#   # 保存配置信息和访问链接
+#   echo ""
+#   read -p "是否保存配置文件？[N|n]($LFLD/${dc_name}.conf)" choice
+#   case "$choice" in
+#     [Nn]) echo "不保存配置文件..." ;;
+#        *)  
+#       # touch $LFLD/${dc_name}.conf
+#       cat > "$LPTH_CONF" << EOF
+#       service: ${dc_name}
+#     container: ${dc_name}
+#     URL(IPV4): http://$WAN4:$dc_port
+#     URL(IPV6): http://[$WAN6]:$dc_port
+#       Domain: $dc_domain
+# EOF
+#       ;;
+#   esac  
 
-  # 显示配置文件信息
-  echoR "\n${dc_name}容器的配置信息和访问链接如下："
-  # cat $LFLD/${dc_name}.conf
-  echoR "    service: ${dc_name}              "     
-  echoR "  container: ${dc_name}              "     
-  [[ -n "$WAN4"      ]] && echoR "  URL(IPV4): http://$WAN4:$dc_port   "                
-  [[ -n "$WAN6"      ]] && echoR "  URL(IPV6): http://[$WAN6]:$dc_port "                  
-  [[ -n "$dc_domain" ]] && echoR "    Domain: $dc_domain               "    
-  echoT ""
+#   # 显示配置文件信息
+#   echoR "\n${dc_name}容器的配置信息和访问链接如下："
+#   # cat $LFLD/${dc_name}.conf
+#   echoR "    service: ${dc_name}              "     
+#   echoR "  container: ${dc_name}              "     
+#   [[ -n "$WAN4"      ]] && echoR "  URL(IPV4): http://$WAN4:$dc_port   "                
+#   [[ -n "$WAN6"      ]] && echoR "  URL(IPV6): http://[$WAN6]:$dc_port "                  
+#   [[ -n "$dc_domain" ]] && echoR "    Domain: $dc_domain               "    
+#   echoT ""
 }
 
 docker_deploy_nextterminal(){
@@ -3190,15 +3203,23 @@ docker_deploy_yacd(){
   local dc_name=yacd
   # local dc_image=haishanh/yacd
   local dc_image=ghcr.io/haishanh/yacd:master
+  local dc_desc="YACD - Yet Another Clash Board"
 
   local LFLD="$BFLD/$dc_name"
   local LPTH="$BFLD/$dc_name"
+  local FYML="$FLD/docker-compose.yml"
+  local FCONF="$FLD/${dc_name}.conf"
 
-  [[ -d $LPTH ]] || mkdir -p $LPTH
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
   [[ -d $LFLD/config ]] || mkdir -p $LFLD/config
-  cd $LFLD && touch docker-compose.yml
+  [[ -f "$FYML"  ]] || touch $FYML
 
-  cat > $LFLD/docker-compose.yml << EOF
+  echo ""
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  # [[ (check_port ptmp ) ]] && dc_port=ptmp
+  [[ -e "$ptmp" ]] && dc_port=ptmp
+  
+  cat > "$FYML" << EOF
 version: '3'
 services:
   ${dc_name}:
@@ -3211,7 +3232,8 @@ services:
     restart: unless-stopped
 EOF
 
-  docker-compose up -d
+  # docker-compose up -d
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
 
   # docker run -p 1234:80 -d --name yacd --rm ghcr.io/haishanh/yacd:master 
 }
@@ -3324,15 +3346,21 @@ docker_deploy_gptacademic(){
   local dc_port=50923
   local dc_name=gpt_academic
   local dc_image=ghcr.io/binary-husky/gpt_academic_nolocal:master
+  local dc_desc="gpt_academic学术工具"
 
   local LFLD="$BFLD/$dc_name"
   local LPTH="$BFLD/$dc_name/downloads"
+  local FYML="$FLD/docker-compose.yml"
+  local FCONF="$FLD/${dc_name}.conf"
 
-  [[ -d $LPTH ]] || mkdir -p $LPTH
-  [[ -d $LFLD/config ]] || mkdir -p $LFLD/config
-  cd $LFLD && touch docker-compose.yml
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
 
-  cat > $LFLD/docker-compose.yml << EOF
+  # [[ -d $LPTH ]] || mkdir -p $LPTH
+  # [[ -d $LFLD/config ]] || mkdir -p $LFLD/config
+  # cd $LFLD && touch docker-compose.yml
+
+  cat > "$FYML" << EOF
 version: '3'
 services:
   ${dc_name}:
@@ -3356,9 +3384,9 @@ services:
     restart: unless-stopped
 EOF
 
-  docker-compose up -d
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
 
-
+  echo -e "\nNew line of data" >> $FCONF
 }
 
 docker_deploy_chunhuchat(){
@@ -3401,9 +3429,65 @@ services:
 EOF
 
   docker-compose up -d
-
-
 }
+
+# 部署Docker，使用yml配置文件
+docker_deploy_start(){
+  local BFLD=$1
+  local NAME=$2
+  local PORT=$3
+  local DESC=$4
+
+  local CONF="${BFLD}/${NAME}.conf"
+
+  cd ${BFLD}/${NAME}
+  docker-compose up -d
+
+  # 是否绑定域名？
+  read -p "\n是否需要绑定域名？[Y|n] " choice
+  case "$choice" in
+    [Yy]) 
+          echo -e "\n先将域名解析到本机IP: ${red}$WAN4  ${blue}$WAN6${plain}"
+          echo -e "(注意: 初始时不开启CDN, 绑定成功之后再开启。)\n"
+          read -p "请输入解析的域名: " DOMAIN
+          caddy_reproxy $DOMAIN "127.0.0.1" $PORT
+          caddy_reload
+          # echo -e "\n您的反向代理网站做好了！"
+          ;;
+       *)  echo "\n暂不绑定域名..." ;;
+  esac  
+
+  # 保存配置信息和访问链接
+  echo ""
+  read -p "是否保存配置文件？[Y|n](${CONF})" choice
+  case "$choice" in
+    [Nn]) 
+        echo "不保存配置文件..." 
+        ;;
+       *) 
+        [[ -f "$CONF"  ]] || touch $LPTH_YML
+        cat > "${CONF}" << EOF
+Service     : ${NAME}
+Container   : ${NAME}
+URL(IPV4)   : http://$WAN4:$PORT
+URL(IPV6)   : http://[$WAN6]:$PORT
+Domain      : $DOMAIN
+Description : $DESC
+EOF
+      ;;
+  esac  
+
+  # 显示配置文件信息
+  echoR "\n${NAME}容器的配置信息和访问链接如下："
+  # cat $LFLD/${NAME}.conf
+  echoR "    service:" "${NAME}"
+  echoR "  container:" "${NAME}"
+  [[ -n "$WAN4"      ]] && echoR " URL-IPV4:" "http://$WAN4:$PORT   "
+  [[ -n "$WAN6"      ]] && echoR " URL-IPV6:" "http://[$WAN6]:$PORT "
+  [[ -n "$DOMAIN"    ]] && echoY "   Domain:" "$DOMAIN              "
+  echoT ""
+}
+
 # 站点工具菜单
 website_deploy_menu() {
 
@@ -4205,8 +4289,10 @@ check_port() {
 
 add_yuming() {
   # check_IP_address
-  echo -e "先将域名解析到本机IP: ${red}$WAN4  $WAN6${plain}"
+  unset yuming
+  echo -e "先将域名解析到本机IP: ${red}$WAN4  ${blue}$WAN6${plain}"
   read -p "请输入你解析的域名: " yuming
+  echo "$yuming"
 }
 
 # 反代域名
