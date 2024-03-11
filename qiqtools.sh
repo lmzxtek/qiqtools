@@ -2988,17 +2988,23 @@ docker_deploy_searxng(){
   
   local BFLD="/home/dcc.d"
 
-  local dc_name=searxng
   local dc_port=8700
+  local dc_name=searxng
   local dc_image=alandoyle/searxng:latest
+  local dc_desc="SearXNG"
 
   local LFLD="$BFLD/$dc_name"
   local LPTH="$BFLD/$dc_name/config"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
 
-  [[ -d $LPTH ]] || mkdir -p $LPTH
-  cd $LFLD && touch docker-compose.yml
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
 
-  cat > $LFLD/docker-compose.yml << EOF
+  echoR "\n >>>" " 现在开始部署 SearXNG ... \n"  
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  cat > "$FYML" << EOF
 version: '3'
 services:
   ${dc_name}:
@@ -3013,7 +3019,8 @@ services:
     restart: unless-stopped
 EOF
 
-  docker-compose up -d
+  # docker-compose up -d
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
 
       # clear 
       # docker_name="searxng"
@@ -3054,7 +3061,7 @@ docker_deploy_spdf(){
   read -p "请输入监听端口(默认为:${dc_port}): " ptmp
   [[ -z "$ptmp" ]] || dc_port=$ptmp
   
-  cat > $LFLD/docker-compose.yml << EOF
+  cat > "$FYML" << EOF
 version: '3'
 services:
   ${dc_name}:
@@ -3072,24 +3079,6 @@ EOF
   # docker-compose up -d
   docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
 
-      # clear
-      # docker_name="s-pdf"
-      # docker_img="frooodle/s-pdf:latest"
-      # docker_port=8020
-      # docker_rum="docker run -d \
-      #                 --name s-pdf \
-      #                 --restart=always \
-      #                   -p 8020:8080 \
-      #                   -v /home/docker/s-pdf/trainingData:/usr/share/tesseract-ocr/5/tessdata \
-      #                   -v /home/docker/s-pdf/extraConfigs:/configs \
-      #                   -v /home/docker/s-pdf/logs:/logs \
-      #                   -e DOCKER_ENABLE_SECURITY=false \
-      #                   frooodle/s-pdf:latest"
-      # docker_describe="这是一个强大的本地托管基于 Web 的 PDF 操作工具，使用 docker，允许您对 PDF 文件执行各种操作，例如拆分合并、转换、重新组织、添加图像、旋转、压缩等。"
-      # docker_url="官网介绍: https://github.com/Stirling-Tools/Stirling-PDF"
-      # docker_use=""
-      # docker_passwd=""
-      # docker_app
 }
 
 docker_deploy_ittools(){
@@ -3595,15 +3584,16 @@ Description : $DESC
 EOF
 
   # 显示配置文件信息
-  echoR "\n容器 >> ${NAME} << " "配置信息和访问链接："
-  echoR "\n >>>" " 配置文件路径: ${CONF}"
+  # echoR "\n容器 >> ${NAME} << " "配置信息和访问链接："
+  echoR "\n >>>" " 容器${NAME}配置信息:"
+  echoB "\n >>>" " 路径 > ${CONF}"
   txtb "↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓"
   # cat $LFLD/${NAME}.conf
   echoT "Service    : " "${NAME}"
   echoT "Container  : " "${NAME}"
   [[ -n "$WAN4"      ]] && echoR "URL(IPV4)  : " "http://$WAN4:$PORT   "
   [[ -n "$WAN6"      ]] && echoR "URL(IPV6)  : " "http://[$WAN6]:$PORT "
-  [[ -n "$DOMAIN"    ]] && echoY "Domain     : " "${DOMAIN}            "
+  [[ -n "$DOMAIN"    ]] && echoY "Domain     : " "https://${DOMAIN}            "
   txtb "↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↓↓↓↓↓↓"
 
   echoR "\n >>>" " Great! Deploy ${NAME} Done."
