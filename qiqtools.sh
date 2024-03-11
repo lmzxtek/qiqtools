@@ -3433,7 +3433,7 @@ docker_deploy_chunhuchat(){
   # read -p "请输入登录账户       : " USER
   # read -p "请输入登录密码       : " PASS
 
-  install git && git clone https://github.com/GaiZhenbiao/ChuanhuChatGPT.git .
+  cd "$LFLD" && install git && git clone https://github.com/GaiZhenbiao/ChuanhuChatGPT.git .
   cp config_example.json config.json
   # curl -os "${LFLD}/config.json" https://raw.githubusercontent.com/GaiZhenbiao/ChuanhuChatGPT/main/config_example.json
 
