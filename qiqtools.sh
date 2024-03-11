@@ -3203,7 +3203,7 @@ docker_deploy_yacd(){
   local dc_name=yacd
   # local dc_image=haishanh/yacd
   local dc_image=ghcr.io/haishanh/yacd:master
-  local dc_desc="YACD - Yet Another Clash Board"
+  local dc_desc="YACD--Yet Another Clash Board"
 
   local LFLD="$BFLD/$dc_name"
   local LPTH="$BFLD/$dc_name"
@@ -3219,7 +3219,7 @@ docker_deploy_yacd(){
   # [[ (check_port ptmp ) ]] && dc_port=ptmp
   [[ -z "$ptmp" ]] || dc_port=$ptmp
   
-  echoR "\nDocker compose configuration: " "$FYML"
+  echoR "\nConfiguration: " "$FYML"
   cat > "$FYML" << EOF
 version: '3'
 services:
@@ -3487,11 +3487,11 @@ EOF
   # 显示配置文件信息
   echoR "\n${NAME}" "容器的配置信息和访问链接如下："
   # cat $LFLD/${NAME}.conf
-  echoR "    service:" "${NAME}"
-  echoR "  container:" "${NAME}"
-  [[ -n "$WAN4"      ]] && echoR " URL-IPV4:" "http://$WAN4:$PORT   "
-  [[ -n "$WAN6"      ]] && echoR " URL-IPV6:" "http://[$WAN6]:$PORT "
-  [[ -n "$DOMAIN"    ]] && echoY "   Domain:" "$DOMAIN              "
+  echoR "Service    :" "${NAME}"
+  echoR "Container  :" "${NAME}"
+  [[ -n "$WAN4"      ]] && echoR "URL(IPV4) :" "http://$WAN4:$PORT   "
+  [[ -n "$WAN6"      ]] && echoR "URL(IPV6) :" "http://[$WAN6]:$PORT "
+  [[ -n "$DOMAIN"    ]] && echoY "Domain    :" "${DOMAIN}            "
 
   echoR "\n >>>" " Great! Deploy ${NAME} Done."
   echoT ""
@@ -4718,7 +4718,7 @@ WebSites_manager_run(){
 # 脚本更新
 script_update(){
   cd ~
-  echo -e "\n脚本链接:\n>> ${blue}https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh${plain}"
+  echo -e "\n脚本链接URL:\n" " >>> ${cyan}https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh${plain}"
   curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && chmod +x qiqtools.sh
   echo -e "\n脚本已更新至最新版本！\n按任意键重新加载脚本..."
   echo -e ""
@@ -4768,8 +4768,8 @@ txtn "————————————————————————�
 WANIP_show
 txtn "====================================="
 txtn $(txty " 1.系统信息")$(txty "☄")"       "$(txtn "11.容器管理")$(txtp "☪")
-txtn $(txtn " 2.系统更新")$(txtb "☣")"       "$(txty "12.站点管理")$(txtr "◎")
-txtn $(txtn " 3.系统清理")$(txtb "☒")"       "$(txtp "13.站点部署")$(txtb "❈")
+txtn $(txtn " 2.系统更新")$(txtb "☣")"       "$(txty "12.站点部署")$(txtr "◎")
+txtn $(txtn " 3.系统清理")$(txtb "☒")"       "$(txtp "13.站点管理")$(txtb "❈")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "21.系统工具")$(txtp "❁")"       "$(txtn "31.性能测试")$(txtb "☯")
 txtn $(txtn "22.常用工具")$(txtn "❃")"       "$(txtp "32.节点搭建")$(txty "✈")
@@ -4796,8 +4796,8 @@ while true; do
      3) clear && clean_sys ;;
 
     11) clear && docker_run ;;
-    12) clear && WebSites_manager_run ;;
-    13) clear && website_deploy_run  ;;
+    12) clear && website_deploy_run ;;
+    13) clear && WebSites_manager_run ;;
 
     21) clear && system_setting_run ;;
     22) clear && common_apps_run  ;;
