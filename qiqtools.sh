@@ -4036,15 +4036,15 @@ docker ps -a
 txtn "====================================="
 txtn $(txtn " 1.创建新的容器")$(txtg "✔")"       "$(txtn "11.启动所有容器")$(txtn "✔")
 txtn $(txtn " 2.启动指定容器")$(txtg "✔")"       "$(txtn "12.暂停所有容器")$(txtn "✔")
-txtn $(txtn " 3.停止指定容器")$(txtg "✔")"       "$(txtn "13.重启所有容器")$(txtn "✔")
-txtn $(txty " 4.重启指定容器")$(txtc "✔")"       "$(txtn "14.删除所有容器")$(txtn "✔")
-txtn $(txtn " 5.删除指定容器")$(txtg "✔")"       "$(txtp "15.进入指定容器")$(txtn "✔")
+txtn $(txtn " 3.重启指定容器")$(txtc "✔")"       "$(txtn "14.删除所有容器")$(txtn "✔")
+txtn $(txtc " 4.停止指定容器")$(txtg "✔")"       "$(txtn "13.重启所有容器")$(txtn "✔")
+txtn $(txtr " 5.删除指定容器")$(txtg "✔")"       "$(txtp "15.进入指定容器")$(txtn "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "21.查看容器日志")$(txtp "✔")"       "$(txtr "31.清理容器")$(txtc "㉿")
 txtn $(txty "22.查看容器日志")$(txtp "✔")"       "$(txtn "")$(txtn "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"      "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
-txtn $(txtn " 0.返回上级菜单")$(txtr "✖")"       "$(txtr "77.")$(txtb "清理容器")$(txtc "")
+txtn $(txtn " 0.返回上级菜单")$(txtr "✖")"       "$(txtr "")$(txtb "")$(txtc "")
 txtn " "  
 }
 
@@ -4064,12 +4064,12 @@ docker_container_list_run() {
         docker start $dockername
         ;;
       3) 
-        read -p "请输入要停止的容器名: " dockername
-        docker stop $dockername
-        ;;
-      4) 
         read -p "请输入要重启的容器名: " dockername
         docker restart $dockername
+        ;;
+      4) 
+        read -p "请输入要停止的容器名: " dockername
+        docker stop $dockername
         ;;
       5) 
         # clear 
@@ -4271,13 +4271,13 @@ txtn $(txbr "▼ 容器管理")$(txbg " ☪☪☪ ")
 txtn "—————————————————————————————————————"
 WANIP_show 
 txtn "====================================="
-txtn $(txtn " 1.Docker环境安装")$(txtg "✔")"       "$(txty "11.Docker查看状态")$(txtn "✔")
+txtn $(txtn " 1.Docker环境安装")$(txtg "✔")"       "$(txty "11.Docker状态")$(txtn "✔")
 txtn $(txtn " 2.Docker环境卸载")$(txtg "✔")"       "$(txtn "12.Docker清理")$(txtn "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "21.Docker容器管理")$(txtp "✔")"       "$(txtn "31.Docker网络管理")$(txtn "✔")
-txtn $(txty "22.Docker镜像管理")$(txtp "✔")"       "$(txtn "32.Docker卷管理")$(txtn "✔")
+txtn $(txty "21.Docker容器管理")$(txtp "✔")"       "$(txtn "31.Docker网络管理")$(txtn "✔")
+txtn $(txtn "22.Docker镜像管理")$(txtp "✔")"       "$(txtn "32.Docker卷管理")$(txtn "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "66.设置快捷键[dcc]")$(txtg "✔")"      "$(txtp "88.站点部署")$(txty "✔")
+txtn $(txtn "66.设置快捷键[dcc]")$(txtg "✔")"      "$(txtp "88.站点部署")$(txty "☞☞")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"      "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")"           "$(txtr "")$(txtb "")$(txtc "")
