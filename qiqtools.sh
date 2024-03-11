@@ -3394,6 +3394,10 @@ EOF
 
   docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
 
+  echo -e "\n Config path: $LFLD/config"
+  echo -e "\n User       : $USER"
+  echo -e   " Password   : $PASS"
+  
   echo -e "\n Config path: $LFLD/config" >> $FCONF
   echo -e "\n User       : $USER" >> $FCONF
   echo -e   " Password   : $PASS" >> $FCONF
@@ -3406,17 +3410,32 @@ docker_deploy_chunhuchat(){
   local dc_port=7860
   local dc_name=changhuchat
   local dc_image=ghcr.io/gaizhenbiao/chuanhuchatgpt:latest
+  local dc_desc="ChunHu川虎学术聊天"
 
   local LFLD="$BFLD/$dc_name"
   local LPTH="$BFLD/$dc_name/history"
 
-  [[ -d $LPTH ]] || mkdir -p $LPTH
-  [[ -d $LFLD/config ]] || mkdir -p $LFLD/config
-  cd $LFLD && touch docker-compose.yml
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/history"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  echoR "\n >>>" " 现在开始部署GPT-Academic ... \n"
+
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  # read -p "请输入API_KEY       : " API_KEY
+  # read -p "请输入GEMINI_API_KEY: " GEMINI_API_KEY
+  # read -p "请输入登录账户       : " USER
+  # read -p "请输入登录密码       : " PASS
 
   # git clone https://github.com/GaiZhenbiao/ChuanhuChatGPT.git .
   # cp config_example.json config.json
-  # curl -o config.json https://raw.githubusercontent.com/GaiZhenbiao/ChuanhuChatGPT/main/config_example.json
+  curl -osS ${LFLD}/config.json https://raw.githubusercontent.com/GaiZhenbiao/ChuanhuChatGPT/main/config_example.json
 
   cat > $LFLD/docker-compose.yml << EOF
 version: '3'
@@ -3438,7 +3457,13 @@ services:
     restart: unless-stopped
 EOF
 
-  docker-compose up -d
+  # docker-compose up -d  
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echo -e "\n Config path: $LFLD/config.json"
+  echo -e "\n Config path: $LFLD/config.json" >> $FCONF
+  # echo -e "\n User       : $USER" >> $FCONF
+  # echo -e   " Password   : $PASS" >> $FCONF
 }
 
 # 部署Docker，使用yml配置文件
