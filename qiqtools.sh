@@ -840,20 +840,20 @@ txtn $(txby "▼ 常用工具")$(txtp " ❃❃❃ ")
 txtn "—————————————————————————————————————"
 # WANIP_show
 # txtn "====================================="
-txtn $(txty " 1.curl(下载工具)")$(txtc "☂")"      "$(txtn "11.htop(系统监控)")$(txtg "❉")
-txtn $(txtn " 2.wget(下载工具)")$(txtg "☂")"      "$(txtp "12.btop(现代化监控)")$(txtn "❀")
-txtn $(txtn " 3.sudo(超级管理权限)")$(txtg "✔")"  "$(txtn "13.iftop(网络流量监控)")$(txtn "❈")
+txtn $(txty " 1.curl(下载工具)")$(txtc "↓")"      "$(txtn "11.htop(系统监控)")$(txtg "❉")
+txtn $(txtn " 2.wget(下载工具)")$(txtg "↓")"      "$(txtp "12.btop(现代化监控)")$(txtg "❀")
+txtn $(txtn " 3.sudo(超级管理权限)")$(txtg "✔")"  "$(txtn "13.iftop(网络流量监控)")$(txtg "❈")
 txtn $(txtn " 4.gdu(磁盘占用查看)")$(txtg "✔")"   "$(txtn "14.tar(GZ压缩解压)")$(txtg "๑")
-txtn $(txtn " 5.fzf(文件管理)")$(txtg "✔")"       "$(txtn "15.unzip(ZIP压缩解压)")$(txtn "ღ")
-txtn $(txtn " 6.ranger(全局搜索)")$(txtg "✔")"    "$(txtn "16.ffmpeg(视频编码直播推流)")$(txtn "▣")
-txtn $(txtn " 7.tmux(多路后台运行)")$(txtg "✔")"  "$(txtn "17.socat(通信连接(申请域名证书必备))")$(txtn "☎")
+txtn $(txtn " 5.fzf(文件管理)")$(txtg "✔")"       "$(txtn "15.unzip(ZIP压缩解压)")$(txtg "ღ")
+txtn $(txtn " 6.ranger(全局搜索)")$(txtg "✔")"    "$(txtn "16.ffmpeg(视频编码直播推流)")$(txtg "▣")
+txtn $(txtn " 7.tmux(多路后台运行)")$(txtg "✔")"  "$(txtn "17.socat(通信连接(申请域名证书必备))")$(txtg "☎")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "31.全部安装")$(txtg "✔")"            "$(txtn "41.安装指定工具")$(txtn "✔")
-txtn $(txtn "32.全部卸载")$(txtg "✔")"            "$(txtn "42.卸载指定工具")$(txtn "✔")
+txtn $(txtn "31.全部安装")$(txtg "✔")"            "$(txtn "41.安装指定工具")$(txtg "☂")
+txtn $(txtn "32.全部卸载")$(txtg "✔")"            "$(txtn "42.卸载指定工具")$(txtg "☂")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "61.贪吃蛇")$(txtg "£")"              "$(txtn "71.sl(跑火车屏保)")$(txtn "→")
-txtn $(txtn "62.俄罗斯方块")$(txtg "▣")"          "$(txtn "72.cmatrix(黑客帝国屏保)")$(txtn "┇┊")
-txtn $(txtn "63.太空入侵者")$(txtg "➹")"          "$(txtn "")$(txtn "")
+txtn $(txtn "61.贪吃蛇")$(txtg "£")"              "$(txtn "71.sl(跑火车屏保)")$(txtg "→")
+txtn $(txtn "62.俄罗斯方块")$(txtg "▣")"          "$(txtn "72.cmatrix(黑客帝国屏保)")$(txtg "┇┊")
+txtn $(txtn "63.太空入侵者")$(txtg "➹")"          "$(txtn "")$(txtg "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")"           "$(txtp "")$(txtc "")$(txty "")
