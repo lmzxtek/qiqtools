@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.4.3
+script_version=v0.4.4
 #==========================
 
 # Language
@@ -834,37 +834,31 @@ docker_info_list() {
 
 # 安装常用工具
 common_apps_menu() {
-echo -e "
-▶ 安装常用工具 ❃❃❃
--------------------------------
-${green} 1.${plain} curl   下载工具
-${green} 2.${plain} wget   下载工具
-${green} 3.${plain} sudo   超级管理权限工具
-${green} 4.${plain} socat  通信连接工具 （申请域名证书必备）
-${green} 5.${plain} unzip  ZIP压缩解压工具
-${green} 6.${plain} tar    GZ压缩解压工具
-${green} 7.${plain} tmux   多路后台运行工具
-${green} 8.${plain} ffmpeg 视频编码直播推流工具
-${green} 9.${plain} htop   系统监控工具
-${green}10.${plain} btop   现代化监控工具
-${green}11.${plain} iftop  网络流量监控工具
-${green}12.${plain} ranger 文件管理工具
-${green}13.${plain} gdu    磁盘占用查看工具
-${green}14.${plain} fzf    全局搜索工具
--------------------------------
-${green}21.${plain} cmatrix 黑客帝国屏保
-${green}22.${plain} sl 跑火车屏保
--------------------------------
-${green}26.${plain} 俄罗斯方块小游戏
-${green}27.${plain} 贪吃蛇小游戏
-${green}28.${plain} 太空入侵者小游戏
--------------------------------
-${green}31.${plain} 全部安装    ${green}41.${plain} 安装指定工具
-${green}32.${plain} 全部卸载    ${green}42.${plain} 卸载指定工具
--------------------------------
-${green} 0.${plain} 返回主菜单
--------------------------------
-"
+  
+txtn " "
+txtn $(txby "▼ 常用工具")$(txtp " ❃❃❃ ")
+txtn "—————————————————————————————————————"
+# WANIP_show
+# txtn "====================================="
+txtn $(txty " 1.curl(下载工具)")$(txtc "☂")"      "$(txtn "11.htop(系统监控)")$(txtg "✔")
+txtn $(txtn " 2.wget(下载工具)")$(txtg "☂")"      "$(txtp "12.btop(现代化监控)")$(txtn "✔")
+txtn $(txtn " 3.sudo(超级管理权限)")$(txtg "✔")"  "$(txtn "13.iftop(网络流量监控)")$(txtn "✔")
+txtn $(txtn " 4.gdu(磁盘占用查看)")$(txtg "✔")"   "$(txty "14.tar(GZ压缩解压)")$(txtg "✔")
+txtn $(txtn " 5.fzf(文件管理)")$(txtg "✔")"      "$(txtn "15.unzip(ZIP压缩解压)")$(txtn "✔")
+txtn $(txtn " 6.ranger(全局搜索)")$(txtg "✔")"   "$(txtn "16.ffmpeg(视频编码直播推流)")$(txtn "✔")
+txtn $(txtn " 7.tmux(多路后台运行)")$(txtg "✔")"  "$(txtn "17.socat(通信连接(申请域名证书必备))")$(txtn "✔")
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+txtn $(txtn "31.全部安装")$(txtg "✔")"         "$(txtn "41.安装指定工具")$(txtn "✔")
+txtn $(txtn "32.全部卸载")$(txtg "✔")"         "$(txtn "42.卸载指定工具")$(txtn "✔")
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+txtn $(txtn "61.贪吃蛇")$(txtg "✔")"          "$(txtn "71.sl(跑火车屏保)")$(txtn "✔")
+txtn $(txtn "62.俄罗斯方块")$(txtg "✔")"      "$(txtn "72.cmatrix(黑客帝国屏保)")$(txtn "✔")
+txtn $(txtn "63.太空入侵者")$(txtg "✔")"      "$(txtn "")$(txtn "")
+# txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
+txtn "—————————————————————————————————————"
+txtn $(txtn " 0.返回主菜单")$(txtr "✖")"           "$(txtp "")$(txtc "")$(txty "")
+txtn " "
+
 }
 
 common_apps_run() {
@@ -876,32 +870,33 @@ common_apps_run() {
       1) clear && install curl   && clear && echo "工具已安装，使用方法如下：" && curl   --help ;;
       2) clear && install wget   && clear && echo "工具已安装，使用方法如下：" && wget   --help ;;
       3) clear && install sudo   && clear && echo "工具已安装，使用方法如下：" && sudo   --help ;;
-      4) clear && install socat  && clear && echo "工具已安装，使用方法如下：" && socat  --h    ;;
-      5) clear && install unzip  && clear && echo "工具已安装，使用方法如下：" && unzip  ;;
-      6) clear && install tar    && clear && echo "工具已安装，使用方法如下：" && tar    --help ;;
+      4) clear && install gdu    && cd / && clear && gdu    && cd ~ ;;
+      5) clear && install fzf    && cd / && clear && fzf    && cd ~ ;;
+      6) clear && install ranger && cd / && clear && ranger && cd ~ ;;
       7) clear && install tmux   && clear && echo "工具已安装，使用方法如下：" && tmux   --help ;;
-      8) clear && install ffmpeg && clear && echo "工具已安装，使用方法如下：" && ffmpeg --help ;;
-      9) clear && install htop   && clear && htop  ;;
-     10) clear && install btop   && clear && btop  ;;
-     11) clear && install iftop  && clear && iftop ;;
-     12) clear && install ranger && cd / && clear && ranger && cd ~ ;;
-     13) clear && install gdu    && cd / && clear && gdu    && cd ~ ;;
-     14) clear && install fzf    && cd / && clear && fzf    && cd ~ ;;
-     
-     21) clear && install cmatrix   && clear && cmatrix ;;
-     22) clear && install sl        && clear && /usr/games/sl ;;
-     
-     26) clear && install bastet    && clear && /usr/games/bastet ;;
-     27) clear && install nsnake    && clear && /usr/games/nsnake ;;
-     28) clear && install ninvaders && clear && /usr/games/ninvaders ;;
 
-     31) clear && install curl wget sudo socat htop iftop unzip tar tmux ffmpeg btop ranger gdu fzf cmatrix sl bastet nsnake ninvaders ;;
+     11) clear && install htop   && clear && htop  ;;
+     12) clear && install btop   && clear && btop  ;;
+     13) clear && install iftop  && clear && iftop ;;
+     14) clear && install tar    && clear && echo "工具已安装，使用方法如下：" && tar    --help ;;
+     15) clear && install unzip  && clear && echo "工具已安装，使用方法如下：" && unzip  ;;
+     16) clear && install ffmpeg && clear && echo "工具已安装，使用方法如下：" && ffmpeg --help ;;
+     17) clear && install socat  && clear && echo "工具已安装，使用方法如下：" && socat  --h    ;;
+     
+     31) clear && install curl wget sudo socat htop iftop unzip tar tmux ffmpeg btop ranger gdu fzf ;;
      32) clear && remove htop iftop unzip tmux ffmpeg btop ranger gdu fzf cmatrix sl bastet nsnake ninvaders ;;
  
      41) clear && reading "请输入安装的工具名(wget curl): " installname && install $installname ;;
      42) clear && reading "请输入卸载的工具名(htop ufw): "  removename  && remove  $removename  ;;
 
-      0) qiqtools ;;
+     61) clear && install nsnake    && clear && /usr/games/nsnake ;;
+     62) clear && install bastet    && clear && /usr/games/bastet ;;
+     63) clear && install ninvaders && clear && /usr/games/ninvaders ;;
+
+     71) clear && install sl        && clear && /usr/games/sl ;;
+     72) clear && install cmatrix   && clear && cmatrix ;;
+     
+      0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
     esac
     break_end
