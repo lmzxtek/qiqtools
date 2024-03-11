@@ -2673,20 +2673,34 @@ docker_deploy_ubunturdpweb(){
 
   local BFLD="/home/dcc.d"
 
-  local dc_name=ubuntu_novnc
   local dc_port=6080
+  local dc_name=ubuntu_novnc
   local dc_image=fredblgr/ubuntu-novnc:20.04
+  local dc_desc="一个网页版Ubuntu远程桌面，挺好用的！\n官网介绍: https://hub.docker.com/r/fredblgr/ubuntu-novnc"
 
   local LFLD="$BFLD/$dc_name"
   local LPTH="$BFLD/$dc_name/data"
+  local FYML="$BFLD/$dc_name/docker-compose.yml"
+  local FCONF="$BFLD/$dc_name/${dc_name}.conf"
 
-  [[ -d $LPTH ]] || mkdir -p $LPTH
-  cd $LFLD && touch docker-compose.yml
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
 
-  rootpasswd=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c16)
-  resolution=1280x720
+  echoR "\n >>>" " 现在开始部署 Portainer ... \n"  
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+  
+  rootpasswd=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c16)  
+  read -p "请输入登录密码(默认为: ${rootpasswd}): " pstmp
+  [[ -z "$pstmp" ]] || rootpasswd=$pstmp
 
-  cat > $LFLD/docker-compose.yml << EOF
+  resolution='1280x720'
+  read -p "请输入横向分辨率(默认1280,分辨率为: ${resolution}): " wstmp
+  read -p "请输入纵向分辨率(默认720, 分辨率为: ${resolution}): " hstmp
+  [[ -z "$wstmp" ]] || resolution='$wstmpx720'
+  [[ -z "$hstmp" ]] || resolution='1280x$hstmp'
+  [[ -z "$hstmp" && -z "$wstmp" ]] || resolution='$wstmpx$hstmp'
+
+  cat > "$FYML" << EOF
 version: '3'
 services:
   ${dc_name}:
@@ -2702,7 +2716,15 @@ services:
     restart: always
 EOF
 
-  docker-compose up -d
+  # docker-compose up -d
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echo -e   " Account   : root@$rootpasswd" >> $FCONF
+  echo -e   " Resolution: $resolution" >> $FCONF
+  echo -e   " Account   : root@$rootpasswd"
+  echo -e   " Resolution: $resolution"
+  echo -e   ""
+
 
         # clear 
         # docker_name="ubuntu-novnc"
@@ -2739,7 +2761,7 @@ docker_deploy_portainer(){
 
   ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
 
-  echoR "\n >>>" " 现在开始部署 QBittorent ... \n"  
+  echoR "\n >>>" " 现在开始部署 Portainer ... \n"  
   read -p "请输入监听端口(默认为:${dc_port}): " ptmp
   [[ -z "$ptmp" ]] || dc_port=$ptmp
 
@@ -2760,22 +2782,6 @@ EOF
   # docker-compose up -d
   docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
 
-        # clear 
-        # docker_name="portainer"
-        # docker_img="portainer/portainer"
-        # docker_port=9050
-        # docker_rum="docker run -d \
-        #         --name portainer \
-        #         -p 9050:9000 \
-        #         -v /var/run/docker.sock:/var/run/docker.sock \
-        #         -v /home/docker/portainer:/data \
-        #         --restart always \
-        #         portainer/portainer"
-        # docker_describe="portainer是一个轻量级的docker容器管理面板"
-        # docker_url="官网介绍: https://www.portainer.io/"
-        # docker_use=""
-        # docker_passwd=""
-        # docker_app
 }
 
 docker_deploy_memos(){
