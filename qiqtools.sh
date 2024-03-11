@@ -3038,22 +3038,28 @@ docker_deploy_spdf(){
   
   local BFLD="/home/dcc.d"
 
-  local dc_name=spdf
   local dc_port=8020
-  local dc_image=frooodle/s-pdf:latest
+  local dc_name=spdf
+  local dc_imag=frooodle/s-pdf:latest
+  local dc_desc="S-Pdf"
 
   local LFLD="$BFLD/$dc_name"
   local LPTH="$BFLD/$dc_name/trainingData"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
 
-  [[ -d $LPTH ]] || mkdir -p $LPTH
-  cd $LFLD && touch docker-compose.yml
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
 
+  echoR "\n >>>" " 现在开始部署 S-Pdf ... \n"  
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+  
   cat > $LFLD/docker-compose.yml << EOF
 version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
-    image: $dc_image
+    image: $dc_imag
     volumes:
         - $LPTH:/usr/share/tesseract-ocr/5/tessdata
         - $LFLD/extraConfigs:/configs
@@ -3063,7 +3069,8 @@ services:
     restart: always
 EOF
 
-  docker-compose up -d
+  # docker-compose up -d
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
 
       # clear
       # docker_name="s-pdf"
@@ -3120,10 +3127,6 @@ EOF
 
   docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
 
-  # 输出容器的额外信息
-  # [[ -f "$CONF"]] || touch $FCONF
-  # echo "New line of data" >> $FCONF
-
 }
 
 docker_deploy_nextterminal(){
@@ -3172,14 +3175,10 @@ EOF
 
   # docker-compose up -d
   docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+  echo -e   " Default Account: admin@admin" >> $FCONF
+  echo -e   " Default Account: admin@admin"
+  echo -e   ""
 
-      # clear
-      # cd ~
-      # mkdir next-terminal-docker && cd next-terminal-docker
-      # curl -sSL https://f.typesafe.cn/next-terminal/docker-compose.yml > docker-compose.yml
-      # # curl -sSL https://f.typesafe.cn/next-terminal/aliyuns/docker-compose.yml > docker-compose.yml # 阿里镜像
-      # docker-compose up -d
-      # cd ~
 }
 
 docker_deploy_yacd(){
@@ -3321,26 +3320,6 @@ EOF
 
   docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
 
-  # docker-compose up -d
-
-        # clear 
-        # docker_name="npm"
-        # docker_img="jc21/nginx-proxy-manager:latest"
-        # docker_port=81
-        # docker_rum="docker run -d \
-        #               --name=$docker_name \
-        #               -p 80:80 \
-        #               -p 81:$docker_port \
-        #               -p 443:443 \
-        #               -v /home/docker/npm/data:/data \
-        #               -v /home/docker/npm/letsencrypt:/etc/letsencrypt \
-        #               --restart=always \
-        #               $docker_img"
-        # docker_describe="如果您已经安装了其他面板工具或者LDNMP建站环境，建议先卸载，再安装npm！"
-        # docker_url="官网介绍: https://nginxproxymanager.com/"
-        # docker_use="echo \"初始用户名: admin@example.com\""
-        # docker_passwd="echo \"初始密码: changeme\""
-        # docker_app
 }
 
 # 使用Docker compose部署MyIP
@@ -3624,7 +3603,7 @@ EOF
   esac  
 
   # 显示配置文件信息
-  echoR "\n${NAME}" "容器的配置信息和访问链接如下："
+  echoR "\n容器 >> ${NAME} << " "配置信息和访问链接如下："
   # cat $LFLD/${NAME}.conf
   echoT "Service    : " "${NAME}"
   echoT "Container  : " "${NAME}"
