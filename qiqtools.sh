@@ -2775,22 +2775,28 @@ docker_deploy_memos(){
   
   local BFLD="/home/dcc.d"
 
-  local dc_name=memos
   local dc_port=5230
-  local dc_image=ghcr.io/usememos/memos:latest
+  local dc_name=memos
+  local dc_imag=ghcr.io/usememos/memos:latest
+  local dc_desc="Memos"
 
   local LFLD="$BFLD/$dc_name"
   local LPTH="$BFLD/$dc_name/data"
+  local FYML="$BFLD/$dc_name/docker-compose.yml"
+  local FCONF="$BFLD/$dc_name/${dc_name}.conf"
 
-  [[ -d $LPTH ]] || mkdir -p $LPTH
-  cd $LFLD && touch docker-compose.yml
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
 
-  cat > $LFLD/docker-compose.yml << EOF
+  echoR "\n >>>" " 现在开始部署 Memos ... \n"  
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  cat > "$FYML" << EOF
 version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
-    image: $dc_image
+    image: $dc_imag
     volumes:
         - $LPTH:/var/opt/memos
     ports:
@@ -2798,7 +2804,8 @@ services:
     restart: always
 EOF
 
-  docker-compose up -d
+  # docker-compose up -d
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
 
       # clear 
       # docker_name="memos"
@@ -2855,29 +2862,10 @@ EOF
 
   # docker-compose up -d
   docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
-
-        # docker_name="qbittorrent"
-        # docker_img="lscr.io/linuxserver/qbittorrent:latest"
-        # docker_port=8081
-        # docker_rum="docker run -d \
-        #                       --name=qbittorrent \
-        #                       -e PUID=1000 \
-        #                       -e PGID=1000 \
-        #                       -e TZ=Etc/UTC \
-        #                       -e WEBUI_PORT=8081 \
-        #                       -p 8081:8081 \
-        #                       -p 6881:6881 \
-        #                       -p 6881:6881/udp \
-        #                       -v /home/docker/qbittorrent/config:/config \
-        #                       -v /home/docker/qbittorrent/downloads:/downloads \
-        #                       --restart unless-stopped \
-        #                       lscr.io/linuxserver/qbittorrent:latest"
-        # docker_describe="qbittorrent离线BT磁力下载服务"
-        # docker_url="官网介绍: https://hub.docker.com/r/linuxserver/qbittorrent"
-        # docker_use="sleep 3"
-        # docker_passwd="docker logs qbittorrent"
-
-        # docker_app
+  echo -e   " Default Account: admin@*****\n Password can be get from logs of the docker." >> $FCONF
+  echo -e   " Default Account: admin@*****\n Password can be get from logs of the docker."
+  echo -e   ""
+  
 }
 
 docker_deploy_rocketchat(){
@@ -3001,8 +2989,8 @@ docker_deploy_searxng(){
 
   local LFLD="$BFLD/$dc_name"
   local LPTH="$BFLD/$dc_name/config"
-  local FYML="$LFLD/docker-compose.yml"
-  local FCONF="$LFLD/${dc_name}.conf"
+  local FYML="$BFLD/$dc_name/docker-compose.yml"
+  local FCONF="$BFLD/$dc_name/${dc_name}.conf"
 
   ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
 
@@ -3027,24 +3015,7 @@ EOF
 
   # docker-compose up -d
   docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
-
-      # clear 
-      # docker_name="searxng"
-      # docker_img="alandoyle/searxng:latest"
-      # docker_port=8700
-      # docker_rum="docker run --name=searxng \
-      #                 -d --init \
-      #                 --restart=unless-stopped \
-      #                 -v /home/docker/searxng/config:/etc/searxng \
-      #                 -v /home/docker/searxng/templates:/usr/local/searxng/searx/templates/simple \
-      #                 -v /home/docker/searxng/theme:/usr/local/searxng/searx/static/themes/simple \
-      #                 -p 8700:8080/tcp \
-      #                 alandoyle/searxng:latest"
-      # docker_describe="searxng是一个私有且隐私的搜索引擎站点"
-      # docker_url="官网介绍: https://hub.docker.com/r/alandoyle/searxng"
-      # docker_use=""
-      # docker_passwd=""
-      # docker_app
+ 
 }
 
 docker_deploy_spdf(){
@@ -3627,7 +3598,7 @@ txtn $(txtn "21.AuroPanel")$(txtg "✔")"            "$(txtn "41.Portainer")$(tx
 txtn $(txtn "22.Ubuntu-RDP-Web")$(txtg "✔")"       "$(txtn "42.Next-Terminal")$(txtn "✔")
 txtn $(txtn "23.Memos")$(txtg "✔")"                "$(txtc "43.YACD")$(txtn "✔")
 txtn $(txtc "24.SearXNG")$(txtg "✔")"              "$(txtn "44.ClashDashBoard")$(txtn "✔")
-txtn $(txtn "25.StirlingPDF")$(txtg "✔")"          "$(txtn "45.RocketChat")$(txtn "✔")
+txtn $(txtn "25.StirlingPDF")$(txtg "✔")"          "$(txtb "45.RocketChat")$(txtb "✘")
 txtn $(txty "26.IT-Tools")$(txtg "✔")"             "$(txtn "46.QBittorrent")$(txtn "✔")
 txtn $(txtn "27.MyIP(IPChecking)")$(txtg "✔")"     "$(txtn "47.MacCMS")$(txtn "✔")
 txtn $(txtn "28.ChatGPT-Next-Web")$(txtg "✔")"     "$(txtn "48.NginxProxyManager")$(txtn "✔")
