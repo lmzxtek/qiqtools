@@ -2653,26 +2653,30 @@ EOF
   docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
   
   # 下载影视主题到/root/npm/mnt/docker/maccms/template
+  echoR " >>> " " 部署苹果CMS10成功，先下载MXONE主题到模板目录..."
   cd $LPTH/template && \
-  wget https://github.com/dockkkk/mxone/releases/download/mxone/mxone.zip && \
-  unzip mxone.zip && rm ./mxone.zip
+  wget  -q https://github.com/dockkkk/mxone/releases/download/mxone/mxone.zip && \
+  unzip -q mxone.zip && rm ./mxone.zip
 
-  echo -e   " IPv4链接: https://$WAN4:7878/admin123.php  "
-  echo -e   " IPv6链接: https://[$WAN6]:7878/admin123.php"
+  echoR " >>> " " 主题下载成功，以下为苹果CMS10配置信息"
+  echo -e   "======================================================="
+  echo -e   " IPv4链接: http://$WAN4:$dc_port/admin123.php  "
+  echo -e   " IPv6链接: http://[$WAN6]:$dc_port/admin123.php"
   echo -e   " 默认账户: admin@admin123"
-  echo -e   "                                                       " 
+  echo -e   "=======================================================" 
   echo -e   " 解析接口: https://svip.ffzyplay.com/?url=              "
   echo -e   " 后台主题: mxoneX主题,/admin123.php/admin/mxone/mxoneset"
   echo -e   " 参考教程: https://www.tweek.top/archives/1706060591396 "
-  echo -e   "                                                       " 
+  echo -e   "=======================================================" 
   echo -e   " 非凡采集站: http://ffzy5.tv/                           "
   echo -e   " 快看采集站: https://kuaikanzy.net/                     "
   echo -e   " 暴风采集站: https://publish.bfzy.tv/                   "
   echo -e   " 乐视采集站: https://www.leshizy1.com/                  "
+  echo -e   "=======================================================" 
   echo -e   ""
 
-  echo -e   " IPv4链接: https://$WAN4:7878/admin123.php              " >> $FCONF
-  echo -e   " IPv6链接: https://[$WAN6]:7878/admin123.php            " >> $FCONF
+  echo -e   " IPv4链接: https://$WAN4:$dc_port/admin123.php              " >> $FCONF
+  echo -e   " IPv6链接: https://[$WAN6]:$dc_port/admin123.php            " >> $FCONF
   echo -e   " 默认账户: admin@admin123                               " >> $FCONF
   echo -e   "                                                       " >> $FCONF
   echo -e   " 解析接口: https://svip.ffzyplay.com/?url=              " >> $FCONF
