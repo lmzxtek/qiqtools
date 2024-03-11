@@ -3517,14 +3517,15 @@ txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "21.AuroPanel")$(txtg "✔")"              "$(txtn "41.Portainer")$(txtn "✔")
 txtn $(txtn "22.Ubuntu-RDP-Web")$(txtg "✔")"         "$(txtn "42.Next-Terminal")$(txtn "✔")
 txtn $(txtn "23.Memos")$(txtg "✔")"                  "$(txtn "43.YACD")$(txtn "✔")
-txtn $(txtb "24.SearXNG")$(txtg "✔")"                "$(txtn "44.QBittorrent")$(txtn "✔")
+txtn $(txtb "24.SearXNG")$(txtg "✔")"                "$(txtn "44.ClashDashBoard")$(txtn "✔")
 txtn $(txtn "25.StirlingPDF")$(txtg "✔")"            "$(txtn "45.RocketChat")$(txtn "✔")
-txtn $(txty "26.IT-Tools")$(txtg "✔")"               "$(txtn "46.ClashDashBoard")$(txtn "✔")
+txtn $(txty "26.IT-Tools")$(txtg "✔")"               "$(txtn "46.QBittorrent")$(txtn "✔")
 txtn $(txtn "27.MyIP(IPChecking)")$(txtg "✔")"       "$(txtn "47.MacCMS")$(txtn "✔")
 txtn $(txtn "28.ChatGPT-Next-Web")$(txtg "✔")"       "$(txtn "48.NginxProxyManager")$(txtn "✔")
 txtn $(txtn "29.GPT_Academic")$(txtg "✔")"           "$(txtn "49.ChunhuChat")$(txtn "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
+txtn $(txtn "66.重启Caddy")$(txtr "☯")"              "$(txtp "77.")$(txtb "站点管理")$(txty "❦")
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")"             "$(txtp "88.")$(txtb "容器管理")$(txty "☪")
 txtn " "
 }
@@ -3561,14 +3562,17 @@ website_deploy_run(){
      41) clear && docker_deploy_portainer ;;
      42) clear && docker_deploy_nextterminal ;;
      43) clear && docker_deploy_yacd ;;
-     44) clear && docker_deploy_qbittorrent ;;
+     44) clear && docker_deploy_clashdashboard;;
+     46) clear && docker_deploy_qbittorrent ;;
      45) clear && docker_deploy_rocketchat ;;
-     46) clear && docker_deploy_clashdashboard;;
      47) clear && docker_deploy_maccms_tweek ;;
      48) clear && docker_deploy_npm ;;
      49) clear && docker_deploy_chunhuchat ;;
 
+     66) clear && caddy_reload ;;
+     77) clear && WebSites_manager_run ;;
      88) clear && docker_run ;;
+
       0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
     esac
@@ -4575,7 +4579,7 @@ caddy_web_manager(){
 WebSites_manager_menu() {
 
 txtn " "
-txtn $(txbr "▼ 站点管理")$(txbg " ❦ ")
+txtn $(txbr "▼ 站点管理")$(txbg " ❦❦❦ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
@@ -4588,7 +4592,7 @@ txtn $(txtn "13.安装Nginx")$(txtg "✔")"          "$(txtn "23.安装PHP8.1")$
 txtn $(txtn "14.安装OpenLiteSpeed")$(txtg "✔")"  "$(txtn "24.安装PHP7.4")$(txtb "✔")
 # txtn $(txtn "15.安装Nginx")$(txtb "✘")"          "$(txtn "")$(txtb "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "31.站点列表")$(txtg "✔")"           "$(txtn "41.重启服务")$(txtg "✔")
+txtn $(txtn "31.站点列表")$(txtg "✔")"           "$(txty "41.重启服务")$(txtp "✔")
 txtn $(txtn "32.站点管理")$(txtg "✔")"           "$(txtn "42.停止服务")$(txtg "✔")
 txtn $(txtn "33.添加重定向")$(txtg "✔")"         "$(txtn "43.更新服务")$(txtg "✔")
 txtn $(txty "34.添加反向代理")$(txtg "✔")"       "$(txtn "44.删除服务")$(txtb "✘")
