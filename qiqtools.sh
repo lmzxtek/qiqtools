@@ -793,7 +793,7 @@ docker_uninstall() {
 
 # Docker清理不用的镜像和网络
 docker_clean() {
-  clear
+  # clear
   read -p "确定清理无用的容器镜像和容器网络吗？[Y|N]: " choice
   case "$choice" in
     [Yy]) docker system prune -af --volumes ;;
@@ -3132,17 +3132,46 @@ docker_deploy_nextterminal(){
 
   local dc_port=8081
   local dc_name=nextterminal
-  # local dc_image=lscr.io/linuxserver/qbittorrent:latest
+  local dc_imag=dushixiang/next-terminal-pro:latest
+  local dc_desc="Next Terminal"
 
   local LFLD="$BFLD/$dc_name"
-  local LPTH="$BFLD/$dc_name/downloads"
+  local LPTH="$BFLD/$dc_name/data"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
 
-  [[ -d $LPTH ]] || mkdir -p $LPTH
-  [[ -d $LFLD/config ]] || mkdir -p $LFLD/config
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+
+  echoR "\n >>>" " 现在开始部署 Next Terminal ... \n"  
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
   # cd $LFLD && touch docker-compose.yml
-  curl -sSL https://f.typesafe.cn/next-terminal/docker-compose.yml > docker-compose.yml
+  # curl -sSL https://f.typesafe.cn/next-terminal/docker-compose.yml > docker-compose.yml
 
-  docker-compose up -d
+  cat > "$FYML" << EOF
+version: '3.3'
+services:
+  guacd:
+    image: dushixiang/guacd:latest
+    restart: always      
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    environment:
+      DB: sqlite
+      GUACD_HOSTNAME: guacd
+      GUACD_PORT: 4822
+    ports:
+      - "$dc_port:8088"
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ${LPTH}:/usr/local/next-terminal/data
+    restart: always
+EOF
+
+  # docker-compose up -d
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
 
       # clear
       # cd ~
@@ -3203,8 +3232,8 @@ docker_deploy_clashdashboard(){
 
   local dc_port=7893
   local dc_name=clash_web
-  local dc_image=haishanh/yacd
-  # local dc_image=ghcr.io/haishanh/yacd
+  local dc_imag=haishanh/yacd
+  # local dc_imag=ghcr.io/haishanh/yacd
   local dc_desc="Clash Dash Board (webui)"
 
   local LFLD="$BFLD/$dc_name"
@@ -3214,6 +3243,10 @@ docker_deploy_clashdashboard(){
 
   ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
   [[ -d $LFLD/config ]] || mkdir -p $LFLD/config
+
+  echoR "\n >>>" " 现在开始部署 Clash Dash Board ... \n"  
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
 
   cat > "$FYML" << EOF
 version: '3'
@@ -3231,7 +3264,7 @@ services:
 
   ${dc_name}:
     container_name: ${dc_name}
-    image: $dc_image
+    image: $dc_imag
     depends_on:
       # 依赖于clash服务，在clash启动后，web才启动
       - clash
