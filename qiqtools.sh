@@ -3103,9 +3103,9 @@ docker_deploy_ittools(){
   # local dc_imag=ghcr.io/corentinth/it-tools:latest
 
   local LFLD="$BFLD/$dc_name"
-  local LPTH="$BFLD/$dc_name"
-  local FYML="$FLD/docker-compose.yml"
-  local FCONF="$FLD/${dc_name}.conf"
+  local LPTH="$BFLD/$dc_name/data"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
 
   ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
   [[ -f "$FYML"  ]] || touch $FYML
@@ -3113,7 +3113,6 @@ docker_deploy_ittools(){
   echo -e "\n >>> 现在开始部署IT-Tools ... \n"
   read -p "请输入监听端口(默认为:${dc_port}): " ptmp
   [[ -z "$ptmp" ]] || dc_port=$ptmp
-  # [[ (check_port ptmp ) ]] && dc_port=$ptmp
   
   cat > "$FYML" << EOF
 version: '3'
