@@ -3215,8 +3215,8 @@ docker_deploy_yacd(){
   [[ -f "$FYML"  ]] || touch $FYML
 
   echoR "\n >>>" " 现在开始部署YACD ... \n"
+
   read -p "请输入监听端口(默认为:${dc_port}): " ptmp
-  # [[ (check_port ptmp ) ]] && dc_port=ptmp
   [[ -z "$ptmp" ]] || dc_port=$ptmp
   
   echoR "\nConfiguration: " "$FYML"
@@ -3454,14 +3454,17 @@ docker_deploy_start(){
   read -p "  是否需要绑定域名？[Y|n] " choice
   case "$choice" in
     [Yy]) 
-          echo -e "\n先将域名解析到本机IP: ${red}$WAN4  ${blue}$WAN6${plain}"
+          echo -e "\n >>> 先将域名解析到本机IP: ${red}$WAN4  ${blue}$WAN6${plain}"
           echo -e "(注意: 初始时不开启CDN, 绑定成功之后再开启。)\n"
-          read -p "请输入解析的域名: " DOMAIN
+          read -p " >>> 请输入解析后的域名: " DOMAIN
+
+          # caddy_install
           caddy_reproxy $DOMAIN "127.0.0.1" $PORT
           caddy_reload
+
           # echo -e "\n您的反向代理网站做好了！"
           ;;
-       *)  echo -e "\n暂不绑定域名..." ;;
+       *)  echo -e "\n >>> 不绑定域名..." ;;
   esac  
 
   # 保存配置信息和访问链接
@@ -4392,21 +4395,46 @@ nginx_install(){
   # systemctl start nginx
   # systemctl enable nginx
   
-  apt install sudo && sudo apt install -y curl gnupg2 ca-certificates lsb-release ubuntu-keyring && curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null && echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/mainline/ubuntu `lsb_release -cs` nginx" | sudo tee /etc/apt/sources.list.d/nginx.list && echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" | sudo tee /etc/apt/preferences.d/99nginx && sudo apt update && sudo apt install -y nginx && systemctl start nginx && systemctl enable nginx
-
+  apt install sudo && \\
+  sudo apt install -y curl gnupg2 ca-certificates lsb-release ubuntu-keyring && \\
+  curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null && \\
+  echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/mainline/ubuntu `lsb_release -cs` nginx" | sudo tee /etc/apt/sources.list.d/nginx.list && \\
+  echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" | sudo tee /etc/apt/preferences.d/99nginx && \\
+  sudo apt update && sudo apt install -y nginx && systemctl start nginx && systemctl enable nginx
 }
 
 openresty_install(){ echo -e "OpenResty installation is not implemented...";}
 
 caddy_install(){
   # 准备目录和主页文件
-  mkdir -p /home/web/{caddy,html}
+  # mkdir -p /home/web/{caddy,html}
+  [[ -d "/home/web/caddy" ]] || mkdir -p "/home/web/caddy"
+  [[ -d "/home/web/html" ]] || mkdir -p "/home/web/html"
+  cd "/home/web/caddy"
   # touch /home/web/caddy/Caddyfile
   # touch /home/web/html/index.html
-  wget -O /home/web/html/index.html https://gitlab.com/lmzxtek/clear && qiqtools/-/raw/main/src/caddy/index.html
-  wget -O /home/web/caddy/default.conf https://gitlab.com/lmzxtek/clear && qiqtools/-/raw/main/src/caddy/default.conf
+  [[ -f "/home/web/html/index.html"    ]] || wget -O /home/web/html/index.html https://gitlab.com/lmzxtek/qiqtools/-/raw/main/src/caddy/index.html
+  [[ -f "/home/web/caddy/default.conf" ]] || wget -O /home/web/caddy/default.conf https://gitlab.com/lmzxtek/qiqtools/-/raw/main/src/caddy/default.conf
 
-  sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https curl && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list && sudo apt update && sudo apt install -y caddy
+  if ! command -v caddy &>/dev/null; then
+    echo -e "\n >>> Caddy未安装 ... "
+    read -p " 安装Caddy环境吗? (输入Y[y]继续): " choice
+    case "$choice" in
+      [Yy]) 
+            clear 
+            sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https curl && \\
+            curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg && \\
+            curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list && \\
+            sudo apt update && sudo apt install -y caddy
+            ;;
+      # [Nn]) return 1 ;;
+         *) echo -e " 不安装Caddy..." && return 1 ;;
+    esac
+  else
+    echo -e "\n >>> Caddy已安装 ..."
+    caddy --version
+    echo -e ""
+  fi
 
   # 安装Caddy
   # sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https curl
@@ -4469,10 +4497,10 @@ caddy_newcaddyfile(){
   fi
 }
 
-caddy_start(){ caddy start; }
-caddy_stop(){  caddy stop;  }
-caddy_status(){ sudo systemctl status caddy; }
-caddy_reload(){ caddy_newcaddyfile; caddy reload; }
+caddy_start() { caddy_install; caddy start; }
+caddy_stop()  { caddy_install; caddy stop;  }
+caddy_status(){ caddy_install; sudo systemctl status caddy; }
+caddy_reload(){ caddy_install; caddy_newcaddyfile; caddy reload; }
 
 # 站点列表（不包含default.conf)
 caddy_web_list(){
@@ -4775,7 +4803,7 @@ txtn "————————————————————————�
 WANIP_show
 txtn "====================================="
 txtn $(txty " 1.系统信息")$(txty "☄")"       "$(txtn "11.容器管理")$(txtp "☪")
-txtn $(txtn " 2.系统更新")$(txtb "☣")"       "$(txty "12.站点部署")$(txtr "◎")
+txtn $(txtn " 2.系统更新")$(txtb "☣")"       "$(txty "12.站点部署")$(txtc "◎")
 txtn $(txtn " 3.系统清理")$(txtb "☒")"       "$(txtp "13.站点管理")$(txtb "❈")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "21.系统工具")$(txtp "❁")"       "$(txtn "31.性能测试")$(txtb "☯")
