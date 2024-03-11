@@ -3219,6 +3219,7 @@ docker_deploy_yacd(){
   # [[ (check_port ptmp ) ]] && dc_port=ptmp
   [[ -z "$ptmp" ]] || dc_port=$ptmp
   
+  echoR "\nDocker compose configuration: " "$FYML"
   cat > "$FYML" << EOF
 version: '3'
 services:
@@ -3438,14 +3439,19 @@ docker_deploy_start(){
   local PORT=$3
   local DESC=$4
 
-  local CONF="${BFLD}/${NAME}.conf"
+  local CONF="${BFLD}/${NAME}/${NAME}.conf"
 
-  cd ${BFLD}/${NAME}
+  # 先检测一下Docker安装状态
+  echoR "\n >>> Check Docker status ... "
   docker_install
+
+  echoR "\n >>> Start to build and run Docker ($NAME) ... "
+  cd ${BFLD}/${NAME}
   docker-compose up -d
 
   # 是否绑定域名？
-  read -p "\n是否需要绑定域名？[Y|n] " choice
+  echoR "\n >>> Start set domain ... "
+  read -p "  是否需要绑定域名？[Y|n] " choice
   case "$choice" in
     [Yy]) 
           echo -e "\n先将域名解析到本机IP: ${red}$WAN4  ${blue}$WAN6${plain}"
@@ -3455,18 +3461,18 @@ docker_deploy_start(){
           caddy_reload
           # echo -e "\n您的反向代理网站做好了！"
           ;;
-       *)  echo "\n暂不绑定域名..." ;;
+       *)  echo -e "\n暂不绑定域名..." ;;
   esac  
 
   # 保存配置信息和访问链接
-  echo ""
+  echoR "\n >>> Start save config file ... "
   read -p "是否保存配置文件？[Y|n](${CONF})" choice
   case "$choice" in
     [Nn]) 
         echo "不保存配置文件..." 
         ;;
        *) 
-        [[ -f "$CONF"  ]] || touch $LPTH_YML
+        # [[ -f "$CONF"  ]] || touch $CONF
         cat > "${CONF}" << EOF
 Service     : ${NAME}
 Container   : ${NAME}
@@ -3486,6 +3492,8 @@ EOF
   [[ -n "$WAN4"      ]] && echoR " URL-IPV4:" "http://$WAN4:$PORT   "
   [[ -n "$WAN6"      ]] && echoR " URL-IPV6:" "http://[$WAN6]:$PORT "
   [[ -n "$DOMAIN"    ]] && echoY "   Domain:" "$DOMAIN              "
+
+  echoR "\n >>> Great! Deploy ${NAME} Done."
   echoT ""
 }
 
