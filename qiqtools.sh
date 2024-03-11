@@ -3101,7 +3101,7 @@ docker_deploy_ittools(){
   ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
   [[ -f "$FYML"  ]] || touch $FYML
 
-  echo ""
+  echo -e "\n >>> 现在开始部署IT-Tools ... \n"
   read -p "请输入监听端口(默认为:${dc_port}): " ptmp
   [[ (check_port ptmp ) ]] && dc_port=ptmp
   
@@ -3214,7 +3214,7 @@ docker_deploy_yacd(){
   [[ -d $LFLD/config ]] || mkdir -p $LFLD/config
   [[ -f "$FYML"  ]] || touch $FYML
 
-  echo ""
+  echo -e "\n >>> 现在开始部署YACD ... \n"
   read -p "请输入监听端口(默认为:${dc_port}): " ptmp
   # [[ (check_port ptmp ) ]] && dc_port=ptmp
   [[ -e "$ptmp" ]] && dc_port=ptmp
