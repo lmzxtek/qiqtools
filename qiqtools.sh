@@ -2615,23 +2615,31 @@ install_maccms(){
 
 # 使用Docker安装苹果CMS内容管理系统
 docker_deploy_maccms_tweek(){
+
   local BFLD="/home/dcc.d"
-  local dc_name=macms10
+
   local dc_port=7878
-  local dc_image=gs0245/maccms10
+  local dc_name=macms10
+  local dc_imag=gs0245/maccms10
+  local dc_desc="苹果CMS10内容管理系统"
 
   local LFLD="$BFLD/$dc_name"
   local LPTH="$BFLD/$dc_name/data"
+  local FYML="$BFLD/$dc_name/docker-compose.yml"
+  local FCONF="$BFLD/$dc_name/${dc_name}.conf"
 
-  [[ -d $LPTH ]] || mkdir -p $LPTH
-  cd $LFLD && touch docker-compose.yml
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
 
+  echoR "\n >>>" " 现在开始部署 Memos ... \n"  
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+  
   cat > $LFLD/docker-compose.yml << EOF
 version: '3'
 services:
   maccms10:
     container_name: ${dc_name}
-    image: $dc_image
+    image: $dc_imag
     volumes:
         - $LPTH:/data
         - $LPTH/template:/opt/maccms10/template
@@ -2641,32 +2649,41 @@ services:
     restart: always
 EOF
 
-  docker-compose up -d
+  # docker-compose up -d
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
   
   # 下载影视主题到/root/npm/mnt/docker/maccms/template
-  cd $LPTH/template && wget https://github.com/dockkkk/mxone/releases/download/mxone/mxone.zip && unzip mxone.zip && rm /root/npm/mnt/maccms/template/mxone.zip
+  cd $LPTH/template && \
+  wget https://github.com/dockkkk/mxone/releases/download/mxone/mxone.zip && \
+  unzip mxone.zip && rm ./mxone.zip
 
-  clear
-  txtn ""
-  txtn "MacCMS部署成功，以下为配置信息..."
-  txtn ""
-  txtn "IPv4链接: https://$WAN4:7878/admin123.php"
-  txtn "IPv6链接: https://[$WAN6]:7878/admin123.php"
-  txtn ""
-  txtn "默认账户: admin@admin123"
+  echo -e   " IPv4链接: https://$WAN4:7878/admin123.php  "
+  echo -e   " IPv6链接: https://[$WAN6]:7878/admin123.php"
+  echo -e   " 默认账户: admin@admin123"
+  echo -e   "                                                       " 
+  echo -e   " 解析接口: https://svip.ffzyplay.com/?url=              "
+  echo -e   " 后台主题: mxoneX主题,/admin123.php/admin/mxone/mxoneset"
+  echo -e   " 参考教程: https://www.tweek.top/archives/1706060591396 "
+  echo -e   "                                                       " 
+  echo -e   " 非凡采集站: http://ffzy5.tv/                           "
+  echo -e   " 快看采集站: https://kuaikanzy.net/                     "
+  echo -e   " 暴风采集站: https://publish.bfzy.tv/                   "
+  echo -e   " 乐视采集站: https://www.leshizy1.com/                  "
+  echo -e   ""
 
-  txtn ""
-  txtn "解析接口: https://svip.ffzyplay.com/?url="
-  txtn "后台主题: mxoneX主题,/admin123.php/admin/mxone/mxoneset"
-  txtn "参考教程: https://www.tweek.top/archives/1706060591396"
-
-  txtn ""
-  txtn "非凡采集站: http://ffzy5.tv/"
-  txtn "快看采集站: https://kuaikanzy.net/"
-  txtn "暴风采集站: https://publish.bfzy.tv/"
-  txtn "乐视采集站: https://www.leshizy1.com/"
-
-  txtn ""
+  echo -e   " IPv4链接: https://$WAN4:7878/admin123.php              " >> $FCONF
+  echo -e   " IPv6链接: https://[$WAN6]:7878/admin123.php            " >> $FCONF
+  echo -e   " 默认账户: admin@admin123                               " >> $FCONF
+  echo -e   "                                                       " >> $FCONF
+  echo -e   " 解析接口: https://svip.ffzyplay.com/?url=              " >> $FCONF
+  echo -e   " 后台主题: mxoneX主题,/admin123.php/admin/mxone/mxoneset" >> $FCONF
+  echo -e   " 参考教程: https://www.tweek.top/archives/1706060591396 " >> $FCONF
+  echo -e   "                                                       " >> $FCONF
+  echo -e   " 非凡采集站: http://ffzy5.tv/                           " >> $FCONF
+  echo -e   " 快看采集站: https://kuaikanzy.net/                     " >> $FCONF
+  echo -e   " 暴风采集站: https://publish.bfzy.tv/                   " >> $FCONF
+  echo -e   " 乐视采集站: https://www.leshizy1.com/                  " >> $FCONF
+  
 }
 
 docker_deploy_ubunturdpweb(){
@@ -2719,30 +2736,12 @@ EOF
   # docker-compose up -d
   docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
 
-  echo -e   " Account   : root@$rootpasswd" >> $FCONF
-  echo -e   " Resolution: $resolution" >> $FCONF
-  echo -e   " Account   : root@$rootpasswd"
-  echo -e   " Resolution: $resolution"
+  echo -e   " Account    : root@$rootpasswd" >> $FCONF
+  echo -e   " Resolution : $resolution" >> $FCONF
+  echo -e   " Account    : root@$rootpasswd"
+  echo -e   " Resolution : $resolution"
   echo -e   ""
 
-
-        # clear 
-        # docker_name="ubuntu-novnc"
-        # docker_img="fredblgr/ubuntu-novnc:20.04"
-        # docker_port=6080
-        # docker_rum="docker run -d \
-        #                     --name ubuntu-novnc \
-        #                     -p 6080:80 \
-        #                     -v /home/docker/ubuntu-novnc:/workspace:rw \
-        #                     -e HTTP_PASSWORD=$rootpasswd \
-        #                     -e RESOLUTION=1280x720 \
-        #                     --restart=always \
-        #                     fredblgr/ubuntu-novnc:20.04"
-        # docker_describe="一个网页版Ubuntu远程桌面，挺好用的！"
-        # docker_url="官网介绍: https://hub.docker.com/r/fredblgr/ubuntu-novnc"
-        # docker_use="echo \"用户名: root\""
-        # docker_passwd="echo \"密码: $rootpasswd\""
-        # docker_app
 }
 
 docker_deploy_portainer(){
