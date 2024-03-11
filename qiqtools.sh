@@ -4411,12 +4411,12 @@ caddy_install(){
   [[ -d "/home/web/caddy" ]] || mkdir -p "/home/web/caddy"
   [[ -d "/home/web/html" ]] || mkdir -p "/home/web/html"
   [[ -d "/home/web/log" ]] || mkdir -p "/home/web/log"
-  
+
   cd "/home/web/caddy"
   # touch /home/web/caddy/Caddyfile
   # touch /home/web/html/index.html
-  [[ -f "/home/web/html/index.html"    ]] || wget -O /home/web/html/index.html https://gitlab.com/lmzxtek/qiqtools/-/raw/main/src/caddy/index.html
-  [[ -f "/home/web/caddy/default.conf" ]] || wget -O /home/web/caddy/default.conf https://gitlab.com/lmzxtek/qiqtools/-/raw/main/src/caddy/default.conf
+  [[ -f "/home/web/html/index.html"    ]] || wget -qO /home/web/html/index.html https://gitlab.com/lmzxtek/qiqtools/-/raw/main/src/caddy/index.html
+  [[ -f "/home/web/caddy/default.conf" ]] || wget -qO /home/web/caddy/default.conf https://gitlab.com/lmzxtek/qiqtools/-/raw/main/src/caddy/default.conf
 
   if ! command -v caddy &>/dev/null; then
     echo -e "\n >>> Caddy未安装 ... "
