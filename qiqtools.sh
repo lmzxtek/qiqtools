@@ -2853,7 +2853,8 @@ services:
     restart: unless-stopped
 EOF
 
-  docker-compose up -d
+  # docker-compose up -d
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
 
         # docker_name="qbittorrent"
         # docker_img="lscr.io/linuxserver/qbittorrent:latest"
