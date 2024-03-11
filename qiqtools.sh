@@ -3103,7 +3103,7 @@ docker_deploy_ittools(){
 
   echo -e "\n >>> 现在开始部署IT-Tools ... \n"
   read -p "请输入监听端口(默认为:${dc_port}): " ptmp
-  [[ (check_port ptmp ) ]] && dc_port=ptmp
+  # [[ (check_port ptmp ) ]] && dc_port=$ptmp
   
   cat > "$FYML" << EOF
 version: '3'
@@ -3217,7 +3217,7 @@ docker_deploy_yacd(){
   echo -e "\n >>> 现在开始部署YACD ... \n"
   read -p "请输入监听端口(默认为:${dc_port}): " ptmp
   # [[ (check_port ptmp ) ]] && dc_port=ptmp
-  [[ -e "$ptmp" ]] && dc_port=ptmp
+  [[ -e "$ptmp" ]] && dc_port=$ptmp
   
   cat > "$FYML" << EOF
 version: '3'
