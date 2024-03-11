@@ -4038,10 +4038,10 @@ txtn $(txtn " 1.创建新的容器")$(txtg "✔")"       "$(txtn "11.启动所�
 txtn $(txtn " 2.启动指定容器")$(txtg "✔")"       "$(txtn "12.暂停所有容器")$(txtn "✔")
 txtn $(txtn " 3.重启指定容器")$(txtc "✔")"       "$(txtn "14.删除所有容器")$(txtn "✔")
 txtn $(txtc " 4.停止指定容器")$(txtg "✔")"       "$(txtn "13.重启所有容器")$(txtn "✔")
-txtn $(txtr " 5.删除指定容器")$(txtg "✔")"       "$(txtp "15.进入指定容器")$(txtn "✔")
+txtn $(txty " 5.删除指定容器")$(txtr "✔")"       "$(txtp "15.进入指定容器")$(txtn "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txty "21.查看容器日志")$(txtp "✔")"       "$(txtr "31.清理容器")$(txtc "㉿")
-txtn $(txty "22.查看容器日志")$(txtp "✔")"       "$(txtn "")$(txtn "")
+txtn $(txtn "21.查看容器网络")$(txtp "✔")"       "$(txtr "31.清理容器")$(txtc "〄")
+txtn $(txtn "22.查看容器日志")$(txtp "✔")"       "$(txtn "")$(txtn "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"      "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回上级菜单")$(txtr "✖")"       "$(txtr "")$(txtb "")$(txtc "")
@@ -4091,8 +4091,8 @@ docker_container_list_run() {
 
      15) read -p "请输入容器名: " dockername && docker exec -it $dockername /bin/bash ;;
 
-     21) read -p "请输入容器名: " dockername && docker logs $dockername ;;
-     22) 
+     22) read -p "请输入容器名: " dockername && docker logs $dockername ;;
+     21) 
       echo ""
       container_ids=$(docker ps -q)
 
@@ -4114,7 +4114,7 @@ docker_container_list_run() {
       done
       ;;
      
-     31) clear && docker_clean ;;
+     31) docker_clean ;;
 
       0) clear && docker_run ;;
       *) echo "无效的输入!" ;;
@@ -4291,10 +4291,10 @@ docker_run() {
 
     case $choice in
       1) clear && docker_install ;;
-      2) clear && docker_uninstall ;;
+      2) docker_uninstall ;;
 
      11) clear && docker_info_list ;;
-     12) clear && docker_clean ;;
+     12) docker_clean ;;
 
      21) clear && docker_container_list_run ;;
      22) clear && docker_images_list_run ;;
@@ -4302,7 +4302,7 @@ docker_run() {
      31) clear && docker_network_list_run ;;
      32) clear && docker_volume_list_run ;;
 
-     66) clear && docker_set_1ckl "dcc" ;;
+     66) docker_set_1ckl "dcc" ;;
      88) clear && website_deploy_run ;;
       # 9) clear && chmod a+x /usr/local/bin/docker-compose && rm -rf `which dcc` && ln -s /usr/local/bin/docker-compose /usr/bin/dcc ;;
       
