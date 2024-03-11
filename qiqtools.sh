@@ -3300,16 +3300,25 @@ EOF
 # 使用Docker compose部署MyIP
 docker_deploy_myip(){
 
+  local dc_port=18966
   local dc_name=myip
-  local dcc_image=ghcr.io/jason5ng32/myip:latest
+  local dc_imag=ghcr.io/jason5ng32/myip:latest
+  local dc_desc="MyIP-IP Checking"
 
-  local dcc_port=18966
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
 
-  mkdir -p /home/dcc.d/${dc_name}
-  cd /home/dcc.d/${dc_name}
-  touch /home/dcc.d/${dc_name}/docker-compose.yml
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
 
-  cat > /home/dcc.d/${dc_name}/docker-compose.yml << EOF
+  echoR "\n >>>" " 现在开始部署 MyIP ... \n"
+  
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  cat > "$FYML" << EOF
 version: "3.9"
 services:
   myip:
@@ -3317,92 +3326,12 @@ services:
     image: $dcc_image
     restart: unless-stopped
     ports:
-      - $dcc_port:18966
-EOF
-
-  # 启动容器
-  docker-compose up -d
-
-  # 是否绑定域名？
-  echoR "是否需要绑定域名？[Y|N]"
-
-  # 保存配置信息和访问链接
-  touch /home/dcc.d/${dc_name}/${dc_name}.conf
-  cat > /home/dcc.d/${dc_name}/${dc_name}.conf << EOF
-    container_name = ${dc_name}
-    URL(IPV4) = http://$WAN4:$dc_port
-    URL(IPV6) = http://[$WAN6]:$dc_port
-    OPENAI_API_KEY = $OPENAI_API_KEY
-    GOOGLE_API_KEY = $GOOGLE_API_KEY
-    CODE = $dcc_code
-EOF
-  echoG "是否保存配置文件？[Y|N](/home/dcc.d/${dc_name}/${dc_name}.conf)"
-}
-
-# 使用Docker compose部署ChatGPT-Next-Web
-docker_deploy_chatgptnextweb(){
-
-  local BFLD="/home/dcc.d"
-
-  local dc_port=3303
-  local dc_name=chatgptnextweb
-  local dc_imag=yidadaa/chatgpt-next-web
-  local dc_desc="ChatGPT-Next-Web"
-  # local dcc_code="543212345,7654321234567"
-
-  local LFLD="$BFLD/$dc_name"
-  local LPTH="$BFLD/$dc_name/downloads"
-  local FYML="$LFLD/docker-compose.yml"
-  local FCONF="$LFLD/${dc_name}.conf"
-
-  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
-  [[ -f "$FYML"  ]] || touch $FYML
-
-  echoR "\n >>>" " 现在开始部署ChatGPT-Next-Web ... \n"
-  
-  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
-  [[ -z "$ptmp" ]] || dc_port=$ptmp
-
-  read -p "请输入API_KEY       : " OPENAI_API_KEY
-  read -p "请输入GEMINI_API_KEY: " GOOGLE_API_KEY
-  read -p "请输入登录密码       : " PASS
-
-  CUSTOM_MODELS="-all,+gemini-pro"
-  
-  # mkdir -p /home/dcc.d/${dc_name}
-  # cd /home/dcc.d/${dc_name}
-  # touch /home/dcc.d/${dc_name}/docker-compose.yml
-
-  cat > "$FYML" << EOF
-version: "3.9"
-services:
-  ${dc_name}:
-    # profiles: [ "no-proxy" ]
-    container_name: ${dc_name}
-    image: $dc_imag
-    restart: unless-stopped
-    ports:
-      - $dc_port:3000
-    environment:
-      - OPENAI_API_KEY=$OPENAI_API_KEY
-      - GOOGLE_API_KEY=$GOOGLE_API_KEY
-      - CODE="$PASS"
-      - BASE_URL=$BASE_URL
-      - OPENAI_ORG_ID=$OPENAI_ORG_ID
-      - HIDE_USER_API_KEY=$HIDE_USER_API_KEY
-      - DISABLE_GPT4=$DISABLE_GPT4
-      - ENABLE_BALANCE_QUERY=$ENABLE_BALANCE_QUERY
-      - DISABLE_FAST_LINK=$DISABLE_FAST_LINK
-      - OPENAI_SB=$OPENAI_SB
-      - CUSTOM_MODELS=$CUSTOM_MODELS
+      - $dc_port:18966
 EOF
 
   docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
 
-  echo -e   " Password   : $PASS"
-  echo -e   " Password   : $PASS" >> $FCONF
-
-  # 启动容器
+#   # 启动容器
 #   docker-compose up -d
 
 #   # 是否绑定域名？
@@ -3419,6 +3348,67 @@ EOF
 #     CODE = $dcc_code
 # EOF
 #   echoG "是否保存配置文件？[Y|N](/home/dcc.d/${dc_name}/${dc_name}.conf)"
+}
+
+# 使用Docker compose部署ChatGPT-Next-Web
+docker_deploy_chatgptnextweb(){
+
+  local BFLD="/home/dcc.d"
+
+  local dc_port=3303
+  local dc_name=chatgptnextweb
+  local dc_imag=yidadaa/chatgpt-next-web
+  local dc_desc="ChatGPT-Next-Web"
+  # local dcc_code="543212345,7654321234567"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  echoR "\n >>>" " 现在开始部署ChatGPT-Next-Web ... \n"
+  
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  read -p "请输入API_KEY       : " OPENAI_API_KEY
+  read -p "请输入GEMINI_API_KEY: " GOOGLE_API_KEY
+  read -p "请输入登录密码       : " PASS
+
+  CUSTOM_MODELS="-all,+gemini-pro"
+
+  cat > "$FYML" << EOF
+version: "3.9"
+services:
+  ${dc_name}:
+    # profiles: [ "no-proxy" ]
+    container_name: ${dc_name}
+    image: $dc_imag
+    restart: unless-stopped
+    ports:
+      - $dc_port:3000
+    environment:
+      - OPENAI_API_KEY=$OPENAI_API_KEY
+      - GOOGLE_API_KEY=$GOOGLE_API_KEY
+      - CODE=$PASS
+      - BASE_URL=$BASE_URL
+      - OPENAI_ORG_ID=$OPENAI_ORG_ID
+      - HIDE_USER_API_KEY=$HIDE_USER_API_KEY
+      - DISABLE_GPT4=$DISABLE_GPT4
+      - ENABLE_BALANCE_QUERY=$ENABLE_BALANCE_QUERY
+      - DISABLE_FAST_LINK=$DISABLE_FAST_LINK
+      - OPENAI_SB=$OPENAI_SB
+      - CUSTOM_MODELS=$CUSTOM_MODELS
+EOF
+
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echo -e   " Password   : $PASS" >> $FCONF
+  echo -e   " Password   : $PASS"
+  echo -e   ""
 
 }
 
