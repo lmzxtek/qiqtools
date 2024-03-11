@@ -3357,10 +3357,16 @@ docker_deploy_gptacademic(){
   ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
   [[ -f "$FYML"  ]] || touch $FYML
 
-  # [[ -d $LPTH ]] || mkdir -p $LPTH
-  # [[ -d $LFLD/config ]] || mkdir -p $LFLD/config
-  # cd $LFLD && touch docker-compose.yml
+  echoR "\n >>>" " 现在开始部署GPT-Academic ... \n"
 
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  read -p "请输入API_KEY       : " API_KEY
+  read -p "请输入GEMINI_API_KEY: " GEMINI_API_KEY
+  read -p "请输入登录账户       : " USER
+  read -p "请输入登录密码       : " PASS
+  
   cat > "$FYML" << EOF
 version: '3'
 services:
@@ -3368,26 +3374,28 @@ services:
     container_name: ${dc_name}
     image: $dc_image
     environment:
-      - WEB_PORT=$dc_port
-      - API_KEY=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
-      - GEMINI_API_KEY=AIzaSyDUfCAZB9snVfDaPoii1GRZfjJsLnIUjA7
+      - API_KEY=$API_KEY
+      - GEMINI_API_KEY=$GEMINI_API_KEY
       - DEFAULT_WORKER_NUM=30
-      - AUTHENTICATION=[("usr1", "54321"), ("usr2", "adsfd")]  
+      - AUTHENTICATION=[("$USER", "$PASS")]  
       - AVAIL_LLM_MODELS=["gpt-3.5-turbo", "gpt-4","gemini-pro"]   
       - LLM_MODEL=gemini-pro
       - AUTO_CLEAR_TXT=False
       - ADD_WAIFU=True
+      - WEB_PORT=$dc_port
+    ports:
+        - '$dc_port:$dc_port'  # 50923必须与WEB_PORT相互对应
     volumes:
         - $LFLD/config:/config
         - $LPTH:/downloads
-    ports:
-        - '$dc_port:$dc_port'  # 50923必须与WEB_PORT相互对应
     restart: unless-stopped
 EOF
 
   docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
 
-  echo -e "\nNew line of data" >> $FCONF
+  echo -e "\n Config path: $LFLD/config" >> $FCONF
+  echo -e "\n User       : $USER" >> $FCONF
+  echo -e   " Password   : $PASS" >> $FCONF
 }
 
 docker_deploy_chunhuchat(){
@@ -4395,11 +4403,11 @@ nginx_install(){
   # systemctl start nginx
   # systemctl enable nginx
   
-  apt install sudo && \\
-  sudo apt install -y curl gnupg2 ca-certificates lsb-release ubuntu-keyring && \\
-  curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null && \\
-  echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/mainline/ubuntu `lsb_release -cs` nginx" | sudo tee /etc/apt/sources.list.d/nginx.list && \\
-  echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" | sudo tee /etc/apt/preferences.d/99nginx && \\
+  apt install sudo && \
+  sudo apt install -y curl gnupg2 ca-certificates lsb-release ubuntu-keyring && \
+  curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null && \
+  echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/mainline/ubuntu `lsb_release -cs` nginx" | sudo tee /etc/apt/sources.list.d/nginx.list && \
+  echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" | sudo tee /etc/apt/preferences.d/99nginx && \
   sudo apt update && sudo apt install -y nginx && systemctl start nginx && systemctl enable nginx
 }
 
@@ -4424,9 +4432,9 @@ caddy_install(){
     case "$choice" in
       [Yy]) 
             clear 
-            sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https curl && \\
-            curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg && \\
-            curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list && \\
+            sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https curl && \
+            curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg && \
+            curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list && \
             sudo apt update && sudo apt install -y caddy
             ;;
       # [Nn]) return 1 ;;
@@ -4434,18 +4442,10 @@ caddy_install(){
     esac
   else
     echo -e "\n >>> Caddy已安装 ..."
+    echo -e " >>> Config: /etc/caddy/Caddyfile"
     caddy --version
     echo -e ""
   fi
-
-  # 安装Caddy
-  # sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https curl
-  # curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
-  # curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
-
-  # sudo apt update
-  # sudo apt install caddy
-
 }
 
 caddy_uninstall(){ echo -e "\nUninstall Caddy is not implemented...\n";}
