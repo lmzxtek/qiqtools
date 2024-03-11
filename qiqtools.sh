@@ -3585,14 +3585,8 @@ docker_deploy_start(){
   
   # 保存配置信息和访问链接
   echoR "\n >>>" " Start save config file ... "
-  read -p "是否保存配置文件？[Y|n](${CONF})" choice
-  case "$choice" in
-    [Nn]) 
-        echoR " 不保存配置文件 ... " 
-        ;;
-       *) 
-        # [[ -f "$CONF"  ]] || touch $CONF
-        cat > "${CONF}" << EOF
+  # echoR "\n >>>" " 保存配置文件: ${CONF}"
+  cat > "${CONF}" << EOF
 Service     : ${NAME}
 Container   : ${NAME}
 URL(IPV4)   : http://$WAN4:$PORT
@@ -3600,11 +3594,10 @@ URL(IPV6)   : http://[$WAN6]:$PORT
 Domain      : $DOMAIN
 Description : $DESC
 EOF
-      ;;
-  esac  
 
   # 显示配置文件信息
   echoR "\n容器 >> ${NAME} << " "配置信息和访问链接："
+  echoR "\n >>>" " 配置文件路径: ${CONF}"
   txtb "↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓"
   # cat $LFLD/${NAME}.conf
   echoT "Service    : " "${NAME}"
