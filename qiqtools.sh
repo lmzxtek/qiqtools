@@ -2816,23 +2816,28 @@ docker_deploy_qbittorrent(){
   
   local BFLD="/home/dcc.d"
 
-  local dc_port=8081
+  local dc_port=8383
   local dc_name=qbittorrent
-  local dc_image=lscr.io/linuxserver/qbittorrent:latest
+  local dc_imag=lscr.io/linuxserver/qbittorrent:latest
+  local dc_desc="QBittorent"
 
   local LFLD="$BFLD/$dc_name"
   local LPTH="$BFLD/$dc_name/downloads"
+  local FYML="$BFLD/$dc_name/docker-compose.yml"
+  local FCONF="$BFLD/$dc_name/${dc_name}.conf"
 
-  [[ -d $LPTH ]] || mkdir -p $LPTH
-  [[ -d $LFLD/config ]] || mkdir -p $LFLD/config
-  cd $LFLD && touch docker-compose.yml
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
 
+  echoR "\n >>>" " 现在开始部署 QBittorent ... \n"  
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+  
   cat > $LFLD/docker-compose.yml << EOF
 version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
-    image: $dc_image
+    image: $dc_imag
     environment:
       - PUID=1000
       - PGID=1000
@@ -3052,8 +3057,8 @@ docker_deploy_spdf(){
 
   local LFLD="$BFLD/$dc_name"
   local LPTH="$BFLD/$dc_name/trainingData"
-  local FYML="$LFLD/docker-compose.yml"
-  local FCONF="$LFLD/${dc_name}.conf"
+  local FYML="$BFLD/$dc_name/docker-compose.yml"
+  local FCONF="$BFLD/$dc_name/${dc_name}.conf"
 
   ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
 
