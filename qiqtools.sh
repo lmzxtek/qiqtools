@@ -3501,32 +3501,32 @@ EOF
 website_deploy_menu() {
 
 txtn " "
-txtn $(txbr "▼ 站点部署")$(txtp " ♨♨♨ ")
+txtn $(txby "▼ 站点部署")$(txtp " ♨♨♨ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
-txtn $(txty " 1.1Panel")$(txtc "〠")"                "$(txtn "11.AList")$(txtg "✔")
-txtn $(txtn " 2.aaPanel")$(txtg "✔")"                "$(txtb "12.MacCMS")$(txtg "✔")
-txtn $(txtn " 3.宝塔面板")$(txtg "✔")"               "$(txtn "13.KodBox")$(txtg "✔")
-txtn $(txtn " 4.哪吒探针")$(txtg "✔")"               "$(txtn "14.Code-Server")$(txtg "✔")
-txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"          "$(txtn "15.ChatGPT-Next-Web")$(txtg "✔")
-# txtn $(txtn " 6.NginxProxyManager")$(txtb "✘")"      "$(txtn "")$(txtg "")
+txtn $(txty " 1.1Panel")$(txtp "〠")"              "$(txtn "11.AList")$(txtg "✔")
+txtn $(txtn " 2.aaPanel")$(txtg "✔")"              "$(txtb "12.MacCMS")$(txtg "✔")
+txtn $(txtn " 3.宝塔面板")$(txtg "✔")"             "$(txtn "13.KodBox")$(txtg "✔")
+txtn $(txtn " 4.哪吒探针")$(txtg "✔")"             "$(txtn "14.Code-Server")$(txtg "✔")
+txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"        "$(txtn "15.ChatGPT-Next-Web")$(txtg "✔")
+# txtn $(txtn " 6.NginxProxyManager")$(txtb "✘")"    "$(txtn "")$(txtg "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txbr "▼ Docker")$(txbg " ❦❦❦ ")
+txtn $(txby "▼ Docker")$(txbp " ❦❦❦ ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "21.AuroPanel")$(txtg "✔")"              "$(txtn "41.Portainer")$(txtn "✔")
-txtn $(txtn "22.Ubuntu-RDP-Web")$(txtg "✔")"         "$(txtn "42.Next-Terminal")$(txtn "✔")
-txtn $(txtn "23.Memos")$(txtg "✔")"                  "$(txtn "43.YACD")$(txtn "✔")
-txtn $(txtb "24.SearXNG")$(txtg "✔")"                "$(txtn "44.ClashDashBoard")$(txtn "✔")
-txtn $(txtn "25.StirlingPDF")$(txtg "✔")"            "$(txtn "45.RocketChat")$(txtn "✔")
-txtn $(txty "26.IT-Tools")$(txtg "✔")"               "$(txtn "46.QBittorrent")$(txtn "✔")
-txtn $(txtn "27.MyIP(IPChecking)")$(txtg "✔")"       "$(txtn "47.MacCMS")$(txtn "✔")
-txtn $(txtn "28.ChatGPT-Next-Web")$(txtg "✔")"       "$(txtn "48.NginxProxyManager")$(txtn "✔")
+txtn $(txtn "21.AuroPanel")$(txtg "✔")"            "$(txtn "41.Portainer")$(txtn "✔")
+txtn $(txtn "22.Ubuntu-RDP-Web")$(txtg "✔")"       "$(txtn "42.Next-Terminal")$(txtn "✔")
+txtn $(txtn "23.Memos")$(txtg "✔")"                "$(txtn "43.YACD")$(txtn "✔")
+txtn $(txtb "24.SearXNG")$(txtg "✔")"              "$(txtn "44.ClashDashBoard")$(txtn "✔")
+txtn $(txtn "25.StirlingPDF")$(txtg "✔")"          "$(txtn "45.RocketChat")$(txtn "✔")
+txtn $(txty "26.IT-Tools")$(txtg "✔")"             "$(txtn "46.QBittorrent")$(txtn "✔")
+txtn $(txtn "27.MyIP(IPChecking)")$(txtg "✔")"     "$(txtn "47.MacCMS")$(txtn "✔")
+txtn $(txtn "28.ChatGPT-Next-Web")$(txtg "✔")"     "$(txtn "48.NginxProxyManager")$(txtn "✔")
 txtn $(txtn "29.GPT_Academic")$(txtg "✔")"           "$(txtn "49.ChunhuChat")$(txtn "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
-txtn $(txtn "66.重启Caddy")$(txtr "☯")"              "$(txtp "77.")$(txtb "站点管理")$(txty "❦")
-txtn $(txtn " 0.返回主菜单")$(txtr "✖")"             "$(txtp "88.")$(txtb "容器管理")$(txty "☪")
+txtn $(txtp "66.重启Caddy")$(txtr "☯")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
+txtn $(txtn " 0.返回主菜单")$(txtr "✖")"           "$(txtp "88.")$(txtc "容器管理")$(txty "☪")
 txtn " "
 }
 
@@ -4579,7 +4579,7 @@ caddy_web_manager(){
 WebSites_manager_menu() {
 
 txtn " "
-txtn $(txbr "▼ 站点管理")$(txbg " ❦❦❦ ")
+txtn $(txbr "▼ 站点管理")$(txbp " ❦❦❦ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
@@ -4602,7 +4602,7 @@ txtn $(txtn "61.安装Redis")$(txtg "✔")"          "$(txtn "")$(txtb "")
 txtn $(txtn "62.安装MySQL")$(txtb "✘")"          "$(txtn "")$(txtb "")
 txtn $(txtn "63.安装MariaDB")$(txtb "✘")"        "$(txtn "")$(txtb "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "88.站点防御程序")$(txtb "✘")
+txtn $(txtn "77.站点防御程序")$(txtb "✘")"       "$(txtp "88.站点部署")$(txty "✔")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
 txtn " "
@@ -4711,6 +4711,9 @@ WebSites_manager_run(){
     #  61) clear && install redis-server ;;
     #  62) clear && install mysql-server ;;
     #  63) clear && install mariadb-server ;;
+
+    #  77) clear &&  ;;
+     88) clear && website_deploy_run ;;
 
       0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
