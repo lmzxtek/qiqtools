@@ -3499,8 +3499,8 @@ EOF
   # 显示配置文件信息
   echoR "\n${NAME}" "容器的配置信息和访问链接如下："
   # cat $LFLD/${NAME}.conf
-  echoR "Service    : " "${NAME}"
-  echoR "Container  : " "${NAME}"
+  echoT "Service    : " "${NAME}"
+  echoT "Container  : " "${NAME}"
   [[ -n "$WAN4"      ]] && echoR "URL(IPV4)  : " "http://$WAN4:$PORT   "
   [[ -n "$WAN6"      ]] && echoR "URL(IPV6)  : " "http://[$WAN6]:$PORT "
   [[ -n "$DOMAIN"    ]] && echoY "Domain     : " "${DOMAIN}            "
@@ -4492,18 +4492,19 @@ EOF
 # 更新域名信息
 caddy_newcaddyfile(){
   if [ -z "$(find /home/web/caddy -name "*.conf")" ]; then
-    echo "No .conf files found in /home/web/caddy"
-
+    echo " >>> No .conf files found in /home/web/caddy"
   else
+    echo " >>> Put all *.conf files into: /etc/caddy/Caddyfile"
     mv /etc/caddy/Caddyfile /etc/caddy/Caddyfile.bak
     find /home/web/caddy -name "*.conf" -exec cat {} + > /etc/caddy/Caddyfile
+    # cd /etc/caddy/Caddyfile
   fi
 }
 
-caddy_stop()  { caddy_install; caddy stop;  }
-caddy_start() { caddy_install; caddy start; }
-caddy_status(){ caddy_install; sudo systemctl status caddy; }
-caddy_reload(){ caddy_install; caddy_newcaddyfile; caddy reload; }
+caddy_stop()  { caddy_install; cd /etc/caddy/Caddyfile; caddy stop;  cd - ; }
+caddy_start() { caddy_install; cd /etc/caddy/Caddyfile; caddy start; cd - ; }
+caddy_status(){ caddy_install; cd /etc/caddy/Caddyfile; sudo systemctl status caddy; cd - ; }
+caddy_reload(){ caddy_install; cd /etc/caddy/Caddyfile; caddy_newcaddyfile; caddy reload; cd - ; }
 
 # 站点列表（不包含default.conf)
 caddy_web_list(){
