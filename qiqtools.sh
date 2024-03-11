@@ -3217,7 +3217,7 @@ docker_deploy_yacd(){
   echo -e "\n >>> 现在开始部署YACD ... \n"
   read -p "请输入监听端口(默认为:${dc_port}): " ptmp
   # [[ (check_port ptmp ) ]] && dc_port=ptmp
-  [[ -e "$ptmp" ]] && dc_port=$ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
   
   cat > "$FYML" << EOF
 version: '3'
@@ -3441,6 +3441,7 @@ docker_deploy_start(){
   local CONF="${BFLD}/${NAME}.conf"
 
   cd ${BFLD}/${NAME}
+  docker_install
   docker-compose up -d
 
   # 是否绑定域名？
