@@ -3512,7 +3512,7 @@ txtn $(txtn " 4.哪吒探针")$(txtg "✔")"             "$(txtn "14.Code-Server
 txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"        "$(txtn "15.ChatGPT-Next-Web")$(txtg "✔")
 # txtn $(txtn " 6.NginxProxyManager")$(txtb "✘")"    "$(txtn "")$(txtg "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txby "▼ Docker")$(txbp " ❦❦❦ ")
+txtn $(txby "▼ Docker")$(txtp " ❦❦❦ ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "21.AuroPanel")$(txtg "✔")"            "$(txtn "41.Portainer")$(txtn "✔")
 txtn $(txtn "22.Ubuntu-RDP-Web")$(txtg "✔")"       "$(txtn "42.Next-Terminal")$(txtn "✔")
@@ -3525,7 +3525,7 @@ txtn $(txtn "28.ChatGPT-Next-Web")$(txtg "✔")"     "$(txtn "48.NginxProxyManag
 txtn $(txtn "29.GPT_Academic")$(txtg "✔")"           "$(txtn "49.ChunhuChat")$(txtn "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
-txtn $(txtp "66.重启Caddy")$(txtr "☯")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
+txtn $(txtp "66.重启Caddy")$(txtc "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")"           "$(txtp "88.")$(txtc "容器管理")$(txty "☪")
 txtn " "
 }
