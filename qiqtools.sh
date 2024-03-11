@@ -3566,22 +3566,20 @@ docker_deploy_start(){
 
   # 是否绑定域名？
   echoR "\n >>>" " Start set domain ... "
-  read -p "  是否需要绑定域名？[Y|n] " choice
-  case "$choice" in
-    [Yy]) 
-          echo -e "\n >>> 先将域名解析到本机IP: ${red}$WAN4  ${blue}$WAN6${plain}"
-          echo -e "(注意: 初始时不开启CDN, 绑定成功之后再开启。)\n"
-          read -p " >>> 请输入解析后的域名: " DOMAIN
+  WANIP_show
+  read -p "  请输入要绑定域名(输入为空则不绑定域名): " DOMAIN
+  if [[ -n "$DOMAIN" ]]; then
+    echo -e "(注意: 此时域名解析应不开CDN, 绑定成功之后，能正常访问时再开启。)\n"
+    echo -e " >>> 输入的域名为: " DOMAIN
 
-          # caddy_install
-          caddy_reproxy $DOMAIN "127.0.0.1" $PORT
-          caddy_reload
+    # caddy_install
+    caddy_reproxy $DOMAIN "127.0.0.1" $PORT
+    caddy_reload
 
-          # echo -e "\n您的反向代理网站做好了！"
-          ;;
-       *)  echo -e "\n >>> 不绑定域名..." ;;
-  esac  
-
+  else 
+    echo -e "\n >>> 不绑定域名 ... " 
+  fi
+  
   # 保存配置信息和访问链接
   echoR "\n >>>" " Start save config file ... "
   read -p "是否保存配置文件？[Y|n](${CONF})" choice
@@ -3623,7 +3621,7 @@ txtn $(txby "▼ 站点部署")$(txtp " ♨♨♨ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
-txtn $(txty " 1.1Panel")$(txtc "☂")"              "$(txtn "11.AList")$(txtg "✔")
+txtn $(txty " 1.1Panel")$(txtc "☂")"               "$(txtn "11.AList")$(txtg "✔")
 txtn $(txtn " 2.aaPanel")$(txtg "✔")"              "$(txtp "12.MacCMS")$(txtg "✔")
 txtn $(txtn " 3.宝塔面板")$(txtg "✔")"             "$(txtn "13.KodBox")$(txtg "✔")
 txtn $(txtn " 4.哪吒探针")$(txtg "✔")"             "$(txty "14.Code-Server")$(txtg "✔")
