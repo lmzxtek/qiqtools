@@ -2675,8 +2675,8 @@ EOF
   echo -e   "=======================================================" 
   echo -e   ""
 
-  echo -e   " IPv4链接: https://$WAN4:$dc_port/admin123.php              " >> $FCONF
-  echo -e   " IPv6链接: https://[$WAN6]:$dc_port/admin123.php            " >> $FCONF
+  echo -e   " IPv4链接: https://$WAN4:$dc_port/admin123.php" >> $FCONF
+  echo -e   " IPv6链接: https://[$WAN6]:$dc_port/admin123.php" >> $FCONF
   echo -e   " 默认账户: admin@admin123                               " >> $FCONF
   echo -e   "                                                       " >> $FCONF
   echo -e   " 解析接口: https://svip.ffzyplay.com/?url=              " >> $FCONF
@@ -3596,19 +3596,19 @@ txtn "————————————————————————�
 WANIP_show
 txtn "====================================="
 txtn $(txty " 1.1Panel")$(txtc "☂")"               "$(txtn "11.AList")$(txtg "✔")
-txtn $(txtn " 2.aaPanel")$(txtg "✔")"              "$(txtp "12.MacCMS")$(txtg "✔")
-txtn $(txtn " 3.宝塔面板")$(txtg "✔")"             "$(txtn "13.KodBox")$(txtg "✔")
+txtn $(txtn " 2.aaPanel")$(txtg "✔")"              "$(txtp "12.MacCMS")$(txtr "✘")
+txtn $(txtn " 3.宝塔面板")$(txtg "✔")"             "$(txtn "13.KodBox")$(txtr "✘")
 txtn $(txtn " 4.哪吒探针")$(txtg "✔")"             "$(txty "14.Code-Server")$(txtg "✔")
-txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"        "$(txtn "15.ChatGPT-Next-Web")$(txtg "✔")
+txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"        "$(txtn "15.ChatGPT-Next-Web")$(txtr "✘")
 # txtn $(txtn " 6.NginxProxyManager")$(txtb "✘")"    "$(txtn "")$(txtg "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txby "▼ Docker")$(txtp " ❦❦❦ ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "21.AuroPanel")$(txtg "✔")"            "$(txtn "41.Portainer")$(txtn "✔")
+txtn $(txtn "21.AuroraPanel")$(txtg "✔")"          "$(txtn "41.Portainer")$(txtn "✔")
 txtn $(txtn "22.Ubuntu-RDP-Web")$(txtg "✔")"       "$(txtn "42.Next-Terminal")$(txtn "✔")
 txtn $(txtn "23.Memos")$(txtg "✔")"                "$(txtc "43.YACD")$(txtn "✔")
 txtn $(txtc "24.SearXNG")$(txtg "✔")"              "$(txtn "44.ClashDashBoard")$(txtn "✔")
-txtn $(txtn "25.StirlingPDF")$(txtg "✔")"          "$(txtb "45.RocketChat")$(txtb "✘")
+txtn $(txtn "25.StirlingPDF")$(txtg "✔")"          "$(txtb "45.RocketChat")$(txtr "✘")
 txtn $(txty "26.IT-Tools")$(txtg "✔")"             "$(txtn "46.QBittorrent")$(txtn "✔")
 txtn $(txtn "27.MyIP(IPChecking)")$(txtg "✔")"     "$(txtn "47.MacCMS")$(txtn "✔")
 txtn $(txtn "28.ChatGPT-Next-Web")$(txtg "✔")"     "$(txtn "48.NginxProxyManager")$(txtn "✔")
