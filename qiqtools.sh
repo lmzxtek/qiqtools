@@ -3397,7 +3397,7 @@ EOF
   echo -e "\n Config path: $LFLD/config"
   echo -e "\n User       : $USER"
   echo -e   " Password   : $PASS"
-  
+
   echo -e "\n Config path: $LFLD/config" >> $FCONF
   echo -e "\n User       : $USER" >> $FCONF
   echo -e   " Password   : $PASS" >> $FCONF
@@ -3407,7 +3407,7 @@ docker_deploy_chunhuchat(){
 
   local BFLD="/home/dcc.d"
 
-  local dc_port=7860
+  local dc_port=7847
   local dc_name=changhuchat
   local dc_image=ghcr.io/gaizhenbiao/chuanhuchatgpt:latest
   local dc_desc="ChunHu川虎学术聊天"
@@ -3433,9 +3433,9 @@ docker_deploy_chunhuchat(){
   # read -p "请输入登录账户       : " USER
   # read -p "请输入登录密码       : " PASS
 
-  # git clone https://github.com/GaiZhenbiao/ChuanhuChatGPT.git .
-  # cp config_example.json config.json
-  curl -osS ${LFLD}/config.json https://raw.githubusercontent.com/GaiZhenbiao/ChuanhuChatGPT/main/config_example.json
+  install git && git clone https://github.com/GaiZhenbiao/ChuanhuChatGPT.git .
+  cp config_example.json config.json
+  # curl -os "${LFLD}/config.json" https://raw.githubusercontent.com/GaiZhenbiao/ChuanhuChatGPT/main/config_example.json
 
   cat > $LFLD/docker-compose.yml << EOF
 version: '3'
@@ -3443,9 +3443,9 @@ services:
   ${dc_name}:
     container_name: ${dc_name}
     image: $dc_image
-    # build:
-    #   context: . 
-    #   dockerfile: Dockerfile
+    build:
+      context: . 
+      dockerfile: Dockerfile
 
     environment:
       - PUID=0
