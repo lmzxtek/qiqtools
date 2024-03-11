@@ -3250,7 +3250,7 @@ docker_deploy_npm(){
 
   local dc_port=81
   local dc_name=npm
-  local dc_imag=lscr.io/linuxserver/qbittorrent:latest
+  local dc_imag=jc21/nginx-proxy-manager:latest
   local dc_desc="Nginx Proxy Manager"
 
   local LFLD="$BFLD/$dc_name"
