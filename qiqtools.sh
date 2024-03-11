@@ -2727,22 +2727,28 @@ docker_deploy_portainer(){
   
   local BFLD="/home/dcc.d"
 
-  local dc_name=portainer
   local dc_port=9050
-  local dc_image=portainer/portainer
+  local dc_name=portainer
+  local dc_imag=portainer/portainer
+  local dc_desc="Portainer是一个轻量级的docker容器管理面板\n官网介绍: https://www.portainer.io"
 
   local LFLD="$BFLD/$dc_name"
   local LPTH="$BFLD/$dc_name/data"
+  local FYML="$BFLD/$dc_name/docker-compose.yml"
+  local FCONF="$BFLD/$dc_name/${dc_name}.conf"
 
-  [[ -d $LPTH ]] || mkdir -p $LPTH
-  cd $LFLD && touch docker-compose.yml
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
 
-  cat > $LFLD/docker-compose.yml << EOF
+  echoR "\n >>>" " 现在开始部署 QBittorent ... \n"  
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  cat > "$FYML" << EOF
 version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
-    image: $dc_image
+    image: $dc_imag
     volumes:
         - $LPTH:/data
         - /var/run/docker.sock:/var/run/docker.sock
@@ -2751,7 +2757,8 @@ services:
     restart: always
 EOF
 
-  docker-compose up -d
+  # docker-compose up -d
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
 
         # clear 
         # docker_name="portainer"
@@ -2806,17 +2813,11 @@ EOF
 
   # docker-compose up -d
   docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+  
+  echo -e   " Default Account: admin@admin" >> $FCONF
+  echo -e   " Default Account: admin@admin"
+  echo -e   ""
 
-      # clear 
-      # docker_name="memos"
-      # docker_img="ghcr.io/usememos/memos:latest"
-      # docker_port=5230
-      # docker_rum="docker run -d --name memos -p 5230:5230 -v /home/docker/memos:/var/opt/memos --restart always ghcr.io/usememos/memos:latest"
-      # docker_describe="Memos是一款轻量级、自托管的备忘录中心"
-      # docker_url="官网介绍: https://github.com/usememos/memos"
-      # docker_use=""
-      # docker_passwd=""
-      # docker_app
 }
 
 docker_deploy_qbittorrent(){
@@ -2839,7 +2840,7 @@ docker_deploy_qbittorrent(){
   read -p "请输入监听端口(默认为:${dc_port}): " ptmp
   [[ -z "$ptmp" ]] || dc_port=$ptmp
   
-  cat > $LFLD/docker-compose.yml << EOF
+  cat > "$FYML" << EOF
 version: '3'
 services:
   ${dc_name}:
@@ -3563,14 +3564,14 @@ EOF
   # 显示配置文件信息
   # echoR "\n容器 >> ${NAME} << " "配置信息和访问链接："
   echoR "\n >>>" " 容器${NAME}配置信息:"
-  echoB "\n >>>" " 路径 > ${CONF}"
+  echoB " >>>" " 路径 > ${CONF}"
   txtb "↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓"
   # cat $LFLD/${NAME}.conf
-  echoT "Service    : " "${NAME}"
-  echoT "Container  : " "${NAME}"
-  [[ -n "$WAN4"      ]] && echoR "URL(IPV4)  : " "http://$WAN4:$PORT   "
-  [[ -n "$WAN6"      ]] && echoR "URL(IPV6)  : " "http://[$WAN6]:$PORT "
-  [[ -n "$DOMAIN"    ]] && echoY "Domain     : " "https://${DOMAIN}            "
+  echoT "Service   : " "${NAME}"
+  echoT "Container : " "${NAME}"
+  [[ -n "$WAN4"      ]] && echoR "URL(IPV4) : " "http://$WAN4:$PORT   "
+  [[ -n "$WAN6"      ]] && echoR "URL(IPV6) : " "http://[$WAN6]:$PORT "
+  [[ -n "$DOMAIN"    ]] && echoY "Domain    : " "https://${DOMAIN}            "
   txtb "↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↓↓↓↓↓↓"
 
   echoR "\n >>>" " Great! Deploy ${NAME} Done."
