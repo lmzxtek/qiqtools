@@ -3205,15 +3205,17 @@ docker_deploy_clashdashboard(){
   local dc_name=clash_web
   local dc_image=haishanh/yacd
   # local dc_image=ghcr.io/haishanh/yacd
+  local dc_desc="Clash Dash Board (webui)"
 
   local LFLD="$BFLD/$dc_name"
   local LPTH="$BFLD/$dc_name"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
 
-  [[ -d $LPTH ]] || mkdir -p $LPTH
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
   [[ -d $LFLD/config ]] || mkdir -p $LFLD/config
-  cd $LFLD && touch docker-compose.yml
 
-  cat > $LFLD/docker-compose.yml << EOF
+  cat > "$FYML" << EOF
 version: '3'
 services:
   clash:
@@ -3240,7 +3242,8 @@ services:
     restart: always
 EOF
 
-  docker-compose up -d
+  # docker-compose up -d
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
 
 }
 
