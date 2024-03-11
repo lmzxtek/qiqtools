@@ -3323,7 +3323,7 @@ version: "3.9"
 services:
   myip:
     container_name: ${dc_name}
-    image: $dcc_image
+    image: $dc_imag
     restart: unless-stopped
     ports:
       - $dc_port:18966
