@@ -2844,10 +2844,10 @@ services:
       - TZ=Etc/UTC
       - WEBUI_PORT=$dc_port
     volumes:
-        - $LFLD/config:/config
         - $LPTH:/downloads
+        - $LFLD/config:/config
     ports:
-        - '$dc_port:8081'
+        - '$dc_port:$dc_port'
         - '6881:6881'
         - '6881:6881/udp'
     restart: unless-stopped
