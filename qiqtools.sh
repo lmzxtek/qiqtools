@@ -4501,10 +4501,10 @@ caddy_newcaddyfile(){
   fi
 }
 
-caddy_stop()  { caddy_install; cd /etc/caddy/Caddyfile; caddy stop;  cd - ; }
-caddy_start() { caddy_install; cd /etc/caddy/Caddyfile; caddy start; cd - ; }
-caddy_status(){ caddy_install; cd /etc/caddy/Caddyfile; sudo systemctl status caddy; cd - ; }
-caddy_reload(){ caddy_install; cd /etc/caddy/Caddyfile; caddy_newcaddyfile; caddy reload; cd - ; }
+caddy_stop()  { caddy_install; cd /etc/caddy; caddy stop;  cd - ; }
+caddy_start() { caddy_install; cd /etc/caddy; caddy start; cd - ; }
+caddy_status(){ caddy_install; cd /etc/caddy; sudo systemctl status caddy; cd - ; }
+caddy_reload(){ caddy_install; cd /etc/caddy; caddy_newcaddyfile; caddy reload; cd - ; }
 
 # 站点列表（不包含default.conf)
 caddy_web_list(){
