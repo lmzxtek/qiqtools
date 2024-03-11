@@ -3505,10 +3505,10 @@ txtn $(txby "▼ 站点部署")$(txtp " ♨♨♨ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
-txtn $(txty " 1.1Panel")$(txtp "〠")"              "$(txtn "11.AList")$(txtg "✔")
-txtn $(txtn " 2.aaPanel")$(txtg "✔")"              "$(txtb "12.MacCMS")$(txtg "✔")
+txtn $(txty " 1.1Panel")$(txtc "☂")"              "$(txtn "11.AList")$(txtg "✔")
+txtn $(txtn " 2.aaPanel")$(txtg "✔")"              "$(txtp "12.MacCMS")$(txtg "✔")
 txtn $(txtn " 3.宝塔面板")$(txtg "✔")"             "$(txtn "13.KodBox")$(txtg "✔")
-txtn $(txtn " 4.哪吒探针")$(txtg "✔")"             "$(txtn "14.Code-Server")$(txtg "✔")
+txtn $(txtn " 4.哪吒探针")$(txtg "✔")"             "$(txty "14.Code-Server")$(txtg "✔")
 txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"        "$(txtn "15.ChatGPT-Next-Web")$(txtg "✔")
 # txtn $(txtn " 6.NginxProxyManager")$(txtb "✘")"    "$(txtn "")$(txtg "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
@@ -3516,8 +3516,8 @@ txtn $(txby "▼ Docker")$(txtp " ❦❦❦ ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "21.AuroPanel")$(txtg "✔")"            "$(txtn "41.Portainer")$(txtn "✔")
 txtn $(txtn "22.Ubuntu-RDP-Web")$(txtg "✔")"       "$(txtn "42.Next-Terminal")$(txtn "✔")
-txtn $(txtn "23.Memos")$(txtg "✔")"                "$(txtn "43.YACD")$(txtn "✔")
-txtn $(txtb "24.SearXNG")$(txtg "✔")"              "$(txtn "44.ClashDashBoard")$(txtn "✔")
+txtn $(txtn "23.Memos")$(txtg "✔")"                "$(txtc "43.YACD")$(txtn "✔")
+txtn $(txtc "24.SearXNG")$(txtg "✔")"              "$(txtn "44.ClashDashBoard")$(txtn "✔")
 txtn $(txtn "25.StirlingPDF")$(txtg "✔")"          "$(txtn "45.RocketChat")$(txtn "✔")
 txtn $(txty "26.IT-Tools")$(txtg "✔")"             "$(txtn "46.QBittorrent")$(txtn "✔")
 txtn $(txtn "27.MyIP(IPChecking)")$(txtg "✔")"     "$(txtn "47.MacCMS")$(txtn "✔")
@@ -3525,7 +3525,7 @@ txtn $(txtn "28.ChatGPT-Next-Web")$(txtg "✔")"     "$(txtn "48.NginxProxyManag
 txtn $(txtn "29.GPT_Academic")$(txtg "✔")"           "$(txtn "49.ChunhuChat")$(txtn "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
-txtn $(txtp "66.重启Caddy")$(txtc "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
+txtn $(txtp "66.重启Caddy")$(txty "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")"           "$(txtp "88.")$(txtc "容器管理")$(txty "☪")
 txtn " "
 }
