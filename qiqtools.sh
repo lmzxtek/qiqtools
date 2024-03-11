@@ -55,6 +55,7 @@ echoNW(){ FLAG=${1} && shift && echo -e "\033[1m${FLAG}\033[0m${@}"; }
 echoCYAN(){ FLAG=$1 && shift && echo -e "\033[1;36m$FLAG\033[0m$@"; }
 
  txbr(){ echo -e "${red}${bold}$*${plain}"; }           # 红色粗体
+ txbp(){ echo -e "${pink}${bold}$*${plain}"; }          # 粗体
  txbb(){ echo -e "${blue}${bold}$*${plain}"; }          # 粗体
  txbc(){ echo -e "${cyan}${bold}$*${plain}"; }          # 粗体
  txbw(){ echo -e "${white}${bold}$*${plain}"; }         # 粗体
@@ -3249,21 +3250,29 @@ docker_deploy_npm(){
 
   local dc_port=81
   local dc_name=npm
-  local dc_image=lscr.io/linuxserver/qbittorrent:latest
+  local dc_imag=lscr.io/linuxserver/qbittorrent:latest
+  local dc_desc="Nginx Proxy Manager"
 
   local LFLD="$BFLD/$dc_name"
   local LPTH="$BFLD/$dc_name/data"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
 
-  [[ -d $LPTH ]] || mkdir -p $LPTH
-  [[ -d $LFLD/letsencrypt ]] || mkdir -p $LFLD/letsencrypt
-  cd $LFLD && touch docker-compose.yml
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -d "$LFLD/letsencrypt" ]] || mkdir -p "$LFLD/letsencrypt"
+  [[ -f "$FYML"  ]] || touch $FYML
 
-  cat > $LFLD/docker-compose.yml << EOF
+  echoR "\n >>>" " 现在开始部署 Nginx Proxy Manager ... \n"
+  
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  cat > "$FYML" << EOF
 version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
-    image: $dc_image
+    image: $dc_imag
     volumes:
         - $LPTH:/data
         - $LFLD/letsencrypt:/etc/letsencrypt
@@ -3274,8 +3283,9 @@ services:
     restart: always
 EOF
 
-  docker-compose up -d
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
 
+  # docker-compose up -d
 
         # clear 
         # docker_name="npm"
@@ -3299,6 +3309,8 @@ EOF
 
 # 使用Docker compose部署MyIP
 docker_deploy_myip(){
+
+  local BFLD="/home/dcc.d"
 
   local dc_port=18966
   local dc_name=myip
@@ -3331,23 +3343,6 @@ EOF
 
   docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
 
-#   # 启动容器
-#   docker-compose up -d
-
-#   # 是否绑定域名？
-#   echoR "是否需要绑定域名？[Y|N]"
-
-#   # 保存配置信息和访问链接
-#   touch /home/dcc.d/${dc_name}/${dc_name}.conf
-#   cat > /home/dcc.d/${dc_name}/${dc_name}.conf << EOF
-#     container_name = ${dc_name}
-#     URL(IPV4) = http://$WAN4:$dc_port
-#     URL(IPV6) = http://[$WAN6]:$dc_port
-#     OPENAI_API_KEY = $OPENAI_API_KEY
-#     GOOGLE_API_KEY = $GOOGLE_API_KEY
-#     CODE = $dcc_code
-# EOF
-#   echoG "是否保存配置文件？[Y|N](/home/dcc.d/${dc_name}/${dc_name}.conf)"
 }
 
 # 使用Docker compose部署ChatGPT-Next-Web
@@ -4603,7 +4598,7 @@ caddy_web_manager(){
 WebSites_manager_menu() {
 
 txtn " "
-txtn $(txbr "▼ 站点管理")$(txbp " ❦❦❦ ")
+txtn $(txbr "▼ 站点管理")$(txtp " ❦❦❦ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
