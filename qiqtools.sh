@@ -4410,6 +4410,8 @@ caddy_install(){
   # mkdir -p /home/web/{caddy,html}
   [[ -d "/home/web/caddy" ]] || mkdir -p "/home/web/caddy"
   [[ -d "/home/web/html" ]] || mkdir -p "/home/web/html"
+  [[ -d "/home/web/log" ]] || mkdir -p "/home/web/log"
+  
   cd "/home/web/caddy"
   # touch /home/web/caddy/Caddyfile
   # touch /home/web/html/index.html
@@ -4497,8 +4499,8 @@ caddy_newcaddyfile(){
   fi
 }
 
-caddy_start() { caddy_install; caddy start; }
 caddy_stop()  { caddy_install; caddy stop;  }
+caddy_start() { caddy_install; caddy start; }
 caddy_status(){ caddy_install; sudo systemctl status caddy; }
 caddy_reload(){ caddy_install; caddy_newcaddyfile; caddy reload; }
 
