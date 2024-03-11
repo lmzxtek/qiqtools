@@ -3112,6 +3112,7 @@ docker_deploy_ittools(){
 
   echo -e "\n >>> 现在开始部署IT-Tools ... \n"
   read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
   # [[ (check_port ptmp ) ]] && dc_port=$ptmp
   
   cat > "$FYML" << EOF
@@ -3603,13 +3604,15 @@ EOF
   esac  
 
   # 显示配置文件信息
-  echoR "\n容器 >> ${NAME} << " "配置信息和访问链接如下："
+  echoR "\n容器 >> ${NAME} << " "配置信息和访问链接："
+  txtb "↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓"
   # cat $LFLD/${NAME}.conf
   echoT "Service    : " "${NAME}"
   echoT "Container  : " "${NAME}"
   [[ -n "$WAN4"      ]] && echoR "URL(IPV4)  : " "http://$WAN4:$PORT   "
   [[ -n "$WAN6"      ]] && echoR "URL(IPV6)  : " "http://[$WAN6]:$PORT "
   [[ -n "$DOMAIN"    ]] && echoY "Domain     : " "${DOMAIN}            "
+  txtb "↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↓↓↓↓↓↓"
 
   echoR "\n >>>" " Great! Deploy ${NAME} Done."
   echoT ""
