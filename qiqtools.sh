@@ -765,6 +765,7 @@ install_add_docker() {
 # Docker安装
 docker_install() {
   if ! command -v docker &>/dev/null; then
+      echo -e "\n >>> Docker未安装 ..."
       install_add_docker
       docker_set_1ckl
   else
@@ -3351,8 +3352,8 @@ docker_deploy_gptacademic(){
 
   local LFLD="$BFLD/$dc_name"
   local LPTH="$BFLD/$dc_name/downloads"
-  local FYML="$FLD/docker-compose.yml"
-  local FCONF="$FLD/${dc_name}.conf"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
 
   ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
   [[ -f "$FYML"  ]] || touch $FYML
@@ -3498,11 +3499,11 @@ EOF
   # 显示配置文件信息
   echoR "\n${NAME}" "容器的配置信息和访问链接如下："
   # cat $LFLD/${NAME}.conf
-  echoR "Service    :" "${NAME}"
-  echoR "Container  :" "${NAME}"
-  [[ -n "$WAN4"      ]] && echoR "URL(IPV4) :" "http://$WAN4:$PORT   "
-  [[ -n "$WAN6"      ]] && echoR "URL(IPV6) :" "http://[$WAN6]:$PORT "
-  [[ -n "$DOMAIN"    ]] && echoY "Domain    :" "${DOMAIN}            "
+  echoR "Service    : " "${NAME}"
+  echoR "Container  : " "${NAME}"
+  [[ -n "$WAN4"      ]] && echoR "URL(IPV4)  : " "http://$WAN4:$PORT   "
+  [[ -n "$WAN6"      ]] && echoR "URL(IPV6)  : " "http://[$WAN6]:$PORT "
+  [[ -n "$DOMAIN"    ]] && echoY "Domain     : " "${DOMAIN}            "
 
   echoR "\n >>>" " Great! Deploy ${NAME} Done."
   echoT ""
@@ -3533,7 +3534,7 @@ txtn $(txtn "25.StirlingPDF")$(txtg "✔")"          "$(txtn "45.RocketChat")$(t
 txtn $(txty "26.IT-Tools")$(txtg "✔")"             "$(txtn "46.QBittorrent")$(txtn "✔")
 txtn $(txtn "27.MyIP(IPChecking)")$(txtg "✔")"     "$(txtn "47.MacCMS")$(txtn "✔")
 txtn $(txtn "28.ChatGPT-Next-Web")$(txtg "✔")"     "$(txtn "48.NginxProxyManager")$(txtn "✔")
-txtn $(txtn "29.GPT_Academic")$(txtg "✔")"           "$(txtn "49.ChunhuChat")$(txtn "✔")
+txtn $(txtn "29.GPT_Academic")$(txtg "✔")"         "$(txtn "49.ChunhuChat")$(txtn "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtp "66.重启Caddy")$(txty "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
