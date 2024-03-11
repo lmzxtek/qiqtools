@@ -3123,50 +3123,6 @@ EOF
   # [[ -f "$CONF"]] || touch $FCONF
   # echo "New line of data" >> $FCONF
 
-#   # 构建并启动容器
-#   docker-compose up -d
-  
-#   # 是否绑定域名？
-#   read -p "\n是否需要绑定域名？[Y|n] " choice
-#   case "$choice" in
-#     [Yy]) 
-#       echo -e "\n先将域名解析到本机IP: ${red}$WAN4  ${blue}$WAN6${plain}"
-#       echo -e "(注意: 初始时不开启CDN, 绑定成功之后再开启。)\n"
-#       read -p "请输入解析的域名: " dc_domain
-#       caddy_reproxy $dc_domain "127.0.0.1" $dc_port
-#       caddy_reload
-#       # echo -e "\n您的反向代理网站做好了！"      
-#       ;;
-#     # [Nn]) ;;
-#        *)  echo "\n暂不绑定域名..." ;;
-#   esac  
-
-#   # 保存配置信息和访问链接
-#   echo ""
-#   read -p "是否保存配置文件？[N|n]($LFLD/${dc_name}.conf)" choice
-#   case "$choice" in
-#     [Nn]) echo "不保存配置文件..." ;;
-#        *)  
-#       # touch $LFLD/${dc_name}.conf
-#       cat > "$LPTH_CONF" << EOF
-#       service: ${dc_name}
-#     container: ${dc_name}
-#     URL(IPV4): http://$WAN4:$dc_port
-#     URL(IPV6): http://[$WAN6]:$dc_port
-#       Domain: $dc_domain
-# EOF
-#       ;;
-#   esac  
-
-#   # 显示配置文件信息
-#   echoR "\n${dc_name}容器的配置信息和访问链接如下："
-#   # cat $LFLD/${dc_name}.conf
-#   echoR "    service: ${dc_name}              "     
-#   echoR "  container: ${dc_name}              "     
-#   [[ -n "$WAN4"      ]] && echoR "  URL(IPV4): http://$WAN4:$dc_port   "                
-#   [[ -n "$WAN6"      ]] && echoR "  URL(IPV6): http://[$WAN6]:$dc_port "                  
-#   [[ -n "$dc_domain" ]] && echoR "    Domain: $dc_domain               "    
-#   echoT ""
 }
 
 docker_deploy_nextterminal(){
@@ -3341,13 +3297,138 @@ EOF
         # docker_app
 }
 
+# 使用Docker compose部署MyIP
+docker_deploy_myip(){
+
+  local dc_name=myip
+  local dcc_image=ghcr.io/jason5ng32/myip:latest
+
+  local dcc_port=18966
+
+  mkdir -p /home/dcc.d/${dc_name}
+  cd /home/dcc.d/${dc_name}
+  touch /home/dcc.d/${dc_name}/docker-compose.yml
+
+  cat > /home/dcc.d/${dc_name}/docker-compose.yml << EOF
+version: "3.9"
+services:
+  myip:
+    container_name: ${dc_name}
+    image: $dcc_image
+    restart: unless-stopped
+    ports:
+      - $dcc_port:18966
+EOF
+
+  # 启动容器
+  docker-compose up -d
+
+  # 是否绑定域名？
+  echoR "是否需要绑定域名？[Y|N]"
+
+  # 保存配置信息和访问链接
+  touch /home/dcc.d/${dc_name}/${dc_name}.conf
+  cat > /home/dcc.d/${dc_name}/${dc_name}.conf << EOF
+    container_name = ${dc_name}
+    URL(IPV4) = http://$WAN4:$dc_port
+    URL(IPV6) = http://[$WAN6]:$dc_port
+    OPENAI_API_KEY = $OPENAI_API_KEY
+    GOOGLE_API_KEY = $GOOGLE_API_KEY
+    CODE = $dcc_code
+EOF
+  echoG "是否保存配置文件？[Y|N](/home/dcc.d/${dc_name}/${dc_name}.conf)"
+}
+
+# 使用Docker compose部署ChatGPT-Next-Web
+docker_deploy_chatgptnextweb(){
+
+  local BFLD="/home/dcc.d"
+
+  local dc_port=3303
+  local dc_name=chatgptnextweb
+  local dc_imag=yidadaa/chatgpt-next-web
+  local dc_desc="ChatGPT-Next-Web"
+  # local dcc_code="543212345,7654321234567"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/downloads"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  echoR "\n >>>" " 现在开始部署ChatGPT-Next-Web ... \n"
+  
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  read -p "请输入API_KEY       : " OPENAI_API_KEY
+  read -p "请输入GEMINI_API_KEY: " GOOGLE_API_KEY
+  read -p "请输入登录密码       : " PASS
+
+  CUSTOM_MODELS="-all,+gemini-pro"
+  
+  # mkdir -p /home/dcc.d/${dc_name}
+  # cd /home/dcc.d/${dc_name}
+  # touch /home/dcc.d/${dc_name}/docker-compose.yml
+
+  cat > "$FYML" << EOF
+version: "3.9"
+services:
+  ${dc_name}:
+    # profiles: [ "no-proxy" ]
+    container_name: ${dc_name}
+    image: $dc_imag
+    restart: unless-stopped
+    ports:
+      - $dc_port:3000
+    environment:
+      - OPENAI_API_KEY=$OPENAI_API_KEY
+      - GOOGLE_API_KEY=$GOOGLE_API_KEY
+      - CODE="$PASS"
+      - BASE_URL=$BASE_URL
+      - OPENAI_ORG_ID=$OPENAI_ORG_ID
+      - HIDE_USER_API_KEY=$HIDE_USER_API_KEY
+      - DISABLE_GPT4=$DISABLE_GPT4
+      - ENABLE_BALANCE_QUERY=$ENABLE_BALANCE_QUERY
+      - DISABLE_FAST_LINK=$DISABLE_FAST_LINK
+      - OPENAI_SB=$OPENAI_SB
+      - CUSTOM_MODELS=$CUSTOM_MODELS
+EOF
+
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echo -e   " Password   : $PASS"
+  echo -e   " Password   : $PASS" >> $FCONF
+
+  # 启动容器
+#   docker-compose up -d
+
+#   # 是否绑定域名？
+#   echoR "是否需要绑定域名？[Y|N]"
+
+#   # 保存配置信息和访问链接
+#   touch /home/dcc.d/${dc_name}/${dc_name}.conf
+#   cat > /home/dcc.d/${dc_name}/${dc_name}.conf << EOF
+#     container_name = ${dc_name}
+#     URL(IPV4) = http://$WAN4:$dc_port
+#     URL(IPV6) = http://[$WAN6]:$dc_port
+#     OPENAI_API_KEY = $OPENAI_API_KEY
+#     GOOGLE_API_KEY = $GOOGLE_API_KEY
+#     CODE = $dcc_code
+# EOF
+#   echoG "是否保存配置文件？[Y|N](/home/dcc.d/${dc_name}/${dc_name}.conf)"
+
+}
+
 docker_deploy_gptacademic(){
 
   local BFLD="/home/dcc.d"
 
   local dc_port=50923
   local dc_name=gpt_academic
-  local dc_image=ghcr.io/binary-husky/gpt_academic_nolocal:master
+  local dc_imag=ghcr.io/binary-husky/gpt_academic_nolocal:master
   local dc_desc="gpt_academic学术工具"
 
   local LFLD="$BFLD/$dc_name"
@@ -3373,7 +3454,7 @@ version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
-    image: $dc_image
+    image: $dc_imag
     environment:
       - API_KEY=$API_KEY
       - GEMINI_API_KEY=$GEMINI_API_KEY
@@ -3922,112 +4003,6 @@ docker_app() {
   fi
 }
 
-# 使用Docker compose部署ChatGPT-Next-Web
-docker_deploy_chatgptnextweb(){
-
-  local dc_name=chatgptnextweb
-  local dcc_image=yidadaa/chatgpt-next-web
-
-  local dcc_port=3001
-  local dcc_code="543212345,7654321234567"
-
-  reading "请输入OpenAI密钥：" OPENAI_API_KEY
-  reading "请输入Gemini密钥：" GOOGLE_API_KEY
-
-  # local OPENAI_API_KEY=$1
-  # local GOOGLE_API_KEY=$2
-
-  mkdir -p /home/dcc.d/${dc_name}
-  cd /home/dcc.d/${dc_name}
-  touch /home/dcc.d/${dc_name}/docker-compose.yml
-
-  cat > /home/dcc.d/${dc_name}/docker-compose.yml << EOF
-version: "3.9"
-services:
-  chatgpt-next-web-g:
-    # profiles: [ "no-proxy" ]
-    container_name: ${dc_name}
-    image: $dcc_image
-    restart: unless-stopped
-    ports:
-      - $dcc_port:3000
-    environment:
-      - OPENAI_API_KEY=$OPENAI_API_KEY
-      - GOOGLE_API_KEY=$GOOGLE_API_KEY
-      - CODE=$dcc_code
-      - BASE_URL=$BASE_URL
-      - OPENAI_ORG_ID=$OPENAI_ORG_ID
-      - HIDE_USER_API_KEY=$HIDE_USER_API_KEY
-      - DISABLE_GPT4=$DISABLE_GPT4
-      - ENABLE_BALANCE_QUERY=$ENABLE_BALANCE_QUERY
-      - DISABLE_FAST_LINK=$DISABLE_FAST_LINK
-      - OPENAI_SB=$OPENAI_SB
-      - CUSTOM_MODELS=-all,+gemini-pro
-EOF
-
-  # 启动容器
-  docker-compose up -d
-
-  # 是否绑定域名？
-  echoR "是否需要绑定域名？[Y|N]"
-
-  # 保存配置信息和访问链接
-  touch /home/dcc.d/${dc_name}/${dc_name}.conf
-  cat > /home/dcc.d/${dc_name}/${dc_name}.conf << EOF
-    container_name = ${dc_name}
-    URL(IPV4) = http://$WAN4:$dc_port
-    URL(IPV6) = http://[$WAN6]:$dc_port
-    OPENAI_API_KEY = $OPENAI_API_KEY
-    GOOGLE_API_KEY = $GOOGLE_API_KEY
-    CODE = $dcc_code
-EOF
-  echoG "是否保存配置文件？[Y|N](/home/dcc.d/${dc_name}/${dc_name}.conf)"
-
-}
-
-# 使用Docker compose部署MyIP
-docker_deploy_myip(){
-
-  local dc_name=myip
-  local dcc_image=ghcr.io/jason5ng32/myip:latest
-
-  local dcc_port=18966
-
-  mkdir -p /home/dcc.d/${dc_name}
-  cd /home/dcc.d/${dc_name}
-  touch /home/dcc.d/${dc_name}/docker-compose.yml
-
-  cat > /home/dcc.d/${dc_name}/docker-compose.yml << EOF
-version: "3.9"
-services:
-  myip:
-    container_name: ${dc_name}
-    image: $dcc_image
-    restart: unless-stopped
-    ports:
-      - $dcc_port:18966
-EOF
-
-  # 启动容器
-  docker-compose up -d
-
-  # 是否绑定域名？
-  echoR "是否需要绑定域名？[Y|N]"
-
-  # 保存配置信息和访问链接
-  touch /home/dcc.d/${dc_name}/${dc_name}.conf
-  cat > /home/dcc.d/${dc_name}/${dc_name}.conf << EOF
-    container_name = ${dc_name}
-    URL(IPV4) = http://$WAN4:$dc_port
-    URL(IPV6) = http://[$WAN6]:$dc_port
-    OPENAI_API_KEY = $OPENAI_API_KEY
-    GOOGLE_API_KEY = $GOOGLE_API_KEY
-    CODE = $dcc_code
-EOF
-  echoG "是否保存配置文件？[Y|N](/home/dcc.d/${dc_name}/${dc_name}.conf)"
-
-}
-
 docker_container_list_menu(){
 txtn " "
 txtn $(txbr "▼ Docker容器")$(txbg " ☪☪☪ ")
@@ -4072,7 +4047,6 @@ docker_container_list_run() {
         docker stop $dockername
         ;;
       5) 
-        # clear 
         read -p "请输入要删除的容器名: " dockername
         docker rm $dockername
         ;;
