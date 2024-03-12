@@ -4726,10 +4726,15 @@ WebSites_manager_run(){
 # 脚本更新
 script_update(){
   cd ~
+
+  curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/update_log.sh && \
+  chmod +x update_log.sh && ./update_log.sh && \
+  rm update_log.sh
+
   echo -e "\n脚本链接URL:\n" " >>> ${cyan}https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh${plain}"
-  curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && chmod +x qiqtools.sh
-  echo -e "\n脚本已更新至最新版本！\n按任意键重新加载脚本..."
-  echo -e ""
+  curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && \
+  chmod +x qiqtools.sh && \
+  echo -e "\n脚本已更新至最新版本！\n按任意键重新加载脚本...\n"
   break_end #&& exit && qiq
   qiq_reload
 }
