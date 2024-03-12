@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.4.5
+script_version=v0.4.6
 #==========================
 
 # Language
@@ -3847,7 +3847,8 @@ board_panels_run() {
 
      24) clear && bash <(curl -Ls https://raw.githubusercontent.com/ppoonk/AirGo/main/server/scripts/install.sh)  ;;
 
-      0) clear && clear && clear && clear && qiqtools ;;
+      # 0) clear && qiqtools ;;
+      0) clear && return 1 ;;
       *) echo "无效的输入!" ;;
     esac  
     break_end
@@ -4206,6 +4207,35 @@ docker_volume_list_run() {
     break_end    
   done 
 }
+
+docker_volume_list_menu(){
+  local dc_name=$1
+txtn " "
+txtn $(txbc " Docker > ")$(txby "${dc_name}")
+txtn "—————————————————————————————————————"
+echoY " Service     : " "$dc_name" 
+echoY " Container   : " "$dc_name" 
+echoY " Port        : " "$dc_port" 
+echoY " Image       : " "$dc_imag" 
+echoY " Volume      : " "$dc_volu" 
+echoY " Description : " "$dc_desc" 
+txtn "====================================="
+txtn $(txtn " 1.安装应用")$(txtg "❀")"       "$(txtn "")$(txtn "")
+txtn $(txtn " 2.更新应用")$(txtg "☣")"       "$(txtn "")$(txtn "")
+txtn $(txtn " 3.卸载应用")$(txtg "✁")"       "$(txtn "")$(txtn "")
+# txtn $(txtn " 1.Docker")$(txtg "✔")"      "$(txtn "11.Test")$(txtb "✘")
+txtn "—————————————————————————————————————"
+txtn $(txtn " 0.返回上级菜单")$(txtr "✖")"           "$(txtr "")$(txtb "")$(txtc "")
+txtn " "  
+}
+
+# 指定容器管理
+docker_container_manage(){
+  local dc_name=$1
+  local dc_port=$2
+  local dc_desc=$3
+}
+
 docker_menu() {
 txtn " "
 txtn $(txbr "▼ 容器管理")$(txbg " ☪☪☪ ")
@@ -4731,7 +4761,7 @@ script_update(){
   # chmod +x update_log.sh && ./update_log.sh && \
   # rm update_log.sh
 
-  echo -e "\n脚本链接URL:\n" " >>> ${cyan}https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh${plain}"
+  # echo -e "脚本链接:\n" " >>> ${cyan}https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh${plain}"
   curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && \
   chmod +x qiqtools.sh && \
   echo -e "\n脚本已更新至最新版本！\n按任意键重新加载脚本...\n"

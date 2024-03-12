@@ -9,13 +9,14 @@ VLATEST=$(echoG "NEW")
 
 clear
 echoR " >>> " $(echoY "脚本更新日志") $(echoR "<<<") 
-echoB " - 链接:" $(echoT " https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh")
+echoB " - " $(echoT "https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh")
 echoT "--------------------------------"
 echoT " >>> 2024-3-12   v0.4.4" ""
-echoT " - 1.完成了站点部署菜单的各项功能。"
-echoT " - 2.添加了脚本更新日志的显示."
+echoT "   1.完成了站点部署菜单的各项功能。"
+echoT "   2.添加了脚本更新日志的显示."
+echoT "   3.修正了域名绑定时，重新加载出错的问题."
 echoT "--------------------------------"
 echoR " >>> 2024-3-12   v0.4.5" " $VLATEST"
-echoY " - 1.使用wget显示脚本日志。"
-echoY " - 2.用不同颜色显示日志，突出最新版本。"
+echoY "   1.使用wget显示脚本日志。"
+echoY "   2.用不同颜色显示日志，突出最新版本。"
 echoT "--------------------------------"
