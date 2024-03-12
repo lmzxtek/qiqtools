@@ -3975,7 +3975,12 @@ docker_container_list_menu(){
 txtn " "
 txtn $(txbr "▼ Docker容器")$(txbg " ☪☪☪ ")
 txtn "—————————————————————————————————————"
-docker ps -a
+if ! command -v docker &>/dev/null; then
+    echo -e " >>> Docker${red}未安装${plain} ..."
+else
+  # echo -e "\n >>> Docker已安装 ..."
+  docker ps -a
+fi
 txtn "====================================="
 txtn $(txtn " 1.创建新的容器")$(txtg "✔")"       "$(txtn "11.启动所有容器")$(txtn "✔")
 txtn $(txtn " 2.启动指定容器")$(txtg "✔")"       "$(txtn "12.暂停所有容器")$(txtn "✔")
@@ -4069,7 +4074,13 @@ docker_images_list_menu(){
 txtn " "
 txtn $(txbr "▼ Docker镜像列表")$(txbg " ☪☪☪ ")
 txtn "—————————————————————————————————————"
-docker image ls
+if ! command -v docker &>/dev/null; then
+    echo -e " >>> Docker${red}未安装${plain} ..."
+else
+  # echo -e "\n >>> Docker已安装 ..."
+  # docker ps -a
+  docker image ls
+fi
 txtn "====================================="
 txtn $(txtn " 1.获取指定镜像")$(txtg "✔")"       "$(txtn "")$(txtn "")
 txtn $(txtn " 2.更新指定镜像")$(txtg "✔")"       "$(txtn "")$(txtn "")
@@ -4110,7 +4121,14 @@ docker_network_list_menu(){
 txtn " "
 txtn $(txbr "▼ Docker网络列表")$(txbg " ☪☪☪ ")
 txtn "—————————————————————————————————————"
-docker network ls
+if ! command -v docker &>/dev/null; then
+    echo -e " >>> Docker${red}未安装${plain} ..."
+else
+  # echo -e "\n >>> Docker已安装 ..."
+  # docker ps -a
+  # docker image ls
+  docker network ls
+fi
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 container_ids=$(docker ps -q)
 printf "%-25s %-25s %-25s\n" "容器名称" "网络名称" "IP地址"
@@ -4175,7 +4193,15 @@ docker_volume_list_menu(){
 txtn " "
 txtn $(txbr "▼ Docker卷列表")$(txbg " ☪☪☪ ")
 txtn "—————————————————————————————————————"
-docker volume ls
+if ! command -v docker &>/dev/null; then
+    echo -e " >>> Docker${red}未安装${plain} ..."
+else
+  # echo -e "\n >>> Docker已安装 ..."
+  # docker ps -a
+  # docker image ls
+  # docker network ls
+  docker volume ls
+fi
 txtn "====================================="
 txtn $(txtn " 1.创建新卷")$(txtg "✔")"       "$(txtn "")$(txtn "")
 txtn $(txtn " 2.删除卷")$(txtg "✔")"       "$(txtn "")$(txtn "")
@@ -4240,7 +4266,14 @@ docker_menu() {
 txtn " "
 txtn $(txbr "▼ 容器管理")$(txbg " ☪☪☪ ")
 txtn "—————————————————————————————————————"
-WANIP_show 
+WANIP_show
+if ! command -v docker &>/dev/null; then
+  txtn "====================================="
+    echo -e " >>> Docker${red}未安装${plain} ..."
+elif ! command -v docker-compose &>/dev/null; then
+  txtn "====================================="
+  echo -e " >>> docker-compose${red}未安装${plain} ..."
+fi
 txtn "====================================="
 txtn $(txtn " 1.Docker环境安装")$(txtg "✔")"       "$(txty "11.Docker状态")$(txtn "✔")
 txtn $(txtn " 2.Docker环境卸载")$(txtg "✔")"       "$(txtn "12.Docker清理")$(txtn "✔")
