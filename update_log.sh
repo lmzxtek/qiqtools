@@ -5,13 +5,13 @@ echoG(){ FLAG=$1 && shift && echo -e "\033[38;5;71m$FLAG\033[39m$@"; }
 echoB(){ FLAG=$1 && shift && echo -e "\033[38;1;34m$FLAG\033[39m$@" ;}
 echoR(){ FLAG=$1 && shift && echo -e "\033[38;5;203m$FLAG\033[39m$@"; }
 
-VLATEST=$(echoY "NEW")
+VLATEST=$(echoG "NEW")
 
 clear
-echoG " >>> 脚本更新日志 <<<"
-echoB " - 脚本链接:" " https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh"
+echoR " >>> " $(echoY "脚本更新日志") $(echoR "<<<") 
+echoB " - 链接:" $(echoT " https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh")
 echoT "--------------------------------"
-echoT " >>> 2024-3-12   v0.4.4"
+echoT " >>> 2024-3-12   v0.4.4" ""
 echoT " - 1.完成了站点部署菜单的各项功能。"
 echoT " - 2.添加了脚本更新日志的显示."
 echoT "--------------------------------"
