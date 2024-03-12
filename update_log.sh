@@ -8,7 +8,8 @@ echoR(){ FLAG=$1 && shift && echo -e "\033[38;5;203m$FLAG\033[39m$@"; }
 VLATEST=$(echoY "NEW")
 
 clear
-echoT " >>> 脚本更新日志 <<<"
+echoG " >>> 脚本更新日志 <<<"
+echoB " - 脚本链接:" " https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh"
 echoT "--------------------------------"
 echoT " >>> 2024-3-12   v0.4.4"
 echoT " - 1.完成了站点部署菜单的各项功能。"
