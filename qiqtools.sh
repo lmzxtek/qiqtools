@@ -3847,8 +3847,8 @@ board_panels_run() {
 
      24) clear && bash <(curl -Ls https://raw.githubusercontent.com/ppoonk/AirGo/main/server/scripts/install.sh)  ;;
 
-      # 0) clear && qiqtools ;;
-      0) clear && return 1 ;;
+      0) clear && qiqtools ;;
+      # 0) clear && return 1 && exit;;
       *) echo "无效的输入!" ;;
     esac  
     break_end
@@ -4269,10 +4269,10 @@ txtn "————————————————————————�
 WANIP_show
 if ! command -v docker &>/dev/null; then
   txtn "====================================="
-    echo -e " >>> Docker${red}未安装${plain} ..."
+    echo -e " >>> Docker${yellow}未安装${plain} ..."
 elif ! command -v docker-compose &>/dev/null; then
   txtn "====================================="
-  echo -e " >>> docker-compose${red}未安装${plain} ..."
+  echo -e " >>> docker-compose${yellow}未安装${plain} ..."
 fi
 txtn "====================================="
 txtn $(txtn " 1.Docker环境安装")$(txtg "✔")"       "$(txty "11.Docker状态")$(txtn "✔")
