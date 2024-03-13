@@ -3499,6 +3499,50 @@ EOF
   echo -e   "Site password: $SITE_PASSWORD" >> $FCONF
 }
 
+docker_deploy_aktools(){
+
+  local BFLD="/home/dcc.d"
+
+  local dc_port=3033
+  local dc_name=aktools
+  local dc_imag=babaohuang/geminiprochat:latest
+  local dc_desc="GeminiProChat"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/downloads"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  echoR "\n >>>" " 现在开始部署 Aktools ... \n"
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  read -p "请输入GEMINI_API_KEY: " GEMINI_API_KEY
+  read -p "请输入登录密码       : " SITE_PASSWORD
+  
+  cat > "$FYML" << EOF
+version: '3'
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    environment:
+      - GEMINI_API_KEY=$GEMINI_API_KEY
+      - SITE_PASSWORD=$SITE_PASSWORD
+    ports:
+        - '$dc_port:3000'
+    restart: unless-stopped
+EOF
+
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echo -e   "Site password: $SITE_PASSWORD"
+  echo -e   "Site password: $SITE_PASSWORD" >> $FCONF
+}
+
 docker_deploy_chunhuchat(){
 
   local BFLD="/home/dcc.d"
