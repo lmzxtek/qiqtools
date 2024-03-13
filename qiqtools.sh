@@ -3503,7 +3503,7 @@ docker_deploy_aktools(){
 
   local BFLD="/home/dcc.d"
 
-  local dc_port=3033
+  local dc_port=4083
   local dc_name=aktools
   local dc_imag=registry.cn-shanghai.aliyuncs.com/akfamily/aktools:1.8.95
   local dc_desc="AKTools"
@@ -3738,7 +3738,7 @@ website_deploy_run(){
      44) clear && docker_deploy_clashdashboard;;
      45) clear && docker_deploy_rocketchat ;;
      46) clear && docker_deploy_gptacademic ;;
-     46) clear && docker_deploy_geminiprochat ;;
+     47) clear && docker_deploy_geminiprochat ;;
      48) clear && docker_deploy_chunhuchat ;;
      49) clear && docker_deploy_chatgptnextweb ;;
      50) clear && docker_deploy_aktools ;;
