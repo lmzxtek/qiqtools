@@ -3505,8 +3505,8 @@ docker_deploy_aktools(){
 
   local dc_port=3033
   local dc_name=aktools
-  local dc_imag=babaohuang/geminiprochat:latest
-  local dc_desc="GeminiProChat"
+  local dc_imag=registry.cn-shanghai.aliyuncs.com/akfamily/aktools:1.8.95
+  local dc_desc="AKTools"
 
   local LFLD="$BFLD/$dc_name"
   local LPTH="$BFLD/$dc_name/downloads"
@@ -3516,12 +3516,11 @@ docker_deploy_aktools(){
   ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
   [[ -f "$FYML"  ]] || touch $FYML
 
-  echoR "\n >>>" " 现在开始部署 Aktools ... \n"
+  echoR "\n >>>" " 现在开始部署 AKTools ... \n"
   read -p "请输入监听端口(默认为:${dc_port}): " ptmp
   [[ -z "$ptmp" ]] || dc_port=$ptmp
 
-  read -p "请输入GEMINI_API_KEY: " GEMINI_API_KEY
-  read -p "请输入登录密码       : " SITE_PASSWORD
+  # curl -sS -O https://github.com/akfamily/aktools/blob/main/Dockerfile
   
   cat > "$FYML" << EOF
 version: '3'
@@ -3530,17 +3529,16 @@ services:
     container_name: ${dc_name}
     image: $dc_imag
     environment:
-      - GEMINI_API_KEY=$GEMINI_API_KEY
       - SITE_PASSWORD=$SITE_PASSWORD
     ports:
-        - '$dc_port:3000'
+        - '$dc_port:8080'
     restart: unless-stopped
 EOF
 
   docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
 
-  echo -e   "Site password: $SITE_PASSWORD"
-  echo -e   "Site password: $SITE_PASSWORD" >> $FCONF
+  echo -e   "Request example: http://$WAN4:$dc_port/api/public/stock_zh_a_hist" >> $FCONF
+  echo -e   "Request example: http://$WAN4:$dc_port/api/public/stock_zh_a_hist"
 }
 
 docker_deploy_chunhuchat(){
