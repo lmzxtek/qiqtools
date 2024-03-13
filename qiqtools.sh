@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.4.6
+script_version=v0.4.7
 #==========================
 
 # Language
@@ -3455,6 +3455,50 @@ EOF
   echo -e   " Password   : $PASS" >> $FCONF
 }
 
+docker_deploy_geminiprochat(){
+
+  local BFLD="/home/dcc.d"
+
+  local dc_port=3033
+  local dc_name=geminiprochat
+  local dc_imag=babaohuang/geminiprochat:latest
+  local dc_desc="GeminiProChat"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/downloads"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  echoR "\n >>>" " 现在开始部署 Gemini Pro Chat ... \n"
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  read -p "请输入GEMINI_API_KEY: " GEMINI_API_KEY
+  read -p "请输入登录密码       : " SITE_PASSWORD
+  
+  cat > "$FYML" << EOF
+version: '3'
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    environment:
+      - GEMINI_API_KEY=$GEMINI_API_KEY
+      - SITE_PASSWORD=$SITE_PASSWORD
+    ports:
+        - '$dc_port:3000'
+    restart: unless-stopped
+EOF
+
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echo -e   "Site password: $SITE_PASSWORD"
+  echo -e   "Site password: $SITE_PASSWORD" >> $FCONF
+}
+
 docker_deploy_chunhuchat(){
 
   local BFLD="/home/dcc.d"
@@ -3599,15 +3643,16 @@ txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"        "$(txtn "15.ChatGPT-Next-We
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txby "▼ Docker")$(txtp " ❦❦❦ ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "21.AuroraPanel")$(txtg "✔")"          "$(txtn "41.Portainer")$(txtn "✔")
-txtn $(txtn "22.Ubuntu-RDP-Web")$(txtg "✔")"       "$(txtn "42.Next-Terminal")$(txtn "✔")
-txtn $(txtn "23.Memos")$(txtg "✔")"                "$(txtc "43.YACD")$(txtn "✔")
+txtn $(txtn "21.AuroraPanel")$(txtg "✔")"          "$(txtn "41.MacCMS")$(txtn "✔")
+txtn $(txtn "22.Ubuntu-RDP-Web")$(txtg "✔")"       "$(txtn "42.Memos")$(txtn "✔")
+txtn $(txtn "23.IT-Tools")$(txtg "✔")"             "$(txtc "43.YACD")$(txtn "✔")
 txtn $(txtc "24.SearXNG")$(txtg "✔")"              "$(txtn "44.ClashDashBoard")$(txtn "✔")
 txtn $(txtn "25.StirlingPDF")$(txtg "✔")"          "$(txtb "45.RocketChat")$(txtr "✘")
-txtn $(txty "26.IT-Tools")$(txtg "✔")"             "$(txtn "46.QBittorrent")$(txtn "✔")
-txtn $(txtn "27.MyIP(IPChecking)")$(txtg "✔")"     "$(txtn "47.MacCMS")$(txtn "✔")
-txtn $(txtn "28.ChatGPT-Next-Web")$(txtg "✔")"     "$(txtn "48.NginxProxyManager")$(txtn "✔")
-txtn $(txtn "29.GPT_Academic")$(txtg "✔")"         "$(txtn "49.ChunhuChat")$(txtn "✔")
+txtn $(txty "26.MyIP(IPChecking)")$(txtg "✔")"     "$(txtn "46.GPT_Academic")$(txtn "✔")
+txtn $(txtn "27.QBittorrent")$(txtg "✔")"          "$(txtn "47.GeminiProChat")$(txtn "✔")
+txtn $(txtn "28.Portainer")$(txtg "✔")"            "$(txtn "48.ChunhuChat")$(txtn "✔")
+txtn $(txtn "29.Next-Terminal")$(txtg "✔")"        "$(txtn "49.ChatGPT-Next-Web")$(txtn "✔")
+txtn $(txtn "30.NginxProxyManager")$(txtg "✔")"    "$(txtn "50.Aktools")$(txtn "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtp "66.重启Caddy")$(txty "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
@@ -3636,23 +3681,25 @@ website_deploy_run(){
 
      21) clear && install curl && bash <(curl -fsSL https://raw.githubusercontent.com/Aurora-Admin-Panel/deploy/main/install.sh)  ;;
      22) clear && docker_deploy_ubunturdpweb ;;
-     23) clear && docker_deploy_memos ;;
+     23) clear && docker_deploy_ittools ;;
      24) clear && docker_deploy_searxng ;;
      25) clear && docker_deploy_spdf ;;
-     26) clear && docker_deploy_ittools ;;
-     27) clear && docker_deploy_myip ;;
-     28) clear && docker_deploy_chatgptnextweb ;;
-     29) clear && docker_deploy_gptacademic ;;
+     26) clear && docker_deploy_myip ;;
+     27) clear && docker_deploy_qbittorrent ;;
+     28) clear && docker_deploy_portainer ;;
+     29) clear && docker_deploy_nextterminal ;;
+     30) clear && docker_deploy_npm ;;
 
-     41) clear && docker_deploy_portainer ;;
-     42) clear && docker_deploy_nextterminal ;;
+     41) clear && docker_deploy_maccms_tweek ;;
+     42) clear && docker_deploy_memos ;;
      43) clear && docker_deploy_yacd ;;
      44) clear && docker_deploy_clashdashboard;;
-     46) clear && docker_deploy_qbittorrent ;;
      45) clear && docker_deploy_rocketchat ;;
-     47) clear && docker_deploy_maccms_tweek ;;
-     48) clear && docker_deploy_npm ;;
-     49) clear && docker_deploy_chunhuchat ;;
+     46) clear && docker_deploy_gptacademic ;;
+     46) clear && docker_deploy_geminiprochat ;;
+     48) clear && docker_deploy_chunhuchat ;;
+     49) clear && docker_deploy_chatgptnextweb ;;
+     50) clear && docker_deploy_aktools ;;
 
      66) clear && caddy_reload ;;
      77) clear && WebSites_manager_run ;;
