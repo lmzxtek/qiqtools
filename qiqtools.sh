@@ -3329,6 +3329,9 @@ EOF
 
   docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
 
+  echo -e " >>> MyIP 部署成功!!! "
+  echo -e ""
+
 }
 
 # 使用Docker compose部署ChatGPT-Next-Web
@@ -3449,6 +3452,7 @@ EOF
   echo -e "\n Config path: $LFLD/config"
   echo -e "\n User       : $USER"
   echo -e   " Password   : $PASS"
+  echo -e ""
 
   echo -e "\n Config path: $LFLD/config" >> $FCONF
   echo -e "\n User       : $USER" >> $FCONF
@@ -3497,6 +3501,7 @@ EOF
 
   echo -e   "Site password: $SITE_PASSWORD"
   echo -e   "Site password: $SITE_PASSWORD" >> $FCONF
+  echo -e ""
 }
 
 docker_deploy_aktools(){
@@ -3539,6 +3544,7 @@ EOF
 
   echo -e   "Request example: http://$WAN4:$dc_port/api/public/stock_zh_a_hist" >> $FCONF
   echo -e   "Request example: http://$WAN4:$dc_port/api/public/stock_zh_a_hist"
+  echo -e ""
 }
 
 docker_deploy_chunhuchat(){
@@ -3602,6 +3608,7 @@ EOF
   echo -e "\n Config path: $LFLD/config.json" >> $FCONF
   # echo -e "\n User       : $USER" >> $FCONF
   # echo -e   " Password   : $PASS" >> $FCONF
+  echo -e ""
 }
 
 # 部署Docker，使用yml配置文件
