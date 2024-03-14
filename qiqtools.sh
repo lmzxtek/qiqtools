@@ -2286,7 +2286,7 @@ server_test_menu() {
 txtn " "
 txtn $(txbr "▼ 性能测试")$(txbg " ☯☯☯ ")
 txtn "—————————————————————————————————————"
-txtn "     主机名: "$(txtp "$hostname")
+txtn "   主机名  : "$(txtp "$hostname")
 txtn "   系统版本: "$(txtp "$os_info")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 WANIP_show 
