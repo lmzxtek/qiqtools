@@ -5,7 +5,11 @@ echoG(){ FLAG=$1 && shift && echo -e "\033[38;5;71m$FLAG\033[39m$@"; }
 echoB(){ FLAG=$1 && shift && echo -e "\033[38;1;34m$FLAG\033[39m$@" ;}
 echoR(){ FLAG=$1 && shift && echo -e "\033[38;5;203m$FLAG\033[39m$@"; }
 
-VLATEST=$(echoG "NEW")
+FCLS='\033[34m'        # 前景色：蓝色
+FTCZ='\033[0m'         # 字体：重置所有
+FTSS='\033[5m'         # 字体：闪烁
+
+VLATEST="${FCLS}${FTSS}NEW${FTCZ}" # 蓝色闪烁字体
 
 clear
 echoR " >>> " $(echoY "脚本更新日志") $(echoR "<<<") 
@@ -32,4 +36,5 @@ echoT "--------------------------------"
 echoR " >>> 2024-3-14   v0.4.8" " $VLATEST"
 echoY "   1.添加颜色显示说明。"
 echoY "   2.添加前景色、背景色、字体全局变量。"
+echoY "   3.将更新日志中的NEW字体更改为蓝色闪烁。"
 echoT "--------------------------------"
