@@ -118,22 +118,22 @@ echoW(){ FLAG=${1} && shift && echo -e "\033[1m${EPACE}${FLAG}\033[0m${@}"; }
 echoNW(){ FLAG=${1} && shift && echo -e "\033[1m${FLAG}\033[0m${@}"; }
 echoCYAN(){ FLAG=$1 && shift && echo -e "\033[1;36m$FLAG\033[0m$@"; }
 
- txbr(){ echo -e "${red}${bold}$*${plain}"; }           # 红色粗体
- txbp(){ echo -e "${pink}${bold}$*${plain}"; }          # 粗体
- txbb(){ echo -e "${blue}${bold}$*${plain}"; }          # 粗体
- txbc(){ echo -e "${cyan}${bold}$*${plain}"; }          # 粗体
- txbw(){ echo -e "${white}${bold}$*${plain}"; }         # 粗体
- txbn(){ echo -e "${plain}${bold}$*${plain}"; }         # 粗体
- txbg(){ echo -e "${green}${bold}$*${plain}"; }         # 粗体
- txby(){ echo -e "${yellow}${bold}$*${plain}"; }        # 粗体
+txbr(){ echo -e "${red}${bold}$*${plain}"; }           # 红色粗体
+txbp(){ echo -e "${pink}${bold}$*${plain}"; }          # 粗体
+txbb(){ echo -e "${blue}${bold}$*${plain}"; }          # 粗体
+txbc(){ echo -e "${cyan}${bold}$*${plain}"; }          # 粗体
+txbw(){ echo -e "${white}${bold}$*${plain}"; }         # 粗体
+txbn(){ echo -e "${plain}${bold}$*${plain}"; }         # 粗体
+txbg(){ echo -e "${green}${bold}$*${plain}"; }         # 粗体
+txby(){ echo -e "${yellow}${bold}$*${plain}"; }        # 粗体
 
+error(){ echo -e "${red}${bold}$*${plain}" && exit 1; } # 红色粗体并退出
   warning(){ echo -e "${red}$*${plain}"; }              # 红色
 highlight(){ echo -e "${yellow}$*${plain}"; }           # 黄色
 
- note(){ echo -e "${pink}${bold}$*${plain}"; }          # 品色粗体
- info(){ echo -e "${green}${bold}$*${plain}"; }         # 绿色粗体
- hint(){ echo -e "${yellow}${bold}$*${plain}"; }        # 黄色粗体
-error(){ echo -e "${red}${bold}$*${plain}" && exit 1; } # 红色粗体并退出
+note(){ echo -e "${pink}${bold}$*${plain}"; }          # 品色粗体
+info(){ echo -e "${green}${bold}$*${plain}"; }         # 绿色粗体
+hint(){ echo -e "${yellow}${bold}$*${plain}"; }        # 黄色粗体
 
 # 键值对输出
 txtkvn() { local key="$1" && shift && local value=$(echo "$*" | tr -d '\n') && echo -e "${plain}$key${plain}$value${plain}"; }
