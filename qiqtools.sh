@@ -2292,7 +2292,7 @@ txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 WANIP_show 
 txtn "====================================="
 txtn $(txtn " 1.服务器基本信息")$(txtg "✔")"         "$(txtn "11.ChatGPT解锁状态检测")$(txtn "✔")
-txtn $(txtn " 2.NodeBench性能测试")$(txtg "✔")"      "$(txtn "12.Region流媒体解锁测试")$(txtn "✔")
+txtn $(txty " 2.NodeBench性能测试")$(txtp "✔")"      "$(txtn "12.Region流媒体解锁测试")$(txtn "✔")
 txtn $(txtn " 3.bench性能测试")$(txtg "✔")"          "$(txtn "13.yeahwu流媒体解锁测试")$(txtn "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "21.带宽性能(yabs)")$(txtp "✔")"         "$(txtn "24.单线程测速")$(txtn "✔")
