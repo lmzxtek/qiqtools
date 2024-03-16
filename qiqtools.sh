@@ -1188,6 +1188,9 @@ dd_system_run() {
   clear
   txty "\n请备份数据，将为你重装系统，预计花费15分钟。\n"
   txtn "\t虚拟化类型：${red}$VIRT${plain} \n"
+  txtn "\t${pink} Password For KVM =>"
+  txtn "\t${pink} Linux   : ${yellow}LeitboGi0ro"
+  txtn "\t${pink} Windows : ${yellow}Teddysun.com ${blue}(minumum Disk is 15G)${plain}\n"
   read -p "确定继续吗？(Y/N): " choice
   
   case "$choice" in
