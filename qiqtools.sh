@@ -2295,8 +2295,8 @@ txtn $(txtn " 1.服务器基本信息")$(txtg "✔")"         "$(txtn "11.ChatGP
 txtn $(txty " 2.NodeBench性能测试")$(txtp "✔")"      "$(txtn "12.Region流媒体解锁测试")$(txtn "✔")
 txtn $(txtn " 3.bench性能测试")$(txtg "✔")"          "$(txtn "13.yeahwu流媒体解锁测试")$(txtn "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "21.带宽性能(yabs)")$(txtp "✔")"         "$(txtn "24.单线程测速")$(txtn "✔")
-txtn $(txty "22.三网测速(Superspeed)")$(txtp "✔")"   "$(txtn "25.三网回程(bestrace)")$(txtn "✔")
+txtn $(txtn "21.三网测速(Superspeed)")$(txtp "✔")"   "$(txtn "24.单线程测速")$(txtn "✔")
+txtn $(txty "22.三网回程(bestrace)")$(txtp "✔")"     "$(txtb "25.带宽性能(yabs)")$(txtn "✔")
 txtn $(txtn "23.回程线路(mtr_trace)")$(txtg "✔")"    "$(txtn "")$(txtn "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "41.融合怪测评(spiritysdx)")$(txtg "✔")" "$(txtn "")$(txtn "")
@@ -2322,11 +2322,11 @@ server_test_run() {
      12) clear && install curl && bash <(curl -L -s check.unlock.media) ;;
      13) clear && install wget && wget -qO- https://github.com/yeahwu/check/raw/main/check.sh | bash ;;
 
-     21) clear && install curl && curl -sL yabs.sh | bash -s -- -i -5 ;;
-     22) clear && install curl && bash <(curl -Lso- https://git.io/superspeed_uxh) ;;
+     21) clear && install curl && bash <(curl -Lso- https://git.io/superspeed_uxh) ;;
+     22) clear && install wget && wget -qO- git.io/besttrace | bash ;;
      23) clear && install curl && curl https://raw.githubusercontent.com/zhucaidan/mtr_trace/main/mtr_trace.sh | bash ;;
      24) clear && bash <(fetch https://bench.im/hyperspeed) ;;
-     25) clear && install wget && wget -qO- git.io/besttrace | bash ;;
+     25) clear && install curl && curl -sL yabs.sh | bash -s -- -i -5 ;;
 
      41) clear && install curl && curl -L https://gitlab.com/spiritysdx/za/-/raw/main/ecs.sh -o ecs.sh && chmod +x ecs.sh && bash ecs.sh ;;
 
