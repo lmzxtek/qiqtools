@@ -1194,6 +1194,9 @@ txtn " "
 
 dd_system_run() {
   # https://github.com/leitbogioro/Tools 
+  # https://github.com/MoeClub/Note
+  # https://github.com/0oVicero0/Debian-ReInstall
+  # https://github.com/mowwom/OvzReinstall
 
   clear
   txty "\n请备份数据，将为你重装系统，预计花费15分钟。\n"
