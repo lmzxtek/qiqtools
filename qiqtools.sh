@@ -1164,23 +1164,27 @@ txtn $(txby "> 系统虚拟化: ")$(txtp "${red}$VIRT${plain}\n")
 txtn "\t${pink} Linux   : ${blue}root${white}@${yellow}LeitboGi0ro${plain}"
 txtn "\t${pink} Windows : ${blue}Administrator${white}@${yellow}Teddysun.com ${white}(Min 15G Storage)${plain}\n"
 txtn "====================================="
-txtn $(txty " 1.CentOS 9")$(txtc "☾")"         "$(txtn "11.Kali Rolling")$(txtg "❉")
-txtn $(txtn " 2.CentOS 8")$(txtg "☾")"         "$(txtn "12.AlmaLinux")$(txtg "❀")
-txtn $(txtn " 3.CentOS 7.9")$(txtg "☾")"       "$(txtn "13.RockyLinux")$(txtg "❈")
-txtn $(txtn " 4.CentOS 7.8")$(txtg "☾")"       "$(txtn "14.Fedora 39")$(txtg "❈")
+txtn $(txtp " 1.Debian 12")$(txtb "๑")"        "$(txtn "11.Ubuntu 24.04")$(txtb "☋")
+txtn $(txtn " 2.Debian 11")$(txtb "๑")"        "$(txtn "12.Ubuntu 22.04")$(txtb "☋")
+txtn $(txty " 3.Debian 10")$(txtr "๑")"        "$(txty "13.Ubuntu 20.04")$(txtp "☋")
+txtn $(txtn " 4.Debian 9 ")$(txtb "๑")"        "$(txtn "")$(txtb "")
+txtn $(txtn " 5.Debian 8 ")$(txtb "๑")"        "$(txtn "")$(txtb "")
+txtn $(txtn " 6.Debian 7 ")$(txtb "๑")"        "$(txtn "")$(txtb "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "21.Ubuntu 24.04")$(txtg "☋")"     "$(txtn "31.Debian 12")$(txtg "๑")
-txtn $(txtn "22.Ubuntu 22.04")$(txtg "☋")"     "$(txtn "32.Debian 11")$(txtg "๑")
-txtn $(txty "23.Ubuntu 20.04")$(txtr "☋")"     "$(txty "33.Debian 10")$(txtp "๑")
+txtn $(txty "31.Alpine 3.19")$(txtb "A")"      "$(txtn "41.CentOS 9")$(txtb "☾")
+txtn $(txtn "32.Alpine 3.18")$(txtb "A")"      "$(txtn "42.CentOS 8")$(txtb "☾")
+txtn $(txtn "33.Alpine 3.17")$(txtb "A")"      "$(txtn "43.CentOS 7")$(txtb "☾")
+txtn $(txtn "34.Alpine Edge")$(txtb "A")"      "$(txtn "")$(txtb "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "41.Windows 2012")$(txtg "▣")"     "$(txtn "51.Windows 11")$(txtg "◕")
-txtn $(txtn "42.Windows 2016")$(txtg "▣")"     "$(txtn "52.Windows 10")$(txtg "◕")
-txtn $(txtn "43.Windows 2019")$(txtg "▣")"     "$(txtn "")$(txtg "")
-txtn $(txtn "44.Windows 2022")$(txtg "▣")"     "$(txtn "")$(txtg "")
+txtn $(txtn "51.Windows 2022")$(txtb "▣")"     "$(txtn "61.Windows 11")$(txtc "◕")
+txtn $(txtn "52.Windows 2019")$(txtb "▣")"     "$(txtn "62.Windows 10")$(txtc "◕")
+txtn $(txtn "53.Windows 2016")$(txtb "▣")"     "$(txtn "")$(txtg "")
+txtn $(txtn "54.Windows 2012")$(txtb "▣")"     "$(txtn "")$(txtg "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txty "61.Alpine 3.19")$(txtg "A")"      "$(txtn "71.Alpine Edge")$(txtg "A")
-txtn $(txtn "62.Alpine 3.18")$(txtg "A")"      "$(txtn "")$(txtg "")
-txtn $(txtn "63.Alpine 3.17")$(txtg "A")"      "$(txtn "")$(txtg "")
+txtn $(txtn "71.Kali Rolling")$(txtn "❉")"     "$(txtn "")$(txtg "")
+txtn $(txtn "72.AlmaLinux")$(txtb "❀")"        "$(txtn "")$(txtg "")
+txtn $(txtn "73.RockyLinux")$(txtb "❈")"       "$(txtn "")$(txtg "")
+txtn $(txtn "74.Fedora 39")$(txtb "❈")"        "$(txtn "")$(txtg "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")"           "$(txtp "")$(txtc "")$(txty "")
@@ -1218,19 +1222,19 @@ dd_system_run() {
     dd_xitong_2 
 
     case "$sys_choice" in
-      21) 
+      11) 
         # dd_xitong_2 
         bash InstallNET.sh -ubuntu 24.04
         reboot 
         exit ;;
         
-      22) 
+      12) 
         # dd_xitong_2 
         # bash InstallNET.sh -ubuntu 
         bash InstallNET.sh -ubuntu 22.04
         reboot 
         exit ;;
-      23) 
+      13) 
         bash InstallNET.sh -ubuntu 20.04
         # bash InstallNET.sh -ubuntu 18.04
         # bash InstallNET.sh -ubuntu 16.04
@@ -1240,7 +1244,7 @@ dd_system_run() {
         # dd_xitong_1 
         # reboot 
         # exit ;;
-      31) 
+       1) 
         # bash InstallNET.sh -debian
         bash InstallNET.sh -debian 12
         reboot 
@@ -1250,7 +1254,7 @@ dd_system_run() {
         # exit 
         # reboot 
         # ;;
-      32) 
+       2) 
         bash InstallNET.sh -debian 11
         reboot 
         exit ;;
@@ -1258,7 +1262,7 @@ dd_system_run() {
         # dd_xitong_1 
         # reboot 
         # exit ;;
-      33) 
+       3) 
         bash InstallNET.sh -debian 10
         reboot 
         exit ;;
@@ -1266,91 +1270,99 @@ dd_system_run() {
         # dd_xitong_1 
         # reboot 
         # exit ;;
+       4) 
+        bash InstallNET.sh -debian 9
+        reboot 
+        exit ;;
+       5) 
+        bash InstallNET.sh -debian 8
+        reboot 
+        exit ;;
+       6) 
+        bash InstallNET.sh -debian 7
+        reboot 
+        exit ;;
       #============================== 
-      1) 
+     41) 
         bash InstallNET.sh -centos 9
         reboot 
         exit ;;
-      2) 
+     42) 
         bash InstallNET.sh -centos 8
         reboot 
         exit ;;
-      3) 
-        bash InstallNET.sh -centos 7.9
-        reboot 
-        exit ;;
-      4) 
-        bash InstallNET.sh -centos 7.8
+     43) 
+        bash InstallNET.sh -centos 7
         reboot 
         exit ;;
       #============================== 
-      71) 
+      31) 
+        bash InstallNET.sh -alpine 3.19
+        reboot 
+        exit ;;
+      32) 
+        bash InstallNET.sh -alpine 3.18
+        reboot 
+        exit ;;
+      33) 
+        bash InstallNET.sh -alpine 3.17
+        reboot 
+        exit ;;
+      34) 
         # bash InstallNET.sh -alpine
         bash InstallNET.sh -alpine edge
         # bash InstallNET.sh -alpine 3.19
         # bash InstallNET.sh -alpine 3.18
         reboot 
         exit ;;
-      61) 
-        bash InstallNET.sh -alpine 3.19
-        reboot 
-        exit ;;
-      62) 
-        bash InstallNET.sh -alpine 3.18
-        reboot 
-        exit ;;
-      63) 
-        bash InstallNET.sh -alpine 3.17
-        reboot 
-        exit ;;
       #============================== 
-      11) 
+      71) 
         bash InstallNET.sh -kali   
         # bash InstallNET.sh -kali rolling   
         # bash InstallNET.sh -kali dev   
         # bash InstallNET.sh -kali experimental   
         reboot 
         exit ;;
-      12) 
+      72) 
         bash InstallNET.sh -almalinux 9
         # bash InstallNET.sh -almalinux 8   
         reboot 
         exit ;;
-      13) 
+      73) 
         bash InstallNET.sh -rockylinux 9
         # bash InstallNET.sh -rockylinux 8   
         reboot 
         exit ;;
-      14) 
+      74) 
         bash InstallNET.sh -fedro 39
         # bash InstallNET.sh -fedro 38   
         reboot 
         exit ;;
       #============================== 
-      41) 
-        bash InstallNET.sh -windows 2012
-        reboot 
-        exit ;;
-      42) 
-        bash InstallNET.sh -windows 2016
-        reboot 
-        exit ;;
-      43) 
-        bash InstallNET.sh -windows 2019
-        reboot 
-        exit ;;
-      44) 
+      51) 
         bash InstallNET.sh -windows 2022
         reboot 
         exit ;;
-      51) 
+      52) 
+        bash InstallNET.sh -windows 2019
+        reboot 
+        exit ;;
+      53) 
+        bash InstallNET.sh -windows 2016
+        reboot 
+        exit ;;
+      54) 
+        bash InstallNET.sh -windows 2012
+        reboot 
+        exit ;;
+      61) 
         bash InstallNET.sh -windows 11
         # bash InstallNET.sh -windows 11 -lang "en"
         # bash InstallNET.sh -windows 11 -lang "cn"
         # bash InstallNET.sh -windows 11 -lang "jp" -port "22[1~65535]" -pwd "PssWord" -hostname "win11"
         reboot 
         exit ;;
-      52) 
+      62) 
         bash InstallNET.sh -windows 10
         reboot 
         exit ;;
