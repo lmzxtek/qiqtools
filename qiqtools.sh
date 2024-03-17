@@ -1171,52 +1171,25 @@ txtn $(txtn " 4.CentOS 7.8")$(txtg "☾")"       "$(txtn "14.Fedora 39")$(txtg "
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "21.Ubuntu 24.04")$(txtg "☋")"     "$(txtn "31.Debian 12")$(txtg "๑")
 txtn $(txtn "22.Ubuntu 22.04")$(txtg "☋")"     "$(txtn "32.Debian 11")$(txtg "๑")
-txtn $(txtn "23.Ubuntu 20.04")$(txtg "☋")"     "$(txtn "32.Debian 10")$(txtg "๑")
+txtn $(txty "23.Ubuntu 20.04")$(txtr "☋")"     "$(txty "33.Debian 10")$(txtp "๑")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "41.Windows 2012")$(txtg "▣")"     "$(txtn "51.Windows 11")$(txtg "◕")
 txtn $(txtn "42.Windows 2016")$(txtg "▣")"     "$(txtn "52.Windows 10")$(txtg "◕")
 txtn $(txtn "43.Windows 2019")$(txtg "▣")"     "$(txtn "")$(txtg "")
 txtn $(txtn "44.Windows 2022")$(txtg "▣")"     "$(txtn "")$(txtg "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "61.Alpine 3.19")$(txtg "A")"      "$(txtn "71.Alpine Edge")$(txtg "A")
+txtn $(txty "61.Alpine 3.19")$(txtg "A")"      "$(txtn "71.Alpine Edge")$(txtg "A")
 txtn $(txtn "62.Alpine 3.18")$(txtg "A")"      "$(txtn "")$(txtg "")
 txtn $(txtn "63.Alpine 3.17")$(txtg "A")"      "$(txtn "")$(txtg "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")"           "$(txtp "")$(txtc "")$(txty "")
 txtn " "
-
-# echo -e "
-# ▶ 可选系统菜单\t系统虚拟化：${red}$VIRT
-# -------------------------------
-# ${green} 1.${plain} CentOS 9                 ${green} 3.${plain} CentOS 7
-# ${green} 2.${plain} CentOS 8                 
-# -------------------------------
-# ${green}11.${plain} Debian 12                ${green}21.${plain} Ubuntu 24.04 ${red}(Not Avaliable)
-# ${green}12.${plain} Debian 11                ${green}22.${plain} Ubuntu 22.04
-# ${green}13.${plain} Debian 10                ${green}23.${plain} Ubuntu 20.04
-# -------------------------------
-# ${green}31.${plain} Alpine Edge              ${green}41.${plain} Kali Rolling
-# ${green}32.${plain} Alpine 3.19              ${green}42.${plain} AlmaLinux
-# ${green}33.${plain} Alpine 3.18              ${green}43.${plain} RockyLinux
-# ${green}34.${plain} Alpine 3.17              ${green}44.${plain} Fedora 39
-# -------------------------------
-# ${green}64.${plain} Windows 2019             ${green}61.${plain} Windows 11 ${pink}Beta${plain}
-# ${green}65.${plain} Windows 2016             ${green}62.${plain} Windows 10
-# ${green}66.${plain} Windows 2012             ${green}63.${plain} Windows 2022
-# -------------------------------
-# ${green} 0.${plain} 返回系统工具菜单
-# -------------------------------
-# ${green}PS:${plain} Default password: 
-# ${green}   ${blue}   Linux: ${yellow}LeitboGi0ro
-# ${green}   ${blue} Windows: ${yellow}Teddysun.com ${plain}(minumum Disk is 15G)
-# -------------------------------
-# "
 }
 
 dd_system_run() {
   # https://github.com/leitbogioro/Tools 
-  
+
   clear
   txty "\n请备份数据，将为你重装系统，预计花费15分钟。\n"
   txtn "\t虚拟化类型: ${red}$VIRT${plain} \n"
