@@ -1162,7 +1162,8 @@ txtn "————————————————————————�
 # WANIP_show
 txtn $(txby "> 系统虚拟化: ")$(txtp "${red}$VIRT${plain}\n")
 txtn "\t${pink} Linux   : ${blue}root${red}@${yellow}LeitboGi0ro${plain}"
-txtn "\t${pink} Windows : ${blue}Administrator${red}@${yellow}Teddysun.com ${white}(Min 15G Storage)${plain}\n"
+txtn "\t${pink} Windows : ${blue}Administrator${red}@${yellow}Teddysun.com"
+txtn "\t${pink}           ${white}(Windows need mininumn 15G Storage)${plain}\n"
 txtn "====================================="
 txtn $(txtp " 1.Debian 12")$(txtb "๑")"        "$(txtn "11.Ubuntu 24.04")$(txtb "☋")
 txtn $(txtn " 2.Debian 11")$(txtb "๑")"        "$(txtn "12.Ubuntu 22.04")$(txtb "☋")
@@ -1199,7 +1200,8 @@ dd_system_run() {
   txtn "\t虚拟化类型: ${red}$VIRT${plain} \n"
   txtn "\t${pink} =>> Password For KVM <<="
   txtn "\t${pink} Linux   : ${blue}root${red}@${yellow}LeitboGi0ro${plain}"
-  txtn "\t${pink} Windows : ${blue}Administrator${red}@${yellow}Teddysun.com ${white}(Min 15G Storage)${plain}\n"
+  txtn "\t${pink} Windows : ${blue}Administrator${red}@${yellow}Teddysun.com"
+  txtn "\t${pink}           ${white}(Windows need mininumn 15G Storage)${plain}\n"
   read -p "确定继续吗？[Y|n]: " choice
   
   case "$choice" in
