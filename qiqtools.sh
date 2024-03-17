@@ -1159,10 +1159,10 @@ dd_system_menu() {
 txtn " "
 txtn $(txby "▼ 可选系统菜单")$(txtp " ❃❃❃ ")
 txtn "—————————————————————————————————————"
-txtn $(txby "> 系统虚拟化:")$(txtp "${red}$VIRT${plain}")
+# WANIP_show
+txtn $(txby "> 系统虚拟化: ")$(txtp "${red}$VIRT${plain}\n")
 txtn "\t${pink} Linux   : ${yellow}root@LeitboGi0ro"
 txtn "\t${pink} Windows : ${yellow}Administrator@Teddysun.com ${blue}(Min 15G Storage)${plain}\n"
-# WANIP_show
 txtn "====================================="
 txtn $(txty " 1.CentOS 9")$(txtc "☾")"         "$(txtn "11.Kali Rolling")$(txtg "❉")
 txtn $(txtn " 2.CentOS 8")$(txtg "☾")"         "$(txtn "12.AlmaLinux")$(txtg "❀")
@@ -1215,13 +1215,14 @@ txtn " "
 }
 
 dd_system_run() {
+  # https://github.com/leitbogioro/Tools 
   
   clear
   txty "\n请备份数据，将为你重装系统，预计花费15分钟。\n"
-  txtn "\t虚拟化类型：${red}$VIRT${plain} \n"
+  txtn "\t虚拟化类型: ${red}$VIRT${plain} \n"
   txtn "\t${pink} Password For KVM =>"
-  txtn "\t${pink} Linux   : ${yellow}LeitboGi0ro"
-  txtn "\t${pink} Windows : ${yellow}Teddysun.com ${blue}(minumum Disk is 15G)${plain}\n"
+  txtn "\t${pink} Linux   : ${yellow}root@LeitboGi0ro"
+  txtn "\t${pink} Windows : ${yellow}Administrator@Teddysun.com ${blue}(Min 15G Storage)${plain}\n"
   read -p "确定继续吗？(Y/N): " choice
   
   case "$choice" in
