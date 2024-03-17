@@ -1155,32 +1155,63 @@ dd_xitong_2() {
 }
 
 dd_system_menu() {
-echo -e "
-▶ 可选系统菜单\t系统虚拟化：${red}$VIRT
--------------------------------
-${green} 1.${plain} CentOS 9                 ${green} 3.${plain} CentOS 7
-${green} 2.${plain} CentOS 8                 
--------------------------------
-${green}11.${plain} Debian 12                ${green}21.${plain} Ubuntu 24.04 ${red}(Not Avaliable)
-${green}12.${plain} Debian 11                ${green}22.${plain} Ubuntu 22.04
-${green}13.${plain} Debian 10                ${green}23.${plain} Ubuntu 20.04
--------------------------------
-${green}31.${plain} Alpine Edge              ${green}41.${plain} Kali Rolling
-${green}32.${plain} Alpine 3.19              ${green}42.${plain} AlmaLinux
-${green}33.${plain} Alpine 3.18              ${green}43.${plain} RockyLinux
-${green}34.${plain} Alpine 3.17              ${green}44.${plain} Fedora 39
--------------------------------
-${green}64.${plain} Windows 2019             ${green}61.${plain} Windows 11 ${pink}Beta${plain}
-${green}65.${plain} Windows 2016             ${green}62.${plain} Windows 10
-${green}66.${plain} Windows 2012             ${green}63.${plain} Windows 2022
--------------------------------
-${green} 0.${plain} 返回系统工具菜单
--------------------------------
-${green}PS:${plain} Default password: 
-${green}   ${blue}   Linux: ${yellow}LeitboGi0ro
-${green}   ${blue} Windows: ${yellow}Teddysun.com ${plain}(minumum Disk is 15G)
--------------------------------
-"
+  
+txtn " "
+txtn $(txby "▼ 可选系统菜单")$(txtp " ❃❃❃ ")
+txtn "—————————————————————————————————————"
+txtn $(txby "> 系统虚拟化:")$(txtp "${red}$VIRT${plain}")
+txtn "\t${pink} Linux   : ${yellow}root@LeitboGi0ro"
+txtn "\t${pink} Windows : ${yellow}Administrator@Teddysun.com ${blue}(Min 15G Storage)${plain}\n"
+# WANIP_show
+txtn "====================================="
+txtn $(txty " 1.CentOS 9")$(txtc "☾")"         "$(txtn "11.Kali Rolling")$(txtg "❉")
+txtn $(txtn " 2.CentOS 8")$(txtg "☾")"         "$(txtn "12.AlmaLinux")$(txtg "❀")
+txtn $(txtn " 3.CentOS 7.9")$(txtg "☾")"       "$(txtn "13.RockyLinux")$(txtg "❈")
+txtn $(txtn " 4.CentOS 7.8")$(txtg "☾")"       "$(txtn "14.Fedora 39")$(txtg "❈")
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+txtn $(txtn "21.Ubuntu 24.04")$(txtg "☋")"     "$(txtn "31.Debian 12")$(txtg "๑")
+txtn $(txtn "22.Ubuntu 22.04")$(txtg "☋")"     "$(txtn "32.Debian 11")$(txtg "๑")
+txtn $(txtn "23.Ubuntu 20.04")$(txtg "☋")"     "$(txtn "32.Debian 10")$(txtg "๑")
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+txtn $(txtn "41.Windows 2012")$(txtg "▣")"     "$(txtn "51.Windows 11")$(txtg "◕")
+txtn $(txtn "42.Windows 2016")$(txtg "▣")"     "$(txtn "52.Windows 10")$(txtg "◕")
+txtn $(txtn "43.Windows 2019")$(txtg "▣")"     "$(txtn "")$(txtg "")
+txtn $(txtn "44.Windows 2022")$(txtg "▣")"     "$(txtn "")$(txtg "")
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+txtn $(txtn "61.Alpine 3.19")$(txtg "A")"      "$(txtn "71.Alpine Edge")$(txtg "A")
+txtn $(txtn "62.Alpine 3.18")$(txtg "A")"      "$(txtn "")$(txtg "")
+txtn $(txtn "63.Alpine 3.17")$(txtg "A")"      "$(txtn "")$(txtg "")
+# txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
+txtn "—————————————————————————————————————"
+txtn $(txtn " 0.返回主菜单")$(txtr "✖")"           "$(txtp "")$(txtc "")$(txty "")
+txtn " "
+
+# echo -e "
+# ▶ 可选系统菜单\t系统虚拟化：${red}$VIRT
+# -------------------------------
+# ${green} 1.${plain} CentOS 9                 ${green} 3.${plain} CentOS 7
+# ${green} 2.${plain} CentOS 8                 
+# -------------------------------
+# ${green}11.${plain} Debian 12                ${green}21.${plain} Ubuntu 24.04 ${red}(Not Avaliable)
+# ${green}12.${plain} Debian 11                ${green}22.${plain} Ubuntu 22.04
+# ${green}13.${plain} Debian 10                ${green}23.${plain} Ubuntu 20.04
+# -------------------------------
+# ${green}31.${plain} Alpine Edge              ${green}41.${plain} Kali Rolling
+# ${green}32.${plain} Alpine 3.19              ${green}42.${plain} AlmaLinux
+# ${green}33.${plain} Alpine 3.18              ${green}43.${plain} RockyLinux
+# ${green}34.${plain} Alpine 3.17              ${green}44.${plain} Fedora 39
+# -------------------------------
+# ${green}64.${plain} Windows 2019             ${green}61.${plain} Windows 11 ${pink}Beta${plain}
+# ${green}65.${plain} Windows 2016             ${green}62.${plain} Windows 10
+# ${green}66.${plain} Windows 2012             ${green}63.${plain} Windows 2022
+# -------------------------------
+# ${green} 0.${plain} 返回系统工具菜单
+# -------------------------------
+# ${green}PS:${plain} Default password: 
+# ${green}   ${blue}   Linux: ${yellow}LeitboGi0ro
+# ${green}   ${blue} Windows: ${yellow}Teddysun.com ${plain}(minumum Disk is 15G)
+# -------------------------------
+# "
 }
 
 dd_system_run() {
@@ -1235,7 +1266,7 @@ dd_system_run() {
         # dd_xitong_1 
         # reboot 
         # exit ;;
-      11) 
+      31) 
         # bash InstallNET.sh -debian
         bash InstallNET.sh -debian 12
         reboot 
@@ -1245,7 +1276,7 @@ dd_system_run() {
         # exit 
         # reboot 
         # ;;
-      12) 
+      32) 
         bash InstallNET.sh -debian 11
         reboot 
         exit ;;
@@ -1253,7 +1284,7 @@ dd_system_run() {
         # dd_xitong_1 
         # reboot 
         # exit ;;
-      13) 
+      33) 
         bash InstallNET.sh -debian 10
         reboot 
         exit ;;
@@ -1271,80 +1302,85 @@ dd_system_run() {
         reboot 
         exit ;;
       3) 
-        bash InstallNET.sh -centos 7
+        bash InstallNET.sh -centos 7.9
+        reboot 
+        exit ;;
+      4) 
+        bash InstallNET.sh -centos 7.8
         reboot 
         exit ;;
       #============================== 
-      31) 
+      71) 
         # bash InstallNET.sh -alpine
         bash InstallNET.sh -alpine edge
+        # bash InstallNET.sh -alpine 3.19
+        # bash InstallNET.sh -alpine 3.18
+        reboot 
+        exit ;;
+      61) 
         bash InstallNET.sh -alpine 3.19
+        reboot 
+        exit ;;
+      62) 
         bash InstallNET.sh -alpine 3.18
         reboot 
         exit ;;
-      32) 
-        bash InstallNET.sh -alpine 3.19
-        reboot 
-        exit ;;
-      33) 
-        bash InstallNET.sh -alpine 3.18
-        reboot 
-        exit ;;
-      34) 
+      63) 
         bash InstallNET.sh -alpine 3.17
         reboot 
         exit ;;
       #============================== 
-      41) 
+      11) 
         bash InstallNET.sh -kali   
         # bash InstallNET.sh -kali rolling   
         # bash InstallNET.sh -kali dev   
         # bash InstallNET.sh -kali experimental   
         reboot 
         exit ;;
-      42) 
+      12) 
         bash InstallNET.sh -almalinux 9
         # bash InstallNET.sh -almalinux 8   
         reboot 
         exit ;;
-      43) 
+      13) 
         bash InstallNET.sh -rockylinux 9
         # bash InstallNET.sh -rockylinux 8   
         reboot 
         exit ;;
-      44) 
+      14) 
         bash InstallNET.sh -fedro 39
         # bash InstallNET.sh -fedro 38   
         reboot 
         exit ;;
       #============================== 
-      61) 
+      41) 
+        bash InstallNET.sh -windows 2012
+        reboot 
+        exit ;;
+      42) 
+        bash InstallNET.sh -windows 2016
+        reboot 
+        exit ;;
+      43) 
+        bash InstallNET.sh -windows 2019
+        reboot 
+        exit ;;
+      44) 
+        bash InstallNET.sh -windows 2022
+        reboot 
+        exit ;;
+      51) 
         bash InstallNET.sh -windows 11
         # bash InstallNET.sh -windows 11 -lang "en"
         # bash InstallNET.sh -windows 11 -lang "cn"
         # bash InstallNET.sh -windows 11 -lang "jp" -port "22[1~65535]" -pwd "PssWord" -hostname "win11"
         reboot 
         exit ;;
-      62) 
+      52) 
         bash InstallNET.sh -windows 10
         reboot 
         exit ;;
-      63) 
-        bash InstallNET.sh -windows 2022
-        reboot 
-        exit ;;
-      64) 
-        bash InstallNET.sh -windows 2019
-        reboot 
-        exit ;;
-      65) 
-        bash InstallNET.sh -windows 2016
-        reboot 
-        exit ;;
-      66) 
-        bash InstallNET.sh -windows 2012
-        reboot 
-        exit ;;
+
       #============================== 
       0) system_setting_run && exit ;;
       *) echo "无效的选择，请重新输入。" && break_end ;;
