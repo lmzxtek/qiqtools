@@ -1161,8 +1161,8 @@ txtn $(txby "▼ 可选系统菜单")$(txtp " ❃❃❃ ")
 txtn "—————————————————————————————————————"
 # WANIP_show
 txtn $(txby "> 系统虚拟化: ")$(txtp "${red}$VIRT${plain}\n")
-txtn "\t${pink} Linux   : ${blue}root@${yellow}LeitboGi0ro${plain}"
-txtn "\t${pink} Windows : ${blue}Administrator@${yellow}Teddysun.com ${blue}(Min 15G Storage)${plain}\n"
+txtn "\t${pink} Linux   : ${blue}root${cyan}@${yellow}LeitboGi0ro${plain}"
+txtn "\t${pink} Windows : ${blue}Administrator${cyan}@${yellow}Teddysun.com ${blue}(Min 15G Storage)${plain}\n"
 txtn "====================================="
 txtn $(txty " 1.CentOS 9")$(txtc "☾")"         "$(txtn "11.Kali Rolling")$(txtg "❉")
 txtn $(txtn " 2.CentOS 8")$(txtg "☾")"         "$(txtn "12.AlmaLinux")$(txtg "❀")
@@ -1194,8 +1194,8 @@ dd_system_run() {
   txty "\n请备份数据，将为你重装系统，预计花费15分钟。\n"
   txtn "\t虚拟化类型: ${red}$VIRT${plain} \n"
   txtn "\t${pink} =>> Password For KVM <<="
-  txtn "\t${pink} Linux   : ${blue}root@${yellow}LeitboGi0ro${plain}"
-  txtn "\t${pink} Windows : ${blue}Administrator@${yellow}Teddysun.com ${blue}(Min 15G Storage)${plain}\n"
+  txtn "\t${pink} Linux   : ${blue}root${cyan}@${yellow}LeitboGi0ro${plain}"
+  txtn "\t${pink} Windows : ${blue}Administrator${cyan}@${yellow}Teddysun.com ${blue}(Min 15G Storage)${plain}\n"
   read -p "确定继续吗？(Y/N): " choice
   
   case "$choice" in
