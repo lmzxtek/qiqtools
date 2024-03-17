@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.4.8
+script_version=v0.4.9
 #==========================
 
 # Language
@@ -1171,7 +1171,7 @@ ${green}33.${plain} Alpine 3.18              ${green}43.${plain} RockyLinux
 ${green}34.${plain} Alpine 3.17              ${green}44.${plain} Fedora 39
 -------------------------------
 ${green}64.${plain} Windows 2019             ${green}61.${plain} Windows 11 ${pink}Beta${plain}
-${green}65.${plain} Windows 2016             ${green}62.${plain} Windows 10 
+${green}65.${plain} Windows 2016             ${green}62.${plain} Windows 10
 ${green}66.${plain} Windows 2012             ${green}63.${plain} Windows 2022
 -------------------------------
 ${green} 0.${plain} 返回系统工具菜单
@@ -3219,6 +3219,48 @@ EOF
 
 }
 
+docker_deploy_dashdot(){
+  
+  local BFLD="/home/dcc.d"
+
+  local dc_port=4009
+  local dc_name=dashdot
+  local dc_imag=mauricenino/dashdot:latest
+  local dc_desc="Dash."
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+
+  echoR "\n >>>" " 现在开始部署 Dash dot ... \n"  
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  cat > "$FYML" << EOF
+version: '3.5'
+
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    restart: unless-stopped
+    privileged: true
+    ports:
+      - '$dc_port:3001'
+    volumes:
+      - /:/mnt/host:ro
+EOF
+
+  # docker-compose up -d
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+  # echo -e   " Default Account: admin@admin" >> $FCONF
+  # echo -e   " Default Account: admin@admin"
+  echo -e   ""
+}
+
 docker_deploy_yacd(){
 
   local BFLD="/home/dcc.d"
@@ -3769,6 +3811,7 @@ txtn $(txtn "27.QBittorrent")$(txtg "✔")"          "$(txtn "47.GeminiProChat")
 txtn $(txtn "28.Portainer")$(txtg "✔")"            "$(txtn "48.ChunhuChat")$(txtn "✔")
 txtn $(txtn "29.Next-Terminal")$(txtg "✔")"        "$(txtn "49.ChatGPT-Next-Web")$(txtn "✔")
 txtn $(txtn "30.NginxProxyManager")$(txtg "✔")"    "$(txtn "50.Aktools")$(txtn "✔")
+txtn $(txtn "31.Dash.")$(txtg "✔")"                "$(txtn "")$(txtn "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtp "66.重启Caddy")$(txty "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
@@ -3805,6 +3848,7 @@ website_deploy_run(){
      28) clear && docker_deploy_portainer ;;
      29) clear && docker_deploy_nextterminal ;;
      30) clear && docker_deploy_npm ;;
+     31) clear && docker_deploy_dashdot ;;
 
      41) clear && docker_deploy_maccms_tweek ;;
      42) clear && docker_deploy_memos ;;
