@@ -3924,6 +3924,56 @@ EOF
   echo -e ""
 }
 
+# https://akshare.akfamily.xyz/akdocker/akdocker.html#docker
+docker_deploy_akjupyterlab(){
+
+  local BFLD="/home/dcc.d"
+
+  local dc_port=7788
+  local dc_name=akjupyterlab
+  local dc_imag=registry.cn-shanghai.aliyuncs.com/akfamily/aktools:jupyter
+  local dc_desc="AKJupyter-Lab"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  echoR "\n >>>" " 现在开始部署 AKJupyter-Lab ... \n"
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  # docker run -it -p 8888:8888 \
+  #         --name akdocker \
+  #         -v /home:/home registry.cn-shanghai.aliyuncs.com/akfamily/aktools:jupyter jupyter-lab \
+  #         --allow-root \
+  #         --no-browser \
+  #         --ip=0.0.0.0
+  
+  cat > "$FYML" << EOF
+version: '3'
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    volumes:
+        - /home.json:/home
+    ports:
+        - '$dc_port:8888'
+    restart: unless-stopped
+EOF
+
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echo -e   "Web URL: http://$WAN4:$dc_port/lab?token=*******" >> $FCONF
+  echo -e   "Web URL: http://$WAN4:$dc_port/lab?token=*******"
+  echo -e ""
+}
+
+
 docker_deploy_chunhuchat(){
 
   local BFLD="/home/dcc.d"
@@ -4079,7 +4129,8 @@ txtn $(txtn "27.QBittorrent")$(txtg "✔")"          "$(txtn "47.GeminiProChat")
 txtn $(txtn "28.Portainer")$(txtg "✔")"            "$(txtn "48.ChunhuChat")$(txtn "✔")
 txtn $(txtn "29.Next-Terminal")$(txtg "✔")"        "$(txtn "49.ChatGPT-Next-Web")$(txtn "✔")
 txtn $(txtn "30.NginxProxyManager")$(txtg "✔")"    "$(txtn "50.Aktools")$(txtn "✔")
-txtn $(txtn "31.Dash.")$(txtg "✔")"                "$(txty "51.WatchTower")$(txtr "✔")
+txtn $(txtn "31.Dash.")$(txtg "✔")"                "$(txty "51.AKJupyter-Lab")$(txtr "✔")
+txtn $(txtn "32.WatchTower")$(txtg "✔")"           "$(txty "")$(txtr "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtp "66.重启Caddy")$(txty "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
@@ -4117,6 +4168,7 @@ website_deploy_run(){
      29) clear && docker_deploy_nextterminal ;;
      30) clear && docker_deploy_npm ;;
      31) clear && docker_deploy_dashdot ;;
+     32) clear && docker_deploy_watchtower ;;
 
      41) clear && docker_deploy_maccms_tweek ;;
      42) clear && docker_deploy_memos ;;
@@ -4128,7 +4180,8 @@ website_deploy_run(){
      48) clear && docker_deploy_chunhuchat ;;
      49) clear && docker_deploy_chatgptnextweb ;;
      50) clear && docker_deploy_aktools ;;
-     50) clear && docker_deploy_watchtower ;;
+     51) clear && docker_deploy_akjupyterlab ;;
+    #  52) clear &&  ;;
 
      66) clear && caddy_reload ;;
      77) clear && WebSites_manager_run ;;
