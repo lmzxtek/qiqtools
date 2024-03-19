@@ -3961,7 +3961,7 @@ services:
     container_name: ${dc_name}
     image: $dc_imag
     volumes:
-        - /home.json:/home
+        - /home:/home
     ports:
         - '$dc_port:8888'
     restart: unless-stopped
@@ -3974,6 +3974,48 @@ EOF
   echo -e ""
 }
 
+docker_deploy_jupyterlab(){
+
+  local BFLD="/home/dcc.d"
+
+  local dc_port=7668
+  local dc_name=akjupyterlab
+  # local dc_imag=captainji/jupyterlab:3.0.5
+  local dc_imag=captainji/jupyterlab
+  local dc_desc="Jupyter-Lab"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/notebooks"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  echoR "\n >>>" " 现在开始部署 Jupyter-Lab ... \n"
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+  
+  cat > "$FYML" << EOF
+version: '3'
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    volumes:
+        - /home:/home
+        - $LPTH:/opt/notebooks
+    ports:
+        - '$dc_port:8888'
+    restart: unless-stopped
+EOF
+
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echo -e   "Web URL: http://$WAN4:$dc_port/lab?token=*******" >> $FCONF
+  echo -e   "Web URL: http://$WAN4:$dc_port/lab?token=*******"
+  echo -e ""
+}
 
 docker_deploy_chunhuchat(){
 
@@ -4130,8 +4172,8 @@ txtn $(txtn "27.QBittorrent")$(txtg "✔")"          "$(txtn "47.GeminiProChat")
 txtn $(txtn "28.Portainer")$(txtg "✔")"            "$(txtn "48.ChunhuChat")$(txtn "✔")
 txtn $(txtn "29.Next-Terminal")$(txtg "✔")"        "$(txtn "49.ChatGPT-Next-Web")$(txtn "✔")
 txtn $(txtn "30.NginxProxyManager")$(txtg "✔")"    "$(txtn "50.Aktools")$(txtn "✔")
-txtn $(txtn "31.Dash.")$(txtg "✔")"                "$(txty "51.AKJupyter-Lab")$(txtr "✔")
-txtn $(txtn "32.WatchTower")$(txtg "✔")"           "$(txty "")$(txtr "")
+txtn $(txtn "31.Dash.")$(txtg "✔")"                "$(txty "51.AKJupyter-Lab")$(txtn "✔")
+txtn $(txtn "32.WatchTower")$(txtg "✔")"           "$(txty "52.Jupyter-Lab")$(txtr "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtp "66.重启Caddy")$(txty "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
@@ -4182,7 +4224,7 @@ website_deploy_run(){
      49) clear && docker_deploy_chatgptnextweb ;;
      50) clear && docker_deploy_aktools ;;
      51) clear && docker_deploy_akjupyterlab ;;
-    #  52) clear &&  ;;
+     52) clear && docker_deploy_jupyterlab ;;
 
      66) clear && caddy_reload ;;
      77) clear && WebSites_manager_run ;;
