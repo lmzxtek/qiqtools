@@ -3925,6 +3925,7 @@ EOF
 }
 
 # https://akshare.akfamily.xyz/akdocker/akdocker.html#docker
+# https://github.com/lmzxtek/akshare 
 docker_deploy_akjupyterlab(){
 
   local BFLD="/home/dcc.d"
