@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.4.9
+script_version=v0.5.0
 #==========================
 
 # Language
@@ -3288,6 +3288,45 @@ EOF
   echo -e   ""
 }
 
+docker_deploy_watchtower(){
+  
+  local BFLD="/home/dcc.d"
+
+  local dc_port=0
+  local dc_name=watchtower
+  local dc_imag=containrrr/watchtower
+  local dc_desc="Watch Tower"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+
+  # echoR "\n >>>" " 现在开始部署 Dash dot ... \n"  
+  # read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  # [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  cat > "$FYML" << EOF
+version: '3'
+
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+EOF
+
+  # docker-compose up -d
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+  # echo -e   " Default Account: admin@admin" >> $FCONF
+  # echo -e   " Default Account: admin@admin"
+  echo -e   ""
+}
+
 docker_deploy_yacd(){
 
   local BFLD="/home/dcc.d"
@@ -3838,7 +3877,7 @@ txtn $(txtn "27.QBittorrent")$(txtg "✔")"          "$(txtn "47.GeminiProChat")
 txtn $(txtn "28.Portainer")$(txtg "✔")"            "$(txtn "48.ChunhuChat")$(txtn "✔")
 txtn $(txtn "29.Next-Terminal")$(txtg "✔")"        "$(txtn "49.ChatGPT-Next-Web")$(txtn "✔")
 txtn $(txtn "30.NginxProxyManager")$(txtg "✔")"    "$(txtn "50.Aktools")$(txtn "✔")
-txtn $(txtn "31.Dash.")$(txtg "✔")"                "$(txtn "")$(txtn "")
+txtn $(txtn "31.Dash.")$(txtg "✔")"                "$(txty "51.WatchTower")$(txtr "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtp "66.重启Caddy")$(txty "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
@@ -3887,6 +3926,7 @@ website_deploy_run(){
      48) clear && docker_deploy_chunhuchat ;;
      49) clear && docker_deploy_chatgptnextweb ;;
      50) clear && docker_deploy_aktools ;;
+     50) clear && docker_deploy_watchtower ;;
 
      66) clear && caddy_reload ;;
      77) clear && WebSites_manager_run ;;
