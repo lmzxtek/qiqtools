@@ -3327,6 +3327,208 @@ EOF
   echo -e   ""
 }
 
+# https://github.com/cedar2025/Xboard
+docker_deploy_xboard(){
+  
+  local BFLD="/home/dcc.d"
+
+  local dc_port=7001
+  local dc_name=xboard
+  local dc_imag=containrrr/watchtower
+  local dc_desc="XBoard"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+
+  # echoR "\n >>>" " 现在开始部署 Dash dot ... \n"  
+  # read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  # [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  git clone -b  docker-compose --depth 1 https://github.com/cedar2025/Xboard
+  cd Xboard
+  docker compose run -it --rm xboard php artisan xboard:install
+
+#   cat > "$FYML" << EOF
+# version: '3'
+
+# services:
+#   ${dc_name}:
+#     container_name: ${dc_name}
+#     image: $dc_imag
+#     restart: unless-stopped
+#     volumes:
+#       - /var/run/docker.sock:/var/run/docker.sock
+# EOF
+
+  docker-compose up -d
+  # docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+  [[ -z "$WAN4" ]] || echo -e   " URL: http://$WAN4:$dc_port" >> $FCONF
+  [[ -z "$WAN4" ]] || echo -e   " URL: http://$WAN4:$dc_port"
+  [[ -z "$WAN6" ]] || echo -e   " URL: http://[$WAN6]:$dc_port" >> $FCONF
+  [[ -z "$WAN6" ]] || echo -e   " URL: http://[$WAN6]:$dc_port"
+  echo -e   ""
+}
+
+
+# https://lotusnetwork.github.io/docs/lotusboard_setup.html
+docker_deploy_lotusboard(){
+  
+  local BFLD="/home/dcc.d"
+
+  local dc_port=7001
+  local dc_name=lotusboard
+  local dc_imag=ghcr.io/lotusnetwork/sakuraneko
+  local dc_desc="LotusBoard"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+
+  echoR "\n >>>" " 现在开始部署 Dash dot ... \n"  
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  git clone https://github.com/lotusnetwork/lotusboard-docker.git . && \
+  git submodule update --init && \
+  git submodule update --remote
+
+  cat > "$FYML" << EOF
+version: '3'
+services:
+  www:
+    image: ${dc_name}
+    # build: https://github.com/lotusnetwork/sakuraneko.git <- if you're ARM user please replace image line with this
+    volumes:
+      - './lotusboard:/www'
+      - './wwwlogs:/wwwlogs'
+      - './caddy.conf:/run/caddy/caddy.conf'
+      - './supervisord.conf:/run/supervisor/supervisord.conf'
+      - './crontabs.conf:/etc/crontabs/root'
+      - './.caddy:/root/.caddy'
+    ports:
+      - '$dc_port:80' <--- Modify if you want to reverse proxy, Eg (443tls -> caddy -> 8080), format is host:container
+    restart: always
+    links:
+      - mysql
+  mysql:
+    image: mysql:5.7.29
+    # image: arm64v8/mysql:latest  <- if you're ARM user please replace image line with this
+    volumes:
+      - './mysql:/var/lib/mysql'
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 'DataBase_password'
+      MYSQL_DATABASE: DB_Name
+EOF
+
+  docker-compose up -d
+  docker compose exec www bash
+  bash init.sh
+  docker-compose restart
+
+  # docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+  [[ -z "$WAN4" ]] || echo -e   " URL: http://$WAN4:$dc_port" >> $FCONF
+  [[ -z "$WAN4" ]] || echo -e   " URL: http://$WAN4:$dc_port"
+  [[ -z "$WAN6" ]] || echo -e   " URL: http://[$WAN6]:$dc_port" >> $FCONF
+  [[ -z "$WAN6" ]] || echo -e   " URL: http://[$WAN6]:$dc_port"
+  echo -e   ""
+}
+
+# https://github.com/wg-easy/wg-easy
+docker_deploy_wireguardpanel(){
+  
+  local BFLD="/home/dcc.d"
+
+  local dc_port=51821
+  local dc_name=wireguardpanel
+  local dc_imag=ghcr.io/wg-easy/wg-easy
+  local dc_desc="WireGuard-Web-UI"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/.wg-easy"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+
+  echoR "\n >>>" " 现在开始部署 Dash dot ... \n"  
+  read -p "请输入Web-UI监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  dc_udp=51820
+  read -p "请输入UDP监听端口(默认为:${dc_udp}): " pudp
+  [[ -z "$pudp" ]] || dc_udp=$pudp
+
+  dc_ip="${WAN4}"
+  [[ -z "$dc_ip" ]] || dc_ip=${WAN6}
+  read -p "请输入服务器IP(默认为:dc_ip): " piploc
+  [[ -z "$piploc" ]] || dc_ip=$piploc
+
+  dc_pass="foobar123"
+  read -p "请输入管理密码(默认为: $dc_pass): " ppass
+  [[ -z "$ppass" ]] || dc_pass=$ppass
+
+  cat > "$FYML" << EOF
+version: "3.8"
+volumes:
+  etc_wireguard:
+
+services:
+  wg-easy:
+    environment:
+      # Change Language:
+      # (Supports: en, ua, ru, tr, no, pl, fr, de, ca, es, ko, vi, nl, is, pt, chs, cht, it, th, hi)
+      - LANG=chs
+      # ⚠️ Required:
+      # Change this to your host's public address
+      - WG_HOST=$dc_ip
+
+      # Optional:
+      - PASSWORD=$dc_pass
+      - WG_PORT=$dc_udp
+      # - WG_DEFAULT_ADDRESS=10.8.0.x
+      # - WG_DEFAULT_DNS=1.1.1.1
+      # - WG_MTU=1420
+      # - WG_ALLOWED_IPS=192.168.15.0/24, 10.0.1.0/24
+      # - WG_PERSISTENT_KEEPALIVE=25
+      # - WG_PRE_UP=echo "Pre Up" > /etc/wireguard/pre-up.txt
+      # - WG_POST_UP=echo "Post Up" > /etc/wireguard/post-up.txt
+      # - WG_PRE_DOWN=echo "Pre Down" > /etc/wireguard/pre-down.txt
+      # - WG_POST_DOWN=echo "Post Down" > /etc/wireguard/post-down.txt
+      # - UI_TRAFFIC_STATS=true 
+
+    image: $dc_imag
+    container_name: ${dc_name}
+    volumes:
+      - etc_wireguard:/etc/wireguard
+    ports:
+      - "$dc_udp:51820/udp"
+      - "$dc_port:51821/tcp"
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
+EOF
+
+  # docker-compose up -d
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+  echo -e   " Default password: $dc_pass" >> $FCONF
+  echo -e   " Default password: $dc_pass"
+  echo -e   " UDP port        : $dc_udp" >> $FCONF
+  echo -e   " UDP port        : $dc_udp"
+  echo -e   ""
+}
+
 docker_deploy_yacd(){
 
   local BFLD="/home/dcc.d"
@@ -4091,10 +4293,10 @@ txtn $(txtn " 3.X-UI(@FranzKafkaYu)")$(txtg "✔")"    "$(txtn "13.Daed")$(txtg 
 txtn $(txtn " 4.X-UI(@rwkgyg)")$(txtg "✔")"          "$(txtn "14.Daed-Docker")$(txtg "✔")
 txtn $(txtc " 5.X-UI(alpine)")$(txtg "✔")"           "$(txtn "15.S-UI(@alireza0)")$(txtg "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txty "21.XBoard")$(txtb "✘")"                 "$(txtn "44.LotusBoard")$(txtb "✘")
-txtn $(txtn "22.V2Board")$(txtb "✘")"                "$(txtn "45.SSPanel")$(txtb "✘")
-txtn $(txtn "23.V2Board(wyx2685)")$(txtb "✘")"       "$(txtn "46.Proxypanel")$(txtb "✘")
-txtn $(txtn "24.AirGo")$(txtg "✔")"                  "$(txtn "")$(txtb "")
+txtn $(txty "21.XBoard")$(txtb "✘")"                 "$(txtn "41.LotusBoard")$(txtb "✔")
+txtn $(txtn "22.V2Board")$(txtb "✘")"                "$(txtn "42.SSPanel")$(txtb "✘")
+txtn $(txtn "23.V2Board(wyx2685)")$(txtb "✘")"       "$(txtn "43.Proxypanel")$(txtb "✘")
+txtn $(txtn "24.AirGo")$(txtg "✔")"                  "$(txtn "44.WireGuard-WebUI")$(txtb "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
@@ -4119,7 +4321,11 @@ board_panels_run() {
      14) clear && docker run -d --privileged --network=host --pid=host --restart=unless-stopped  -v /sys:/sys  -v /etc/daed:/etc/daed --name=daed ghcr.io/daeuniverse/daed:latest ;;
      15) clear && bash <(curl -Ls https://raw.githubusercontent.com/alireza0/s-ui/master/install.sh)  ;;
 
+     21) clear && docker_deploy_xboard ;;
      24) clear && bash <(curl -Ls https://raw.githubusercontent.com/ppoonk/AirGo/main/server/scripts/install.sh)  ;;
+
+     41) clear && docker_deploy_lotusboard ;;
+     44) clear && docker_deploy_wireguardpanel ;;
 
       0) clear && qiqtools ;;
       # 0) clear && return 1 && exit;;
