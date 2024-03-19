@@ -3979,9 +3979,9 @@ docker_deploy_jupyterlab(){
   local BFLD="/home/dcc.d"
 
   local dc_port=7668
-  local dc_name=akjupyterlab
-  # local dc_imag=captainji/jupyterlab:3.0.5
+  local dc_name=jupyterlab
   local dc_imag=captainji/jupyterlab
+  # local dc_imag=captainji/jupyterlab:3.0.5
   local dc_desc="Jupyter-Lab"
 
   local LFLD="$BFLD/$dc_name"
@@ -3995,7 +3995,19 @@ docker_deploy_jupyterlab(){
   echoR "\n >>>" " 现在开始部署 Jupyter-Lab ... \n"
   read -p "请输入监听端口(默认为:${dc_port}): " ptmp
   [[ -z "$ptmp" ]] || dc_port=$ptmp
-  
+
+  # docker run -d --name jupyterlab3 -p 8888:8888 -v (pwd):/opt/notebooks captainji/jupyterlab:3.0.5
+
+  # docker run -d \
+  #           -p 8888:8888 \
+  #           -e JUPYTER_ENABLE_LAB=yes \
+  #           -v /data/docker/jupyter:/usr/local/src/jupyterlab_workspace \
+  #           -v /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime \
+  #           -v /etc/timezone:/etc/timezone \
+  #           --restart=always \
+  #           --name JupyterLab captainji/jupyterlab
+  # docker logs Jupyterlab
+
   cat > "$FYML" << EOF
 version: '3'
 services:
