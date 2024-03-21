@@ -1549,16 +1549,25 @@ alter_sourcelist(){
   source /etc/os-release
 
   # 定义 Ubuntu 更新源
+  ustc_ubuntu_source="http://mirrors.ustc.edu.cn/ubuntu/"
+  thu_ubuntu_source="http://mirrors.tuna.tsinghua.edu.cn/ubuntu/"
+  tencent_ubuntu_source="http://mirrors.cloud.tencent.com/ubuntu/"
   aliyun_ubuntu_source="http://mirrors.aliyun.com/ubuntu/"
   official_ubuntu_source="http://archive.ubuntu.com/ubuntu/"
   initial_ubuntu_source=""
 
   # 定义 Debian 更新源
+  ustc_debian_source="http://mirrors.ustc.edu.cn/debian/"
+  thu_debian_source="http://mirrors.tuna.tsinghua.edu.cn/debian/"
+  tencent_debian_source="http://mirrors.cloud.tencent.com/debian/"
   aliyun_debian_source="http://mirrors.aliyun.com/debian/"
   official_debian_source="http://deb.debian.org/debian/"
   initial_debian_source=""
 
   # 定义 CentOS 更新源
+  ustc_centos_source="http://mirrors.ustc.edu.cn/centos/"
+  thu_centos_source="http://mirrors.tuna.tsinghua.edu.cn/centos/"
+  tencent_centos_source="http://mirrors.cloud.tencent.com/centos/"
   aliyun_centos_source="http://mirrors.aliyun.com/centos/"
   official_centos_source="http://mirror.centos.org/centos/"
   initial_centos_source=""
@@ -1609,6 +1618,17 @@ alter_sourcelist(){
       esac
   }
 
+  # alter_source() {
+  #   local oldsrc=$1
+  #   local newsrc=$2
+  #   case "$ID" in
+  #       ubuntu) sed -i 's|'"$oldsrc"'|'"$newsrc"'|g' /etc/apt/sources.list ;;
+  #       debian) sed -i 's|'"$oldsrc"'|'"$newsrc"'|g' /etc/apt/sources.list ;;
+  #       centos) sed -i "s|^baseurl=.*$|baseurl=$newsrc|g" /etc/yum.repos.d/CentOS-Base.repo ;;
+  #             *) echo "未知系统，无法执行切换操作" && exit 1 ;;
+  #   esac
+  # }
+
   # 主菜单
   while true; do
       clear
@@ -1619,11 +1639,14 @@ alter_sourcelist(){
                *) echo "未知系统，无法执行脚本" && exit 1 ;;
       esac
 
-      echo "1. 切换到阿里云源"
-      echo "2. 切换到官方源"
+      echo "1. 切换到官方源"
+      echo "2. 切换到阿里源"
+      echo "3. 切换到腾讯源"
+      echo "4. 切换到清华源"
+      echo "5. 切换到中科院源"
       echo "------------------------"
-      echo "3. 备份当前更新源"
-      echo "4. 还原初始更新源"
+      echo "8. 备份当前更新源"
+      echo "9. 还原初始更新源"
       echo "------------------------"
       echo "0. 返回上一级"
       echo "------------------------"
@@ -1633,16 +1656,6 @@ alter_sourcelist(){
           1)
               backup_sources
               case "$ID" in
-                  ubuntu) switch_source $aliyun_ubuntu_source ;;
-                  debian) switch_source $aliyun_debian_source ;;
-                  centos) switch_source $aliyun_centos_source ;;
-                       *) echo "未知系统，无法执行切换操作" && exit 1 ;;
-              esac
-              echo "已切换到阿里云源"
-              ;;
-          2)
-              backup_sources
-              case "$ID" in
                   ubuntu) switch_source $official_ubuntu_source ;;
                   debian) switch_source $official_debian_source ;;
                   centos) switch_source $official_centos_source ;;
@@ -1650,7 +1663,47 @@ alter_sourcelist(){
               esac
               echo "已切换到官方源"
               ;;
+          2)
+              backup_sources
+              case "$ID" in
+                  ubuntu) switch_source $aliyun_ubuntu_source ;;
+                  debian) switch_source $aliyun_debian_source ;;
+                  centos) switch_source $aliyun_centos_source ;;
+                       *) echo "未知系统，无法执行切换操作" && exit 1 ;;
+              esac
+              echo "已切换到阿里云源"
+              ;;
           3)
+              backup_sources
+              case "$ID" in
+                  ubuntu) switch_source $tencent_ubuntu_source ;;
+                  debian) switch_source $tencent_debian_source ;;
+                  centos) switch_source $tencent_centos_source ;;
+                       *) echo "未知系统，无法执行切换操作" && exit 1 ;;
+              esac
+              echo "已切换到腾讯源"
+              ;;
+          4)
+              backup_sources
+              case "$ID" in
+                  ubuntu) switch_source $thu_ubuntu_source ;;
+                  debian) switch_source $thu_debian_source ;;
+                  centos) switch_source $thu_centos_source ;;
+                       *) echo "未知系统，无法执行切换操作" && exit 1 ;;
+              esac
+              echo "已切换到清华源"
+              ;;
+          5)
+              backup_sources
+              case "$ID" in
+                  ubuntu) switch_source $ustc_ubuntu_source ;;
+                  debian) switch_source $ustc_debian_source ;;
+                  centos) switch_source $ustc_centos_source ;;
+                       *) echo "未知系统，无法执行切换操作" && exit 1 ;;
+              esac
+              echo "已切换到中科院源"
+              ;;
+          8)
               backup_sources
               case "$ID" in
                   ubuntu) switch_source $initial_ubuntu_source ;;
@@ -1660,7 +1713,8 @@ alter_sourcelist(){
               esac
               echo "已切换到初始更新源"
               ;;
-          4) restore_initial_source ;;
+          9) restore_initial_source ;;
+
           0) break ;;
           *) echo "无效的选择，请重新输入" ;;
       esac
