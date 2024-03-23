@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.5.0
+script_version=v0.5.1
 #==========================
 
 # Language
@@ -1624,6 +1624,9 @@ alter_sourcelist(){
   alter_source() {
     local oldsrc=$1
     local newsrc=$2
+    sed -i 's|'"deb.debian.org/debian"'|'"$newsrc/debian"'|g' /etc/apt/sources.list
+    # sed -i 's|'"archive.ubuntu.com/ubuntu"'|'"$newsrc/ubuntu"'|g' /etc/apt/sources.list
+    # sed -i 's|'"mirror.centos.org/centos"'|'"$newsrc/centos"'|g' /etc/apt/sources.list
     case "$ID" in
         ubuntu) sed -i 's|'"$oldsrc/ubuntu"'|'"$newsrc/ubuntu"'|g' /etc/apt/sources.list ;;
         debian) sed -i 's|'"$oldsrc/debian"'|'"$newsrc/debian"'|g' /etc/apt/sources.list ;;
@@ -4321,6 +4324,7 @@ txtn $(txtn " 1.Docker")$(txtg "✔")"          "$(txtn "")$(txtg "")
 txtn $(txtn " 2.Python")$(txtg "✔")"          "$(txtn "")$(txtg "")
 txtn $(txtn " 3.Conda")$(txtg "✔")"           "$(txtn "")$(txtg "")
 txtn $(txtn " 4.RustDesk Server")$(txtg "✔")" "$(txtn "")$(txtg "")
+txtn $(txtn " 5.DeepLX Server")$(txtg "✔")"   "$(txtn "")$(txtg "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
@@ -4344,8 +4348,10 @@ other_tools_run() {
         fi 
         ;;
       4) clear && install wget && wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
+      5) clear && install curl && bash <(curl -Ls https://qwq.mx/deeplx) ;;
+      # 5) clear && install curl && bash <(curl -Ls https://raw.githubusercontent.com/OwO-Network/DeepLX/main/install.sh) ;;
 
-      0) clear && clear && clear && clear && clear && clear && qiqtools ;;
+      0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
     esac  
     break_end
