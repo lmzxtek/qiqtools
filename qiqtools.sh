@@ -2287,7 +2287,7 @@ txtn $(txtn " 7.禁用ROOT账户")$(txtg "✔")"           "$(txtn "17.用户管
 txtn $(txtp " 8.切换优先ipv4/ipv6")$(txtg "✔")"      "$(txtn "18.用户/密码生成器")$(txtn "✔")
 txtn $(txtn " 9.查看端口占用状态")$(txtg "✔")"       "$(txtn "19.定时任务管理")$(txtn "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "66.性能测试")$(txty "▷")"              "$(txtn "77.系统信息")$(txtn "✔")
+txtn $(txtn "66.性能测试")$(txty "▷")"               "$(txtn "77.系统信息")$(txtn "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")"             "$(txtr "99")$(txtb ".重启服务器")$(txtc "☢")
