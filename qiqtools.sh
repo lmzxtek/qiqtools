@@ -516,6 +516,8 @@ get_sysinfo(){
 
 # 显示系统信息
 system_info() {
+  get_sysinfo
+
   txtn " "
     info "系统信息查询"
   txtkvn "↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓"
@@ -2284,7 +2286,7 @@ txtn $(txtn " 7.禁用ROOT账户")$(txtg "✔")"           "$(txtn "17.用户管
 txtn $(txtp " 8.切换优先ipv4/ipv6")$(txtg "✔")"      "$(txtn "18.用户/密码生成器")$(txtn "✔")
 txtn $(txtn " 9.查看端口占用状态")$(txtg "✔")"       "$(txtn "19.定时任务管理")$(txtn "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "88.性能测试")$(txty "▷")"    "$(txtn "")$(txtn "")
+txtn $(txtn "66.性能测试")$(txty "▷")"              "$(txtn "77.系统信息")$(txtn "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")"             "$(txtr "99")$(txtb ".重启服务器")$(txtc "☢")
@@ -2343,7 +2345,8 @@ system_setting_run() {
      18) clear && pss_generate ;;
      19) clear && cron_manage ;;
 
-     88) clear && server_test_run ;;
+     66) clear && server_test_run ;;
+     77) clear && system_info ;;
      99) clear && echo -e "\n正在重启服务器，即将断开SSH连接..." && reboot ;;
       0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
