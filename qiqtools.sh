@@ -1618,16 +1618,16 @@ alter_sourcelist(){
       esac
   }
 
-  # alter_source() {
-  #   local oldsrc=$1
-  #   local newsrc=$2
-  #   case "$ID" in
-  #       ubuntu) sed -i 's|'"$oldsrc"'|'"$newsrc"'|g' /etc/apt/sources.list ;;
-  #       debian) sed -i 's|'"$oldsrc"'|'"$newsrc"'|g' /etc/apt/sources.list ;;
-  #       centos) sed -i "s|^baseurl=.*$|baseurl=$newsrc|g" /etc/yum.repos.d/CentOS-Base.repo ;;
-  #             *) echo "未知系统，无法执行切换操作" && exit 1 ;;
-  #   esac
-  # }
+  alter_source() {
+    local oldsrc=$1
+    local newsrc=$2
+    case "$ID" in
+        ubuntu) sed -i 's|'"$oldsrc/ubuntu"'|'"$newsrc/ubuntu"'|g' /etc/apt/sources.list ;;
+        debian) sed -i 's|'"$oldsrc/debian"'|'"$newsrc/debian"'|g' /etc/apt/sources.list ;;
+        centos) sed -i "s|^baseurl=.*$|baseurl/centos=$newsrc/centos|g" /etc/yum.repos.d/CentOS-Base.repo ;;
+              *) echo "未知系统，无法执行切换操作" && exit 1 ;;
+    esac
+  }
 
   # 主菜单
   while true; do
@@ -4359,22 +4359,21 @@ txtn $(txtn "81.Show IP(ip.sb)")$(txtg "✔")"                "$(txtn "91.Set Gi
 txtn $(txtn "82.Show IPv4(local)")$(txtg "✔")"              "$(txtb "92.Cloudflare Select IP")$(txtg "✔")
 txtn $(txtn "83.Show IPv6(local)")$(txtg "✔")"              "$(txtn "93.Cloudflare Select CDN")$(txtg "✔")
 txtn $(txtp "84.Cloudflare(IPv4)")$(txtg "✔")"              "$(txtr "85.Cloudflare(IPv6)")$(txtg "✔")
-# txtn $(txtn "")$(txtg "")"              "$(txtn "")$(txtg "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty " 1.Warp(@fscarmen)")$(txtr "✔")"               "$(txtn "11.XRay(@233boy)")$(txtg "✔")
 txtn $(txtn " 2.Warp(@hamid-gh98)")$(txtg "✔")"             "$(txtn "12.V2Ray(@233boy)")$(txtg "✔")
 txtn $(txtn " 3.Warp(@Misaka-blog)")$(txtg "✔")"            "$(txtn "13.V2Ray-Agent(@mack-a)")$(txtg "✔")
-txtn $(txtn " 4.ArgoX")$(txtg "✔")"                         "$(txtn "14.Hysteria2(@Misaka)")$(txtg "✔")
-txtn $(txtn " 5.SingBox四合一(yg)")$(txtg "✔")"             "$(txtn "15.TUIC5(@Misaka)")$(txtg "✔")
+txtn $(txtn " 4.Warp(@p3terx)")$(txtg "✔")"                 "$(txtn "14.Hysteria2(@Misaka)")$(txtg "✔")
+txtn $(txtn " 5.Warp-go(@fscarmen)")$(txtg "✔")"            "$(txtn "15.TUIC5(@Misaka)")$(txtg "✔")
 txtn $(txtn " 6.SingBox-Argox(@fscarmen)")$(txtg "✔")"      "$(txtn "16.mianyang()")$(txtg "✔")
-txtn $(txby " 7.SingBox全家桶(@fscarmen)")$(txtr "✔")"      "$(txtn "")$(txtb "")
+txtn $(txby " 7.SingBox全家桶(@fscarmen)")$(txtr "✔")"      "$(txtn "17.ArgoX")$(txtb "✔")
+txtn $(txby " 8.SingBox四合一(yg)")$(txtp "✔")"             "$(txtn "")$(txtb "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "51.XRayR(@XrayR-project)")$(txtg "✔")"         "$(txtn "61.V2bX(Vless&Trojan to V2board)")$(txtg "")
 txtn $(txtn "52.XRayR(@wyx2685)")$(txtg "✔")"               "$(txtn "62.Bodhi(Hysteria2 to V2board)")$(txtg "")
 txtn $(txtc "53.XRayR(Alpine)")$(txtg "✔")"                 "$(txtn "63.XRayR-Docker(@XrayR-project)")$(txtg "✔")
 txtn $(txtc "54.XRayR(AirGo)")$(txtg "✔")"                  "$(txtn "")$(txtg "")
-# txtn $(txtc "")$(txtg "✔")"                 "$(txtn "")$(txtg "✔")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
 txtn " "
@@ -4398,11 +4397,11 @@ warp_tools_run() {
         clear && wget -N https://gitlab.com/Misaka-blog/warp-script/-/raw/main/warp.sh && bash warp.sh 
         recheck_ip_address
         ;;
-      4) clear && bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/argox/main/argox.sh)  ;;
-      5) clear && bash <(curl -Ls https://gitlab.com/rwkgyg/sing-box-yg/raw/main/sb.sh)  ;;
+      4) clear && bash <(curl -fsSL git.io/warp.sh) menu  ;;
+      5) clear && wget -N https://raw.githubusercontent.com/fscarmen/warp/main/warp-go.sh && bash warp-go.sh ;;
       6) clear && bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/sba/main/sba.sh) ;;
       7) clear && bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/sing-box/main/sing-box.sh) ;;
-      # 8) clear && bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/argox/main/argox.sh) ;;
+      8) clear && bash <(curl -Ls https://gitlab.com/rwkgyg/sing-box-yg/raw/main/sb.sh)  ;;
 
      11) clear && bash <(wget -qO- -o- https://github.com/233boy/Xray/raw/main/install.sh) ;;
      12) clear && bash <(wget -qO- -o- https://git.io/v2ray.sh) ;;
@@ -4410,6 +4409,7 @@ warp_tools_run() {
      14) clear && wget -N --no-check-certificate https://raw.githubusercontent.com/Misaka-blog/hysteria-install/main/hy2/hysteria.sh && bash hysteria.sh ;;
      15) clear && wget -N --no-check-certificate https://gitlab.com/Misaka-blog/tuic-script/-/raw/main/tuic.sh && bash tuic.sh ;;
      16) clear && bash <(curl -fsSL https://github.com/vveg26/sing-box-reality-hysteria2/raw/main/beta.sh) ;;
+     17) clear && bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/argox/main/argox.sh)  ;;
 
      51) clear && wget -N https://raw.githubusercontent.com/XrayR-project/XrayR-release/master/install.sh && bash install.sh && cd /etc/XrayR ;;
      52) clear && wget -N https://raw.githubusercontent.com/wyx2685/XrayR-release/master/install.sh && bash install.sh ;;
