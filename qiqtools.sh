@@ -221,6 +221,7 @@ cur_dir=$(pwd)
 
 # 设置纯IPv6访问GitHub出问题的处理办法
 set_ipv6_github(){
+  cp /etc/resolv.conf /etc/resolv.conf.bak && \
   echo -e "nameserver 2001:67c:2b0::4\nnameserver 2001:67c:2b0::6" > /etc/resolv.conf
 }
 
@@ -1100,7 +1101,7 @@ change_ssh_port() {
 
 # 修改系统的DNS
 change_dns() {
-    echo "当前DNS地址"
+    echo "当前DNS地址: /etc/resolv.conf"
     echo "------------------------"
     cat /etc/resolv.conf
     echo "------------------------"
@@ -1109,6 +1110,10 @@ change_dns() {
     read -p "是否要设置为Cloudflare和Google的DNS地址？(y/n): " choice
 
     if [ "$choice" == "y" ]; then
+        # 若未备份，则先备份
+        if [[! -f "/etc/resolv.conf.bak "]] ; then 
+          cp /etc/resolv.conf /etc/resolv.conf.bak
+        fi
         # 定义DNS地址
         cloudflare_ipv4="1.1.1.1"
             google_ipv4="8.8.8.8"
