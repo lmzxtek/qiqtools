@@ -1111,7 +1111,7 @@ change_dns() {
 
     if [ "$choice" == "y" ]; then
         # 若未备份，则先备份
-        if [[! -f "/etc/resolv.conf.bak "]] ; then 
+        if [[! -f "/etc/resolv.conf.bak" ]] ; then 
           cp /etc/resolv.conf /etc/resolv.conf.bak
         fi
         # 定义DNS地址
