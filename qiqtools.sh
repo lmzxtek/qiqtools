@@ -517,6 +517,7 @@ get_sysinfo(){
 # 显示系统信息
 system_info() {
   get_sysinfo
+  clear
 
   txtn " "
     info "系统信息查询"
