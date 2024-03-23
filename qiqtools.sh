@@ -1107,6 +1107,29 @@ change_ssh_port() {
 
 }
 
+changedns_menu() {
+txtn " "
+txtn $(txby "▼ 修改DNS")$(txtp " 卐卐卐 ")
+txtn "—————————————————————————————————————"
+WANIP_show
+txtn "====================================="
+txtn " 文件路径: /etc/resolv.conf "
+cat /etc/resolv.conf
+txtn "====================================="
+txtn $(txtp " 1.优化DNS")$(txtb "❀")"        "$(txtn "")$(txtb "")
+txtn $(txtn " 2.纯IPv6")$(txtb "◎")"         "$(txtn "")$(txtb "")
+txtn $(txty " 3.OpenDNS")$(txtr "◎")"        "$(txty "")$(txtp "")
+txtn $(txtn " 4.Google DNS")$(txtb "◎")"     "$(txtn "")$(txtb "")
+txtn $(txtn " 5.AliYun DNS")$(txtb "◎")"     "$(txtn "")$(txtb "")
+txtn $(txtn " 6.Cloudflare DNS")$(txtb "◎")" "$(txtn "")$(txtb "")
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+txtn $(txtn "66.备份")$(txtn "❉")"           "$(txtn "72.恢复最初DNS")$(txtg "☪")
+# txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
+txtn "—————————————————————————————————————"
+txtn $(txtn " 0.返回主菜单")$(txtr "✖")"           "$(txtp "")$(txtc "")$(txty "")
+txtn " "
+}
+
 # 修改系统的DNS
 change_dns() {
     echo "当前DNS地址: /etc/resolv.conf"
@@ -1120,7 +1143,8 @@ change_dns() {
     if [ "$choice" == "y" ]; then
         # 若未备份，则先备份
         if [ ! -f /etc/resolv.conf.bak ] ; then 
-          echo -e "\n备份: /etc/resolv.conf => /etc/resolv.conf.bak"
+          echo ""
+          echo " >>> 备份: /etc/resolv.conf => /etc/resolv.conf.bak"
           cp /etc/resolv.conf /etc/resolv.conf.bak
         fi
         # 定义DNS地址
