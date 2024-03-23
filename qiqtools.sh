@@ -3388,6 +3388,46 @@ EOF
   echo -e   ""
 }
 
+docker_deploy_deeplx(){
+  
+  local BFLD="/home/dcc.d"
+
+  local dc_port=1188
+  local dc_name=deeplx
+  local dc_imag=ghcr.io/owo-network/deeplx:latest
+  local dc_desc="DeepLX(Free API)"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+
+  echoR "\n >>>" " 现在开始部署 DeepLX ... \n"  
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  cat > "$FYML" << EOF
+version: '3.8'
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    restart: always
+    ports:
+      - "$dc_port:1188"
+    # environment:
+      # - TOKEN=helloworld
+      # - AUTHKEY=xxxxxxx:fx
+EOF
+
+  # docker-compose up -d
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+  # echo -e   " Default Account: admin@admin" >> $FCONF
+  # echo -e   " Default Account: admin@admin"
+  echo -e   ""
+}
 # https://github.com/cedar2025/Xboard
 docker_deploy_xboard(){
   
@@ -4247,6 +4287,7 @@ txtn $(txtn "29.Next-Terminal")$(txtg "✔")"        "$(txtn "49.ChatGPT-Next-We
 txtn $(txtn "30.NginxProxyManager")$(txtg "✔")"    "$(txtn "50.Aktools")$(txtn "✔")
 txtn $(txtn "31.Dash.")$(txtg "✔")"                "$(txtn "51.AKJupyter-Lab")$(txtn "✔")
 txtn $(txtn "32.WatchTower")$(txtg "✔")"           "$(txty "52.Jupyter-Lab")$(txtn "✔")
+txtn $(txtn "33.DeepLX")$(txtg "✔")"               "$(txtn "")$(txtn "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtp "66.重启Caddy")$(txty "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
@@ -4285,6 +4326,7 @@ website_deploy_run(){
      30) clear && docker_deploy_npm ;;
      31) clear && docker_deploy_dashdot ;;
      32) clear && docker_deploy_watchtower ;;
+     32) clear && docker_deploy_deeplx ;;
 
      41) clear && docker_deploy_maccms_tweek ;;
      42) clear && docker_deploy_memos ;;
@@ -5096,6 +5138,22 @@ nginx_install(){
   sudo apt update && sudo apt install -y nginx && systemctl start nginx && systemctl enable nginx
 }
 
+nginx_remove(){
+  sudo apt update
+  sudo apt remove nginx nginx-common
+
+  # 手动删除Nginx
+  # sudo service nginx stop
+  # sudo rm /etc/nginx/nginx.conf
+  # sudo rm -rf /etc/nginx/conf.d
+  # sudo rm -rf /var/log/nginx
+  # sudo rm /run/nginx.pid
+  # sudo rm -rf /var/www/html
+  # sudo rm /usr/sbin/nginx
+  # sudo find / -name nginx -print -exec rm -rf {} \;
+
+}
+
 openresty_install(){ echo -e "OpenResty installation is not implemented...";}
 
 caddy_install(){
@@ -5306,7 +5364,7 @@ txtn $(txty "11.查看状态")$(txtg "✔")"           "$(txtn "21.安装PHP8.3"
 txtn $(txtn "12.安装Caddy")$(txtg "✔")"          "$(txtn "22.安装PHP8.2")$(txtg "✘")
 txtn $(txtn "13.安装Nginx")$(txtg "✔")"          "$(txtn "23.安装PHP8.1")$(txtb "✘")
 txtn $(txtn "14.安装OpenLiteSpeed")$(txtg "✔")"  "$(txtn "24.安装PHP7.4")$(txtb "✔")
-# txtn $(txtn "15.安装Nginx")$(txtb "✘")"          "$(txtn "")$(txtb "")
+txtn $(txtn "15.卸载Nginx")$(txtr "✔")"          "$(txtn "")$(txtb "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.站点列表")$(txtg "✔")"           "$(txty "41.重启服务")$(txtp "✔")
 txtn $(txtn "32.站点管理")$(txtg "✔")"           "$(txtn "42.停止服务")$(txtg "✔")
@@ -5356,8 +5414,8 @@ WebSites_manager_run(){
         echo ""
         ;;
 
-    #  13) clear && openresty_install ;;
-     13) 
+    #  14) clear && openresty_install ;;
+     14) 
       clear
       wget https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh && bash ols1clk.sh
       # bash <( curl -k https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh )
@@ -5365,6 +5423,8 @@ WebSites_manager_run(){
       echo -e " >>> 安装OpenLiteSpeed成功..."
       echo -e " >>> 设置用户名和密码：/usr/local/lsws/admin/misc/admpass.sh"
       ;;
+
+     15) clear && nginx_remove ;;
 
      21) clear && install_php83 ;;
      22) clear && install_php74 ;;
