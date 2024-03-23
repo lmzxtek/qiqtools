@@ -221,8 +221,16 @@ cur_dir=$(pwd)
 
 # 设置纯IPv6访问GitHub出问题的处理办法
 set_ipv6_github(){
-  cp /etc/resolv.conf /etc/resolv.conf.bak && \
-  echo -e "nameserver 2001:67c:2b0::4\nnameserver 2001:67c:2b0::6" > /etc/resolv.conf
+  # 若没有备份则先备份DNS信息
+  [ ! -f /etc/resolv.conf.bak ] || cp /etc/resolv.conf /etc/resolv.conf.bak
+
+  read -p "是否要更改DNS为[2001:67c:2b0::4,2001:67c:2b0::6]? [Y|n]: " choice
+  case "$choice" in
+    [Yy])
+      echo -e "nameserver 2001:67c:2b0::4\nnameserver 2001:67c:2b0::6" > /etc/resolv.conf
+      ;;
+       *) echo " 不修改DNS..." ;;
+  esac
 }
 
 check_IPV4(){
