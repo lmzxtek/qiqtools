@@ -1112,7 +1112,7 @@ change_dns() {
     if [ "$choice" == "y" ]; then
         # 若未备份，则先备份
         if [ ! -f /etc/resolv.conf.bak ] ; then 
-          echo "备份: /etc/resolv.conf => /etc/resolv.conf.bak"
+          echo -e "\n备份: /etc/resolv.conf => /etc/resolv.conf.bak"
           cp /etc/resolv.conf /etc/resolv.conf.bak
         fi
         # 定义DNS地址
@@ -1128,7 +1128,7 @@ change_dns() {
         fi
 
         # 设置DNS地址为Cloudflare和Google（IPv4和IPv6）
-        echo "设置DNS为Cloudflare和Google"
+        echo "\n设置DNS为Cloudflare和Google"
 
         # 设置IPv4地址
         echo "nameserver $cloudflare_ipv4" > /etc/resolv.conf
