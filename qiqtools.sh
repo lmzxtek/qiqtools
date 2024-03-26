@@ -4533,9 +4533,9 @@ txtn $(txtn "29.Next-Terminal")$(txtg "✔")"        "$(txtn "49.ChatGPT-Next-We
 txtn $(txtn "30.NginxProxyManager")$(txtg "✔")"    "$(txtn "50.Aktools")$(txtn "✔")
 txtn $(txtn "31.Dash.")$(txtg "✔")"                "$(txtn "51.AKJupyter-Lab")$(txtn "✔")
 txtn $(txtn "32.WatchTower")$(txtg "✔")"           "$(txty "52.Jupyter-Lab")$(txtn "✔")
-txtn $(txtn "33.DeepLX")$(txtg "✔")"               "$(txtp "53.Neko")$(txtc "✔")
-txtn $(txtn "34.KASM Workspaces")$(txtg "✔")"      "$(txtn "54.Neko-Rooms")$(txtc "✔")
-txtn $(txtn "35.Tor Browser")$(txtg "✔")"          "$(txtn "55.OneLine Browser")$(txtc "✔")
+txtn $(txtn "33.DeepLX")$(txtg "✔")"               "$(txtn "53.Neko")$(txtn "✔")
+txtn $(txtn "34.KASM Workspaces")$(txtg "✔")"      "$(txtn "54.Neko-Rooms")$(txtn "✔")
+txtn $(txtn "35.Tor Browser")$(txtg "✔")"          "$(txty "55.OneLine Browser")$(txtp "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtp "66.重启Caddy")$(txty "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
@@ -4592,7 +4592,7 @@ website_deploy_run(){
      52) clear && docker_deploy_jupyterlab ;;
      53) clear && docker_deploy_neko ;;
      54) clear && docker_deploy_neko_rooms ;;
-     
+
      55) clear && install curl && curl -sLkO hammou.ch/online-browser && bash online-browser ;;
       # https://github.com/hhammouch/online-browser
 
