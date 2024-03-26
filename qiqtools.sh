@@ -4416,7 +4416,7 @@ website_deploy_run(){
      50) clear && docker_deploy_aktools ;;
      51) clear && docker_deploy_akjupyterlab ;;
      52) clear && docker_deploy_jupyterlab ;;
-     52) clear && docker_deploy_kasmworkspaces ;;
+     53) clear && docker_deploy_kasmworkspaces ;;
 
      66) clear && caddy_reload ;;
      77) clear && WebSites_manager_run ;;
