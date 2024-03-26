@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.5.1
+script_version=v0.5.2
 #==========================
 
 # Language
@@ -4168,6 +4168,44 @@ EOF
   echo -e ""
 }
 
+docker_deploy_kasmworkspaces(){
+
+  local BFLD="/home/dcc.d"
+
+  local dc_port=8443
+  local dc_name=kasmworkspaces
+  local dc_imag=captainji/jupyterlab
+  local dc_desc="KasmWorkspaces"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/notebooks"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  echoR "\n >>>" " 现在开始部署 Kasm Workspaces ... \n"
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  cd /tmp
+  curl -O https://kasm-static-content.s3.amazonaws.com/kasm_release_1.15.0.06fdc8.tar.gz
+  tar -xf kasm_release_1.15.0.06fdc8.tar.gz
+
+  # sudo bash kasm_release/install.sh
+  # sudo bash kasm_release/install.sh -L 8443
+  sudo bash kasm_release/install.sh --accept-eula -L $dc_port
+  # sudo bash kasm_release/install.sh --accept-eula --slim-images --swap-size 8192 -L $dc_port
+
+  # docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echoR "\n >>> " "部署 Kasm Workspaces 完成 \n"
+  echo -e   "Web URL: http://$WAN4:$dc_port" >> $FCONF
+  echo -e   "Web URL: http://$WAN4:$dc_port"
+  echo -e ""
+}
+
 docker_deploy_chunhuchat(){
 
   local BFLD="/home/dcc.d"
@@ -4325,7 +4363,7 @@ txtn $(txtn "29.Next-Terminal")$(txtg "✔")"        "$(txtn "49.ChatGPT-Next-We
 txtn $(txtn "30.NginxProxyManager")$(txtg "✔")"    "$(txtn "50.Aktools")$(txtn "✔")
 txtn $(txtn "31.Dash.")$(txtg "✔")"                "$(txtn "51.AKJupyter-Lab")$(txtn "✔")
 txtn $(txtn "32.WatchTower")$(txtg "✔")"           "$(txty "52.Jupyter-Lab")$(txtn "✔")
-txtn $(txtn "33.DeepLX")$(txtg "✔")"               "$(txtn "")$(txtn "")
+txtn $(txtn "33.DeepLX")$(txtg "✔")"               "$(txtp "53.KASM Workspaces")$(txtc "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtp "66.重启Caddy")$(txty "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
@@ -4378,6 +4416,7 @@ website_deploy_run(){
      50) clear && docker_deploy_aktools ;;
      51) clear && docker_deploy_akjupyterlab ;;
      52) clear && docker_deploy_jupyterlab ;;
+     52) clear && docker_deploy_kasmworkspaces ;;
 
      66) clear && caddy_reload ;;
      77) clear && WebSites_manager_run ;;
