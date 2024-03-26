@@ -4317,6 +4317,7 @@ docker_deploy_kasmworkspaces(){
   [[ -f "$FYML"  ]] || touch $FYML
 
   echoR "\n >>>" " 现在开始部署 Kasm Workspaces ... \n"
+  echoR "\n >>>" " 注: 部署KASM，推荐的最低配置为 2CPU+2GRAM+20GHDD \n"
   read -p "请输入监听端口(默认:${dc_port}): " ptmp
   [[ -z "$ptmp" ]] || dc_port=$ptmp
 
@@ -4376,6 +4377,47 @@ EOF
   # echo -e   "Web URL: http://$WAN4:$dc_port"
   echo -e ""
 }
+
+docker_deploy_browserless(){
+
+  local BFLD="/home/dcc.d"
+
+  local dc_port=33003
+  local dc_name=browserless
+  local dc_imag=ghcr.io/browserless/chromium
+  local dc_desc="Browserless"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  echoR "\n >>>" " 现在开始部署 browserless(Chromium) ... \n"
+  read -p "请输入监听端口(默认:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  cat > "$FYML" << EOF
+version: '3'
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    ports:
+        - '$dc_port:3000'
+    restart: unless-stopped
+EOF
+
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echoR "\n >>> " "部署 browserless(Chromium) 完成 \n"
+  # echo -e   "Web URL: http://$WAN4:$dc_port" >> $FCONF
+  # echo -e   "Web URL: http://$WAN4:$dc_port"
+  echo -e ""
+}
+
 
 docker_deploy_chunhuchat(){
 
@@ -4536,6 +4578,7 @@ txtn $(txtn "32.WatchTower")$(txtg "✔")"           "$(txty "52.Jupyter-Lab")$(
 txtn $(txtn "33.DeepLX")$(txtg "✔")"               "$(txtn "53.Neko")$(txtn "✔")
 txtn $(txtn "34.KASM Workspaces")$(txtg "✔")"      "$(txtn "54.Neko-Rooms")$(txtn "✔")
 txtn $(txtn "35.Tor Browser")$(txtg "✔")"          "$(txty "55.OneLine Browser")$(txtp "✔")
+txtn $(txtn "36.Browserless")$(txtg "✔")"          "$(txty "")$(txtp "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtp "66.重启Caddy")$(txty "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
@@ -4577,6 +4620,7 @@ website_deploy_run(){
      33) clear && docker_deploy_deeplx ;;
      34) clear && docker_deploy_kasmworkspaces ;;
      35) clear && docker_deploy_torbrowser ;;
+     36) clear && docker_deploy_browserless ;;
 
      41) clear && docker_deploy_maccms_tweek ;;
      42) clear && docker_deploy_memos ;;
