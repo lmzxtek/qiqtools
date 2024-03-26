@@ -2878,13 +2878,14 @@ EOF
   
 }
 
-docker_deploy_ubunturdpweb(){
+docker_deploy_ubuntu2004novnc(){
 
   local BFLD="/home/dcc.d"
 
   local dc_port=6080
   local dc_name=ubuntu_novnc
   local dc_image=fredblgr/ubuntu-novnc:20.04
+  # local dc_image=fredblgr/ubuntu-novnc:22.04
   local dc_desc="一个网页版Ubuntu远程桌面，挺好用的！\n官网介绍: https://hub.docker.com/r/fredblgr/ubuntu-novnc"
 
   local LFLD="$BFLD/$dc_name"
@@ -3466,6 +3467,136 @@ EOF
   # echo -e   " Default Account: admin@admin"
   echo -e   ""
 }
+
+# https://neko.m1k1o.net/#/getting-started/quick-start
+docker_deploy_neko(){
+  
+  local BFLD="/home/dcc.d"
+
+  local dc_port=7702
+  local dc_name=neko
+  local dc_imag=m1k1o/neko:firefox
+  local dc_desc="Neko-Firefox"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+
+  pssuser=neko
+  pssadmin=admin
+
+  echoR "\n >>>" " 现在开始部署 Neko ... \n"
+  read -p "请输入监听端口(默认:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  read -p "请输入登录密码(默认:${pssuer}): " ptmp
+  [[ -z "$ptmp" ]] || pssuer=$ptmp
+
+  read -p "请输入管理密码(默认:${pssadmin}): " ptmp
+  [[ -z "$ptmp" ]] || pssadmin=$ptmp
+
+  # wget https://raw.githubusercontent.com/m1k1o/neko/master/docker-compose.yaml
+  # sudo docker-compose up -d
+
+  cat > "$FYML" << EOF
+version: "3.4"
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: ${dc_imag}
+    restart: "unless-stopped"
+    shm_size: "2gb"
+    ports:
+      - "$dc_port:8080"
+      - "52000-52100:52000-52100/udp"
+    environment:
+      NEKO_SCREEN: 1920x1080@30
+      NEKO_PASSWORD: $pssuser
+      NEKO_PASSWORD_ADMIN: $pssadmin
+      NEKO_EPR: 52000-52100
+      NEKO_ICELITE: 1
+EOF
+
+  # docker-compose up -d
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echo -e   " Password: $pssuser|$pssadmin" >> $FCONF
+  echo -e   " Password: $pssuser|$pssadmin"
+  echo -e   ""
+}
+
+# https://github.com/m1k1o/neko-rooms/blob/master/docker-compose.yml
+docker_deploy_neko_rooms(){
+  
+  local BFLD="/home/dcc.d"
+
+  local dc_port=7703
+  local dc_name=nekorooms
+  local dc_imag=m1k1o/neko-rooms:latest
+  local dc_desc="Neko-Rooms"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+
+  url_ext=http://127.0.0.1
+  url_loc=127.0.0.1
+
+  echoR "\n >>>" " 现在开始部署 Neko-Room ... \n"
+  read -p "请输入监听端口(默认:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  read -p "请输入客户连接IP(默认:${url_loc}): " ptmp
+  [[ -z "$ptmp" ]] || url_loc=$ptmp
+
+  read -p "请输入外部链接(默认:${url_ext}): " ptmp
+  [[ -z "$ptmp" ]] || url_ext=$ptmp
+
+  # wget -O neko-rooms.sh https://raw.githubusercontent.com/m1k1o/neko-rooms/master/traefik/install
+  # sudo bash neko-rooms.sh
+
+  cat > "$FYML" << EOF
+version: "3.5"
+
+networks:
+  default:
+    attachable: true
+    name: "neko-rooms-net"
+
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: ${dc_imag}
+    restart: "unless-stopped"
+    environment:
+      - "TZ=Asia/Shanghai"
+      - "NEKO_ROOMS_MUX=true"
+      - "NEKO_ROOMS_EPR=59000-59049"
+      - "NEKO_ROOMS_NAT1TO1=$url_loc" # IP address of your server that is reachable from client
+      - "NEKO_ROOMS_INSTANCE_URL=$url_ext:$dc_port/" # external URL
+      - "NEKO_ROOMS_INSTANCE_NETWORK=neko-rooms-net"
+      - "NEKO_ROOMS_TRAEFIK_ENABLED=false"
+      - "NEKO_ROOMS_PATH_PREFIX=/room/"
+    ports:
+      - "$dc_port:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+EOF
+
+  # docker-compose up -d
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echo -e   " Web URL: $url_ext:$dc_port" >> $FCONF
+  echo -e   " Web URL: $url_ext:$dc_port"
+  echo -e   ""
+}
+
 # https://github.com/cedar2025/Xboard
 docker_deploy_xboard(){
   
@@ -4132,7 +4263,7 @@ docker_deploy_jupyterlab(){
   [[ -f "$FYML"  ]] || touch $FYML
 
   echoR "\n >>>" " 现在开始部署 Jupyter-Lab ... \n"
-  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  read -p "请输入监听端口(默认:${dc_port}): " ptmp
   [[ -z "$ptmp" ]] || dc_port=$ptmp
 
   # docker run -d --name jupyterlab3 -p 8888:8888 -v (pwd):/opt/notebooks captainji/jupyterlab:3.0.5
@@ -4186,7 +4317,7 @@ docker_deploy_kasmworkspaces(){
   [[ -f "$FYML"  ]] || touch $FYML
 
   echoR "\n >>>" " 现在开始部署 Kasm Workspaces ... \n"
-  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  read -p "请输入监听端口(默认:${dc_port}): " ptmp
   [[ -z "$ptmp" ]] || dc_port=$ptmp
 
   cd /tmp
@@ -4203,6 +4334,46 @@ docker_deploy_kasmworkspaces(){
   echoR "\n >>> " "部署 Kasm Workspaces 完成 \n"
   echo -e   "Web URL: http://$WAN4:$dc_port" >> $FCONF
   echo -e   "Web URL: http://$WAN4:$dc_port"
+  echo -e ""
+}
+
+docker_deploy_torbrowser(){
+
+  local BFLD="/home/dcc.d"
+
+  local dc_port=35800
+  local dc_name=torbrowser
+  local dc_imag=domistyle/tor-browser
+  local dc_desc="Tor-Browser"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  echoR "\n >>>" " 现在开始部署 Tor Browser ... \n"
+  read -p "请输入监听端口(默认:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  cat > "$FYML" << EOF
+version: '3'
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    ports:
+        - '$dc_port:5800'
+    restart: unless-stopped
+EOF
+
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echoR "\n >>> " "部署 Tor Browser 完成 \n"
+  # echo -e   "Web URL: http://$WAN4:$dc_port" >> $FCONF
+  # echo -e   "Web URL: http://$WAN4:$dc_port"
   echo -e ""
 }
 
@@ -4228,7 +4399,7 @@ docker_deploy_chunhuchat(){
 
   echoR "\n >>>" " 现在开始部署GPT-Academic ... \n"
 
-  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  read -p "请输入监听端口(默认:${dc_port}): " ptmp
   [[ -z "$ptmp" ]] || dc_port=$ptmp
 
   # read -p "请输入API_KEY       : " API_KEY
@@ -4347,12 +4518,11 @@ txtn $(txtn " 2.aaPanel")$(txtg "✔")"              "$(txtp "12.MacCMS")$(txtr 
 txtn $(txtn " 3.宝塔面板")$(txtg "✔")"             "$(txtn "13.KodBox")$(txtr "✘")
 txtn $(txtn " 4.哪吒探针")$(txtg "✔")"             "$(txty "14.Code-Server")$(txtg "✔")
 txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"        "$(txtn "15.ChatGPT-Next-Web")$(txtr "✘")
-# txtn $(txtn " 6.NginxProxyManager")$(txtb "✘")"    "$(txtn "")$(txtg "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txby "▼ Docker")$(txtp " ❦❦❦ ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "21.AuroraPanel")$(txtg "✔")"          "$(txtn "41.MacCMS")$(txtn "✔")
-txtn $(txtn "22.Ubuntu-RDP-Web")$(txtg "✔")"       "$(txtn "42.Memos")$(txtn "✔")
+txtn $(txtn "22.Ubuntu2004-noVNC")$(txtg "✔")"     "$(txtn "42.Memos")$(txtn "✔")
 txtn $(txtn "23.IT-Tools")$(txtg "✔")"             "$(txtc "43.YACD")$(txtn "✔")
 txtn $(txtc "24.SearXNG")$(txtg "✔")"              "$(txtn "44.ClashDashBoard")$(txtn "✔")
 txtn $(txtn "25.StirlingPDF")$(txtg "✔")"          "$(txtb "45.RocketChat")$(txtr "✘")
@@ -4363,7 +4533,9 @@ txtn $(txtn "29.Next-Terminal")$(txtg "✔")"        "$(txtn "49.ChatGPT-Next-We
 txtn $(txtn "30.NginxProxyManager")$(txtg "✔")"    "$(txtn "50.Aktools")$(txtn "✔")
 txtn $(txtn "31.Dash.")$(txtg "✔")"                "$(txtn "51.AKJupyter-Lab")$(txtn "✔")
 txtn $(txtn "32.WatchTower")$(txtg "✔")"           "$(txty "52.Jupyter-Lab")$(txtn "✔")
-txtn $(txtn "33.DeepLX")$(txtg "✔")"               "$(txtp "53.KASM Workspaces")$(txtc "✔")
+txtn $(txtn "33.DeepLX")$(txtg "✔")"               "$(txtp "53.Neko")$(txtc "✔")
+txtn $(txtn "34.KASM Workspaces")$(txtg "✔")"      "$(txtn "54.Neko-Rooms")$(txtc "✔")
+txtn $(txtn "35.Tor Browser")$(txtg "✔")"          "$(txtn "55.OneLine Browser")$(txtc "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtp "66.重启Caddy")$(txty "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
@@ -4391,7 +4563,7 @@ website_deploy_run(){
      15) clear && install curl && bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh) ;;
 
      21) clear && install curl && bash <(curl -fsSL https://raw.githubusercontent.com/Aurora-Admin-Panel/deploy/main/install.sh)  ;;
-     22) clear && docker_deploy_ubunturdpweb ;;
+     22) clear && docker_deploy_ubuntu2004novnc ;;
      23) clear && docker_deploy_ittools ;;
      24) clear && docker_deploy_searxng ;;
      25) clear && docker_deploy_spdf ;;
@@ -4402,7 +4574,9 @@ website_deploy_run(){
      30) clear && docker_deploy_npm ;;
      31) clear && docker_deploy_dashdot ;;
      32) clear && docker_deploy_watchtower ;;
-     32) clear && docker_deploy_deeplx ;;
+     33) clear && docker_deploy_deeplx ;;
+     34) clear && docker_deploy_kasmworkspaces ;;
+     35) clear && docker_deploy_torbrowser ;;
 
      41) clear && docker_deploy_maccms_tweek ;;
      42) clear && docker_deploy_memos ;;
@@ -4416,7 +4590,11 @@ website_deploy_run(){
      50) clear && docker_deploy_aktools ;;
      51) clear && docker_deploy_akjupyterlab ;;
      52) clear && docker_deploy_jupyterlab ;;
-     53) clear && docker_deploy_kasmworkspaces ;;
+     53) clear && docker_deploy_neko ;;
+     54) clear && docker_deploy_neko_rooms ;;
+     
+     55) clear && install curl && curl -sLkO hammou.ch/online-browser && bash online-browser ;;
+      # https://github.com/hhammouch/online-browser
 
      66) clear && caddy_reload ;;
      77) clear && WebSites_manager_run ;;
