@@ -4778,11 +4778,9 @@ txtn $(txtn " 3.宝塔面板")$(txtg "✔")"        "$(txtn "13.KodBox")$(txtr "
 txtn $(txtn " 4.哪吒探针")$(txtg "✔")"        "$(txty "14.Code-Server")$(txtg "✔")
 txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"   "$(txtn "15.ChatGPT-Next-Web")$(txtr "✘")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "21.Docker")$(txtg "✔")"          "$(txtn "")$(txtg "")
-txtn $(txtn "22.Python")$(txtg "✔")"          "$(txtn "")$(txtg "")
-txtn $(txtn "23.Conda")$(txtg "✔")"           "$(txtn "")$(txtg "")
-txtn $(txtn "24.RustDesk Server")$(txtg "✔")" "$(txtn "")$(txtg "")
-txtn $(txtn "25.DeepLX Server")$(txtg "✔")"   "$(txtn "")$(txtg "")
+txtn $(txtn "31.Docker")$(txtg "✔")"          "$(txtn "51.RustDesk Server")$(txtg "✔")
+txtn $(txtn "32.Python")$(txtg "✔")"          "$(txtn "52.DeepLX Server")$(txtg "✔")
+txtn $(txtn "33.Conda")$(txtg "✔")"           "$(txtn "")$(txtg "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
@@ -4807,9 +4805,9 @@ other_tools_run() {
      14) clear && install curl && curl -fsSL https://code-server.dev/install.sh | sh  ;;
      15) clear && install curl && bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh) ;;
 
-      21) clear && docker_install ;;
-      22) clear && install_python ;;
-      23) 
+      31) clear && docker_install ;;
+      32) clear && install_python ;;
+      33) 
         clear 
         if [[ $(uname -m | grep 'arm') != "" ]]; then 
           wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-aarch64.sh && bash Miniconda3-latest-Linux-aarch64.sh
@@ -4817,9 +4815,9 @@ other_tools_run() {
           wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && bash Miniconda3-latest-Linux-x86_64.sh 
         fi 
         ;;
-      24) clear && install wget && wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
-      25) clear && install curl && bash <(curl -Ls https://qwq.mx/deeplx) ;;
-      # 5) clear && install curl && bash <(curl -Ls https://raw.githubusercontent.com/OwO-Network/DeepLX/main/install.sh) ;;
+      51) clear && install wget && wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
+      52) clear && install curl && bash <(curl -Ls https://qwq.mx/deeplx) ;;
+      # 52) clear && install curl && bash <(curl -Ls https://raw.githubusercontent.com/OwO-Network/DeepLX/main/install.sh) ;;
 
       0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
