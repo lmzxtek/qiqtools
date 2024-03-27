@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.5.2
+script_version=v0.5.3
 #==========================
 
 # Language
@@ -4683,13 +4683,7 @@ txtn $(txby "▼ 站点部署")$(txtp " ♨♨♨ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
-txtn $(txty " 1.1Panel")$(txtc "☂")"               "$(txtn "11.AList")$(txtg "✔")
-txtn $(txtn " 2.aaPanel")$(txtg "✔")"              "$(txtp "12.MacCMS")$(txtr "✘")
-txtn $(txtn " 3.宝塔面板")$(txtg "✔")"             "$(txtn "13.KodBox")$(txtr "✘")
-txtn $(txtn " 4.哪吒探针")$(txtg "✔")"             "$(txty "14.Code-Server")$(txtg "✔")
-txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"        "$(txtn "15.ChatGPT-Next-Web")$(txtr "✘")
-txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txby "▼ Docker")$(txtp " ❦❦❦ ")
+txtn $(txby "▼ Docker部署")$(txtp " ❦❦❦ ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "21.AuroraPanel")$(txtg "✔")"          "$(txtn "41.MacCMS")$(txtn "✔")
 txtn $(txtn "22.Ubuntu2004-noVNC")$(txtg "✔")"     "$(txtn "42.Memos")$(txtn "✔")
@@ -4721,18 +4715,6 @@ website_deploy_run(){
     read -p "请输入你的选择: " sub_choice
 
     case $sub_choice in
-      1) clear && install_1panel  ;;
-      2) clear && install_baota_aa ;;
-      3) clear && install_baota_cn ;;
-      4) clear && install curl && curl -L https://raw.githubusercontent.com/naiba/nezha/master/script/install.sh  -o nezha.sh && chmod +x nezha.sh && ./nezha.sh  ;;
-      5) clear && install wget && wget https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh && bash ols1clk.sh  ;;
-
-     11) clear && install curl && curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s install  ;;
-     12) clear && install_maccms ;;
-     13) clear && install_kodbox  ;;
-     14) clear && install curl && curl -fsSL https://code-server.dev/install.sh | sh  ;;
-     15) clear && install curl && bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh) ;;
-
      21) clear && install curl && bash <(curl -fsSL https://raw.githubusercontent.com/Aurora-Admin-Panel/deploy/main/install.sh)  ;;
      22) clear && docker_deploy_ubuntu2004novnc ;;
      23) clear && docker_deploy_ittools ;;
@@ -4785,16 +4767,22 @@ other_tools_menu() {
   
 txtn " "
 txtn $(txbr "▼ 其他工具")$(txbg " ののの ")
-# txtn "-------------------------------------"
-# WANIP_show
-txtn "—————————————————————————————————————"
-# txtn "====================================="
+txtn "-------------------------------------"
+WANIP_show
+txtn "====================================="
+# txtn "—————————————————————————————————————"
 # txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn " 1.Docker")$(txtg "✔")"          "$(txtn "")$(txtg "")
-txtn $(txtn " 2.Python")$(txtg "✔")"          "$(txtn "")$(txtg "")
-txtn $(txtn " 3.Conda")$(txtg "✔")"           "$(txtn "")$(txtg "")
-txtn $(txtn " 4.RustDesk Server")$(txtg "✔")" "$(txtn "")$(txtg "")
-txtn $(txtn " 5.DeepLX Server")$(txtg "✔")"   "$(txtn "")$(txtg "")
+txtn $(txty " 1.1Panel")$(txtc "☂")"          "$(txtn "11.AList")$(txtg "✔")
+txtn $(txtn " 2.aaPanel")$(txtg "✔")"         "$(txtp "12.MacCMS")$(txtr "✘")
+txtn $(txtn " 3.宝塔面板")$(txtg "✔")"        "$(txtn "13.KodBox")$(txtr "✘")
+txtn $(txtn " 4.哪吒探针")$(txtg "✔")"        "$(txty "14.Code-Server")$(txtg "✔")
+txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"   "$(txtn "15.ChatGPT-Next-Web")$(txtr "✘")
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+txtn $(txtn "21.Docker")$(txtg "✔")"          "$(txtn "")$(txtg "")
+txtn $(txtn "22.Python")$(txtg "✔")"          "$(txtn "")$(txtg "")
+txtn $(txtn "23.Conda")$(txtg "✔")"           "$(txtn "")$(txtg "")
+txtn $(txtn "24.RustDesk Server")$(txtg "✔")" "$(txtn "")$(txtg "")
+txtn $(txtn "25.DeepLX Server")$(txtg "✔")"   "$(txtn "")$(txtg "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
@@ -4807,9 +4795,21 @@ other_tools_run() {
     reading "请选择代码: " choice
 
     case $choice in
-      1) clear && docker_install ;;
-      2) clear && install_python ;;
-      3) 
+      1) clear && install_1panel  ;;
+      2) clear && install_baota_aa ;;
+      3) clear && install_baota_cn ;;
+      4) clear && install curl && curl -L https://raw.githubusercontent.com/naiba/nezha/master/script/install.sh  -o nezha.sh && chmod +x nezha.sh && ./nezha.sh  ;;
+      5) clear && install wget && wget https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh && bash ols1clk.sh  ;;
+
+     11) clear && install curl && curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s install  ;;
+     12) clear && install_maccms ;;
+     13) clear && install_kodbox  ;;
+     14) clear && install curl && curl -fsSL https://code-server.dev/install.sh | sh  ;;
+     15) clear && install curl && bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh) ;;
+
+      21) clear && docker_install ;;
+      22) clear && install_python ;;
+      23) 
         clear 
         if [[ $(uname -m | grep 'arm') != "" ]]; then 
           wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-aarch64.sh && bash Miniconda3-latest-Linux-aarch64.sh
@@ -4817,8 +4817,8 @@ other_tools_run() {
           wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && bash Miniconda3-latest-Linux-x86_64.sh 
         fi 
         ;;
-      4) clear && install wget && wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
-      5) clear && install curl && bash <(curl -Ls https://qwq.mx/deeplx) ;;
+      24) clear && install wget && wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
+      25) clear && install curl && bash <(curl -Ls https://qwq.mx/deeplx) ;;
       # 5) clear && install curl && bash <(curl -Ls https://raw.githubusercontent.com/OwO-Network/DeepLX/main/install.sh) ;;
 
       0) clear && qiqtools ;;
