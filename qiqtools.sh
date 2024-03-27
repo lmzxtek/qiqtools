@@ -4440,7 +4440,7 @@ docker_deploy_linuxserverfirefox(){
   [[ -z "$ptmp" ]] || dc_port=$ptmp
 
   cat > "$FYML" << EOF
-version: '3'
+version: '3.9'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -4491,7 +4491,7 @@ docker_deploy_linuxserverchromium(){
   [[ -z "$ptmp" ]] || dc_port=$ptmp
 
   cat > "$FYML" << EOF
-version: '3'
+version: '3.9'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -4526,7 +4526,7 @@ docker_deploy_chunhuchat(){
   local dc_port=7847
   local dc_name=changhuchat
   local dc_image=ghcr.io/gaizhenbiao/chuanhuchatgpt:latest
-  local dc_desc="ChunHu川虎学术聊天"
+  local dc_desc="ChunHu川虎学术"
 
   local LFLD="$BFLD/$dc_name"
   local LPTH="$BFLD/$dc_name/history"
@@ -4554,7 +4554,7 @@ docker_deploy_chunhuchat(){
   # curl -os "${LFLD}/config.json" https://raw.githubusercontent.com/GaiZhenbiao/ChuanhuChatGPT/main/config_example.json
 
   cat > $LFLD/docker-compose.yml << EOF
-version: '3'
+version: '3.9'
 services:
   ${dc_name}:
     container_name: ${dc_name}
