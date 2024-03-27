@@ -4454,9 +4454,9 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
-    security-opt:
+    security_opt:
       - seccomp=unconfined
-    shm-size: "7gb"
+    shm_size: "7gb"
     restart: unless-stopped
 EOF
 
@@ -4505,9 +4505,9 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
-    security-opt:
+    security_opt:
       - seccomp=unconfined
-    shm-size: "7gb"
+    shm_size: "7gb"
     restart: unless-stopped
 EOF
 
