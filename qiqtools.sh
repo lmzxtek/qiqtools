@@ -5111,7 +5111,7 @@ txtn $(txtc " 4.停止指定容器")$(txtg "✔")"       "$(txtn "13.重启所�
 txtn $(txty " 5.删除指定容器")$(txtr "✔")"       "$(txtp "15.进入指定容器")$(txtn "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "21.查看容器网络")$(txtp "✔")"       "$(txtr "31.清理容器")$(txtc "〄")
-txtn $(txtp "22.查看容器日志")$(txty "✔")"       "$(txtn "32.容器状态")$(txtn "")
+txtn $(txtp "22.查看容器日志")$(txty "✔")"       "$(txtn "32.容器状态")$(txtp "☪")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"      "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回上级菜单")$(txtr "✖")"       "$(txtr "")$(txtb "")$(txtc "")
