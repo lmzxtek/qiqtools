@@ -4459,10 +4459,10 @@ services:
     container_name: ${dc_name}
     image: $dc_imag
     volumes:
-        - $LFLD/firefox:/config
+      - $LFLD/firefox:/config
     ports:
-      - '$dc_port:3000'
-    #  - '$dc_port:3001'
+    #  - '$dc_port:3000'
+      - '$dc_port:3001'
     environment:
       - PUID=1000
       - PGID=1000
@@ -4525,10 +4525,10 @@ services:
     container_name: ${dc_name}
     image: $dc_imag
     volumes:
-        - $LFLD/chromium:/config
+      - $LFLD/chromium:/config
     ports:
-      - '$dc_port:3000'
-    #  - '$dc_port:3001'
+    #  - '$dc_port:3000'
+      - '$dc_port:3001'
     environment:
       - PUID=1000
       - PGID=1000
