@@ -4418,6 +4418,106 @@ EOF
   echo -e ""
 }
 
+docker_deploy_linuxserverfirefox(){
+
+  local BFLD="/home/dcc.d"
+
+  local dc_port=33004
+  local dc_name=linuxserverfirefox
+  local dc_imag=ghcr.io/linuxserver/firefox:latest
+  local dc_desc="LinuxServerFirefox"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/firefox"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  echoR "\n >>>" " 现在开始部署 LinuxServer(Firefox) ... \n"
+  read -p "请输入监听端口(默认:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  cat > "$FYML" << EOF
+version: '3'
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    volumes:
+        - $LFLD/firefox:/config
+    ports:
+      - '$dc_port:3000'
+    #  - '$dc_port:3001'
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    security-opt:
+      - seccomp=unconfined
+    shm-size: "7gb"
+    restart: unless-stopped
+EOF
+
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echoR "\n >>> " "部署 LinuxServer(Firefox) 完成 \n"
+  # echo -e   "Web URL: http://$WAN4:$dc_port" >> $FCONF
+  # echo -e   "Web URL: http://$WAN4:$dc_port"
+  echo -e ""
+}
+
+
+docker_deploy_linuxserverchromium(){
+
+  local BFLD="/home/dcc.d"
+
+  local dc_port=33005
+  local dc_name=linuxserverfirefox
+  local dc_imag=ghcr.io/linuxserver/chromium:latest
+  local dc_desc="LinuxServerChromium"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/chromium"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  echoR "\n >>>" " 现在开始部署 LinuxServer(Chromium) ... \n"
+  read -p "请输入监听端口(默认:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  cat > "$FYML" << EOF
+version: '3'
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    volumes:
+        - $LFLD/chromium:/config
+    ports:
+      - '$dc_port:3000'
+    #  - '$dc_port:3001'
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    security-opt:
+      - seccomp=unconfined
+    shm-size: "7gb"
+    restart: unless-stopped
+EOF
+
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echoR "\n >>> " "部署 LinuxServer(Chromium) 完成 \n"
+  # echo -e   "Web URL: http://$WAN4:$dc_port" >> $FCONF
+  # echo -e   "Web URL: http://$WAN4:$dc_port"
+  echo -e ""
+}
 
 docker_deploy_chunhuchat(){
 
@@ -4576,9 +4676,9 @@ txtn $(txtn "30.NginxProxyManager")$(txtg "✔")"    "$(txtn "50.Aktools")$(txtn
 txtn $(txtn "31.Dash.")$(txtg "✔")"                "$(txtn "51.AKJupyter-Lab")$(txtn "✔")
 txtn $(txtn "32.WatchTower")$(txtg "✔")"           "$(txty "52.Jupyter-Lab")$(txtn "✔")
 txtn $(txtn "33.DeepLX")$(txtg "✔")"               "$(txtn "53.Neko")$(txtn "✔")
-txtn $(txtn "34.KASM Workspaces")$(txtg "✔")"      "$(txtn "54.Neko-Rooms")$(txtn "✔")
-txtn $(txtn "35.Tor Browser")$(txtg "✔")"          "$(txty "55.OneLine Browser")$(txtp "✔")
-txtn $(txtn "36.Browserless")$(txtg "✔")"          "$(txty "")$(txtp "")
+txtn $(txtn "34.TorBrowser")$(txtn "✔")"           "$(txtn "54.Neko-Rooms")$(txtn "✔")
+txtn $(txtc "35.OnlineBrowser")$(txtg "✔")"        "$(txty "55.linuxserver(firefox)")$(txtp "✔")
+txtn $(txtb "36.KasmWorkspaces")$(txtg "✔")"       "$(txty "56.linuxserver(chromium)")$(txtp "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtp "66.重启Caddy")$(txty "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
@@ -4618,9 +4718,10 @@ website_deploy_run(){
      31) clear && docker_deploy_dashdot ;;
      32) clear && docker_deploy_watchtower ;;
      33) clear && docker_deploy_deeplx ;;
-     34) clear && docker_deploy_kasmworkspaces ;;
-     35) clear && docker_deploy_torbrowser ;;
-     36) clear && docker_deploy_browserless ;;
+     34) clear && docker_deploy_torbrowser ;;
+     36) clear && docker_deploy_kasmworkspaces ;;
+     35) clear && install curl && curl -sLkO hammou.ch/online-browser && bash online-browser ;;
+      # https://github.com/hhammouch/online-browser
 
      41) clear && docker_deploy_maccms_tweek ;;
      42) clear && docker_deploy_memos ;;
@@ -4636,9 +4737,9 @@ website_deploy_run(){
      52) clear && docker_deploy_jupyterlab ;;
      53) clear && docker_deploy_neko ;;
      54) clear && docker_deploy_neko_rooms ;;
-
-     55) clear && install curl && curl -sLkO hammou.ch/online-browser && bash online-browser ;;
-      # https://github.com/hhammouch/online-browser
+    #  55) clear && docker_deploy_browserless ;;
+     55) clear && docker_deploy_linuxserverfirefox ;;
+     56) clear && docker_deploy_linuxserverchromium ;;
 
      66) clear && caddy_reload ;;
      77) clear && WebSites_manager_run ;;
