@@ -4428,7 +4428,7 @@ docker_deploy_linuxserverfirefox(){
   local dc_desc="LinuxServerFirefox"
 
   local LFLD="$BFLD/$dc_name"
-  local LPTH="$BFLD/$dc_name/firefox"
+  local LPTH="$BFLD/$dc_name/data"
   local FYML="$LFLD/docker-compose.yml"
   local FCONF="$LFLD/${dc_name}.conf"
 
@@ -4438,6 +4438,19 @@ docker_deploy_linuxserverfirefox(){
   echoR "\n >>>" " 现在开始部署 LinuxServer(Firefox) ... \n"
   read -p "请输入监听端口(默认:${dc_port}): " ptmp
   [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  # docker run -d \
+  #           --name=firefox \
+  #           --security-opt seccomp=unconfined \
+  #           -e PUID=1000 \
+  #           -e PGID=1000 \
+  #           -e TZ=Etc/UTC \
+  #           -p 3000:3000 \
+  #           -p 3001:3001 \
+  #           -v /firefox:/config \
+  #           --shm-size="7gb" \
+  #           --restart unless-stopped \
+  #           ghcr.io/linuxserver/firefox:latest
 
   cat > "$FYML" << EOF
 version: '3.9'
@@ -4474,12 +4487,14 @@ docker_deploy_linuxserverchromium(){
   local BFLD="/home/dcc.d"
 
   local dc_port=33005
-  local dc_name=linuxserverfirefox
+  local dc_name=linuxserverchromium
   local dc_imag=ghcr.io/linuxserver/chromium:latest
+  # local dc_imag=ghcr.io/linuxserver/mullvad-browser:latest
+  # local dc_imag=ghcr.io/linuxserver/opera:latest
   local dc_desc="LinuxServerChromium"
 
   local LFLD="$BFLD/$dc_name"
-  local LPTH="$BFLD/$dc_name/chromium"
+  local LPTH="$BFLD/$dc_name/data"
   local FYML="$LFLD/docker-compose.yml"
   local FCONF="$LFLD/${dc_name}.conf"
 
@@ -4489,6 +4504,19 @@ docker_deploy_linuxserverchromium(){
   echoR "\n >>>" " 现在开始部署 LinuxServer(Chromium) ... \n"
   read -p "请输入监听端口(默认:${dc_port}): " ptmp
   [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  # docker run -d \
+  #             --name=chromium \
+  #             --security-opt seccomp=unconfined \
+  #             -e PUID=1000 \
+  #             -e PGID=1000 \
+  #             -e TZ=Etc/UTC \
+  #             -p 3000:3000 \
+  #             -p 3001:3001 \
+  #             -v /chromium:/config \
+  #             --shm-size="7gb" \
+  #             --restart unless-stopped \
+  #             ghcr.io/linuxserver/chromium:latest
 
   cat > "$FYML" << EOF
 version: '3.9'
@@ -5083,7 +5111,7 @@ txtn $(txtc " 4.停止指定容器")$(txtg "✔")"       "$(txtn "13.重启所�
 txtn $(txty " 5.删除指定容器")$(txtr "✔")"       "$(txtp "15.进入指定容器")$(txtn "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "21.查看容器网络")$(txtp "✔")"       "$(txtr "31.清理容器")$(txtc "〄")
-txtn $(txtp "22.查看容器日志")$(txty "✔")"       "$(txtn "")$(txtn "")
+txtn $(txtp "22.查看容器日志")$(txty "✔")"       "$(txtn "32.容器状态")$(txtn "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"      "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回上级菜单")$(txtr "✖")"       "$(txtr "")$(txtb "")$(txtc "")
@@ -5115,6 +5143,7 @@ docker_container_list_run() {
         ;;
       5) 
         read -p "请输入要删除的容器名: " dockername
+        docker stop $dockername
         docker rm $dockername
         ;;
 
@@ -5156,6 +5185,7 @@ docker_container_list_run() {
       ;;
      
      31) docker_clean ;;
+     32) clear && docker_info_list ;;
 
       0) clear && docker_run ;;
       *) echo "无效的输入!" ;;
