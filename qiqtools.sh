@@ -4459,7 +4459,7 @@ services:
     container_name: ${dc_name}
     image: $dc_imag
     volumes:
-      - $LFLD/firefox:/config
+      - $LPTH:/config
     ports:
     #  - '$dc_port:3000'
       - '$dc_port:3001'
@@ -4525,7 +4525,7 @@ services:
     container_name: ${dc_name}
     image: $dc_imag
     volumes:
-      - $LFLD/chromium:/config
+      - $LPTH:/config
     ports:
     #  - '$dc_port:3000'
       - '$dc_port:3001'
