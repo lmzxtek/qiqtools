@@ -5035,7 +5035,7 @@ IP_check_select_run() {
      11) set_ipv6_github ;;
      12) clear && cd ~ && mkdir -p cfip && cd cfip && curl -sSL https://gitlab.com/rwkgyg/CFwarp/raw/main/point/cfip.sh -o cfip.sh && chmod +x cfip.sh && bash cfip.sh ;;
      13) clear && cd ~ && mkdir -p cfip && cd cfip && curl -sSL https://gitlab.com/rwkgyg/CFwarp/raw/main/point/CFcdnym.sh -o CFcdnym.sh && chmod +x CFcdnym.sh && bash CFcdnym.sh ;;
-     13) clear && install nslookup && nslookup google.com ;;
+     14) clear && install nslookup && nslookup google.com ;;
 
       0) clear && qiqtools ;;
       *) echo "无效的输入!" && break_end ;;
