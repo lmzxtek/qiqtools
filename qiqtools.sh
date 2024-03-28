@@ -2676,6 +2676,104 @@ install_1panel() {
   fi
 }
 
+app_manage_menu(){
+local appname=$1
+txtn " "
+txtn $(txby "▼ 应用管理")$(txtp " ♨♨♨ ")
+txtn "—————————————————————————————————————"
+# WANIP_show
+txtn " >>> $appname已安装"
+txtn "====================================="
+txtn $(txtn " 1.安装")$(txtg "✔")"         "$(txtn "")$(txtn "")
+txtn $(txtn " 2.卸载")$(txtg "✔")"         "$(txtn "")$(txtn "")
+txtn $(txtn " 3.重新安装")$(txtg "✔")"      "$(txtc "")$(txtn "")
+txtn $(txtn " 4.查看状态")$(txtg "✔")"      "$(txtc "")$(txtn "")
+txtn $(txtn " 5.帮助说明")$(txtg "✔")"      "$(txtc "")$(txtn "")
+# txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
+txtn "—————————————————————————————————————"
+txtn $(txtn " 0.返回主菜单")$(txtr "✖")"    "$(txtp "")$(txtc "")$(txty "")
+txtn " "
+}
+
+app_manage_run() {
+  if command -v 1pctl &> /dev/null; then
+      clear && app_manage_menu      
+      read -p "请输入你的选择: " sub_choice
+
+      case $sub_choice in
+          1) clear ;;
+          2) clear ;;
+          0) break ;;
+          *) break ;;
+      esac
+  else
+  fi
+}
+
+# 安装ubuntu桌面显示端
+install_ub_desktop() {
+  source /etc/os-release
+
+  sudo apt update 
+
+  case "$ID" in
+      ubuntu) sudo apt -y install ubuntu-desktop ;;
+      debian) 
+        # sudo apt -y install task-gnome-desktop 
+        sudo apt install x-window-system-core gnome-core
+        sudo apt -y install xrdp
+        ;;
+      # debian) sudo apt -y install task-xfce-desktop ;;
+      # debian) sudo apt -y install task-kde-desktop ;;
+      # centos) ;;
+           *) echo " >>> 未知系统，无法执行切换源脚桌面安装" && return 1 ;;
+  esac
+
+  txtn " >>> 注意：建议添加普通用户用于登录GUI桌面。"
+
+  reading " >>> 是否添加新用户? [Y|n]: " choice
+  case "$choice" in
+    [Yy]) 
+      # 提示用户输入新用户名
+      read -p "请输入新用户名: " new_username
+
+      # 创建新用户并设置密码
+      sudo useradd -m -s /bin/bash "$new_username"
+      sudo passwd "$new_username"
+
+      echo " >>> 已添加新用户: $new_username\n"
+
+      # 赋予新用户sudo权限
+      reading " >>> 是否赋予新用户sudo权限? [Y|n]: " choice
+      case "$choice" in
+        [Yy]) echo "$new_username ALL=(ALL:ALL) ALL" | sudo tee -a /etc/sudoers ;;
+          *) echo " >>> 不赋予新用户sudo权限." ;;
+      esac
+     ;;
+
+    # [Nn]) echo " >>> " ;;
+        *) echo " >>> 不添加新用户..." ;;
+  esac
+
+  reading " >>> 是否添加新用户安装RDP服务? [Y|n]: " choice
+  case "$choice" in
+    [Yy]) 
+      # sudo apt -y install xfce4 xfce4-goodies xorg dbus-x11 x11-xserver-utils
+      # sudo apt install x-window-system-core gnome-core
+
+      sudo apt -y install xrdp
+      sudo systemctl status xrdp
+      sudo adduser xrdp ssl-cert
+     ;;
+
+    # [Nn]) echo " >>> 不添安装RDP服务..." ;;
+        *) echo " >>> 不添安装RDP服务。" ;;
+  esac
+
+  sudo reboot
+}
+
+
 # 在Ubuntu22.04上安装可道云
 # https://docs.kodcloud.com/setup/ubuntu/
 install_kodbox(){
@@ -4762,7 +4860,6 @@ website_deploy_run(){
 }
 
 other_tools_menu() {
-  
 txtn " "
 txtn $(txbr "▼ 管理工具")$(txbg " ののの ")
 txtn "-------------------------------------"
@@ -4776,9 +4873,9 @@ txtn $(txtn " 3.宝塔面板")$(txtg "✔")"        "$(txtn "13.KodBox")$(txtr "
 txtn $(txtn " 4.哪吒探针")$(txtg "✔")"        "$(txty "14.Code-Server")$(txtg "✔")
 txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"   "$(txtn "15.ChatGPT-Next-Web")$(txtr "✘")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "31.Docker")$(txtg "✔")"          "$(txtn "51.RustDesk Server")$(txtg "✔")
-txtn $(txtn "32.Python")$(txtg "✔")"          "$(txtn "52.DeepLX Server")$(txtg "✔")
-txtn $(txtn "33.Conda")$(txtg "✔")"           "$(txtn "")$(txtg "")
+txtn $(txtn "31.Docker")$(txtg "✔")"          "$(txtn "51.Gnome-Desktop")$(txtg "✔")
+txtn $(txtn "32.Python")$(txtg "✔")"          "$(txtn "52.RustDesk Server")$(txtg "✔")
+txtn $(txtn "33.Conda")$(txtg "✔")"           "$(txtn "53.DeepLX Server")$(txtg "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
@@ -4813,8 +4910,9 @@ other_tools_run() {
           wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && bash Miniconda3-latest-Linux-x86_64.sh 
         fi 
         ;;
-      51) clear && install wget && wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
-      52) clear && install curl && bash <(curl -Ls https://qwq.mx/deeplx) ;;
+      51) clear && install_ub_desktop ;;
+      52) clear && install wget && wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
+      53) clear && install curl && bash <(curl -Ls https://qwq.mx/deeplx) ;;
       # 52) clear && install curl && bash <(curl -Ls https://raw.githubusercontent.com/OwO-Network/DeepLX/main/install.sh) ;;
 
       0) clear && qiqtools ;;
@@ -4831,11 +4929,6 @@ txtn $(txbr "▼ 节点管理")$(txbb " ✈✈✈ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
-txtn $(txtn "81.Show IP(ip.sb)")$(txtg "✔")"                "$(txtn "91.Set GitHUB(IPv6)")$(txtg "✔")
-txtn $(txtn "82.Show IPv4(local)")$(txtg "✔")"              "$(txtb "92.Cloudflare Select IP")$(txtg "✔")
-txtn $(txtn "83.Show IPv6(local)")$(txtg "✔")"              "$(txtn "93.Cloudflare Select CDN")$(txtg "✔")
-txtn $(txtp "84.Cloudflare(IPv4)")$(txtg "✔")"              "$(txtr "85.Cloudflare(IPv6)")$(txtg "✔")
-txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty " 1.Warp(@fscarmen)")$(txtr "✔")"               "$(txtn "11.XRay(@233boy)")$(txtg "✔")
 txtn $(txtn " 2.Warp(@hamid-gh98)")$(txtg "✔")"             "$(txtn "12.V2Ray(@233boy)")$(txtg "✔")
 txtn $(txtn " 3.Warp(@Misaka-blog)")$(txtg "✔")"            "$(txtn "13.V2Ray-Agent(@mack-a)")$(txtg "✔")
@@ -4898,23 +4991,52 @@ warp_tools_run() {
     #  64) clear && docker run -p 1234:80 -d --name yacd --rm ghcr.io/haishanh/yacd:master ;;
     #  65) clear && echo -e "\n Todo: ... \n" ;;
 
-     81) echo -e "\nIP: $(curl -s ip.sb)\n"  ;;
-     82) echo -e "\n$(ip addr | grep "inet ")\n"  ;;
-     83) echo -e "\n$(ip addr | grep "inet6")\n"  ;;
-     84) clear && curl -s4m5 https://www.cloudflare.com/cdn-cgi/trace ;;
-     85) clear && curl -s6m5 https://www.cloudflare.com/cdn-cgi/trace ;;
-
-     91) set_ipv6_github ;;
-     92) clear && cd ~ && mkdir -p cfip && cd cfip && curl -sSL https://gitlab.com/rwkgyg/CFwarp/raw/main/point/cfip.sh -o cfip.sh && chmod +x cfip.sh && bash cfip.sh ;;
-     93) clear && cd ~ && mkdir -p cfip && cd cfip && curl -sSL https://gitlab.com/rwkgyg/CFwarp/raw/main/point/CFcdnym.sh -o CFcdnym.sh && chmod +x CFcdnym.sh && bash CFcdnym.sh ;;
-    #  94) clear && bash <(curl -Ls https://cdn.jsdelivr.net/gh/missuo/OpenAI-Checker/openai.sh) ;;
-    #  95) clear && bash <(curl -Ls check.unlock.media) ;;
-
-      0) clear && clear && clear && clear && clear && qiqtools ;;
+      0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
     esac
     # recheck_ip_address
     break_end
+  done 
+
+}
+
+IP_check_select_menu() {
+txtn " "
+txtn $(txbr "▼ IP检测与优选")$(txbb " ㊥㊥㊥ ")
+txtn "—————————————————————————————————————"
+WANIP_show
+txtn "====================================="
+txtn $(txtn " 1.Show IP(ip.sb)")$(txtg "✔")"      "$(txtn "11.Set GitHUB(IPv6)")$(txtg "✔")
+txtn $(txtn " 2.Show IPv4(local)")$(txtg "✔")"    "$(txtb "12.Cloudflare Select IP")$(txtg "✔")
+txtn $(txtn " 3.Show IPv6(local)")$(txtg "✔")"    "$(txtn "13.Cloudflare Select CDN")$(txtg "✔")
+txtn $(txtp " 4.Cloudflare(IPv4)")$(txtg "✔")"    "$(txtr "14.Check DNS")$(txtg "✔")
+txtn $(txtp " 5.Cloudflare(IPv6)")$(txtg "✔")"    "$(txtr "")$(txtg "")
+txtn "—————————————————————————————————————"
+txtn $(txtn " 0.返回主菜单")$(txtr "✖")
+txtn " "
+}
+
+IP_check_select_run() {
+  while true; do
+    clear && IP_check_select_menu
+    reading "请选择代码: " choice
+    
+    case $choice in
+      1) echo -e "\nIP: $(curl -s ip.sb)\n"  ;;
+      2) echo -e "\n$(ip addr | grep "inet ")\n"  ;;
+      3) echo -e "\n$(ip addr | grep "inet6")\n"  ;;
+      4) clear && curl -s4m5 https://www.cloudflare.com/cdn-cgi/trace ;;
+      5) clear && curl -s6m5 https://www.cloudflare.com/cdn-cgi/trace ;;
+
+     11) set_ipv6_github ;;
+     12) clear && cd ~ && mkdir -p cfip && cd cfip && curl -sSL https://gitlab.com/rwkgyg/CFwarp/raw/main/point/cfip.sh -o cfip.sh && chmod +x cfip.sh && bash cfip.sh ;;
+     13) clear && cd ~ && mkdir -p cfip && cd cfip && curl -sSL https://gitlab.com/rwkgyg/CFwarp/raw/main/point/CFcdnym.sh -o CFcdnym.sh && chmod +x CFcdnym.sh && bash CFcdnym.sh ;;
+     13) clear && install nslookup && nslookup google.com ;;
+
+      0) clear && qiqtools ;;
+      *) echo "无效的输入!" && break_end ;;
+    esac
+    # recheck_ip_address    
   done 
 
 }
@@ -5988,6 +6110,7 @@ txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "21.系统工具")$(txtp "❁")"       "$(txtn "31.性能测试")$(txtb "☯")
 txtn $(txtn "22.常用工具")$(txtn "❃")"       "$(txtp "32.节点搭建")$(txty "✈")
 txtn $(txtn "23.管理工具")$(txtb "の")"      "$(txtc "33.节点面板")$(txty "⊕")
+txtn $(txtn "24.IP检测优选")$(txtb "㊥")"     "$(txtc "")$(txty "")
 txtn "====================================="
 txtn $(txtb "00.脚本更新")$(txtb "☋")"       "$(txty "99")$(txtc ".重启系统☢")
 txtn "—————————————————————————————————————"
@@ -6016,6 +6139,7 @@ while true; do
     21) clear && system_setting_run ;;
     22) clear && common_apps_run  ;;
     23) clear && other_tools_run  ;;
+    24) clear && IP_check_select_run  ;;
 
     31) clear && server_test_run  ;;
     32) clear && warp_tools_run   ;;
