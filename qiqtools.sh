@@ -2696,6 +2696,8 @@ txtn " "
 }
 
 app_manage_run() {
+  local appname=$1
+
   if command -v 1pctl &> /dev/null; then
       clear && app_manage_menu      
       read -p "请输入你的选择: " sub_choice
@@ -2707,6 +2709,8 @@ app_manage_run() {
           *) break ;;
       esac
   else
+    txtn " >>> $appname尚未安装，请先安装..."
+
   fi
 }
 
