@@ -4872,8 +4872,8 @@ txtn "====================================="
 # txtn "—————————————————————————————————————"
 # txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty " 1.1Panel")$(txtc "☂")"          "$(txtn "11.AList")$(txtg "✔")
-txtn $(txtn " 2.aaPanel")$(txtg "✔")"         "$(txtp "12.MacCMS")$(txtr "✘")
-txtn $(txtn " 3.宝塔面板")$(txtg "✔")"        "$(txtn "13.KodBox")$(txtr "✘")
+txtn $(txtn " 2.aaPanel")$(txtg "✔")"         "$(txtn "12.MacCMS")$(txtb "✘")
+txtn $(txtn " 3.宝塔面板")$(txtg "✔")"        "$(txtc "13.WebOS")$(txtr "✔")
 txtn $(txtn " 4.哪吒探针")$(txtg "✔")"        "$(txty "14.Code-Server")$(txtg "✔")
 txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"   "$(txtn "15.ChatGPT-Next-Web")$(txtr "✘")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
@@ -4900,7 +4900,8 @@ other_tools_run() {
 
      11) clear && install curl && curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s install  ;;
      12) clear && install_maccms ;;
-     13) clear && install_kodbox  ;;
+    #  13) clear && install_kodbox  ;;
+     13) clear && if [ -f /usr/bin/curl ];then curl -sSO https://support.tenfell.cn/install.sh;else wget -O install.sh https://support.tenfell.cn/install.sh;fi;bash install.sh  ;;
      14) clear && install curl && curl -fsSL https://code-server.dev/install.sh | sh  ;;
      15) clear && install curl && bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh) ;;
 
