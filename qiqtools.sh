@@ -4450,6 +4450,67 @@ docker_deploy_kasmworkspaces(){
   echo -e ""
 }
 
+docker_deploy_puter(){
+
+  local BFLD="/home/dcc.d"
+
+  local dc_port=44100
+  local dc_name=puter
+  local dc_imag=captainji/jupyterlab
+  local dc_desc="Puter"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/config"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  echoR "\n >>>" " 现在开始部署 Puter ... \n"
+  read -p "请输入监听端口(默认:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  mkdir -p config data
+  # sudo chown -R 1000:1000 puter
+  # wget https://raw.githubusercontent.com/HeyPuter/puter/main/docker-compose.yml
+  # docker compose up
+
+  cat > "$FYML" << EOF
+version: "3.8"
+services:
+   ${dc_name}:
+    container_name:  ${dc_name}
+    image: ghcr.io/heyputer/puter:latest
+    pull_policy: always
+    # build: ./
+    restart: unless-stopped
+    ports:
+      - '$dc_port:4100'
+    environment:
+      # TZ: Europe/Paris
+      # CONFIG_PATH: /etc/puter
+      PUID: 1000
+      PGID: 1000
+    volumes:
+      - ./config:/etc/puter
+      - ./data:/var/puter
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://puter.localhost:4100/test || exit 1
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+EOF
+
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echoR "\n >>> " "部署 Puter 完成 \n"
+  echo -e   "Web URL: http://$WAN4:$dc_port" >> $FCONF
+  echo -e   "Web URL: http://$WAN4:$dc_port"
+  echo -e ""
+}
+
 docker_deploy_torbrowser(){
 
   local BFLD="/home/dcc.d"
@@ -4811,6 +4872,7 @@ txtn $(txtn "33.DeepLX")$(txtg "✔")"               "$(txtn "53.Neko")$(txtn "�
 txtn $(txtn "34.TorBrowser")$(txtn "✔")"           "$(txtn "54.Neko-Rooms")$(txtn "✔")
 txtn $(txtc "35.OnlineBrowser")$(txtg "✔")"        "$(txty "55.linuxserver(firefox)")$(txtp "✔")
 txtn $(txtb "36.KasmWorkspaces")$(txtg "✔")"       "$(txty "56.linuxserver(chromium)")$(txtp "✔")
+txtn $(txtb "37.Puter")$(txtg "✔")"                "$(txty "")$(txtp "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtp "66.重启Caddy")$(txty "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
@@ -4840,6 +4902,7 @@ website_deploy_run(){
      33) clear && docker_deploy_deeplx ;;
      34) clear && docker_deploy_torbrowser ;;
      36) clear && docker_deploy_kasmworkspaces ;;
+     37) clear && docker_deploy_puter ;;
      35) clear && install curl && curl -sLkO hammou.ch/online-browser && bash online-browser ;;
       # https://github.com/hhammouch/online-browser
 
@@ -4886,6 +4949,7 @@ txtn $(txtn " 2.aaPanel")$(txtg "✔")"         "$(txtn "12.MacCMS")$(txtb "✘"
 txtn $(txtn " 3.宝塔面板")$(txtg "✔")"        "$(txtc "13.WebOS")$(txtr "✔")
 txtn $(txtn " 4.哪吒探针")$(txtg "✔")"        "$(txty "14.Code-Server")$(txtg "✔")
 txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"   "$(txtn "15.ChatGPT-Next-Web")$(txtr "✘")
+txtn $(txtn " 6.Puter")$(txtg "✔")"           "$(txtn "")$(txtr "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.Docker")$(txtg "✔")"          "$(txtn "51.Gnome-Desktop")$(txtg "✔")
 txtn $(txtn "32.Python")$(txtg "✔")"          "$(txtn "52.RustDesk Server")$(txtg "✔")
@@ -4907,6 +4971,12 @@ other_tools_run() {
       3) clear && install_baota_cn ;;
       4) clear && install curl && curl -L https://raw.githubusercontent.com/naiba/nezha/master/script/install.sh  -o nezha.sh && chmod +x nezha.sh && ./nezha.sh  ;;
       5) clear && install wget && wget https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh && bash ols1clk.sh  ;;
+      6) clear 
+        git clone https://github.com/HeyPuter/puter
+        cd puter
+        npm install
+        npm start
+        ;;
 
      11) clear && install curl && curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s install  ;;
      12) clear && install_maccms ;;
