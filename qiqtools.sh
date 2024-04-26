@@ -1239,7 +1239,7 @@ txtn $(txtn "73.RockyLinux")$(txtb "❈")"       "$(txtn "")$(txtg "")
 txtn $(txtn "74.Fedora 39")$(txtb "❈")"        "$(txtn "")$(txtg "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
-txtn $(txtn " 0.返回主菜单")$(txtr "✖")"           "$(txtp "")$(txtc "")$(txty "")
+txtn $(txtn " 0.返回主菜单")$(txtr "✖")"        "$(txtp "88.41合一脚本")$(txtc "❃")$(txty "")
 txtn " "
 }
 
@@ -1433,6 +1433,10 @@ dd_system_run() {
         reboot 
         exit ;;
 
+      88) 
+        apt update -y #&& apt dist-upgrade -y
+        wget --no-check-certificate -O NewReinstall.sh https://raw.githubusercontent.com/fcurrk/reinstall/master/NewReinstall.sh && chmod a+x NewReinstall.sh && bash NewReinstall.sh
+        ;;
       #============================== 
       0) system_setting_run && exit ;;
       *) echo "无效的选择，请重新输入。" && break_end ;;
@@ -4984,8 +4988,12 @@ other_tools_run() {
       6) clear 
         git clone https://github.com/HeyPuter/puter
         cd puter
+        install npm
         npm install
         npm start
+
+        [[ -n "$WAN4" ]] && txtn " >>> URL: http://WAN4:4000 "
+        [[ -n "$WAN6" ]] && txtn " >>> URL: http://[WAN6]:4000 "
         ;;
 
      11) clear && install curl && curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s install  ;;
