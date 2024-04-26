@@ -1228,10 +1228,10 @@ txtn $(txtn "32.Alpine 3.18")$(txtb "A")"      "$(txtn "42.CentOS 8")$(txtb "☾
 txtn $(txtn "33.Alpine 3.17")$(txtb "A")"      "$(txtn "43.CentOS 7")$(txtb "☾")
 txtn $(txtn "34.Alpine Edge")$(txtb "A")"      "$(txtn "")$(txtb "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "51.Windows 2022")$(txtb "▣")"     "$(txtn "61.Windows 11")$(txtc "◕")
-txtn $(txtn "52.Windows 2019")$(txtb "▣")"     "$(txtn "62.Windows 10")$(txtc "◕")
-txtn $(txtn "53.Windows 2016")$(txtb "▣")"     "$(txtn "")$(txtg "")
-txtn $(txtn "54.Windows 2012")$(txtb "▣")"     "$(txtn "")$(txtg "")
+txtn $(txtn "51.Windows 2022")$(txtb "▣")"     "$(txtn "61.Windows 11(EN)")$(txtc "◕")
+txtn $(txtn "52.Windows 2019")$(txtb "▣")"     "$(txtn "62.Windows 11(CN)")$(txtc "◕")
+txtn $(txtn "53.Windows 2016")$(txtb "▣")"     "$(txtn "63.Windows 10(EN)")$(txtg "◕")
+txtn $(txtn "54.Windows 2012")$(txtb "▣")"     "$(txtn "64.Windows 10(CN)")$(txtg "◕")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "71.Kali Rolling")$(txtn "❉")"     "$(txtn "")$(txtg "")
 txtn $(txtn "72.AlmaLinux")$(txtb "❀")"        "$(txtn "")$(txtg "")
@@ -1412,14 +1412,24 @@ dd_system_run() {
         reboot 
         exit ;;
       61) 
-        bash InstallNET.sh -windows 11
-        # bash InstallNET.sh -windows 11 -lang "en"
+        # bash InstallNET.sh -windows 11
+        bash InstallNET.sh -windows 11 -lang "en"
         # bash InstallNET.sh -windows 11 -lang "cn"
         # bash InstallNET.sh -windows 11 -lang "jp" -port "22[1~65535]" -pwd "PssWord" -hostname "win11"
+        # Note: Windows 10 and 11 23H2 for English preferred to use base images of tiny10 and tiny11 which were developed and optimized by ntdev .
         reboot 
         exit ;;
       62) 
-        bash InstallNET.sh -windows 10
+        # bash InstallNET.sh -windows 10
+        bash InstallNET.sh -windows 11 -lang "en"
+        reboot 
+        exit ;;
+      63) 
+        bash InstallNET.sh -windows 10 -lang "en"
+        reboot 
+        exit ;;
+      64) 
+        bash InstallNET.sh -windows 10 -lang "cn"
         reboot 
         exit ;;
 
