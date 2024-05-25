@@ -5790,6 +5790,7 @@ echo -e "CREATE USER my_user WITH PASSWORD 'my_password';  # 创建一个用户 
 echo -e 'ALTER USER my_user WITH SUPERUSER;                # 给用户添加超级用户权限 '
 echo -e 'DROP USER my_user;                                # 删除用户 '
 echo -e 'CREATE DATABASE my_db OWNER my_user;              # 创建数据库，并指定所有者 '
+echo -e 'DROP DATABASE my_db;                              # 删除数据库 '
 echo -e '==========================================================='
 echo -e 'select current_database();                        # 查看当前数据库 '
 echo -e '\c - next_db;                                     # 切换数据库 '
