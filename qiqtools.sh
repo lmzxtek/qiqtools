@@ -6192,7 +6192,7 @@ WebSites_manager_run(){
      61) clear && install_redis ;;
      62) clear && mysql_install ;;
      63) clear && install_mariadb ;;
-     63) clear && install_postgresql ;;
+     64) clear && install_postgresql ;;
 
     #  61) clear && install redis-server ;;
     #  62) clear && install mysql-server ;;
