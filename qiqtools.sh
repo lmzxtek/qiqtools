@@ -5774,6 +5774,42 @@ EOF
 
 }
 
+postgresql_usage(){
+echo -e 'apt show postgresql         # 查看已经安装的postgresql版本 '
+echo -e 'service postgresql status   # 检查PostgreSQL是否正在运行   '
+echo -e 'su - postgresql             # 登录账户                    '
+echo -e 'psql                        # 启动PostgreSQL Shell        '
+echo -e '\q                          # 退出PosqgreSQL Shell        '
+echo -e '\l                          # 查看所有表                   '
+echo -e '\du                         # 查看PostSQL用户             '
+echo -e ''
+echo -e 'ALTER USER postgres WITH PASSWORD 'my_password';  # 更改任何用户的密码 '
+echo -e 'CREATE USER my_user WITH PASSWORD 'my_password';  # 创建一个用户 '
+echo -e 'ALTER USER my_user WITH SUPERUSER;                # 给用户添加超级用户权限 '
+echo -e 'DROP USER my_user;                                # 删除用户 '
+echo -e 'CREATE DATABASE my_db OWNER my_user;              # 创建数据库，并指定所有者 '
+echo -e 'select current_database();                        # 查看当前数据库 '
+echo -e '\c - next_db;                                     # 切换数据库 '
+echo -e 'psql -U my_user                                   # \q退出后，使用my_user登录 '
+echo -e 'psql -U my_user -d my_db                          # 使用-d参数直接连接数据库 '
+
+echo -e '\n 找到数据库bin目录./pg_ctl执行: 启停服务 '
+echo -e 'systemctl stop postgresql.service                 # 停止 '
+echo -e 'systemctl start postgresql.service                # 启动 '
+}
+
+install_postgresql(){
+  install postgresql-client 
+  apt update 
+  install postgresql 
+
+  # apt show postgresql 
+  # service postgresql status 
+
+  postgresql_usage
+
+}
+
 install_redis(){
   curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
   echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
@@ -6045,9 +6081,9 @@ txtn $(txtn "33.添加重定向")$(txtg "✔")"         "$(txtn "43.更新服务
 txtn $(txty "34.添加反向代理")$(txtg "✔")"       "$(txtn "44.删除服务")$(txtb "✘")
 txtn $(txtn "35.添加静态站点")$(txtg "✔")"       "$(txtn "") $(txtb "")
 txtn "====================================="
-txtn $(txtn "61.安装Redis")$(txtg "✔")"          "$(txtn "")$(txtb "")
-txtn $(txtn "62.安装MySQL")$(txtb "✘")"          "$(txtn "")$(txtb "")
-txtn $(txtn "63.安装MariaDB")$(txtb "✘")"        "$(txtn "")$(txtb "")
+txtn $(txtn "61.安装Redis")$(txtg "✔")"          "$(txtn "63.安装MariaDB")$(txtb "✔")
+txtn $(txtn "62.安装MySQL")$(txtb "✘")"          "$(txtn "64.安装PostgreSQL")$(txtb "✔")
+# txtn $(txtn "")$(txtb "✘")"        "$(txtn "")$(txtb "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "77.站点防御程序")$(txtb "✘")"       "$(txtp "88.站点部署")$(txty "✔")
 txtn "—————————————————————————————————————"
@@ -6156,6 +6192,7 @@ WebSites_manager_run(){
      61) clear && install_redis ;;
      62) clear && mysql_install ;;
      63) clear && install_mariadb ;;
+     63) clear && install_postgresql ;;
 
     #  61) clear && install redis-server ;;
     #  62) clear && install mysql-server ;;
