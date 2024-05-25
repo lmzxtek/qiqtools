@@ -4966,7 +4966,7 @@ txtn $(txtn " 2.aaPanel")$(txtg "✔")"         "$(txtn "12.MacCMS")$(txtb "✘"
 txtn $(txtn " 3.宝塔面板")$(txtg "✔")"        "$(txtc "13.WebOS")$(txtr "✔")
 txtn $(txtn " 4.哪吒探针")$(txtg "✔")"        "$(txty "14.Code-Server")$(txtg "✔")
 txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"   "$(txtn "15.ChatGPT-Next-Web")$(txtr "✘")
-txtn $(txtn " 6.Puter")$(txtg "✔")"           "$(txtn "")$(txtr "")
+txtn $(txtn " 6.Puter")$(txtg "✔")"           "$(txtn "16.lyCMS")$(txtr "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.Docker")$(txtg "✔")"          "$(txtn "51.Gnome-Desktop")$(txtg "✔")
 txtn $(txtn "32.Python")$(txtg "✔")"          "$(txtn "52.RustDesk Server")$(txtg "✔")
@@ -4988,6 +4988,7 @@ other_tools_run() {
       3) clear && install_baota_cn ;;
       4) clear && install curl && curl -L https://raw.githubusercontent.com/naiba/nezha/master/script/install.sh  -o nezha.sh && chmod +x nezha.sh && ./nezha.sh  ;;
       5) clear && install wget && wget https://raw.githubusercontent.com/litespeedtech/ols1clk/master/ols1clk.sh && bash ols1clk.sh  ;;
+      
       6) clear 
         git clone https://github.com/HeyPuter/puter
         cd puter
@@ -5005,6 +5006,23 @@ other_tools_run() {
      13) clear && if [ -f /usr/bin/curl ];then curl -sSO https://support.tenfell.cn/install.sh;else wget -O install.sh https://support.tenfell.cn/install.sh;fi;bash install.sh  ;;
      14) clear && install curl && curl -fsSL https://code-server.dev/install.sh | sh  ;;
      15) clear && install curl && bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh) ;;
+     
+     16) clear && install wget 
+         sudo rm -f iycms.sh; sudo wget --no-check-certificate -c -O iycms.sh https://www.iycms.com/api/static/down/linux/ubuntu/install_x86_64.sh;sudo chmod +x iycms.sh; sudo ./iycms.sh 
+         txtn ""
+         txtn " >>> 部署iyCMS内容管理系统完成."
+         txtn " >>> (完成部署需要安装MySQL或PostgreSQL数据库)"
+         txtn " 安装完成后，可以使用以下命令查看和操作程序"
+         txtn " systemctl status iycms       查看iycms服务运行状态"
+         txtn " systemctl start iycms        启动iycms服务       "
+         txtn " systemctl stop iycms         停止iycms服务       "
+         txtn " systemctl restart iycms      重启iycms服务       "
+
+         txtn ""
+        #  txtn " >>> 访问URL: http://{WAN4}:21007"       
+        [[ -n "$WAN4" ]] && txtn " >>> URL: http://WAN4:21007 "
+        [[ -n "$WAN6" ]] && txtn " >>> URL: http://[WAN6]:21007 "
+         ;;
 
       31) clear && docker_install ;;
       32) clear && install_python ;;
