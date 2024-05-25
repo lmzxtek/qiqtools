@@ -923,7 +923,7 @@ txtn $(txtn " 4.gdu(磁盘占用查看)")$(txtg "✔")"   "$(txtn "14.tar(GZ压�
 txtn $(txtn " 5.fzf(文件管理)")$(txtg "✔")"       "$(txtn "15.unzip(ZIP压缩解压)")$(txtg "ღ")
 txtn $(txtn " 6.ranger(全局搜索)")$(txtg "✔")"    "$(txtn "16.ffmpeg(视频编码直播推流)")$(txtg "▣")
 txtn $(txtn " 7.tmux(多路后台运行)")$(txtg "✔")"  "$(txtn "17.socat(通信连接(申请域名证书必备))")$(txtg "☎")
-txtn $(txtn " 8.SuperVisor")$(txtg "☣")"          "$(txtn "18.Fail2Ban")$(txtg "☢")
+txtn $(txtn " 8.SuperVisor")$(txtg "☣")"           "$(txtn "18.Fail2Ban")$(txtg "☢")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.全部安装")$(txtg "✔")"            "$(txtn "41.安装指定工具")$(txtg "☂")
 txtn $(txtn "32.全部卸载")$(txtg "✔")"            "$(txtn "42.卸载指定工具")$(txtg "☂")
