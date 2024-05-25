@@ -4966,7 +4966,7 @@ txtn $(txtn " 2.aaPanel")$(txtg "✔")"         "$(txtn "12.MacCMS")$(txtb "✘"
 txtn $(txtn " 3.宝塔面板")$(txtg "✔")"        "$(txtc "13.WebOS")$(txtr "✔")
 txtn $(txtn " 4.哪吒探针")$(txtg "✔")"        "$(txty "14.Code-Server")$(txtg "✔")
 txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"   "$(txtn "15.ChatGPT-Next-Web")$(txtr "✘")
-txtn $(txtn " 6.Puter")$(txtg "✔")"           "$(txtn "16.lyCMS")$(txtr "✔")
+txtn $(txtn " 6.Puter")$(txtg "✔")"           "$(txtn "16.爱影CMS")$(txtr "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.Docker")$(txtg "✔")"          "$(txtn "51.Gnome-Desktop")$(txtg "✔")
 txtn $(txtn "32.Python")$(txtg "✔")"          "$(txtn "52.RustDesk Server")$(txtg "✔")
