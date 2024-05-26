@@ -4996,8 +4996,8 @@ other_tools_run() {
         npm install
         npm start
 
-        [[ -n "$WAN4" ]] && txtn " >>> URL: http://WAN4:4000 "
-        [[ -n "$WAN6" ]] && txtn " >>> URL: http://[WAN6]:4000 "
+        [[ -n "$WAN4" ]] && txtn " >>> URL: http://$WAN4:4000 "
+        [[ -n "$WAN6" ]] && txtn " >>> URL: http://[$WAN6]:4000 "
         ;;
 
      11) clear && install curl && curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s install  ;;
@@ -5020,8 +5020,8 @@ other_tools_run() {
 
          txtn ""
         #  txtn " >>> 访问URL: http://{WAN4}:21007"       
-        [[ -n "$WAN4" ]] && txtn " >>> URL: http://WAN4:21007 "
-        [[ -n "$WAN6" ]] && txtn " >>> URL: http://[WAN6]:21007 "
+        [[ -n "$WAN4" ]] && txtn " >>> URL: http://$WAN4:21007 "
+        [[ -n "$WAN6" ]] && txtn " >>> URL: http://[$WAN6]:21007 "
          ;;
 
       31) clear && docker_install ;;
