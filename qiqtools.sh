@@ -5777,6 +5777,7 @@ EOF
 postgresql_usage(){
   
 echo -e '\nPostgreSQL使用说明'
+echo -e 'Start the database server using: pg_ctlcluster 11 main start'
 echo -e '============================================================'
 echo -e 'apt show postgresql         # 查看已经安装的postgresql版本 '
 echo -e 'service postgresql status   # 检查PostgreSQL是否正在运行   '
