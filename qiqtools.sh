@@ -5776,7 +5776,8 @@ EOF
 
 postgresql_usage(){
   
-echo -e '\n============================================================'
+echo -e '\nPostgreSQL使用说明'
+echo -e '============================================================'
 echo -e 'apt show postgresql         # 查看已经安装的postgresql版本 '
 echo -e 'service postgresql status   # 检查PostgreSQL是否正在运行   '
 echo -e 'su - postgresql             # 登录账户                    '
@@ -5803,14 +5804,18 @@ echo -e 'systemctl start postgresql.service                # 启动 '
 }
 
 install_postgresql(){
-  install postgresql-client 
-  apt update 
-  install postgresql 
-
-  # apt show postgresql 
-  # service postgresql status 
-
+  
   postgresql_usage
+  read -p "确认要安装PostgreSQL？[Y|y] " sub_choice
+
+  case $sub_choice in
+    [Yy])
+      install postgresql-client && apt update && install postgresql && postgresql_usage
+      ;;
+    [Nn]) ;;
+        *) ;;
+  esac
+  
 
 }
 
