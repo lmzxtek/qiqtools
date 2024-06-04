@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.5.6
+script_version=v0.5.7
 #==========================
 
 # Language
@@ -4971,6 +4971,7 @@ txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.Docker")$(txtg "✔")"          "$(txtn "51.Gnome-Desktop")$(txtg "✔")
 txtn $(txtn "32.Python")$(txtg "✔")"          "$(txtn "52.RustDesk Server")$(txtg "✔")
 txtn $(txtn "33.Conda")$(txtg "✔")"           "$(txtn "53.DeepLX Server")$(txtg "✔")
+txtn $(txtn "34.Chrome")$(txtr "✔")"           "$(txtn "")$(txtg "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
@@ -5033,6 +5034,10 @@ other_tools_run() {
         else
           wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && bash Miniconda3-latest-Linux-x86_64.sh 
         fi 
+        ;;
+      34) 
+        clear 
+        sudo apt-get install -f && wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && sudo dpkg -i google-chrome-stable_current_amd64.deb
         ;;
       51) clear && install_ub_desktop ;;
       52) clear && install wget && wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
