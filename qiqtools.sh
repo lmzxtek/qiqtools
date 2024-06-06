@@ -5035,7 +5035,7 @@ other_tools_run() {
           wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && bash Miniconda3-latest-Linux-x86_64.sh 
         fi 
         ;;
-      34)  clear &&& curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python get-pip.py ;;
+      34)  clear && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python get-pip.py ;;
 
       54) 
         clear 
