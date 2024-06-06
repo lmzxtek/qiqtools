@@ -4971,7 +4971,7 @@ txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.Docker")$(txtg "✔")"          "$(txtn "51.Gnome-Desktop")$(txtg "✔")
 txtn $(txtn "32.Python")$(txtg "✔")"          "$(txtn "52.RustDesk Server")$(txtg "✔")
 txtn $(txtn "33.Conda")$(txtg "✔")"           "$(txtn "53.DeepLX Server")$(txtg "✔")
-txtn $(txtn "34.Chrome")$(txtr "✔")"           "$(txtn "")$(txtg "")
+txtn $(txtn "34.pip")$(txtr "✔")"             "$(txtn "54.Chrome")$(txtg "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
@@ -5035,7 +5035,9 @@ other_tools_run() {
           wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && bash Miniconda3-latest-Linux-x86_64.sh 
         fi 
         ;;
-      34) 
+      34)  clear &&& curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python get-pip.py ;;
+
+      54) 
         clear 
         sudo apt-get install -f && wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && sudo dpkg -i google-chrome-stable_current_amd64.deb
         ;;
