@@ -6174,6 +6174,7 @@ WebSites_manager_run(){
 
      34)
         add_yuming
+        reverseproxy="127.0.0.1"
         read -p "请输入你的反代IP(默认：127.0.0.1): " reverseproxy
         [[ -z "$reverseproxy" ]] || reverseproxy="127.0.0.1"
         echo "你要反代的IP为：$reverseproxy"
