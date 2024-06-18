@@ -5041,15 +5041,16 @@ other_tools_run() {
       34)  clear && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python get-pip.py ;;
       35)  clear && pip install jupyter_server ;;
 
-      54) 
-        clear 
-        sudo apt-get install -f && wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && sudo dpkg -i google-chrome-stable_current_amd64.deb
-        ;;
       51) clear && install_ub_desktop ;;
       52) clear && install wget && wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
       53) clear && install curl && bash <(curl -Ls https://qwq.mx/deeplx) ;;
       # 52) clear && install curl && bash <(curl -Ls https://raw.githubusercontent.com/OwO-Network/DeepLX/main/install.sh) ;;
 
+      54) 
+        clear 
+        sudo apt-get install -f && wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && sudo dpkg -i google-chrome-stable_current_amd64.deb
+        ;;
+        
       0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
     esac  
