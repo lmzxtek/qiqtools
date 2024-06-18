@@ -4974,6 +4974,7 @@ txtn $(txtn "31.Docker")$(txtg "✔")"          "$(txtn "51.Gnome-Desktop")$(txt
 txtn $(txtn "32.Python")$(txtg "✔")"          "$(txtn "52.RustDesk Server")$(txtg "✔")
 txtn $(txtn "33.Conda")$(txtg "✔")"           "$(txtn "53.DeepLX Server")$(txtg "✔")
 txtn $(txtn "34.pip")$(txtr "✔")"             "$(txtn "54.Chrome")$(txtg "✔")
+txtn $(txtn "35.Jupyter-lab")$(txtr "✔")"     "$(txtn "")$(txtg "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
@@ -5038,6 +5039,7 @@ other_tools_run() {
         fi 
         ;;
       34)  clear && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python get-pip.py ;;
+      35)  clear && pip install jupyter_server ;;
 
       54) 
         clear 
