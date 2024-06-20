@@ -4972,9 +4972,9 @@ txtn $(txtn " 6.Puter")$(txtg "✔")"           "$(txtn "16.爱影CMS")$(txtr "�
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.Docker")$(txtg "✔")"          "$(txtn "51.Gnome-Desktop")$(txtg "✔")
 txtn $(txtn "32.Python")$(txtg "✔")"          "$(txtn "52.RustDesk Server")$(txtg "✔")
-txtn $(txtn "33.Conda")$(txtg "✔")"           "$(txtn "53.DeepLX Server")$(txtg "✔")
-txtn $(txtn "34.pip")$(txtr "✔")"             "$(txtn "54.Chrome")$(txtg "✔")
-txtn $(txtn "35.Jupyter-lab")$(txtr "✔")"     "$(txtn "")$(txtg "")
+txtn $(txtn "33.pip")$(txtg "✔")"             "$(txtn "53.DeepLX Server")$(txtg "✔")
+txtn $(txtn "34.miniConda")$(txtr "✔")"       "$(txtn "54.Chrome")$(txtg "✔")
+txtn $(txtn "35.Conda-forge")$(txtr "✔")"     "$(txtn "55.Jupyter-lab")$(txtg "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
@@ -5030,16 +5030,24 @@ other_tools_run() {
 
       31) clear && docker_install ;;
       32) clear && install_python ;;
-      33) 
+      33) clear && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python get-pip.py ;;
+      34) 
         clear 
-        if [[ $(uname -m | grep 'arm') != "" ]]; then 
-          wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-aarch64.sh && bash Miniconda3-latest-Linux-aarch64.sh
-        else
-          wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && bash Miniconda3-latest-Linux-x86_64.sh 
-        fi 
+        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-$(uname)-$(uname -m).sh && bash Miniconda3-latest-$(uname)-$(uname -m).sh 
+        # if [[ $(uname -m | grep 'arm') != "" ]]; then 
+        #   wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-aarch64.sh && bash Miniconda3-latest-Linux-aarch64.sh
+        # else
+        #   wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && bash Miniconda3-latest-Linux-x86_64.sh 
+        # fi 
         ;;
-      34)  clear && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python get-pip.py ;;
-      35)  clear && pip install jupyter_server ;;
+
+      35) clear 
+          if command -v curl &>/dev/null; then
+            curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh" && bash Miniforge3-$(uname)-$(uname -m).sh
+          else
+            wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh" && bash Miniforge3-$(uname)-$(uname -m).sh 
+          fi
+          ;;
 
       51) clear && install_ub_desktop ;;
       52) clear && install wget && wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
@@ -5050,6 +5058,7 @@ other_tools_run() {
         clear 
         sudo apt-get install -f && wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && sudo dpkg -i google-chrome-stable_current_amd64.deb
         ;;
+      55)  clear && pip install jupyter_server ;;
         
       0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
