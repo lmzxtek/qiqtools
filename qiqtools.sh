@@ -4739,6 +4739,59 @@ EOF
   echo -e ""
 }
 
+docker_deploy_linuxserverrdesktop(){
+
+  local BFLD="/home/dcc.d"
+
+  local dc_port=3389
+  local dc_name=linuxserverRDesktop
+  local dc_imag=ghcr.io/linuxserver/chromium:latest
+  # local dc_imag=ghcr.io/linuxserver/mullvad-browser:latest
+  # local dc_imag=ghcr.io/linuxserver/opera:latest
+  local dc_desc="LinuxServerRDesktop"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/data"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  echoR "\n >>>" " 现在开始部署 LinuxServer(Chromium) ... \n"
+  read -p "请输入监听端口(默认:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  cat > "$FYML" << EOF
+services:
+$dc_name:
+  image: lscr.io/linuxserver/rdesktop:latest
+  container_name: $dc_name
+  security_opt:
+    - seccomp:unconfined #optional
+  environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=Etc/UTC
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock #optional
+    - ./data:/config #optional
+  ports:
+    - $dc_port:3389
+  # devices:
+  #   - /dev/dri:/dev/dri #optional
+  shm_size: "1gb" #optional
+  restart: unless-stopped
+EOF
+
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echoR "\n >>> " "部署 LinuxServer(rdesktop) 完成 \n"
+  # echo -e   "Web URL: http://$WAN4:$dc_port" >> $FCONF
+  # echo -e   "Web URL: http://$WAN4:$dc_port"
+  echo -e ""
+}
+
 docker_deploy_chunhuchat(){
 
   local BFLD="/home/dcc.d"
@@ -4891,7 +4944,7 @@ txtn $(txtn "33.DeepLX")$(txtg "✔")"               "$(txtn "53.Neko")$(txtn "�
 txtn $(txtn "34.TorBrowser")$(txtn "✔")"           "$(txtn "54.Neko-Rooms")$(txtn "✔")
 txtn $(txtc "35.OnlineBrowser")$(txtg "✔")"        "$(txty "55.linuxserver(firefox)")$(txtp "✔")
 txtn $(txtb "36.KasmWorkspaces")$(txtg "✔")"       "$(txty "56.linuxserver(chromium)")$(txtp "✔")
-txtn $(txtb "37.Puter")$(txtg "✔")"                "$(txty "")$(txtp "")
+txtn $(txtb "37.Puter")$(txtg "✔")"                "$(txty "57.linuxserver(rdesktop)")$(txtp "✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtp "66.重启Caddy")$(txty "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
@@ -4942,6 +4995,7 @@ website_deploy_run(){
     #  55) clear && docker_deploy_browserless ;;
      55) clear && docker_deploy_linuxserverfirefox ;;
      56) clear && docker_deploy_linuxserverchromium ;;
+     57) clear && docker_deploy_linuxserverrdesktop ;;
 
      66) clear && caddy_reload ;;
      77) clear && WebSites_manager_run ;;
