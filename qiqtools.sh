@@ -4744,8 +4744,8 @@ docker_deploy_linuxserverrdesktop(){
   local BFLD="/home/dcc.d"
 
   local dc_port=3389
-  local dc_name=linuxserverRDesktop
-  local dc_imag=ghcr.io/linuxserver/chromium:latest
+  local dc_name=rdesktop
+  local dc_imag=lscr.io/linuxserver/rdesktop:latest
   # local dc_imag=ghcr.io/linuxserver/mullvad-browser:latest
   # local dc_imag=ghcr.io/linuxserver/opera:latest
   local dc_desc="LinuxServerRDesktop"
@@ -4764,24 +4764,24 @@ docker_deploy_linuxserverrdesktop(){
 
   cat > "$FYML" << EOF
 services:
-$dc_name:
-  image: lscr.io/linuxserver/rdesktop:latest
-  container_name: $dc_name
-  security_opt:
-    - seccomp:unconfined #optional
-  environment:
-    - PUID=1000
-    - PGID=1000
-    - TZ=Etc/UTC
-  volumes:
-    - /var/run/docker.sock:/var/run/docker.sock #optional
-    - ./data:/config #optional
-  ports:
-    - $dc_port:3389
-  # devices:
-  #   - /dev/dri:/dev/dri #optional
-  shm_size: "1gb" #optional
-  restart: unless-stopped
+  $dc_name:
+    image: $dc_imag
+    container_name: $dc_name
+    security_opt:
+      - seccomp:unconfined #optional
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock #optional
+      - ./data:/config #optional
+    ports:
+      - $dc_port:3389
+    # devices:
+    #   - /dev/dri:/dev/dri #optional
+    shm_size: "1gb" #optional
+    restart: unless-stopped
 EOF
 
   docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
