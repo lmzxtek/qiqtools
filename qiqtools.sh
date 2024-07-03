@@ -1616,27 +1616,27 @@ alter_sourcelist(){
   source /etc/os-release
 
   # 定义 Ubuntu 更新源
-  ustc_ubuntu_source="http://mirrors.ustc.edu.cn/ubuntu/"
-  thu_ubuntu_source="http://mirrors.tuna.tsinghua.edu.cn/ubuntu/"
-  tencent_ubuntu_source="http://mirrors.cloud.tencent.com/ubuntu/"
-  aliyun_ubuntu_source="http://mirrors.aliyun.com/ubuntu/"
-  official_ubuntu_source="http://archive.ubuntu.com/ubuntu/"
+  ustc_ubuntu_source="http://mirrors.ustc.edu.cn/ubuntu"
+  thu_ubuntu_source="http://mirrors.tuna.tsinghua.edu.cn/ubuntu"
+  tencent_ubuntu_source="http://mirrors.cloud.tencent.com/ubuntu"
+  aliyun_ubuntu_source="http://mirrors.aliyun.com/ubuntu"
+  official_ubuntu_source="http://archive.ubuntu.com/ubuntu"
   initial_ubuntu_source=""
 
   # 定义 Debian 更新源
-  ustc_debian_source="http://mirrors.ustc.edu.cn/debian/"
-  thu_debian_source="http://mirrors.tuna.tsinghua.edu.cn/debian/"
-  tencent_debian_source="http://mirrors.cloud.tencent.com/debian/"
-  aliyun_debian_source="http://mirrors.aliyun.com/debian/"
-  official_debian_source="http://deb.debian.org/debian/"
+  ustc_debian_source="http://mirrors.ustc.edu.cn/debian"
+  thu_debian_source="http://mirrors.tuna.tsinghua.edu.cn/debian"
+  tencent_debian_source="http://mirrors.cloud.tencent.com/debian"
+  aliyun_debian_source="http://mirrors.aliyun.com/debian"
+  official_debian_source="http://deb.debian.org/debian"
   initial_debian_source=""
 
   # 定义 CentOS 更新源
-  ustc_centos_source="http://mirrors.ustc.edu.cn/centos/"
-  thu_centos_source="http://mirrors.tuna.tsinghua.edu.cn/centos/"
-  tencent_centos_source="http://mirrors.cloud.tencent.com/centos/"
-  aliyun_centos_source="http://mirrors.aliyun.com/centos/"
-  official_centos_source="http://mirror.centos.org/centos/"
+  ustc_centos_source="http://mirrors.ustc.edu.cn/centos"
+  thu_centos_source="http://mirrors.tuna.tsinghua.edu.cn/centos"
+  tencent_centos_source="http://mirrors.cloud.tencent.com/centos"
+  aliyun_centos_source="http://mirrors.aliyun.com/centos"
+  official_centos_source="http://mirror.centos.org/centos"
   initial_centos_source=""
 
   # 获取当前更新源并设置初始源
