@@ -1,23 +1,20 @@
 #!/usr/bin/env bash
 
 # 当前脚本版本号
-VERSION='3.02'
-
-# IP API 服务商
-IP_API=("http://ip-api.com/json/" "https://api.ip.sb/geoip" "https://ifconfig.co/json" "https://www.who.int/cdn-cgi/trace")
-ISP=("isp" "isp" "asn_org")
-IP=("query" "ip" "ip")
-
-# 自建 github / gitlab  cdn 反代网，用于不能直连 github / gitlab 的机器
-CDN_URL=("cdn1.cloudflare.now.cc/proxy/" "cdn2.cloudflare.now.cc/https://" "cdn3.cloudflare.now.cc?url=https://" "cdn4.cloudflare.now.cc/proxy/https://")
+VERSION='3.0.10'
 
 # 环境变量用于在Debian或Ubuntu操作系统中设置非交互式（noninteractive）安装模式
 export DEBIAN_FRONTEND=noninteractive
 
-E[0]="\n Language:\n 1. English (default) \n 2. 简体中文\n"
+# Github 反代加速代理
+GH_PROXY='https://ghproxy.lvedong.eu.org/'
+
+trap "rm -f /tmp/{wireguard-go-*,best_mtu,best_endpoint,endpoint,ip}; exit" INT
+
+E[0]="\n Language:\n 1. English (default) \n 2. 简体中文"
 C[0]="${E[0]}"
-E[1]="To check if the WireGuard kernel module is already loaded. If not, attempt to load it and recheck."
-C[1]="判断系统是否已经加载 wireguard 内核模块，如果还没有则尝试加载，再重新判断"
+E[1]="Publish warp api, you can register account, join Zero Trust, check account information and all other operations. Detailed instructions: https://warp.cloudflare.now.cc/; 2. Scripts to update the warp api."
+C[1]="发布 warp api，可以注册账户，加入 Zero Trust，查账户信息等所有的操作。详细使用说明: https://warp.cloudflare.now.cc/; 2. 脚本更新 warp api"
 E[2]="The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp-sh/issues]"
 C[2]="必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp-sh/issues]"
 E[3]="The TUN module is not loaded. You should turn it on in the control panel. Ask the supplier for more help. Feedback: [https://github.com/fscarmen/warp-sh/issues]"
@@ -34,14 +31,14 @@ E[8]="All dependencies already exist and do not need to be installed additionall
 C[8]="所有依赖已存在，不需要额外安装"
 E[9]="Client cannot be upgraded to a Teams account."
 C[9]="Client 不能升级为 Teams 账户"
-E[10]="WireGuard tools are not installed or the configuration file warp.conf cannot be found, please reinstall."
-C[10]="没有安装 WireGuard tools 或者找不到配置文件 warp.conf，请重新安装。"
+E[10]="wireguard-tools installation failed, The script is aborted. Feedback: [https://github.com/fscarmen/warp-sh/issues]"
+C[10]="wireguard-tools 安装失败，脚本中止，问题反馈:[https://github.com/fscarmen/warp-sh/issues]"
 E[11]="Maximum \${j} attempts to get WARP IP..."
 C[11]="后台获取 WARP IP 中,最大尝试\${j}次……"
 E[12]="Try \${i}"
 C[12]="第\${i}次尝试"
-E[13]="There have been more than \${j} failures. The script is aborted. Feedback: [https://github.com/fscarmen/warp-sh/issues]"
-C[13]="失败已超过\${j}次，脚本中止，问题反馈:[https://github.com/fscarmen/warp-sh/issues]"
+E[13]="There have been more than \${j} failures. The script is aborted. Attach the above error message. Feedback: [https://github.com/fscarmen/warp-sh/issues]"
+C[13]="失败已超过\${j}次，脚本中止，附上以上错误提示，问题反馈:[https://github.com/fscarmen/warp-sh/issues]"
 E[14]="Got the WARP\$TYPE IP successfully"
 C[14]="已成功获取 WARP\$TYPE 网络"
 E[15]="WARP is turned off. It could be turned on again by [warp o]"
@@ -94,8 +91,8 @@ E[38]="Create shortcut [warp] successfully"
 C[38]="创建快捷 warp 指令成功"
 E[39]="Running WARP"
 C[39]="运行 WARP"
-E[40]="\$COMPANY vps needs to restart and run [warp n] to open WARP."
-C[40]="\$COMPANY vps 需要重启后运行 warp n 才能打开 WARP,现执行重启"
+E[40]="Menu choose"
+C[40]="菜单选项"
 E[41]="Congratulations! WARP\$TYPE is turned on. Spend time:\$(( end - start )) seconds.\\\n The script runs today: \$TODAY. Total:\$TOTAL"
 C[41]="恭喜！WARP\$TYPE 已开启，总耗时:\$(( end - start ))秒， 脚本当天运行次数:\$TODAY，累计运行次数:\$TOTAL"
 E[42]="The upgrade failed, License: \$LICENSE could not update to WARP+. The script will remain the same account or be switched to a free account."
@@ -180,10 +177,10 @@ E[81]="Step 3/3: Searching for the best MTU value and endpoint address are ready
 C[81]="进度 3/3: 寻找 MTU 最优值和优选 endpoint 地址已完成"
 E[82]="Install CloudFlare Client and set mode to Proxy (bash menu.sh c)"
 C[82]="安装 CloudFlare Client 并设置为 Proxy 模式 (bash menu.sh c)"
-E[83]="Step 1/2: Installing WARP Client..."
-C[83]="进度 1/2: 安装 Client……"
-E[84]="Step 2/2: Setting Client Mode"
-C[84]="进度 2/2: 设置 Client 模式"
+E[83]="Step 1/3: Installing WARP Client..."
+C[83]="进度 1/3: 安装 Client……"
+E[84]="Step 2/3: Setting Client Mode"
+C[84]="进度 2/3: 设置 Client 模式"
 E[85]="Client was installed.\n connect/disconnect by [warp r].\n uninstall by [warp u]"
 C[85]="Linux Client 已安装\n 连接/断开: warp r\n 卸载: warp u"
 E[86]="Client is working. Socks5 proxy listening on: \$(ss -nltp | grep -E 'warp|wireproxy' | awk '{print \$4}')"
@@ -216,8 +213,8 @@ E[99]="WireProxy is connected"
 C[99]="WireProxy 已连接"
 E[100]="License should be 26 characters, please re-enter WARP+ License. Otherwise press Enter to continue. \(\${i} times remaining\): "
 C[100]="License 应为26位字符,请重新输入 WARP+ License \(剩余\${i}次\): "
-E[101]="Client support amd64 only. Curren architecture \$ARCHITECTURE. Official Support List: [https://pkg.cloudflareclient.com/packages/cloudflare-warp]. The script is aborted. Feedback: [https://github.com/fscarmen/warp-sh/issues]"
-C[101]="Client 只支持 amd64 架构，当前架构 \$ARCHITECTURE，官方支持列表: [https://pkg.cloudflareclient.com/packages/cloudflare-warp]。脚本中止，问题反馈:[https://github.com/fscarmen/warp-sh/issues]"
+E[101]="Client support amd64 and arm64 only. Curren architecture \$ARCHITECTURE. Official Support List: [https://pkg.cloudflareclient.com/packages/cloudflare-warp]. The script is aborted. Feedback: [https://github.com/fscarmen/warp-sh/issues]"
+C[101]="Client 只支持 amd64 和 arm64 架构，当前架构 \$ARCHITECTURE，官方支持列表: [https://pkg.cloudflareclient.com/packages/cloudflare-warp]。脚本中止，问题反馈:[https://github.com/fscarmen/warp-sh/issues]"
 E[102]="Please customize the WARP+ device name \(Default is \$(hostname)\):"
 C[102]="请自定义 WARP+ 设备名 \(默认为 \$(hostname)\):"
 E[103]="Port \$PORT is in use. Please input another Port\(\${i} times remaining\):"
@@ -326,8 +323,8 @@ E[154]="1. WARP account\n 2. WARP Linux Client account\n 3. WireProxy account"
 C[154]="1. WARP 账户\n 2. WARP Linux Client 账户\n 3. WireProxy 账户"
 E[155]="WARP has not been installed yet."
 C[155]="WARP 还未安装"
-E[156]="(!!! AMD64 only, do not select.)"
-C[156]="(!!! 只支持 AMD64，请勿选择)"
+E[156]="(!!! Only supports amd64 and arm64, do not select.)"
+C[156]="(!!! 只支持 amd64 和 arm64，请勿选择)"
 E[157]="WireProxy has not been installed yet."
 C[157]="WireProxy 还未安装"
 E[158]="WireProxy is disconnected. It could be connect again by [warp y]"
@@ -372,7 +369,7 @@ E[177]="1. Continue using the free account without changing.\n 2. Change to WARP
 C[177]="1. 继续使用 free 账户，不变更\n 2. 变更为 WARP+ 账户"
 E[178]="1. Change to free account.\n 2. Change to another WARP+ account."
 C[178]="1. 变更为 free 账户\n 2. 变更为另一个 WARP+ 账户"
-E[179]="Can only be run using \$KERNEL_OR_WIREGUARD_GO ."
+E[179]="Can only be run using \$KERNEL_OR_WIREGUARD_GO."
 C[179]="只能使用 \$KERNEL_OR_WIREGUARD_GO 运行"
 E[180]="Install using:\n 1. wireguard kernel (default)\n 2. wireguard-go with reserved"
 C[180]="请选择 wireguard 方式:\n 1. wireguard 内核 (默认)\n 2. wireguard-go with reserved"
@@ -392,6 +389,12 @@ E[187]="Failed to change to \$ACCOUNT_CHANGE_FAILED account, automatically switc
 C[187]="更换到 \$ACCOUNT_CHANGE_FAILED 账户失败，自动切换回原来的账户"
 E[188]="All endpoints of WARP cannot be connected. Ask the supplier for more help. Feedback: [https://github.com/fscarmen/warp-sh/issues]"
 C[188]="WARP 的所有的 endpoint 均不能连通，有可能 UDP 被限制了，可联系供应商了解如何开启，问题反馈:[https://github.com/fscarmen/warp-sh/issues]"
+E[189]="Cannot detect any IPv4 or IPv6. The script is aborted. Feedback: [https://github.com/fscarmen/warp-sh/issues]"
+C[189]="检测不到任何 IPv4 或 IPv6。脚本中止，问题反馈:[https://github.com/fscarmen/warp-sh/issues]"
+E[190]="The configuration file warp.conf cannot be found. The script is aborted. Feedback: [https://github.com/fscarmen/warp-sh/issues]"
+C[190]="找不到配置文件 warp.conf，脚本中止，问题反馈:[https://github.com/fscarmen/warp-sh/issues]"
+E[191]="Current operating system is: \$SYSTEM, Linux Client only supports Ubuntu, Debian and CentOS. The script is aborted. Feedback: [https://github.com/fscarmen/warp-sh/issues]"
+C[191]="当前操作系统是: \$SYSTEM。 Linux Client 只支持 Ubuntu, Debian 和 CentOS，脚本中止，问题反馈:[https://github.com/fscarmen/warp-sh/issues]"
 
 # 自定义字体彩色，read 函数
 warning() { echo -e "\033[31m\033[01m$*\033[0m"; }  # 红色
@@ -401,18 +404,16 @@ hint() { echo -e "\033[33m\033[01m$*\033[0m"; }   # 黄色
 reading() { read -rp "$(info "$1")" "$2"; }
 text() { grep -q '\$' <<< "${E[$*]}" && eval echo "\$(eval echo "\${${L}[$*]}")" || eval echo "\${${L}[$*]}"; }
 
-# 自定义谷歌翻译函数
-translate() {
-  [ -n "$@" ] && EN="$@"
-  ZH=$(curl -km8 -sSL "https://translate.google.com/translate_a/t?client=any_client_id_works&sl=en&tl=zh&q=${EN//[[:space:]]/%20}" 2>/dev/null)
-  [[ "$ZH" =~ ^\[\".+\"\]$ ]] && cut -d \" -f2 <<< "$ZH"
+# 检测是否需要启用 Github CDN，如能直接连通，则不使用
+check_cdn() {
+  [ -n "$GH_PROXY" ] && wget --server-response --quiet --output-document=/dev/null --no-check-certificate --tries=2 --timeout=3 https://raw.githubusercontent.com/fscarmen/warp-sh/main/README.md >/dev/null 2>&1 && unset GH_PROXY
 }
 
 # 脚本当天及累计运行次数统计
 statistics_of_run-times() {
-  local COUNT=$(curl --retry 2 -ksm2 "https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Ffscarmen%2Fwarp%2Fmenu.sh&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=&edge_flat=true" 2>&1 | grep -m1 -oE "[0-9]+[ ]+/[ ]+[0-9]+") &&
-  TODAY=$(cut -d " " -f1 <<< "$COUNT") &&
-  TOTAL=$(cut -d " " -f3 <<< "$COUNT")
+  local COUNT=$(curl --retry 2 -ksm2 "https://hit.forvps.gq/https://cdn.jsdelivr.net/gh/fscarmen/warp/menu.sh" 2>&1 | grep -m1 -oE "[0-9]+[ ]+/[ ]+[0-9]+") &&
+  TODAY=$(awk -F ' ' '{print $1}' <<< "$COUNT") &&
+  TOTAL=$(awk -F ' ' '{print $3}' <<< "$COUNT")
 }
 
 # 选择语言，先判断 /etc/wireguard/language 里的语言选择，没有的话再让用户选择，默认英语。处理中文显示的问题
@@ -420,34 +421,27 @@ select_language() {
   UTF8_LOCALE=$(locale -a 2>/dev/null | grep -iEm1 "UTF-8|utf8")
   [ -n "$UTF8_LOCALE" ] && export LC_ALL="$UTF8_LOCALE" LANG="$UTF8_LOCALE" LANGUAGE="$UTF8_LOCALE"
 
-  case $(cat /etc/wireguard/language 2>&1) in
-    E )
-      L=E
-      ;;
-    C )
-      L=C
-      ;;
-    * )
-      L=E && [[ -z "$OPTION" || "$OPTION" = [aclehdpbviw46sg] ]] && hint " $(text 0) " && reading " $(text 50) " LANGUAGE
+  if [ -s /etc/wireguard/language ]; then
+    L=$(cat /etc/wireguard/language)
+  else
+    L=E && [[ -z "$OPTION" || "$OPTION" = [aclehdpbviw46sg] ]] && hint " $(text 0) \n" && reading " $(text 50) " LANGUAGE
     [ "$LANGUAGE" = 2 ] && L=C
-  esac
+  fi
 }
 
 # 必须以root运行脚本
-check_root_virt() {
+check_root() {
   [ "$(id -u)" != 0 ] && error " $(text 2) "
-
-  # 判断虚拟化
-  VIRT=$(systemd-detect-virt 2>/dev/null | tr 'A-Z' 'a-z')
-  [ -n "$VIRT" ] || VIRT=$(hostnamectl 2>/dev/null | tr 'A-Z' 'a-z' | grep virtualization | sed "s/.*://g")
 }
 
-# 随机使用 cdn 网址，以负载均衡
-check_cdn() {
-  RANDOM_CDN=($(shuf -e "${CDN_URL[@]}"))
-  for CDN in "${RANDOM_CDN[@]}"; do
-    wget -T2 -qO- https://${CDN}gitlab.com/fscarmen/warp/-/raw/main/api.sh | grep -q '#!/usr/bin/env' && break || unset CDN
-  done
+# 判断虚拟化
+check_virt() {
+  if [ "$1" = 'Alpine' ]; then
+    VIRT=$(virt-what | tr '\n' ' ')
+  else
+    [ "$(type -p systemd-detect-virt)" ] && VIRT=$(systemd-detect-virt)
+    [[ -z "$VIRT" && -x "$(type -p hostnamectl)" ]] && VIRT=$(hostnamectl | awk '/Virtualization:/{print $NF}')
+  fi
 }
 
 # 多方式判断操作系统，试到有值为止。只支持 Debian 10/11、Ubuntu 18.04/20.04 或 CentOS 7/8 ,如非上述操作系统，退出脚本
@@ -455,9 +449,9 @@ check_cdn() {
 check_operating_system() {
   if [ -s /etc/os-release ]; then
     SYS="$(grep -i pretty_name /etc/os-release | cut -d \" -f2)"
-  elif [ $(type -p hostnamectl) ]; then
+  elif [ -x "$(type -p hostnamectl)" ]; then
     SYS="$(hostnamectl | grep -i system | cut -d : -f2)"
-  elif [ $(type -p lsb_release) ]; then
+  elif [ -x "$(type -p lsb_release)" ]; then
     SYS="$(lsb_release -sd)"
   elif [ -s /etc/lsb-release ]; then
     SYS="$(grep -i description /etc/lsb-release | cut -d \" -f2)"
@@ -471,84 +465,160 @@ check_operating_system() {
   alpine_warp_restart() { wg-quick down warp >/dev/null 2>&1; wg-quick up warp >/dev/null 2>&1; }
   alpine_warp_enable() { echo -e "/usr/bin/tun.sh\nwg-quick up warp" > /etc/local.d/warp.start; chmod +x /etc/local.d/warp.start; rc-update add local; wg-quick up warp >/dev/null 2>&1; }
 
-  REGEX=("debian" "ubuntu" "centos|red hat|kernel|oracle linux|alma|rocky" "amazon linux" "alpine" "arch linux" "fedora")
-  RELEASE=("Debian" "Ubuntu" "CentOS" "CentOS" "Alpine" "Arch" "Fedora")
-  EXCLUDE=("")
-  COMPANY=("" "" "" "amazon" "" "")
-  MAJOR=("9" "16" "7" "7" "3" "" "37")
-  PACKAGE_UPDATE=("apt -y update" "apt -y update" "yum -y update" "yum -y update" "apk update -f" "pacman -Sy" "dnf -y update")
-  PACKAGE_INSTALL=("apt -y install" "apt -y install" "yum -y install" "yum -y install" "apk add -f" "pacman -S --noconfirm" "dnf -y install")
-  PACKAGE_UNINSTALL=("apt -y autoremove" "apt -y autoremove" "yum -y autoremove" "yum -y autoremove" "apk del -f" "pacman -Rcnsu --noconfirm" "dnf -y autoremove")
-  SYSTEMCTL_START=("systemctl start wg-quick@warp" "systemctl start wg-quick@warp" "systemctl start wg-quick@warp" "systemctl start wg-quick@warp" "wg-quick up warp" "systemctl start wg-quick@warp" "systemctl start wg-quick@warp")
-  SYSTEMCTL_RESTART=("systemctl restart wg-quick@warp" "systemctl restart wg-quick@warp" "systemctl restart wg-quick@warp" "systemctl restart wg-quick@warp" "alpine_warp_restart" "systemctl restart wg-quick@warp" "systemctl restart wg-quick@warp")
-  SYSTEMCTL_ENABLE=("systemctl enable --now wg-quick@warp" "systemctl enable --now wg-quick@warp" "systemctl enable --now wg-quick@warp" "systemctl enable --now wg-quick@warp" "alpine_warp_enable" "systemctl enable --now wg-quick@warp" "systemctl enable --now wg-quick@warp")
+  REGEX=("debian" "ubuntu" "centos|red hat|kernel|alma|rocky" "alpine" "arch linux" "fedora")
+  RELEASE=("Debian" "Ubuntu" "CentOS" "Alpine" "Arch" "Fedora")
+  EXCLUDE=("---")
+  MAJOR=("9" "16" "7" "" "" "37")
+  PACKAGE_UPDATE=("apt -y update" "apt -y update" "yum -y update --skip-broken" "apk update -f" "pacman -Sy" "dnf -y update")
+  PACKAGE_INSTALL=("apt -y install" "apt -y install" "yum -y install" "apk add -f" "pacman -S --noconfirm" "dnf -y install")
+  PACKAGE_UNINSTALL=("apt -y autoremove" "apt -y autoremove" "yum -y autoremove" "apk del -f" "pacman -Rcnsu --noconfirm" "dnf -y autoremove")
+  SYSTEMCTL_START=("systemctl start wg-quick@warp" "systemctl start wg-quick@warp" "systemctl start wg-quick@warp" "wg-quick up warp" "systemctl start wg-quick@warp" "systemctl start wg-quick@warp")
+  SYSTEMCTL_RESTART=("systemctl restart wg-quick@warp" "systemctl restart wg-quick@warp" "systemctl restart wg-quick@warp" "alpine_warp_restart" "systemctl restart wg-quick@warp" "systemctl restart wg-quick@warp")
+  SYSTEMCTL_ENABLE=("systemctl enable --now wg-quick@warp" "systemctl enable --now wg-quick@warp" "systemctl enable --now wg-quick@warp" "alpine_warp_enable" "systemctl enable --now wg-quick@warp" "systemctl enable --now wg-quick@warp")
 
-  for ((int=0; int<${#REGEX[@]}; int++)); do
-    [[ $(tr 'A-Z' 'a-z' <<< "$SYS") =~ ${REGEX[int]} ]] && SYSTEM="${RELEASE[int]}" && COMPANY="${COMPANY[int]}" && break
+  for int in "${!REGEX[@]}"; do
+    [[ "${SYS,,}" =~ ${REGEX[int]} ]] && SYSTEM="${RELEASE[int]}" && break
   done
-  [ -z "$SYSTEM" ] && error " $(text 5) "
+
+  # 针对各厂运的订制系统
+  if [ -z "$SYSTEM" ]; then
+    [ -x "$(type -p yum)" ] && int=2 && SYSTEM='CentOS' || error " $(text 5) "
+  fi
+
+  # 判断主 Linux 版本
+  MAJOR_VERSION=$(sed "s/[^0-9.]//g" <<< "$SYS" | cut -d. -f1)
 
   # 先排除 EXCLUDE 里包括的特定系统，其他系统需要作大发行版本的比较
-  for ex in "${EXCLUDE[@]}"; do [[ ! $(tr 'A-Z' 'a-z' <<< "$SYS")  =~ $ex ]]; done &&
-  [[ "$(echo "$SYS" | sed "s/[^0-9.]//g" | cut -d. -f1)" -lt "${MAJOR[int]}" ]] && error " $(text 26) "
+  for ex in "${EXCLUDE[@]}"; do [[ ! "${SYS,,}" =~ $ex ]]; done &&
+  [[ "$MAJOR_VERSION" -lt "${MAJOR[int]}" ]] && error " $(text 26) "
 }
 
 # 安装系统依赖及定义 ping 指令
 check_dependencies() {
   # 对于 alpine 系统，升级库并重新安装依赖
-  if [ "$SYSTEM" = Alpine ]; then
-    [ -e /etc/wireguard/menu.sh ] && ( ${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} curl wget grep bash xxd python3 )
+  if [ "$SYSTEM" = 'Alpine' ]; then
+    CHECK_WGET=$(wget 2>&1 | head -n 1)
+    grep -qi 'busybox' <<< "$CHECK_WGET" && ${PACKAGE_INSTALL[int]} wget >/dev/null 2>&1
+    DEPS_CHECK=("ping" "curl" "grep" "bash" "ip" "python3" "virt-what")
+    DEPS_INSTALL=("iputils-ping" "curl" "grep" "bash" "iproute2" "python3" "virt-what")
   else
-    # 对于 CentOS 系统，xxd 需要依赖 vim-common
-    [ "${SYSTEM}" = 'CentOS' ] && ${PACKAGE_INSTALL[int]} vim-common
-    DEPS_CHECK=("ping" "xxd" "wget" "curl" "systemctl" "ip" "python3")
-    DEPS_INSTALL=("iputils-ping" "xxd" "wget" "curl" "systemctl" "iproute2" "python3")
-    for ((g=0; g<${#DEPS_CHECK[@]}; g++)); do [ ! $(type -p ${DEPS_CHECK[g]}) ] && [[ ! "${DEPS[@]}" =~ "${DEPS_INSTALL[g]}" ]] && DEPS+=(${DEPS_INSTALL[g]}); done
-    if [ "${#DEPS[@]}" -ge 1 ]; then
-      info "\n $(text 7) ${DEPS[@]} \n"
-      ${PACKAGE_UPDATE[int]} >/dev/null 2>&1
-      ${PACKAGE_INSTALL[int]} ${DEPS[@]} >/dev/null 2>&1
-    else
-      info "\n $(text 8) \n"
-    fi
+    # 对于三大系统需要的依赖
+    DEPS_CHECK=("ping" "wget" "curl" "systemctl" "ip" "python3")
+    DEPS_INSTALL=("iputils-ping" "wget" "curl" "systemctl" "iproute2" "python3")
   fi
-  PING6='ping -6' && [ $(type -p ping6) ] && PING6='ping6'
+
+  for g in "${!DEPS_CHECK[@]}"; do
+    [ ! -x "$(type -p ${DEPS_CHECK[g]})" ] && [[ ! "${DEPS[@]}" =~ "${DEPS_INSTALL[g]}" ]] && DEPS+=(${DEPS_INSTALL[g]})
+  done
+
+  if [ "${#DEPS[@]}" -ge 1 ]; then
+    info "\n $(text 7) ${DEPS[@]} \n"
+    ${PACKAGE_UPDATE[int]} >/dev/null 2>&1
+    ${PACKAGE_INSTALL[int]} ${DEPS[@]} >/dev/null 2>&1
+  else
+    info "\n $(text 8) \n"
+  fi
+
+  PING6='ping -6' && [ -x "$(type -p ping6)" ] && PING6='ping6'
 }
 
-# 只保留Teams账户，删除其他账户
-cancel_account(){
-  local FILE=$1
-  if [ -s "$FILE" ]; then
-    grep -oqE '"id":[ ]+"t.[A-F0-9a-f]{8}-' $FILE || bash <(curl -m5 -sSL https://${CDN}gitlab.com/fscarmen/warp/-/raw/main/api.sh) --cancle --file $FILE >/dev/null 2>&1
+# 获取 warp 账户信息
+warp_api(){
+  local RUN=$1
+  local FILE_PATH=$2
+  local WARP_LICENSE=$3
+  local WARP_DEVICE_NAME=$4
+  local WARP_TEAM_TOKEN=$5
+  local WARP_CONVERT=$6
+  local WARP_CONVERT_MODE=$7
+  local WARP_API_URL="warp.cloudflare.now.cc"
+
+  if [ -s "$FILE_PATH" ]; then
+    # Teams 账户文件
+    if grep -q 'xml version' $FILE_PATH; then
+      local WARP_DEVICE_ID=$(grep 'correlation_id' $FILE_PATH | sed "s#.*>\(.*\)<.*#\1#")
+      local WARP_TOKEN=$(grep 'warp_token' $FILE_PATH | sed "s#.*>\(.*\)<.*#\1#")
+      local WARP_CLIENT_ID=$(grep 'client_id' $FILE_PATH | sed "s#.*client_id&quot;:&quot;\([^&]\{4\}\)&.*#\1#")
+
+    # 官方 api 文件
+    elif grep -q 'client_id' $FILE_PATH; then
+      local WARP_DEVICE_ID=$(grep -m1 '"id' "$FILE_PATH" | cut -d\" -f4)
+      local WARP_TOKEN=$(grep '"token' "$FILE_PATH" | cut -d\" -f4)
+      local WARP_CLIENT_ID=$(grep 'client_id' "$FILE_PATH" | cut -d\" -f4)
+
+    # client 文件，默认存放路径为 /var/lib/cloudflare-warp/reg.json
+    elif grep -q 'registration_id' $FILE_PATH; then
+      local WARP_DEVICE_ID=$(cut -d\" -f4 "$FILE_PATH")
+      local WARP_TOKEN=$(cut -d\" -f8 "$FILE_PATH")
+
+    # wgcf 文件，默认存放路径为 /etc/wireguard/wgcf-account.toml
+    elif grep -q 'access_token' $FILE_PATH; then
+      id=$(grep 'device_id' "$FILE_PATH" | cut -d\' -f2)
+      token=$(grep 'access_token' "$FILE_PATH" | cut -d\' -f2)
+
+    # warp-go 文件，默认存放路径为 /opt/warp-go/warp.conf
+    elif grep -q 'PrivateKey' $FILE_PATH; then
+      id=$(awk -F' *= *' '/^Device/{print $2}' "$FILE_PATH")
+      token=$(awk -F' *= *' '/^Token/{print $2}' "$FILE_PATH")
+    fi
   fi
+  
+  case "$RUN" in
+    register )
+      curl -m5 -sL "https://${WARP_API_URL}/?run=register&team_token=${WARP_TEAM_TOKE}"
+      ;;
+    device )
+      curl -m5 -sL "https://${WARP_API_URL}/?run=device&device_id=${WARP_DEVICE_ID}&token=${WARP_TOKEN}"
+      ;;
+    name )
+      curl -m5 -sL "https://${WARP_API_URL}/?run=name&device_id=${WARP_DEVICE_ID}&token=${WARP_TOKEN}&device_name=${WARP_DEVICE_NAME}"
+      ;;
+    license )
+      curl -m5 -sL "https://${WARP_API_URL}/?run=license&device_id=${WARP_DEVICE_ID}&token=${WARP_TOKEN}&license=${WARP_LICENSE}"
+      ;;
+    cancel )
+      # 只保留Teams账户，删除其他账户
+      grep -oqE '"id":[ ]+"t.[A-F0-9a-f]{8}-' $FILE_PATH || curl -m5 -sL "https://${WARP_API_URL}/?run=cancel&device_id=${WARP_DEVICE_ID}&token=${WARP_TOKEN}"
+      ;;
+    convert )
+      if [ "$WARP_CONVERT_MODE" = decode ]; then
+        curl -m5 -sL "https://${WARP_API_URL}/?run=id&convert=${WARP_CONVERT}" | grep -A4 'reserved' | sed 's/.*\(\[.*\)/\1/g; s/],/]/' | tr -d '[:space:]'
+      elif [ "$WARP_CONVERT_MODE" = encode ]; then
+        curl -m5 -sL "https://${WARP_API_URL}/?run=id&convert=${WARP_CONVERT//[ \[\]]}" | awk -F '"' '/client_id/{print $(NF-1)}'
+      elif [ "$WARP_CONVERT_MODE" = file ]; then
+        if grep -sq '"reserved"' $FILE_PATH; then
+          grep -A4 'reserved' $FILE_PATH | sed 's/.*\(\[.*\)/\1/g; s/],/]/' | tr -d '[:space:]'
+        else
+          local WARP_CONVERT=$(awk -F '"' '/"client_id"/{print $(NF-1)}' $FILE_PATH)
+          curl -m5 -sL "https://${WARP_API_URL}/?run=id&convert=${WARP_CONVERT}" | grep -A4 'reserved' | sed 's/.*\(\[.*\)/\1/g; s/],/]/' | tr -d '[:space:]'
+        fi
+      fi
+      ;;
+  esac
 }
 
 # 聚合 IP api 函数
 ip_info() {
   local CHECK_46="$1"
   if [[ "$2" =~ ^[0-9]+$ ]]; then
-    local INTERFACE_SOCK5="-x socks5://127.0.0.1:$2"
+    local INTERFACE_SOCK5="--proxy socks5h://127.0.0.1:$2"
   elif [[ "$2" =~ ^[[:alnum:]]+$ ]]; then
     local INTERFACE_SOCK5="--interface $2"
   fi
+  local IS_UNINSTALL="$3"
 
-  case "$CHECK_46" in
-    6 )
-      CHOOSE_IP_API=${IP_API[1]} && CHOOSE_IP_ISP=${ISP[1]} && CHOOSE_IP_KEY=${IP[1]}
-      ;;
-    * )
-      CHOOSE_IP_API=${IP_API[0]} && CHOOSE_IP_ISP=${ISP[0]} && CHOOSE_IP_KEY=${IP[0]}
-  esac
-
-  IP_TRACE=$(curl --retry 2 -ks${CHECK_46}m5 $INTERFACE_SOCK5 ${IP_API[3]} | grep warp | sed "s/warp=//g")
+  [ "$L" = 'C' ] && IS_CHINESE=${IS_CHINESE:-'?lang=zh-CN'}
+  [ "$CHECK_46" = '6' ] && CHOOSE_IP_API='https://api-ipv6.ip.sb/geoip' || CHOOSE_IP_API='https://api-ipv4.ip.sb/geoip'
+  IP_TRACE=$(curl --retry 2 -ksm5 $INTERFACE_SOCK5 https://www.cloudflare.com/cdn-cgi/trace | awk -F '=' '/^warp=/{print $NF}')
   if [ -n "$IP_TRACE" ]; then
-    IP_JSON=$(curl --retry 2 -ks${CHECK_46}m5 $INTERFACE_SOCK5 -A Mozilla $CHOOSE_IP_API)
-    [[ -z "$IP_JSON" || "$IP_JSON" =~ 'error code' ]] && CHOOSE_IP_API=${IP_API[2]} && CHOOSE_IP_ISP=${ISP[2]} && CHOOSE_IP_KEY=${IP[2]} && IP_JSON=$(curl --retry 3 -ks${CHECK_46}m5 $INTERFACE_SOCK5 -A Mozilla $CHOOSE_IP_API)
+    [ "$IS_UNINSTALL" = 'is_uninstall' ] && local API_IP=$(curl -$CHECK_46 --retry 2 -ksm5 --user-agent Mozilla https://api.ip.sb/ip) || local API_IP=$(curl --retry 2 -ksm5 $INTERFACE_SOCK5 --user-agent Mozilla $CHOOSE_IP_API | sed 's/.*"ip":"\([^"]\+\)".*/\1/')
+    [ -n "$API_IP" ] && local IP_JSON=$(curl --retry 2 -ksm5 https://ip.forvps.gq/${API_IP}${IS_CHINESE})
+    IP_JSON=${IP_JSON:-"$(curl --retry 3 -ks${CHECK_46}m5 $INTERFACE_SOCK5 --user-agent Mozilla https://ifconfig.co/json)"}
 
-    if [[ -n "$IP_JSON" && ! "$IP_JSON" =~ 'error code' ]]; then
-      local WAN=$(expr "$IP_JSON" : '.*'$CHOOSE_IP_KEY'\":[ ]*\"\([^"]*\).*')
-      local COUNTRY=$(expr "$IP_JSON" : '.*country\":[ ]*\"\([^"]*\).*')
-      local ASNORG=$(expr "$IP_JSON" : '.*'$CHOOSE_IP_ISP'\":[ ]*\"\([^"]*\).*')
+    if [ -n "$IP_JSON" ]; then
+      local WAN=$(sed -En 's/.*"(ip|query)":[ ]*"([^"]+)".*/\2/p' <<< "$IP_JSON")
+      local COUNTRY=$(sed -En 's/.*"country":[ ]*"([^"]+)".*/\1/p' <<< "$IP_JSON")
+      local ASNORG=$(sed -En 's/.*"(isp|asn_org)":[ ]*"([^"]+)".*/\2/p' <<< "$IP_JSON")
     fi
   fi
 
@@ -563,24 +633,22 @@ ip_case() {
 
   if [ "$CHECK_TYPE" = "warp" ]; then
     fetch_4() {
-      unset IP_RESULT4 COUNTRY4 ASNORG4 TRACE4
-      local IP_RESULT4=$(ip_info 4 $CHECK_NONGLOBAL)
+      unset IP_RESULT4 COUNTRY4 ASNORG4 TRACE4 IS_UNINSTALL
+      local IS_UNINSTALL=${IS_UNINSTALL:-"$1"}
+      local IP_RESULT4=$(ip_info 4 "$CHECK_NONGLOBAL" "$IS_UNINSTALL")
       TRACE4=$(expr "$IP_RESULT4" : '.*trace=\([^@]*\).*')
       WAN4=$(expr "$IP_RESULT4" : '.*ip=\([^@]*\).*')
       COUNTRY4=$(expr "$IP_RESULT4" : '.*country=\([^@]*\).*')
-      [ "$L" = C ] && [ -n "$COUNTRY4" ] && COUNTRY4_ZH=$(translate "$COUNTRY4")
-      [ -n "$COUNTRY4_ZH" ] && COUNTRY4="$COUNTRY4_ZH"
       ASNORG4=$(expr "$IP_RESULT4" : '.*asnorg=\([^@]*\).*')
     }
 
     fetch_6() {
-      unset IP_RESULT6 COUNTRY6 ASNORG6 TRACE6
-      local IP_RESULT6=$(ip_info 6 $CHECK_NONGLOBAL)
+      unset IP_RESULT6 COUNTRY6 ASNORG6 TRACE6 IS_UNINSTALL
+      local IS_UNINSTALL=${IS_UNINSTALL:-"$1"}
+      local IP_RESULT6=$(ip_info 6 "$CHECK_NONGLOBAL" "$IS_UNINSTALL")
       TRACE6=$(expr "$IP_RESULT6" : '.*trace=\([^@]*\).*')
       WAN6=$(expr "$IP_RESULT6" : '.*ip=\([^@]*\).*')
       COUNTRY6=$(expr "$IP_RESULT6" : '.*country=\([^@]*\).*')
-      [ "$L" = C ] && [ -n "$COUNTRY6" ] && COUNTRY6_ZH=$(translate "$COUNTRY6")
-      [ -n "$COUNTRY6_ZH" ] && COUNTRY6="$COUNTRY6_ZH"
       ASNORG6=$(expr "$IP_RESULT6" : '.*asnorg=\([^@]*\).*')
     }
 
@@ -597,6 +665,11 @@ ip_case() {
           fetch_4
           fetch_6
         fi
+        ;;
+      u )
+        # 卸载的话，使用不同的 IP api
+        fetch_4 is_uninstall
+        fetch_6 is_uninstall
     esac
   elif [ "$CHECK_TYPE" = "wireproxy" ]; then
     fetch_4() {
@@ -605,8 +678,6 @@ ip_case() {
       WIREPROXY_TRACE4=$(expr "$IP_RESULT4" : '.*trace=\([^@]*\).*')
       WIREPROXY_WAN4=$(expr "$IP_RESULT4" : '.*ip=\([^@]*\).*')
       WIREPROXY_COUNTRY4=$(expr "$IP_RESULT4" : '.*country=\([^@]*\).*')
-      [ "$L" = C ] && [ -n "$WIREPROXY_COUNTRY4" ] && WIREPROXY_COUNTRY4_ZH=$(translate "$WIREPROXY_COUNTRY4")
-      [ -n "$WIREPROXY_COUNTRY4_ZH" ] && WIREPROXY_COUNTRY4="$WIREPROXY_COUNTRY4_ZH"
       WIREPROXY_ASNORG4=$(expr "$IP_RESULT4" : '.*asnorg=\([^@]*\).*')
     }
 
@@ -616,8 +687,6 @@ ip_case() {
       WIREPROXY_TRACE6=$(expr "$IP_RESULT6" : '.*trace=\([^@]*\).*')
       WIREPROXY_WAN6=$(expr "$IP_RESULT6" : '.*ip=\([^@]*\).*')
       WIREPROXY_COUNTRY6=$(expr "$IP_RESULT6" : '.*country=\([^@]*\).*')
-      [ "$L" = C ] && [ -n "$WIREPROXY_COUNTRY6" ] && WIREPROXY_COUNTRY6_ZH=$(translate "$WIREPROXY_COUNTRY6")
-      [ -n "$WIREPROXY_COUNTRY6_ZH" ] && WIREPROXY_COUNTRY6="$WIREPROXY_COUNTRY6_ZH"
       WIREPROXY_ASNORG6=$(expr "$IP_RESULT6" : '.*asnorg=\([^@]*\).*')
     }
 
@@ -642,8 +711,6 @@ ip_case() {
       CLIENT_TRACE4=$(expr "$IP_RESULT4" : '.*trace=\([^@]*\).*')
       CLIENT_WAN4=$(expr "$IP_RESULT4" : '.*ip=\([^@]*\).*')
       CLIENT_COUNTRY4=$(expr "$IP_RESULT4" : '.*country=\([^@]*\).*')
-      [ "$L" = C ] && [ -n "$CLIENT_COUNTRY4" ] && CLIENT_COUNTRY4_ZH=$(translate "$CLIENT_COUNTRY4")
-      [ -n "$CLIENT_COUNTRY4_ZH" ] && CLIENT_COUNTRY4="$CLIENT_COUNTRY4_ZH"
       CLIENT_ASNORG4=$(expr "$IP_RESULT4" : '.*asnorg=\([^@]*\).*')
     }
 
@@ -653,8 +720,6 @@ ip_case() {
       CLIENT_TRACE6=$(expr "$IP_RESULT6" : '.*trace=\([^@]*\).*')
       CLIENT_WAN6=$(expr "$IP_RESULT6" : '.*ip=\([^@]*\).*')
       CLIENT_COUNTRY6=$(expr "$IP_RESULT6" : '.*country=\([^@]*\).*')
-      [ "$L" = C ] && [ -n "$CLIENT_COUNTRY6" ] && CLIENT_COUNTRY6_ZH=$(translate "$CLIENT_COUNTRY6")
-      [ -n "$CLIENT_COUNTRY6_ZH" ] && CLIENT_COUNTRY6="$CLIENT_COUNTRY6_ZH"
       CLIENT_ASNORG6=$(expr "$IP_RESULT6" : '.*asnorg=\([^@]*\).*')
     }
 
@@ -666,25 +731,23 @@ ip_case() {
       4|6 )
         fetch_$CHECK_46
         CLIENT_AC=' Free'
-        local CLIENT_ACCOUNT=$(warp-cli --accept-tos account 2>/dev/null | awk  '/type/{print $3}')
+        local CLIENT_ACCOUNT=$(warp-cli --accept-tos registration show 2>/dev/null | awk  '/type/{print $3}')
         [ "$CLIENT_ACCOUNT" = Limited ] && CLIENT_AC='+' && check_quota client
         ;;
       d )
         fetch_4
         fetch_6
         CLIENT_AC=' Free'
-        local CLIENT_ACCOUNT=$(warp-cli --accept-tos account 2>/dev/null | awk  '/type/{print $3}')
+        local CLIENT_ACCOUNT=$(warp-cli --accept-tos registration show 2>/dev/null | awk  '/type/{print $3}')
         [ "$CLIENT_ACCOUNT" = Limited ] && CLIENT_AC='+' && check_quota client
     esac
-  elif [ "$CHECK_TYPE" = "luban" ]; then
+  elif [ "$CHECK_TYPE" = "is_luban" ]; then
     fetch_4(){
       unset IP_RESULT4 CFWARP_COUNTRY4 CFWARP_ASNORG4 CFWARP_TRACE4 CFWARP_WAN4 CLIENT_ACCOUNT QUOTA CLIENT_AC
       local IP_RESULT4=$(ip_info 4 CloudflareWARP)
       CFWARP_TRACE4=$(expr "$IP_RESULT4" : '.*trace=\([^@]*\).*')
       CFWARP_WAN4=$(expr "$IP_RESULT4" : '.*ip=\([^@]*\).*')
       CFWARP_COUNTRY4=$(expr "$IP_RESULT4" : '.*country=\([^@]*\).*')
-      [ "$L" = C ] && [ -n "$CFWARP_COUNTRY4" ] && CFWARP_COUNTRY4_ZH=$(translate "$CFWARP_COUNTRY4")
-      [ -n "$CFWARP_COUNTRY4_ZH" ] && CFWARP_COUNTRY4="$CFWARP_COUNTRY4_ZH"
       CFWARP_ASNORG4=$(expr "$IP_RESULT4" : '.*asnorg=\([^@]*\).*')
     }
 
@@ -694,8 +757,6 @@ ip_case() {
       CFWARP_TRACE6=$(expr "$IP_RESULT6" : '.*trace=\([^@]*\).*')
       CFWARP_WAN6=$(expr "$IP_RESULT6" : '.*ip=\([^@]*\).*')
       CFWARP_COUNTRY6=$(expr "$IP_RESULT6" : '.*country=\([^@]*\).*')
-      [ "$L" = C ] && [ -n "$CFWARP_COUNTRY6" ] && CFWARP_COUNTRY6_ZH=$(translate "$CFWARP_COUNTRY6")
-      [ -n "$CFWARP_COUNTRY6_ZH" ] && CFWARP_COUNTRY6="$CFWARP_COUNTRY6_ZH"
       CFWARP_ASNORG6=$(expr "$IP_RESULT6" : '.*asnorg=\([^@]*\).*')
     }
 
@@ -706,7 +767,7 @@ ip_case() {
       d )
         fetch_4
         fetch_6
-        local CLIENT_ACCOUNT=$(warp-cli --accept-tos account 2>/dev/null | awk  '/type/{print $3}')
+        local CLIENT_ACCOUNT=$(warp-cli --accept-tos registration show 2>/dev/null | awk  '/type/{print $3}')
         [ "$CLIENT_ACCOUNT" = Limited ] && CLIENT_AC='+' && check_quota client
     esac
   fi
@@ -735,22 +796,22 @@ plus() {
   case "$CHOOSEPLUS" in
     1 )
       input
-      [ $(type -p git) ] || ${PACKAGE_INSTALL[int]} git 2>/dev/null
-      [ $(type -p python3) ] || ${PACKAGE_INSTALL[int]} python3 2>/dev/null
-      [ -d ~/warp-plus-cloudflare ] || git clone https://${CDN}github.com/aliilapro/warp-plus-cloudflare.git
+      [ -x "$(type -p git)" ] || ${PACKAGE_INSTALL[int]} git 2>/dev/null
+      [ -x "$(type -p python3)" ] || ${PACKAGE_INSTALL[int]} python3 2>/dev/null
+      [ -d ~/warp-plus-cloudflare ] || ${GH_PROXY}git clone https://github.com/aliilapro/warp-plus-cloudflare.git
       echo "$ID" | python3 ~/warp-plus-cloudflare/wp-plus.py
       ;;
     2 )
       input
       reading " $(text 57) " MISSION
       MISSION=${MISSION//[^0-9]/}
-      bash <(wget --no-check-certificate -qO- -T8 https://${CDN}raw.githubusercontent.com/fscarmen/tools/main/warp_plus.sh) $MISSION $ID
+      bash <(wget --no-check-certificate -qO- -T8 ${GH_PROXY}https://raw.githubusercontent.com/fscarmen/tools/main/warp_plus.sh) $MISSION $ID
       ;;
     3 )
       input
       reading " $(text 57) " MISSION
       MISSION=${MISSION//[^0-9]/}
-      bash <(wget --no-check-certificate -qO- -T8 https://${CDN}raw.githubusercontent.com/SoftCreatR/warp-up/main/warp-up.sh) --disclaimer --id $ID --iterations $MISSION
+      bash <(wget --no-check-certificate -qO- -T8 ${GH_PROXY}https://raw.githubusercontent.com/SoftCreatR/warp-up/main/warp-up.sh) --disclaimer --id $ID --iterations $MISSION
       ;;
     0 )
       [ "$OPTION" != p ] && menu || exit
@@ -802,7 +863,7 @@ result_priority() {
       PRIO=6
       ;;
     * )
-      [[ "$(curl -ksm8 -A Mozilla ${IP_API[3]} | grep 'ip=' | cut -d= -f2)" =~ ^([0-9]{1,3}\.){3} ]] && PRIO=4 || PRIO=6
+      [[ "$(curl -ksm8 --user-agent Mozilla https://www.cloudflare.com/cdn-cgi/trace | awk -F '=' '/^ip/{print $NF}')" =~ ^([0-9]{1,3}\.){3} ]] && PRIO=4 || PRIO=6
   esac
   PRIORITY_NOW=$(text 97)
 
@@ -812,15 +873,15 @@ result_priority() {
 
 # 更换 Netflix IP 时确认期望区域
 input_region() {
-  [ -n "$NF" ] && REGION=$(tr 'a-z' 'A-Z' <<< "$(curl --user-agent "${UA_Browser}" -$NF $GLOBAL -fs --max-time 10 --write-out "%{redirect_url}" --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g')")
-  [ -n "$WIREPROXY_PORT" ] && REGION=$(tr 'a-z' 'A-Z' <<< "$(curl --user-agent "${UA_Browser}" -sx socks5h://127.0.0.1:$WIREPROXY_PORT -fs --max-time 10 --write-out "%{redirect_url}" --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g')")
-  [ -n "$INTERFACE" ] && REGION=$(tr 'a-z' 'A-Z' <<< "$(curl --user-agent "${UA_Browser}" $INTERFACE -fs --max-time 10 --write-out "%{redirect_url}" --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g')")
+  [ -n "$NF" ] && REGION=$(curl --user-agent "${UA_Browser}" -$NF $GLOBAL -fs --max-time 10 --write-out "%{redirect_url}" --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g')
+  [ -n "$WIREPROXY_PORT" ] && REGION=$(curl --user-agent "${UA_Browser}" -sx socks5h://127.0.0.1:$WIREPROXY_PORT -fs --max-time 10 --write-out "%{redirect_url}" --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g')
+  [ -n "$INTERFACE" ] && REGION=$(curl --user-agent "${UA_Browser}" $INTERFACE -fs --max-time 10 --write-out "%{redirect_url}" --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g')
   REGION=${REGION:-'US'}
   reading " $(text 56) " EXPECT
-  until [[ -z "$EXPECT" || "$EXPECT" = [Yy] || "$EXPECT" =~ ^[A-Za-z]{2}$ ]]; do
+  until [[ -z "$EXPECT" || "${EXPECT,,}" = 'y' || "${EXPECT,,}" =~ ^[a-z]{2}$ ]]; do
     reading " $(text 56) " EXPECT
   done
-  [[ -z "$EXPECT" || "$EXPECT" = [Yy] ]] && EXPECT="$REGION"
+  [[ -z "$EXPECT" || "${EXPECT,,}" = 'y' ]] && EXPECT="${REGION^^}"
 }
 
 # 更换支持 Netflix WARP IP 改编自 [luoxue-bot] 的成熟作品，地址[https://github.com/luoxue-bot/warp_auto_change_ip]
@@ -835,15 +896,15 @@ change_ip() {
       warning " $(text 126) "
       wg-quick down warp >/dev/null 2>&1
       [ -s /etc/wireguard/info.log ] && grep -q 'Device name' /etc/wireguard/info.log && local LICENSE=$(cat /etc/wireguard/license) && local NAME=$(awk '/Device name/{print $NF}' /etc/wireguard/info.log)
-      cancel_account /etc/wireguard/warp-account.conf
-      bash <(curl -m5 -sSL https://${CDN}gitlab.com/fscarmen/warp/-/raw/main/api.sh | sed 's#cat $registe_path; ##') --registe --file /etc/wireguard/warp-account.conf 2>/dev/null
+      warp_api "cancel" "/etc/wireguard/warp-account.conf" >/dev/null 2>&1
+      warp_api "register" > /etc/wireguard/warp-account.conf 2>/dev/null
       # 如原来是 plus 账户，以相同的 license 升级，并修改账户和 warp 配置文件
       if [[ -n "$LICENSE" && -n "$NAME" ]]; then
-        [ -n "$LICENSE" ] && bash <(curl -m5 -sSL https://${CDN}gitlab.com/fscarmen/warp/-/raw/main/api.sh) --file /etc/wireguard/warp-account.conf --license $LICENSE >/dev/null 2>&1
-        [ -n "$NAME" ] && bash <(curl -m5 -sSL https://${CDN}gitlab.com/fscarmen/warp/-/raw/main/api.sh) --file /etc/wireguard/warp-account.conf --name $NAME >/dev/null 2>&1
+        [ -n "$LICENSE" ] && warp_api "license" "/etc/wireguard/warp-account.conf" "$LICENSE" >/dev/null 2>&1
+        [ -n "$NAME" ] && warp_api "name" "/etc/wireguard/warp-account.conf" "" "$NAME" >/dev/null 2>&1
         local PRIVATEKEY="$(grep 'private_key' /etc/wireguard/warp-account.conf | cut -d\" -f4)"
         local ADDRESS6="$(grep '"v6.*"$' /etc/wireguard/warp-account.conf | cut -d\" -f4)"
-        local CLIENT_ID="$(reserved_and_clientid /etc/wireguard/warp-account.conf file)"
+        local CLIENT_ID="$(warp_api "convert" "/etc/wireguard/warp-account.conf" "" "" "" "" "file")"
         [ -s /etc/wireguard/warp.conf ] && sed -i "s#\(PrivateKey[ ]\+=[ ]\+\).*#\1$PRIVATEKEY#g; s#\(Address[ ]\+=[ ]\+\).*\(/128$\)#\1$ADDRESS6\2#g; s#\(.*Reserved[ ]\+=[ ]\+\).*#\1$CLIENT_ID#g" /etc/wireguard/warp.conf
         sed -i "s#\([ ]\+\"license\": \"\).*#\1$LICENSE\"#g; s#\"account_type\".*#\"account_type\": \"limited\",#g; s#\([ ]\+\"name\": \"\).*#\1$NAME\"#g" /etc/wireguard/warp-account.conf
       fi
@@ -894,14 +955,14 @@ change_ip() {
       [ "$GLOBAL" = '--interface warp' ] && ip_case "$NF" warp non-global || ip_case "$NF" warp
       WAN=$(eval echo \$WAN$NF) && COUNTRY=$(eval echo \$COUNTRY$NF) && ASNORG=$(eval echo \$ASNORG$NF)
       unset RESULT REGION
-      for ((l=0; l<${#RESULT_TITLE[@]}; l++)); do
+      for l in ${!RESULT_TITLE[@]}; do
         RESULT[l]=$(curl --user-agent "${UA_Browser}" -$NF $GLOBAL -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/${RESULT_TITLE[l]}")
         [ "${RESULT[l]}" = 200 ] && break
       done
       if [[ "${RESULT[@]}" =~ 200 ]]; then
-        REGION=$(tr 'a-z' 'A-Z' <<< "$(curl --user-agent "${UA_Browser}" -"$NF" $GLOBAL -fs --max-time 10 --write-out "%{redirect_url}" --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g')")
+        REGION=$(curl --user-agent "${UA_Browser}" -"$NF" $GLOBAL -fs --max-time 10 --write-out "%{redirect_url}" --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g')
         REGION=${REGION:-'US'}
-        echo "$REGION" | grep -qi "$EXPECT" && info " $(text 125) " && i=0 && sleep 1h || warp_restart
+        grep -qi "$EXPECT" <<< "$REGION" && info " $(text 125) " && i=0 && sleep 1h || warp_restart
       else
         warp_restart
       fi
@@ -913,18 +974,18 @@ change_ip() {
       local CLIENT_MODE=$(warp-cli --accept-tos settings | awk '/Mode:/{for (i=0; i<NF; i++) if ($i=="Mode:") {print $(i+1)}}')
       case "$CLIENT_MODE" in
         Warp )
-          warning " $(text 126) " && warp-cli --accept-tos delete >/dev/null 2>&1
+          warning " $(text 126) " && warp-cli --accept-tos registration delete >/dev/null 2>&1
           rule_del >/dev/null 2>&1
-          warp-cli --accept-tos register >/dev/null 2>&1
-          [ -s /etc/wireguard/license ] && warp-cli --accept-tos set-license $(cat /etc/wireguard/license) >/dev/null 2>&1
+          warp-cli --accept-tos registration new >/dev/null 2>&1
+          [ -s /etc/wireguard/license ] && warp-cli --accept-tos registration license $(cat /etc/wireguard/license) >/dev/null 2>&1
           sleep $j
           rule_add >/dev/null 2>&1
           ;;
         WarpProxy )
-          warning " $(text 126) " && warp-cli --accept-tos delete >/dev/null 2>&1
-          warp-cli --accept-tos delete >/dev/null 2>&1
-          warp-cli --accept-tos register >/dev/null 2>&1
-          [ -s /etc/wireguard/license ] && warp-cli --accept-tos set-license $(cat /etc/wireguard/license) >/dev/null 2>&1
+          warning " $(text 126) " && warp-cli --accept-tos registration delete >/dev/null 2>&1
+          warp-cli --accept-tos registration delete >/dev/null 2>&1
+          warp-cli --accept-tos registration new >/dev/null 2>&1
+          [ -s /etc/wireguard/license ] && warp-cli --accept-tos registration license $(cat /etc/wireguard/license) >/dev/null 2>&1
           sleep $j
       esac
     }
@@ -940,14 +1001,14 @@ change_ip() {
         ip_case "$NF" client
         WAN=$(eval echo "\$CLIENT_WAN$NF") && ASNORG=$(eval echo "\$CLIENT_ASNORG$NF") && COUNTRY=$(eval echo "\$CLIENT_COUNTRY$NF")
         unset RESULT REGION
-        for ((l=0; l<${#RESULT_TITLE[@]}; l++)); do
-          RESULT[l]=$(curl --user-agent "${UA_Browser}" -"$NF" -sx socks5://127.0.0.1:$CLIENT_PORT -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/${RESULT_TITLE[l]}")
+        for l in ${!RESULT_TITLE[@]}; do
+          RESULT[l]=$(curl --user-agent "${UA_Browser}" -"$NF" -sx socks5h://127.0.0.1:$CLIENT_PORT -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/${RESULT_TITLE[l]}")
           [ "${RESULT[l]}" = 200 ] && break
         done
         if [[ "${RESULT[@]}" =~ 200 ]]; then
-          REGION=$(tr 'a-z' 'A-Z' <<< "$(curl --user-agent "${UA_Browser}" -"$NF" -sx socks5://127.0.0.1:$CLIENT_PORT -fs --max-time 10 --write-out "%{redirect_url}" --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g')")
+          REGION=$(curl --user-agent "${UA_Browser}" -"$NF" -sx socks5h://127.0.0.1:$CLIENT_PORT -fs --max-time 10 --write-out "%{redirect_url}" --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g')
           REGION=${REGION:-'US'}
-          echo "$REGION" | grep -qi "$EXPECT" && info " $(text 125) " && i=0 && sleep 1h || client_restart
+          grep -qi "$EXPECT" <<< "$REGION" && info " $(text 125) " && i=0 && sleep 1h || client_restart
         else
           client_restart
         fi
@@ -959,18 +1020,18 @@ change_ip() {
       while true; do
         (( i++ )) || true
         ip_now=$(date +%s); RUNTIME=$((ip_now - ip_start)); DAY=$(( RUNTIME / 86400 )); HOUR=$(( (RUNTIME % 86400 ) / 3600 )); MIN=$(( (RUNTIME % 86400 % 3600) / 60 )); SEC=$(( RUNTIME % 86400 % 3600 % 60 ))
-        ip_case "$NF" luban
+        ip_case "$NF" is_luban
         WAN=$(eval echo "\$CFWARP_WAN$NF") && COUNTRY=$(eval echo "\$CFWARP_COUNTRY$NF") && ASNORG=$(eval echo "\$CFWARP_ASNORG$NF")
         unset RESULT REGION
-        for ((l=0; l<${#RESULT_TITLE[@]}; l++)); do
+        for l in ${!RESULT_TITLE[@]}; do
           RESULT[l]=$(curl --user-agent "${UA_Browser}" $INTERFACE -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/${RESULT_TITLE[l]}")
           [ "${RESULT[l]}" = 200 ] && break
         done
         [ "${RESULT[0]}" != 200 ] && RESULT[1]=$(curl --user-agent "${UA_Browser}" $INTERFACE -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/${RESULT_TITLE[1]}" 2>&1)
         if [[ "${RESULT[@]}" =~ 200 ]]; then
-          REGION=$(tr 'a-z' 'A-Z' <<< "$(curl --user-agent "${UA_Browser}" $INTERFACE -fs --max-time 10 --write-out "%{redirect_url}" --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g')")
+          REGION=$(curl --user-agent "${UA_Browser}" $INTERFACE -fs --max-time 10 --write-out "%{redirect_url}" --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g')
           REGION=${REGION:-'US'}
-          echo "$REGION" | grep -qi "$EXPECT" && info " $(text 125) " && i=0 && sleep 1h || client_restart
+          grep -qi "$EXPECT" <<< "$REGION" && info " $(text 125) " && i=0 && sleep 1h || client_restart
         else
           client_restart
         fi
@@ -991,14 +1052,14 @@ change_ip() {
       ip_case "$NF" wireproxy
       WAN=$(eval echo "\$WIREPROXY_WAN$NF") && ASNORG=$(eval echo "\$WIREPROXY_ASNORG$NF") && COUNTRY=$(eval echo "\$WIREPROXY_COUNTRY$NF")
       unset RESULT REGION
-      for ((l=0; l<${#RESULT_TITLE[@]}; l++)); do
+      for l in ${!RESULT_TITLE[@]}; do
         RESULT[l]=$(curl --user-agent "${UA_Browser}" -"$NF" -sx socks5h://127.0.0.1:$WIREPROXY_PORT -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/${RESULT_TITLE[l]}")
         [ "${RESULT[l]}" = 200 ] && break
       done
       if [[ "${RESULT[@]}" =~ 200 ]]; then
-        REGION=$(tr 'a-z' 'A-Z' <<< "$(curl --user-agent "${UA_Browser}" -"$NF" -sx socks5h://127.0.0.1:$WIREPROXY_PORT -fs --max-time 10 --write-out "%{redirect_url}" --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g')")
+        REGION=$(curl --user-agent "${UA_Browser}" -"$NF" -sx socks5h://127.0.0.1:$WIREPROXY_PORT -fs --max-time 10 --write-out "%{redirect_url}" --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g')
         REGION=${REGION:-'US'}
-        echo "$REGION" | grep -qi "$EXPECT" && info " $(text 125) " && i=0 && sleep 1h || wireproxy_restart
+        grep -qi "$EXPECT" <<< "$REGION" && info " $(text 125) " && i=0 && sleep 1h || wireproxy_restart
       else
         wireproxy_restart
       fi
@@ -1011,12 +1072,12 @@ change_ip() {
   UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"
 
   # 根据 lmc999 脚本检测 Netflix Title，如获取不到，使用兜底默认值
-  local LMC999=($(curl -sSLm4 https://${CDN}raw.githubusercontent.com/lmc999/RegionRestrictionCheck/main/check.sh | awk -F 'title/' '/netflix.com\/title/{print $2}' | cut -d\" -f1))
+  local LMC999=($(curl -sSLm4 ${GH_PROXY}https://raw.githubusercontent.com/lmc999/RegionRestrictionCheck/main/check.sh | sed -n 's#.*/title/\([0-9]\+\).*#\1#gp'))
   RESULT_TITLE=(${LMC999[*]:0:2})
   REGION_TITLE=${LMC999[2]}
   [[ ! "${RESULT_TITLE[0]}" =~ ^[0-9]+$ ]] && RESULT_TITLE[0]='81280792'
   [[ ! "${RESULT_TITLE[1]}" =~ ^[0-9]+$ ]] && RESULT_TITLE[1]='70143836'
-  [[ ! "$REGION_TITLE" =~ ^[0-9]+$ ]] && REGION_TITLE='80018499'
+  [[ ! "$REGION_TITLE" =~ ^[0-9]+$ ]] && REGION_TITLE=${RESULT_TITLE[1]}
 
   # 根据 WARP interface 、 Client 和 Wireproxy 的安装情况判断刷 IP 的方式
   INSTALL_CHECK=("wg-quick" "warp-cli" "wireproxy")
@@ -1026,11 +1087,11 @@ change_ip() {
   CHANGE_IP2=("" "" "" "change_wireproxy" "" "change_wireproxy" "change_client" "change_client")
   CHANGE_IP3=("" "" "" "" "" "" "" "change_wireproxy")
 
-  for ((a=0; a<${#INSTALL_CHECK[@]}; a++)); do
-    [ $(type -p ${INSTALL_CHECK[a]}) ] && INSTALL_RESULT[a]=1 || INSTALL_RESULT[a]=0
+  for a in ${!INSTALL_CHECK[@]}; do
+    [ -x "$(type -p ${INSTALL_CHECK[a]})" ] && INSTALL_RESULT[a]=1 || INSTALL_RESULT[a]=0
   done
 
-  for ((b=0; b<${#CASE_RESAULT[@]}; b++)); do
+  for b in ${!CASE_RESAULT[@]}; do
     [[ "${INSTALL_RESULT[@]}" = "${CASE_RESAULT[b]}" ]] && break
   done
 
@@ -1063,7 +1124,7 @@ bbrInstall() {
   reading " $(text 50) " BBR
   case "$BBR" in
     1 )
-      wget --no-check-certificate -N "https://${CDN}raw.githubusercontent.com/ylx2016/Linux-NetSpeed/master/tcp.sh" && chmod +x tcp.sh && ./tcp.sh
+      wget --no-check-certificate -N "${GH_PROXY}https://raw.githubusercontent.com/ylx2016/Linux-NetSpeed/master/tcp.sh" && chmod +x tcp.sh && ./tcp.sh
       ;;
     0 )
       [ "$OPTION" != b ] && menu || exit
@@ -1081,39 +1142,45 @@ uninstall() {
   uninstall_warp() {
     wg-quick down warp >/dev/null 2>&1
     systemctl disable --now wg-quick@warp >/dev/null 2>&1; sleep 3
-    [ $(type -p rpm) ] && rpm -e wireguard-tools 2>/dev/null
+    [ -x "$(type -p rpm)" ] && rpm -e wireguard-tools 2>/dev/null
     systemctl restart systemd-resolved >/dev/null 2>&1; sleep 3
-    cancel_account /etc/wireguard/warp-account.conf
+    warp_api "cancel" "/etc/wireguard/warp-account.conf" >/dev/null 2>&1
     rm -rf /usr/bin/wireguard-go /usr/bin/warp /etc/dnsmasq.d/warp.conf /usr/bin/wireproxy /etc/local.d/warp.start
     [ -e /etc/gai.conf ] && sed -i '/^precedence \:\:ffff\:0\:0/d;/^label 2002\:\:\/16/d' /etc/gai.conf
     [ -e /usr/bin/tun.sh ] && rm -f /usr/bin/tun.sh
     [ -e /etc/crontab ] && sed -i '/tun.sh/d' /etc/crontab
-    sed -i "/250   warp/d" /etc/iproute2/rt_tables
+    [ -e /etc/iproute2/rt_tables ] && sed -i "/250   warp/d" /etc/iproute2/rt_tables
     [ -e /etc/resolv.conf.origin ] && mv -f /etc/resolv.conf.origin /etc/resolv.conf
   }
 
   # 卸载 Linux Client
   uninstall_client() {
     warp-cli --accept-tos disconnect >/dev/null 2>&1
-    warp-cli --accept-tos disable-always-on >/dev/null 2>&1
-    warp-cli --accept-tos delete >/dev/null 2>&1
+    warp-cli --accept-tos registration delete >/dev/null 2>&1
     rule_del >/dev/null 2>&1
     ${PACKAGE_UNINSTALL[int]} cloudflare-warp 2>/dev/null
     systemctl disable --now warp-svc >/dev/null 2>&1
-    rm -rf /usr/bin/wireguard-go /usr/bin/warp $HOME/.local/share/warp /etc/apt/sources.list.d/cloudflare-client.list /etc/yum.repos.d/cloudflare-warp.repo
+    rm -rf /usr/bin/wireguard-go /usr/bin/warp $HOME/.local/share/warp /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg /etc/apt/sources.list.d/cloudflare-client.list /etc/yum.repos.d/cloudflare-warp.repo
   }
 
   # 卸载 Wireproxy
   uninstall_wireproxy() {
-    systemctl disable --now wireproxy
-    cancel_account /etc/wireguard/warp-account.conf
+    if [ "$SYSTEM" = Alpine ]; then
+      rc-update del wireproxy default
+      rc-service wireproxy stop >/dev/null 2>&1
+      rm -f /etc/init.d/wireproxy
+    else
+      systemctl disable --now wireproxy
+    fi
+
+    warp_api "cancel" "/etc/wireguard/warp-account.conf" >/dev/null 2>&1
     rm -rf /usr/bin/wireguard-go /usr/bin/warp /etc/dnsmasq.d/warp.conf /usr/bin/wireproxy /lib/systemd/system/wireproxy.service
     [ -e /etc/gai.conf ] && sed -i '/^precedence \:\:ffff\:0\:0/d;/^label 2002\:\:\/16/d' /etc/gai.conf
     [ -e /usr/bin/tun.sh ] && rm -f /usr/bin/tun.sh && sed -i '/tun.sh/d' /etc/crontab
   }
 
   # 如已安装 warp_unlock 项目，先行卸载
-  [ -e /etc/wireguard/warp_unlock.sh ] && bash <(curl -sSL https://${CDN}gitlab.com/fscarmen/warp_unlock/-/raw/main/unlock.sh) -U -$L
+  [ -e /usr/bin/warp_unlock.sh ] && bash <(curl -sSL https://gitlab.com/fscarmen/warp_unlock/-/raw/main/unlock.sh) -U -$L
 
   # 根据已安装情况执行卸载任务并显示结果
   UNINSTALL_CHECK=("wg-quick" "warp-cli" "wireproxy")
@@ -1122,8 +1189,8 @@ uninstall() {
   UNINSTALL_NOT_ARCH=("wireguard-dkms " "" "wireguard-dkms resolvconf ")
   UNINSTALL_DNSMASQ=("ipset dnsmasq resolvconf ")
   UNINSTALL_RESULT=("$(text 117)" "$(text 119)" "$(text 98)")
-  for ((i=0; i<${#UNINSTALL_CHECK[@]}; i++)); do
-    [ $(type -p ${UNINSTALL_CHECK[i]}) ] && UNINSTALL_DO_LIST[i]=1 && UNINSTALL_DEPENDENCIES_LIST+=${UNINSTALL_DEPENDENCIES[i]}
+  for i in ${!UNINSTALL_CHECK[@]}; do
+    [ -x "$(type -p ${UNINSTALL_CHECK[i]})" ] && UNINSTALL_DO_LIST[i]=1 && UNINSTALL_DEPENDENCIES_LIST+=${UNINSTALL_DEPENDENCIES[i]}
     [[ $SYSTEM != "Arch" && $(dkms status 2>/dev/null) =~ wireguard ]] && UNINSTALL_DEPENDENCIES_LIST+=${UNINSTALL_NOT_ARCH[i]}
     [ -e /etc/dnsmasq.d/warp.conf ] && UNINSTALL_DEPENDENCIES_LIST+=${UNINSTALL_DNSMASQ[i]}
   done
@@ -1133,28 +1200,29 @@ uninstall() {
   [ "$UNINSTALL_DEPENDENCIES_LIST" != '' ] && hint "\n $(text 79) \n" && reading " $(text 170) " CONFIRM_UNINSTALL
 
   # 卸载核心程序
-  for ((i=0; i<${#UNINSTALL_CHECK[@]}; i++)); do
+  for i in ${!UNINSTALL_CHECK[@]}; do
     [[ "${UNINSTALL_DO_LIST[i]}" = 1 ]] && ( ${UNINSTALL_DO[i]}; info " ${UNINSTALL_RESULT[i]} " )
   done
 
   # 删除本脚本安装在 /etc/wireguard/ 下的所有文件，如果删除后目录为空，一并把目录删除
   rm -f /usr/bin/wg-quick.{origin,reserved}
+  rm -f /tmp/{best_mtu,/tmp/best_endpoint,wireguard-go-*}
   rm -f /etc/wireguard/{wgcf-account.conf,warp-temp.conf,warp-account.conf,warp_unlock.sh,warp.conf.bak,warp.conf,up,proxy.conf.bak,proxy.conf,menu.sh,license,language,info-temp.log,info.log,down,account-temp.conf,NonGlobalUp.sh,NonGlobalDown.sh}
   [[ -e /etc/wireguard && -z "$(ls -A /etc/wireguard/)" ]] && rmdir /etc/wireguard
 
   # 选择自动卸载依赖执行以下
-  [[ "$UNINSTALL_DEPENDENCIES_LIST" != '' && "$CONFIRM_UNINSTALL" = [Yy] ]] && ( ${PACKAGE_UNINSTALL[int]} $UNINSTALL_DEPENDENCIES_LIST 2>/dev/null; info " $(text 171) \n" )
+  [[ "$UNINSTALL_DEPENDENCIES_LIST" != '' && "${CONFIRM_UNINSTALL,,}" = 'y' ]] && ( ${PACKAGE_UNINSTALL[int]} $UNINSTALL_DEPENDENCIES_LIST 2>/dev/null; info " $(text 171) \n" )
 
   # 显示卸载结果
   systemctl restart systemd-resolved >/dev/null 2>&1; sleep 3
-  ip_case d warp
+  ip_case u warp
   info " $(text 45)\n IPv4: $WAN4 $COUNTRY4 $ASNORG4\n IPv6: $WAN6 $COUNTRY6 $ASNORG6 "
 }
 
 # 同步脚本至最新版本
 ver() {
   mkdir -p /tmp; rm -f /tmp/menu.sh
-  wget -O /tmp/menu.sh https://${CDN}gitlab.com/fscarmen/warp/-/raw/main/menu.sh
+  wget -O /tmp/menu.sh https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh
   if [ -s /tmp/menu.sh ]; then
     mv /tmp/menu.sh /etc/wireguard/
     chmod +x /etc/wireguard/menu.sh
@@ -1170,7 +1238,8 @@ ver() {
 net() {
   local NO_OUTPUT="$1"
   unset IP4 IP6 WAN4 WAN6 COUNTRY4 COUNTRY6 ASNORG4 ASNORG6 WARPSTATUS4 WARPSTATUS6 TYPE QUOTA
-  [[ ! $(type -p wg-quick) || ! -e /etc/wireguard/warp.conf ]] && error " $(text 10) "
+  [ ! -x "$(type -p wg-quick)" ] && error " $(text 10) "
+  [ ! -e /etc/wireguard/warp.conf ] && error " $(text 190) "
   local i=1; local j=5
   hint " $(text 11)\n $(text 12) "
   [ "$SYSTEM" != Alpine ] && [[ $(systemctl is-active wg-quick@warp) != 'active' ]] && wg-quick down warp >/dev/null 2>&1
@@ -1178,7 +1247,7 @@ net() {
   wg-quick up warp >/dev/null 2>&1
   ss -nltp | grep dnsmasq >/dev/null 2>&1 && systemctl restart dnsmasq >/dev/null 2>&1
 
-  PING6='ping -6' && [ $(type -p ping6) ] && PING6='ping6'
+  PING6='ping -6' && [ -x "$(type -p ping6)" ] && PING6='ping6'
   LAN4=$(ip route get 192.168.193.10 2>/dev/null | awk '{for (i=0; i<NF; i++) if ($i=="src") {print $(i+1)}}')
   LAN6=$(ip route get 2606:4700:d0::a29f:c001 2>/dev/null | awk '{for (i=0; i<NF; i++) if ($i=="src") {print $(i+1)}}')
   if [[ $(ip link show | awk -F': ' '{print $2}') =~ warp ]]; then
@@ -1187,7 +1256,7 @@ net() {
       local NET_6_NONGLOBAL=1
       ip_case 6 warp non-global
     else
-      [[ "$LAN6" != "::1" && "$LAN6" =~ ^([a-f0-9]{1,4}:){2,4}[a-f0-9]{1,4} ]] && $PING6 -c2 -w10 2606:4700:d0::a29f:c001 >/dev/null 2>&1 && local NET_6_NONGLOBAL=0 && ip_case 6 warp
+      [[ "$LAN6" =~ ^[a-f0-9:]{1,}$ ]] && $PING6 -c2 -w10 2606:4700:d0::a29f:c001 >/dev/null 2>&1 && local NET_6_NONGLOBAL=0 && ip_case 6 warp
     fi
     if grep -q '^AllowedIPs.*0\.\0\/0' 2>/dev/null /etc/wireguard/warp.conf; then
       local NET_4_NONGLOBAL=1
@@ -1196,7 +1265,7 @@ net() {
       [[ "$LAN4" =~ ^([0-9]{1,3}\.){3} ]] && ping -c2 -W3 162.159.193.10 >/dev/null 2>&1 && local NET_4_NONGLOBAL=0 && ip_case 4 warp
     fi
   else
-    [[ "$LAN6" != "::1" && "$LAN6" =~ ^([a-f0-9]{1,4}:){2,4}[a-f0-9]{1,4} ]] && INET6=1 && $PING6 -c2 -w10 2606:4700:d0::a29f:c001 >/dev/null 2>&1 && local NET_6_NONGLOBAL=0 && ip_case 6 warp
+    [[ "$LAN6" =~ ^[a-f0-9:]{1,}$ ]] && INET6=1 && $PING6 -c2 -w10 2606:4700:d0::a29f:c001 >/dev/null 2>&1 && local NET_6_NONGLOBAL=0 && ip_case 6 warp
     [[ "$LAN4" =~ ^([0-9]{1,3}\.){3} ]] && INET4=1 && ping -c2 -W3 162.159.193.10 >/dev/null 2>&1 && local NET_4_NONGLOBAL=0 && ip_case 4 warp
   fi
 
@@ -1225,6 +1294,10 @@ net() {
     if [ "$i" = "$j" ]; then
       if [ -z "$CONFIRM_TEAMS_INFO" ]; then
         wg-quick down warp >/dev/null 2>&1
+        ERROR_MESSAGE=$(wg-quick up warp 2>&1)
+        wg-quick down warp >/dev/null 2>&1
+        [ -s /etc/resolv.conf.origin ] && cp -f /etc/resolv.conf.origin /etc/resolv.conf
+        echo -e " ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓\n $(text 20): $SYS\n\n $(text 21):$(uname -r) \n\n $(text 40): ${MENU_OPTION[MENU_CHOOSE]} \n\n $ERROR_MESSAGE\n ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ "
         error " $(text 13) "
       else
         break
@@ -1241,24 +1314,24 @@ net() {
 
 # WARP 开关，先检查是否已安装，再根据当前状态转向相反状态
 onoff() {
-  [ ! $(type -p wg-quick) ] && error " $(text 155) "
+  [ ! -x "$(type -p wg-quick)" ] && error " $(text 155) "
   [ -n "$(wg 2>/dev/null)" ] && (wg-quick down warp >/dev/null 2>&1; info " $(text 15) ") || net
 }
 
 # Client 开关，先检查是否已安装，再根据当前状态转向相反状态
 client_onoff() {
-  [ ! $(type -p warp-cli) ] && error " $(text 93) "
-  if [ "$(systemctl is-active warp-svc)" = 'active' ]; then
+  [ ! -x "$(type -p warp-cli)" ] && error " $(text 93) "
+  if [ "$(warp-cli --accept-tos status | awk '/Status update/{for (i=0; i<NF; i++) if ($i=="update:") {print $(i+1)}}')" = 'Connected' ]; then
     local CLIENT_MODE=$(warp-cli --accept-tos settings | awk '/Mode:/{for (i=0; i<NF; i++) if ($i=="Mode:") {print $(i+1)}}')
     [ "$CLIENT_MODE" = 'Warp' ] && rule_del >/dev/null 2>&1
-    systemctl stop warp-svc
+    warp-cli --accept-tos disconnect >/dev/null 2>&1
     info " $(text 91) " && exit 0
   else
-    systemctl start warp-svc; sleep 2
+    warp-cli --accept-tos connect >/dev/null 2>&1; sleep 2
     local CLIENT_MODE=$(warp-cli --accept-tos settings | awk '/Mode:/{for (i=0; i<NF; i++) if ($i=="Mode:") {print $(i+1)}}')
     if [ "$CLIENT_MODE" = 'WarpProxy' ]; then
       ip_case d client
-      local CLIENT_ACCOUNT=$(warp-cli --accept-tos account 2>/dev/null | awk  '/type/{print $3}')
+      local CLIENT_ACCOUNT=$(warp-cli --accept-tos registration show 2>/dev/null | awk  '/type/{print $3}')
       [ "$CLIENT_ACCOUNT" = Limited ] && CLIENT_AC='+' && check_quota client
       [[ $(ss -nltp | awk '{print $NF}' | awk -F \" '{print $2}') =~ warp-svc ]] && info " $(text 90)\n $(text 27): $CLIENT_SOCKS5\n WARP$CLIENT_AC IPv4: $CLIENT_WAN4 $CLIENT_COUNTRY4 $CLIENT_ASNORG4\n WARP$CLIENT_AC IPv6: $CLIENT_WAN6 $CLIENT_COUNTRY6 $CLIENT_ASNORG6 "
       [ -n "$QUOTA" ] && info " $(text 63): $QUOTA "
@@ -1266,8 +1339,8 @@ client_onoff() {
 
     elif [ "$CLIENT_MODE" = 'Warp' ]; then
       rule_add >/dev/null 2>&1
-      ip_case d luban
-      local CLIENT_ACCOUNT=$(warp-cli --accept-tos account 2>/dev/null | awk  '/type/{print $3}')
+      ip_case d is_luban
+      local CLIENT_ACCOUNT=$(warp-cli --accept-tos registration show 2>/dev/null | awk  '/type/{print $3}')
       [ "$CLIENT_ACCOUNT" = Limited ] && CLIENT_AC='+' && check_quota client
       [[ $(ip link show | awk -F': ' '{print $2}') =~ CloudflareWARP ]] && info " $(text 90)\n WARP$CLIENT_AC IPv4: $CFWARP_WAN4 $CFWARP_COUNTRY4  $CFWARP_ASNORG4\n WARP$CLIENT_AC IPv6: $CFWARP_WAN6 $CFWARP_COUNTRY6  $CFWARP_ASNORG6 "
       [ -n "$QUOTA" ] && info " $(text 63): $QUOTA "
@@ -1280,23 +1353,23 @@ client_onoff() {
 wireproxy_onoff() {
   local NO_OUTPUT="$1"
   unset QUOTA
-  [ ! $(type -p wireproxy) ] && error " $(text 157) " || PUFFERFFISH=1
+  [ ! -x "$(type -p wireproxy)" ] && error " $(text 157) " || IS_PUFFERFFISH=is_pufferffish
   if ss -nltp | awk '{print $NF}' | awk -F \" '{print $2}' | grep -q wireproxy; then
-    systemctl stop wireproxy
+    [ "$SYSTEM" = Alpine ] && rc-service wireproxy stop >/dev/null 2>&1 || systemctl stop wireproxy
     [[ ! $(ss -nltp | awk '{print $NF}' | awk -F \" '{print $2}') =~ wireproxy ]] && info " $(text 158) "
   else
     local i=1; local j=3
     hint " $(text 11)\n $(text 12) "
-    systemctl start wireproxy; sleep 1
+    [ "$SYSTEM" = Alpine ] && rc-service wireproxy start >/dev/null 2>&1 || systemctl start wireproxy; sleep 1
     ip_case d wireproxy
 
     until [[ "$WIREPROXY_TRACE4$WIREPROXY_TRACE6" =~ on|plus ]]; do
       (( i++ )) || true
       hint " $(text 12) "
-      systemctl restart wireproxy; sleep 1
+      [ "$SYSTEM" = Alpine ] && rc-service wireproxy restart >/dev/null 2>&1 || systemctl restart wireproxy; sleep 1
       ip_case d wireproxy
       if [[ "$i" = "$j" ]]; then
-        systemctl stop wireproxy
+        [ "$SYSTEM" = Alpine ] && rc-service wireproxy stop >/dev/null 2>&1 || systemctl stop wireproxy
         [ -z "$CONFIRM_TEAMS_INFO" ] && error " $(text 13) " || break
       fi
     done
@@ -1329,8 +1402,10 @@ check_stack() {
         T6='1'
     esac
   fi
-  CASE=("@0" "0@" "0@0" "@1" "0@1" "1@" "1@0" "1@1")
-  for ((m=0;m<${#CASE[@]};m++)); do [ "$T4"@"$T6" = "${CASE[m]}" ] && break; done
+  CASE=("@0" "0@" "0@0" "@1" "0@1" "1@" "1@0" "1@1" "@")
+  for m in ${!CASE[@]}; do
+    [ "$T4"@"$T6" = "${CASE[m]}" ] && break
+  done
   WARP_BEFORE=("" "" "" "WARP IPv6 only" "WARP IPv6" "WARP IPv4 only" "WARP IPv4" "$(text 70)")
   WARP_AFTER1=("" "" "" "WARP IPv4" "WARP IPv4" "WARP IPv6" "WARP IPv6" "WARP IPv4")
   WARP_AFTER2=("" "" "" "$(text 70)" "$(text 70)" "$(text 70)" "$(text 70)" "WARP IPv6")
@@ -1342,11 +1417,26 @@ check_stack() {
   # 判断用于检测 NAT VSP，以选择正确配置文件
   if [ "$m" -le 3 ]; then
     NAT=("0@1@" "1@0@1" "1@1@1" "0@1@1")
-    for ((n=0;n<${#NAT[@]};n++)); do [ "$IPV4@$IPV6@$INET4" = "${NAT[n]}" ] && break; done
+    for n in ${!NAT[@]}; do [ "$IPV4@$IPV6@$INET4" = "${NAT[n]}" ] && break; done
     NATIVE=("IPv6 only" "IPv4 only" "$(text 69)" "NAT IPv4")
     CONF1=("014" "104" "114" "11N4")
     CONF2=("016" "106" "116" "11N6")
     CONF3=("01D" "10D" "11D" "11ND")
+  elif [ "$m" = 8 ]; then
+    error "\n $(text 189) \n"
+  fi
+}
+
+# 对于 CentOS 9 / AlmaLinux 9 / RockyLinux 9 及类似的系统，由于 wg-quick 不能对 openresolv 进行操作，所以直接处理 /etc/resolv.conf 文件
+centos9_resolv() {
+  local EXECUTE=$1
+  local STACK=$2
+  if [ "$EXECUTE" = 'backup' ]; then
+    cp -f /etc/resolv.conf{,.origin}
+  elif [ "$EXECUTE" = 'generate' ]; then
+    [ "$STACK" = '0' ] && echo -e "# Generated by WARP script\nnameserver 2606:4700:4700::1111\nnameserver 2001:4860:4860::8888\nnameserver 2001:4860:4860::8844\nnameserver 1.1.1.1\nnameserver 8.8.8.8\nnameserver 8.8.4.4" > /etc/resolv.conf || echo -e "# Generated by WARP script\nnameserver 1.1.1.1\nnameserver 8.8.8.8\nnameserver 8.8.4.4\nnameserver 2606:4700:4700::1111\nnameserver 2001:4860:4860::8888\nnameserver 2001:4860:4860::8844" > /etc/resolv.conf
+  elif [ "$EXECUTE" = 'restore' ]; then
+    [ -s /etc/resolv.conf.origin ] && mv -f /etc/resolv.conf.origin /etc/resolv.conf
   fi
 }
 
@@ -1390,7 +1480,7 @@ kernel_reserved_switch() {
       fi
 
       reading "\n $(text 181) " CONFIRM_WIREGUARD_CHANGE
-      if [[ "$CONFIRM_WIREGUARD_CHANGE" = [Yy] ]]; then
+      if [ "${CONFIRM_WIREGUARD_CHANGE,,}" = 'y' ]; then
         wg-quick down warp >/dev/null 2>&1
         cp -f /usr/bin/wg-quick.$CP_FILE /usr/bin/wg-quick
         net
@@ -1410,7 +1500,7 @@ working_mode_switch() {
   fi
 
   reading "\n $(text 183) " CONFIRM_MODE_CHANGE
-  if [[ "$CONFIRM_MODE_CHANGE" = [Yy] ]]; then
+  if [ "${CONFIRM_MODE_CHANGE,,}" = 'y' ]; then
     wg-quick down warp >/dev/null 2>&1
     [ "$MODE_AFTER" = "$(text 185)" ] && sed -i "/Table/s/#//g;/NonGlobal/s/#//g" /etc/wireguard/warp.conf || sed -i "s/^Table/#Table/g; /NonGlobal/s/^/#&/g" /etc/wireguard/warp.conf
     net
@@ -1425,7 +1515,7 @@ check_system_info() {
 
   # 判断是否有加载 wireguard 内核，如没有先尝试是否可以加载，再重新判断一次
   if [ ! -e /sys/module/wireguard ]; then
-    [ -s /lib/modules/$(uname -r)/kernel/drivers/net/wireguard/wireguard.ko ] && [ $(type -p lsmod) ] && ! lsmod | grep -q wireguard && [ $(type -p modprobe) ] && modprobe wireguard
+    [ -s /lib/modules/$(uname -r)/kernel/drivers/net/wireguard/wireguard.ko* ] && [ -x "$(type -p lsmod)" ] && ! lsmod | grep -q wireguard && [ -x "$(type -p modprobe)" ] && modprobe wireguard
     [ -e /sys/module/wireguard ] && KERNEL_ENABLE=1 || KERNEL_ENABLE=0
   else
     KERNEL_ENABLE=1
@@ -1438,16 +1528,17 @@ check_system_info() {
   else
     cat >/usr/bin/tun.sh << EOF
 #!/usr/bin/env bash
+
 mkdir -p /dev/net
 mknod /dev/net/tun c 10 200 2>/dev/null
 [ ! -e /dev/net/tun ] && exit 1
 chmod 0666 /dev/net/tun
 EOF
-    bash /usr/bin/tun.sh
+    chmod +x /usr/bin/tun.sh
+    /usr/bin/tun.sh
     TUN=$(cat /dev/net/tun 2>&1)
     if [[ "$TUN" =~ 'in bad state'|'处于错误状态' ]]; then
       WIREGUARD_GO_ENABLE=1
-      chmod +x /usr/bin/tun.sh
       [ "$SYSTEM" != Alpine ] && echo "@reboot root bash /usr/bin/tun.sh" >> /etc/crontab
     else
       WIREGUARD_GO_ENABLE=0
@@ -1466,7 +1557,7 @@ EOF
     if grep -q '^AllowedIPs.*:\:\/0' 2>/dev/null /etc/wireguard/warp.conf; then
       STACK=-6 && ip_case 6 warp non-global
     else
-      [[ "$LAN6" != "::1" && "$LAN6" =~ ^([a-f0-9]{1,4}:){2,4}[a-f0-9]{1,4} ]] && INET6=1 && $PING6 -c2 -w10 2606:4700:d0::a29f:c001 >/dev/null 2>&1 && IPV6=1 && STACK=-6 && ip_case 6 warp
+      [[ "$LAN6" != "::1" && "$LAN6" =~ ^[a-f0-9:]+$ ]] && INET6=1 && $PING6 -c2 -w10 2606:4700:d0::a29f:c001 >/dev/null 2>&1 && IPV6=1 && STACK=-6 && ip_case 6 warp
     fi
     if grep -q '^AllowedIPs.*0\.\0\/0' 2>/dev/null /etc/wireguard/warp.conf; then
       STACK=-4 && ip_case 4 warp non-global
@@ -1474,7 +1565,7 @@ EOF
       [[ "$LAN4" =~ ^([0-9]{1,3}\.){3} ]] && INET4=1 && ping -c2 -W3 162.159.193.10 >/dev/null 2>&1 && IPV4=1 && STACK=-4 && ip_case 4 warp
     fi
   else
-    [[ "$LAN6" != "::1" && "$LAN6" =~ ^([a-f0-9]{1,4}:){2,4}[a-f0-9]{1,4} ]] && INET6=1 && $PING6 -c2 -w10 2606:4700:d0::a29f:c001 >/dev/null 2>&1 && IPV6=1 && STACK=-6 && ip_case 6 warp
+    [[ "$LAN6" != "::1" && "$LAN6" =~ ^[a-f0-9:]+$ ]] && INET6=1 && $PING6 -c2 -w10 2606:4700:d0::a29f:c001 >/dev/null 2>&1 && IPV6=1 && STACK=-6 && ip_case 6 warp
     [[ "$LAN4" =~ ^([0-9]{1,3}\.){3} ]] && INET4=1 && ping -c2 -W3 162.159.193.10 >/dev/null 2>&1 && IPV4=1 && STACK=-4 && ip_case 4 warp
   fi
 
@@ -1484,13 +1575,13 @@ EOF
   # 判断处理器架构
   case $(uname -m) in
     aarch64 )
-      ARCHITECTURE=arm64; AMD64_ONLY="$(text 156)"
+      ARCHITECTURE=arm64
       ;;
     x86_64 )
       ARCHITECTURE=amd64
       ;;
     s390x )
-      ARCHITECTURE=s390x; AMD64_ONLY="$(text 156)"
+      ARCHITECTURE=s390x; CLIENT_NOT_ALLOWED_ARCHITECTURE="$(text 156)"
       ;;
     * )
       error " $(text 134) "
@@ -1498,11 +1589,11 @@ EOF
 
   # 判断当前 Linux Client 状态，决定变量 CLIENT，变量 CLIENT 含义:0=未安装  1=已安装未激活  2=状态激活  3=Client proxy 已开启  5=Client warp 已开启
   CLIENT=0
-  if [ $(type -p warp-cli) ]; then
+  if [ -x "$(type -p warp-cli)" ]; then
     CLIENT=1 && CLIENT_INSTALLED="$(text 92)"
     [ "$(systemctl is-enabled warp-svc)" = enabled ] && CLIENT=2
     if [[ "$CLIENT" = 2 && "$(systemctl is-active warp-svc)" = 'active' ]]; then
-      local CLIENT_ACCOUNT=$(warp-cli --accept-tos account 2>/dev/null | awk  '/type/{print $3}')
+      local CLIENT_ACCOUNT=$(warp-cli --accept-tos registration show 2>/dev/null | awk  '/type/{print $3}')
       [ "$CLIENT_ACCOUNT" = Limited ] && CLIENT_AC='+' && check_quota client
       local CLIENT_MODE=$(warp-cli --accept-tos settings | awk '/Mode:/{for (i=0; i<NF; i++) if ($i=="Mode:") {print $(i+1)}}')
       case "$CLIENT_MODE" in
@@ -1510,14 +1601,14 @@ EOF
           [[ "$(ss -nltp | awk '{print $NF}' | awk -F \" '{print $2}')" =~ warp-svc ]] && CLIENT=3 && ip_case d client
           ;;
         Warp )
-          [[ "$(ip link show | awk -F': ' '{print $2}')" =~ CloudflareWARP ]] && CLIENT=5 && ip_case d luban
+          [[ "$(ip link show | awk -F': ' '{print $2}')" =~ CloudflareWARP ]] && CLIENT=5 && ip_case d is_luban
       esac
     fi
   fi
 
   # 判断当前 WireProxy 状态，决定变量 WIREPROXY，变量 WIREPROXY 含义:0=未安装，1=已安装,断开状态，2=Client 已开启
   WIREPROXY=0
-  if [ $(type -p wireproxy) ]; then
+  if [ -x "$(type -p wireproxy)" ]; then
     WIREPROXY=1
     [ "$WIREPROXY" = 1 ] && WIREPROXY_INSTALLED="$(text 92)" && [[ "$(ss -nltp | awk '{print $NF}' | awk -F \" '{print $2}')" =~ wireproxy ]] && WIREPROXY=2 && ip_case d wireproxy
   fi
@@ -1563,12 +1654,12 @@ input_url_token() {
       [ -n "$ADDRESS6" ] && PRIVATEKEY=$(expr "$TEAMS_CONTENT" : '.*private_key&quot;>\([^<]*\).*')
       [[ -n "$ADDRESS6" && -z "$PRIVATEKEY" ]] && PRIVATEKEY=$(expr "$TEAMS_CONTENT" : '.*private_key">\([^<]\+\).*')
       RESERVED=$(expr "$TEAMS_CONTENT" : '.*;client_id&quot;:&quot;\([^&]\{4\}\)')
-      CLIENT_ID=$(reserved_and_clientid "$RESERVED" decode)
+      CLIENT_ID="$(warp_api "convert" "" "" "" "" "$RESERVED" "decode")"
     else
       ADDRESS6=$(expr "$TEAMS_CONTENT" : '.*"v6":[ ]*"\([^["]\+\).*')
       PRIVATEKEY=$(expr "$TEAMS_CONTENT" : '.*"private_key":[ ]*"\([^"]\+\).*')
       RESERVED=$(expr "$TEAMS_CONTENT" : '.*"client_id":[ ]*"\([^"]\+\).*')
-      CLIENT_ID=$(reserved_and_clientid "$RESERVED" decode)
+      CLIENT_ID="$(warp_api "convert" "" "" "" "" "$RESERVED" "decode")"
     fi
 
   elif [ "$1" = 'token' ]; then
@@ -1588,11 +1679,11 @@ input_url_token() {
       [ -z "$TEAM_TOKEN" ] && return
 
       unset TEAMS ADDRESS6 PRIVATEKEY CLIENT_ID
-      TEAMS=$(bash <(curl -m5 -sSL https://${CDN}gitlab.com/fscarmen/warp/-/raw/main/api.sh | sed 's# > $registe_path##; /cat $registe_path/d') --registe --token $TEAM_TOKEN)
+      TEAMS=$(warp_api "register" "" "" "" "$TEAM_TOKEN" 2>&1)
       ADDRESS6=$(expr "$TEAMS" : '.*"v6":[ ]*"\([^"]*\).*')
       PRIVATEKEY=$(expr "$TEAMS" : '.*"private_key":[ ]*"\([^"]*\).*')
       RESERVED=$(expr "$TEAMS" : '.*"client_id":[ ]*"\([^"]*\).*')
-      CLIENT_ID=$(reserved_and_clientid "$RESERVED" decode)
+      CLIENT_ID="$(warp_api "convert" "" "" "" "" "$RESERVED" "decode")"
     done
 
   elif [ "$1" = 'input' ]; then
@@ -1602,10 +1693,10 @@ input_url_token() {
     [[ -n "$PRIVATEKEY" && -n "$ADDRESS6" ]] && reading " Reserved or client_id: " RESERVED_OR_CLIENT_ID || return
     if [[ "$RESERVED_OR_CLIENT_ID" =~ ^[a-zA-Z+/]{4}$ ]]; then
       RESERVED=$RESERVED_OR_CLIENT_ID
-      CLIENT_ID=$(reserved_and_clientid "$RESERVED" decode)
+      CLIENT_ID="$(warp_api "convert" "" "" "" "" "$RESERVED" "decode")"
     elif [[ "$RESERVED_OR_CLIENT_ID" =~ ([0-9]{1,3}){3} ]]; then
-      RESERVED=$(reserved_and_clientid "$RESERVED_OR_CLIENT_ID" encode)
-      CLIENT_ID=$(reserved_and_clientid "$RESERVED" decode)
+      RESERVED=$(warp_api "convert" "" "" "" "" "$RESERVED_OR_CLIENT_ID" "encode")
+      CLIENT_ID="$(warp_api "convert" "" "" "" "" "$RESERVED" "decode")"
     fi
 
   elif [ "$1" = 'share' ]; then
@@ -1659,7 +1750,7 @@ input_port() {
 
 # Linux Client 或 WireProxy 端口
 change_port() {
-  socks5_port() { input_port; warp-cli --accept-tos set-proxy-port "$PORT"; }
+  socks5_port() { input_port; warp-cli --accept-tos proxy port "$PORT"; }
   wireproxy_port() {
     input_port
     sed -i "s/BindAddress.*/BindAddress = 127.0.0.1:$PORT/g" /etc/wireguard/proxy.conf
@@ -1672,11 +1763,11 @@ change_port() {
   CHANGE_PORT1=("wireproxy_port" "socks5_port" "socks5_port")
   CHANGE_PORT2=("" "" "wireproxy_port")
 
-  for ((e=0;e<${#INSTALL_CHECK[@]}; e++)); do
+  for e in ${!INSTALL_CHECK[@]}; do
     [[ "${INSTALL_CHECK[e]}" -gt 1 ]] && INSTALL_RESULT[e]=1 || INSTALL_RESULT[e]=0
   done
 
-  for ((f=0; f<${#CASE_RESAULT[@]}; f++)); do
+  for f in ${!CASE_RESAULT[@]}; do
     [[ "${INSTALL_RESULT[@]}" = "${CASE_RESAULT[f]}" ]] && break
   done
 
@@ -1707,8 +1798,8 @@ iptables_solution() {
   # 创建 dnsmasq 规则文件
   cat >/etc/dnsmasq.d/warp.conf << EOF
 #!/usr/bin/env bash
-server=8.8.8.8
 server=1.1.1.1
+server=8.8.8.8
 # ----- WARP ----- #
 # > Youtube Premium
 server=/googlevideo.com/8.8.8.8
@@ -1721,6 +1812,7 @@ server=/gstatic.com/8.8.8.8
 # > Custom ChatGPT
 ipset=/openai.com/warp
 ipset=/ai.com/warp
+ipset=/chatgpt.com/warp
 
 # > IP api
 ipset=/ip.sb/warp
@@ -1827,7 +1919,7 @@ best_mtu() {
   elif [ "$MTU" -le $((1280+80-28)) ]; then
     MTU=$((1280+80-28))
   else
-    for ((i=0; i<9; i++)); do
+    for i in {0..8}; do
       (( MTU++ ))
       ( [ "$IPV4$IPV6" = 01 ] && $PING6 -c1 -W1 -s $MTU -Mdo 2606:4700:d0::a29f:c001 >/dev/null 2>&1 || ping -c1 -W1 -s $MTU -Mdo 162.159.193.10 >/dev/null 2>&1 ) || break
     done
@@ -1835,43 +1927,41 @@ best_mtu() {
   fi
 
   MTU=$((MTU+28-80))
+  echo "$MTU" > /tmp/best_mtu
 }
 
 # 寻找最佳 Endpoint，根据 v4 / v6 情况下载 endpoint 库
 best_endpoint() {
-  wget $STACK -qO /tmp/endpoint https://${CDN}gitlab.com/fscarmen/warp/-/raw/main/endpoint/warp-linux-"$ARCHITECTURE" && chmod +x /tmp/endpoint
-  [ "$IPV4$IPV6" = 01 ] && wget $STACK -qO /tmp/ip https://${CDN}gitlab.com/fscarmen/warp/-/raw/main/endpoint/ipv6 || wget $STACK -qO /tmp/ip https://${CDN}gitlab.com/fscarmen/warp/-/raw/main/endpoint/ipv4
+  wget $STACK -qO /tmp/endpoint https://gitlab.com/fscarmen/warp/-/raw/main/endpoint/warp-linux-"$ARCHITECTURE" && chmod +x /tmp/endpoint
+  [ "$IPV4$IPV6" = 01 ] && wget $STACK -qO /tmp/ip https://gitlab.com/fscarmen/warp/-/raw/main/endpoint/ipv6 || wget $STACK -qO /tmp/ip https://gitlab.com/fscarmen/warp/-/raw/main/endpoint/ipv4
 
   if [[ -e /tmp/endpoint && -e /tmp/ip ]]; then
     /tmp/endpoint -file /tmp/ip -output /tmp/endpoint_result >/dev/null 2>&1
     # 如果全部是数据包丢失，LOSS = 100%，说明 UDP 被禁止，生成标志 /tmp/noudp
-    [ $(grep -sE '[0-9]+[ ]+ms$' /tmp/endpoint_result | awk -F, 'NR==1 {print $2}') = '100.00%' ] && touch /tmp/noudp || ENDPOINT=$(grep -sE '[0-9]+[ ]+ms$' /tmp/endpoint_result | awk -F, 'NR==1 {print $1}')
+    [ "$(grep -sE '[0-9]+[ ]+ms$' /tmp/endpoint_result | awk -F, 'NR==1 {print $2}')" = '100.00%' ] && touch /tmp/noudp || ENDPOINT=$(grep -sE '[0-9]+[ ]+ms$' /tmp/endpoint_result | awk -F, 'NR==1 {print $1}')
     rm -f /tmp/{endpoint,ip,endpoint_result}
   fi
 
   # 如果失败，会有默认值 162.159.193.10:2408 或 [2606:4700:d0::a29f:c001]:2408
   [ "$IPV4$IPV6" = 01 ] && ENDPOINT=${ENDPOINT:-'[2606:4700:d0::a29f:c001]:2408'} || ENDPOINT=${ENDPOINT:-'162.159.193.10:2408'}
-}
 
-# Reserved 与 Client id 互换
-reserved_and_clientid() {
-  if [ "$2" = decode ]; then
-    echo "$1" | base64 -d | xxd -p | fold -w2 | while read HEX; do printf '%d ' "0x${HEX}"; done | awk '{print "["$1", "$2", "$3"]"}'
-  elif [ "$2" = encode ]; then
-    BYTE[0]=$(grep -oE '[0-9]+' <<< "$1" | head -n 1)
-    BYTE[1]=$(grep -oE '[0-9]+' <<< "$1" | sed -n '2p')
-    BYTE[2]=$(grep -oE '[0-9]+' <<< "$1" | tail -n 1)
-    echo "$RESERVED" | printf '%02x' ${BYTE[0]} ${BYTE[1]} ${BYTE[2]} | xxd -r -p | base64
-  elif [ "$2" = file ]; then
-    local FILE_PATH=$1
-    grep 'client_id' $FILE_PATH | cut -d\" -f4 | base64 -d | xxd -p | fold -w2 | while read HEX; do printf '%d ' "0x${HEX}"; done | awk '{print "["$1", "$2", "$3"]"}'
-  fi
+  [ ! -e /tmp/noudp ] && echo "$ENDPOINT" > /tmp/best_endpoint
 }
 
 # WARP 或 WireProxy 安装
 install() {
+  # 后台优选最佳 MTU
+  { best_mtu; }&
+
+  # 后台优选优选 WARP Endpoint
+  { best_endpoint; }&
+
+  # 后台下载 wireguard-go 两个版本
+  { wget --no-check-certificate $STACK -qO /tmp/wireguard-go-20230223 https://gitlab.com/fscarmen/warp/-/raw/main/wireguard-go/wireguard-go-linux-$ARCHITECTURE-20230223 && chmod +x /tmp/wireguard-go-20230223; }&
+  { wget --no-check-certificate $STACK -qO /tmp/wireguard-go-20201118 https://gitlab.com/fscarmen/warp/-/raw/main/wireguard-go/wireguard-go-linux-$ARCHITECTURE-20201118 && chmod +x /tmp/wireguard-go-20201118; }&
+
   # 根据之前判断的情况，让用户选择使用 wireguard 内核还是 wireguard-go serverd; 若为 wireproxy 方案则跳过此步
-  if [ "$PUFFERFFISH" != 1 ]; then
+  if [ "$IS_PUFFERFFISH" != 'is_pufferffish' ]; then
     case "$KERNEL_ENABLE@$WIREGUARD_GO_ENABLE" in
       0@0 )
         error " $(text 3) "
@@ -1889,23 +1979,23 @@ install() {
   fi
 
   # Warp 工作模式: 全局或非全局，在 dnsmasq / wireproxy 方案下不选择
-  if [[ ! $ANEMONE$PUFFERFFISH =~ '1' ]]; then
+  if [[ "$IS_ANEMONE" != 'is_anemone' && "$IS_PUFFERFFISH" != 'is_pufferffish' ]]; then
     [ -z "$GLOBAL_OR_NOT_CHOOSE" ] && hint "\n $(text 182) \n" && reading " $(text 50) " GLOBAL_OR_NOT_CHOOSE
     GLOBAL_OR_NOT="$(text 184)" && [ "$GLOBAL_OR_NOT_CHOOSE" = 2 ] && GLOBAL_OR_NOT="$(text 185)"
   fi
 
   # WireProxy 禁止重复安装，自定义 Port
-  if [ "$PUFFERFFISH" = 1 ]; then
+  if [ "$IS_PUFFERFFISH" = 'is_pufferffish' ]; then
     ss -nltp | grep -q wireproxy && error " $(text 166) " || input_port
 
   # iptables 禁止重复安装，不适用于 IPv6 only VPS
-  elif [ "$ANEMONE" = 1 ]; then
+  elif [ "$IS_ANEMONE" = 'is_anemone' ]; then
     [ -e /etc/dnsmasq.d/warp.conf ] && error " $(text 167) "
     [ "$m" = 0 ] && error " $(text 147) " || CONF=${CONF1[n]}
   fi
 
   # CONF 参数如果不是3位或4位， 即检测不出正确的配置参数， 脚本退出
-  [[ "$PUFFERFFISH" != 1 && "${#CONF}" != [34] ]] && error " $(text 172) "
+  [[ "$IS_PUFFERFFISH" != 'is_pufferffish' && "${#CONF}" != [34] ]] && error " $(text 172) "
 
   # 先删除之前安装，可能导致失败的文件
   rm -rf /usr/bin/wireguard-go /etc/wireguard/warp-account.conf
@@ -1934,7 +2024,7 @@ install() {
   esac
 
   # 选择优先使用 IPv4 /IPv6 网络
-  [ "$PUFFERFFISH" != 1 ] && hint "\n $(text 105) \n" && reading " $(text 50) " PRIORITY
+  [ "$IS_PUFFERFFISH" != 'is_pufferffish' ] && hint "\n $(text 105) \n" && reading " $(text 50) " PRIORITY
 
   # 脚本开始时间
   start=$(date +%s)
@@ -1945,24 +2035,24 @@ install() {
   # 注册 WARP 账户 (将生成 warp-account.conf 文件保存账户信息)
   {
     # 如安装 WireProxy ，尽量下载官方的最新版本，如官方 WireProxy 下载不成功，将使用 cdn，以更好的支持双栈和大陆 VPS。并添加执行权限
-    if [ "$PUFFERFFISH" = 1 ]; then
-      wireproxy_latest=$(wget --no-check-certificate -qO- -T1 -t1 $STACK "https://api.github.com/repos/pufferffish/wireproxy/releases/latest" | awk -F [v\"] '/tag_name/{print $5; exit}')
-      wireproxy_latest=${wireproxy_latest:-'1.0.7'}
-      wget --no-check-certificate -T10 -t1 $STACK -O wireproxy.tar.gz https://${CDN}github.com/pufferffish/wireproxy/releases/download/v"$wireproxy_latest"/wireproxy_linux_"$ARCHITECTURE".tar.gz ||
-      wget --no-check-certificate $STACK -O wireproxy.tar.gz https://${CDN}gitlab.com/fscarmen/warp/-/raw/main/wireproxy/wireproxy_linux_"$ARCHITECTURE".tar.gz
-      [ $(type -p tar) ] || ${PACKAGE_INSTALL[int]} tar 2>/dev/null || ( ${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} tar 2>/dev/null )
+    if [ "$IS_PUFFERFFISH" = 'is_pufferffish' ]; then
+      wireproxy_latest=$(wget --no-check-certificate -qO- -T1 -t1 $STACK "${GH_PROXY}https://api.github.com/repos/pufferffish/wireproxy/releases/latest" | awk -F [v\"] '/tag_name/{print $5; exit}')
+      wireproxy_latest=${wireproxy_latest:-'1.0.9'}
+      wget --no-check-certificate -T10 -t1 $STACK -O wireproxy.tar.gz ${GH_PROXY}https://github.com/pufferffish/wireproxy/releases/download/v"$wireproxy_latest"/wireproxy_linux_"$ARCHITECTURE".tar.gz ||
+      wget --no-check-certificate $STACK -O wireproxy.tar.gz https://gitlab.com/fscarmen/warp/-/raw/main/wireproxy/wireproxy_linux_"$ARCHITECTURE".tar.gz
+      [ -x "$(type -p tar)" ] || ${PACKAGE_INSTALL[int]} tar 2>/dev/null || ( ${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} tar 2>/dev/null )
       tar xzf wireproxy.tar.gz -C /usr/bin/; rm -f wireproxy.tar.gz
     fi
 
     # 注册 WARP 账户 ( warp-account.conf 使用默认值加快速度)。如有 WARP+ 账户，修改 license 并升级，并把设备名等信息保存到 /etc/wireguard/info.log
     mkdir -p /etc/wireguard/ >/dev/null 2>&1
-    bash <(curl -m5 -sSL https://${CDN}gitlab.com/fscarmen/warp/-/raw/main/api.sh | sed 's#cat $registe_path; ##') --registe --file /etc/wireguard/warp-account.conf 2>/dev/null
+    warp_api "register" > /etc/wireguard/warp-account.conf "$LICENSE" 2>/dev/null
 
     # 有 License 来升级账户
     if [ -n "$LICENSE" ]; then
-      local UPDATE_RESULT=$(bash <(curl -m5 -sSL https://${CDN}gitlab.com/fscarmen/warp/-/raw/main/api.sh) --file /etc/wireguard/warp-account.conf --license $LICENSE)
+      local UPDATE_RESULT=$(warp_api "license" "/etc/wireguard/warp-account.conf" "$LICENSE")
       if grep -q '"warp_plus": true' <<< "$UPDATE_RESULT"; then
-        [ -n "$NAME" ] && bash <(curl -m5 -sSL https://${CDN}gitlab.com/fscarmen/warp/-/raw/main/api.sh) --file /etc/wireguard/warp-account.conf --name $NAME >/dev/null 2>&1
+        [ -n "$NAME" ] && warp_api "name" "/etc/wireguard/warp-account.conf" "" "$NAME" >/dev/null 2>&1
         sed -i "s#\([ ]\+\"license\": \"\).*#\1$LICENSE\"#g; s#\"account_type\".*#\"account_type\": \"limited\",#g; s#\([ ]\+\"name\": \"\).*#\1$NAME\"#g" /etc/wireguard/warp-account.conf
         echo "$LICENSE" > /etc/wireguard/license
         echo -e "Device name   : $NAME" > /etc/wireguard/info.log
@@ -1984,7 +2074,7 @@ Address = 172.16.0.2/32
 Address = $(grep '"v6.*"$' /etc/wireguard/warp-account.conf | cut -d\" -f4)/128
 DNS = 8.8.8.8
 MTU = 1280
-#Reserved = $(reserved_and_clientid /etc/wireguard/warp-account.conf file)
+#Reserved = $(warp_api "convert" "/etc/wireguard/warp-account.conf" "" "" "" "" "file")
 #Table = off
 #PostUp = /etc/wireguard/NonGlobalUp.sh
 #PostDown = /etc/wireguard/NonGlobalDown.sh
@@ -2016,16 +2106,6 @@ EOF
       chmod +x /etc/wireguard/NonGlobal*.sh
       info "\n $(text 33) \n"
     fi
-
-    # 最佳 MTU
-    best_mtu
-
-    # 优选 WARP Endpoint
-    best_endpoint
-
-    # 修改配置文件
-    [ "$GLOBAL_OR_NOT" = "$(text 185)" ] && sed -i "/Table/s/#//g;/NonGlobal/s/#//g" /etc/wireguard/warp.conf
-    [ -e /etc/wireguard/warp.conf ] && sed -i "s/MTU.*/MTU = $MTU/g; s/engage.*/$ENDPOINT/g" /etc/wireguard/warp.conf && info "\n $(text 81) \n"
   }&
 
   # 对于 IPv4 only VPS 开启 IPv6 支持
@@ -2037,7 +2117,7 @@ EOF
     sysctl -w net.ipv6.conf.all.disable_ipv6=0)
   }&
 
-  # 优先使用 IPv4 /IPv6 网络
+  # 后台设置优先使用 IPv4 /IPv6 网络
   { stack_priority; }&
 
   # 根据系统选择需要安装的依赖
@@ -2045,68 +2125,70 @@ EOF
 
   case "$SYSTEM" in
     Debian )
+      local DEBIAN_VERSION=$(echo $SYS | sed "s/[^0-9.]//g" | cut -d. -f1)
       # 添加 backports 源,之后才能安装 wireguard-tools
-      if [ "$(echo $SYS | sed "s/[^0-9.]//g" | cut -d. -f1)" = 9 ]; then
+      if [ "$DEBIAN_VERSION" = '9' ]; then
         echo "deb http://deb.debian.org/debian/ unstable main" > /etc/apt/sources.list.d/unstable-wireguard.list
         echo -e "Package: *\nPin: release a=unstable\nPin-Priority: 150\n" > /etc/apt/preferences.d/limit-unstable
+      elif
+        [ "$DEBIAN_VERSION" = '10' ]; then
+        echo 'deb http://archive.debian.org/debian buster-backports main' > /etc/apt/sources.list.d/backports.list
       else
-        echo "deb http://deb.debian.org/debian $(cat /etc/os-release | grep -i VERSION_CODENAME | sed s/.*=//g)-backports main" > /etc/apt/sources.list.d/backports.list
+        echo "deb http://deb.debian.org/debian $(awk -F '=' '/VERSION_CODENAME/{print $2}' /etc/os-release)-backports main" > /etc/apt/sources.list.d/backports.list
       fi
-      # 更新源
+      # 获取最新的软件包列表和更新已安装软件包的信息
       ${PACKAGE_UPDATE[int]}
 
       # 安装一些必要的网络工具包和wireguard-tools (Wire-Guard 配置工具:wg、wg-quick)
       ${PACKAGE_INSTALL[int]} --no-install-recommends net-tools openresolv dnsutils iptables
-      [ "$PUFFERFFISH" != 1 ] && ${PACKAGE_INSTALL[int]} --no-install-recommends wireguard-tools
+      [ "$IS_PUFFERFFISH" != 'is_pufferffish' ] && ${PACKAGE_INSTALL[int]} --no-install-recommends wireguard-tools
       ;;
 
     Ubuntu )
-      # 更新源
+      # 获取最新的软件包列表和更新已安装软件包的信息
       ${PACKAGE_UPDATE[int]}
 
       # 安装一些必要的网络工具包和 wireguard-tools (Wire-Guard 配置工具:wg、wg-quick)
       ${PACKAGE_INSTALL[int]} --no-install-recommends net-tools openresolv dnsutils iptables
-      [ "$PUFFERFFISH" != 1 ] && ${PACKAGE_INSTALL[int]} --no-install-recommends wireguard-tools
+      [ "$IS_PUFFERFFISH" != 'is_pufferffish' ] && ${PACKAGE_INSTALL[int]} --no-install-recommends wireguard-tools
       ;;
 
     CentOS|Fedora )
       # 安装一些必要的网络工具包和wireguard-tools (Wire-Guard 配置工具:wg、wg-quick)
-      [ "$COMPANY" = amazon ] && ${PACKAGE_UPDATE[int]} && amazon-linux-extras install -y epel
       [ "$SYSTEM" = 'CentOS' ] && ${PACKAGE_INSTALL[int]} epel-release
       ${PACKAGE_INSTALL[int]} net-tools iptables
-      [ "$PUFFERFFISH" != 1 ] && ${PACKAGE_INSTALL[int]} wireguard-tools
+      [ "$IS_PUFFERFFISH" != 'is_pufferffish' ] && ${PACKAGE_INSTALL[int]} wireguard-tools
 
       # 升级所有包同时也升级软件和系统内核
       ${PACKAGE_UPDATE[int]}
 
       # s390x wireguard-tools 安装
-      [ "$ARCHITECTURE" = s390x ] && [ ! $(type -p wg) ] && rpm -i https://mirrors.cloud.tencent.com/epel/8/Everything/s390x/Packages/w/wireguard-tools-1.0.20210914-1.el8.s390x.rpm
+      [ "$ARCHITECTURE" = s390x ] && [ ! -x "$(type -p wg)" ] && rpm -i https://mirrors.cloud.tencent.com/epel/8/Everything/s390x/Packages/w/wireguard-tools-1.0.20210914-1.el8.s390x.rpm
 
       # CentOS Stream 9 需要安装 resolvconf
-      [[ "$SYSTEM" = CentOS && "$(expr "$SYS" : '.*\s\([0-9]\{1,\}\)\.*')" = 9 ]] && [ ! $(type -p resolvconf) ] &&
-      wget $STACK -P /usr/sbin https://${CDN}github.com/fscarmen/warp/releases/download/resolvconf/resolvconf && chmod +x /usr/sbin/resolvconf
+      [[ "$SYSTEM" = CentOS && "$(expr "$SYS" : '.*\s\([0-9]\{1,\}\)\.*')" = 9 ]] && [ ! -x "$(type -p resolvconf)" ] &&
+      wget $STACK -P /usr/sbin ${GH_PROXY}https://github.com/fscarmen/warp/releases/download/resolvconf/resolvconf && chmod +x /usr/sbin/resolvconf
       ;;
 
     Alpine )
       # 安装一些必要的网络工具包和wireguard-tools (Wire-Guard 配置工具:wg、wg-quick)
       ${PACKAGE_INSTALL[int]} net-tools iproute2 openresolv openrc iptables ip6tables
-      [ "$PUFFERFFISH" != 1 ] && ${PACKAGE_INSTALL[int]} wireguard-tools
+      [ "$IS_PUFFERFFISH" != 'is_pufferffish' ] && ${PACKAGE_INSTALL[int]} wireguard-tools
       ;;
 
     Arch )
       # 安装一些必要的网络工具包和wireguard-tools (Wire-Guard 配置工具:wg、wg-quick)
       ${PACKAGE_INSTALL[int]} openresolv
-      [ "$PUFFERFFISH" != 1 ] && ${PACKAGE_INSTALL[int]} wireguard-tools
+      [ "$IS_PUFFERFFISH" != 'is_pufferffish' ] && ${PACKAGE_INSTALL[int]} wireguard-tools
   esac
 
   # 在不是 wireproxy 方案的前提下，先判断是否一定要用 wireguard kernel，如果不是，修改 wg-quick 文件，以使用 wireguard-go reserved 版
-  if [ "$PUFFERFFISH" != 1 ]; then
+  if [ "$IS_PUFFERFFISH" != 'is_pufferffish' ]; then
     if [ "$WIREGUARD_GO_ENABLE" = '1' ]; then
       # 则根据 wireguard-tools 版本判断下载 wireguard-go reserved 版本: wg < v1.0.20210223 , wg-go-reserved = v0.0.20201118-reserved; wg >= v1.0.20210223 , wg-go-reserved = v0.0.20230223-reserved
       local WIREGUARD_TOOLS_VERSION=$(wg --version | sed "s#.* v1\.0\.\([0-9]\+\) .*#\1#g")
-      [[ "$WIREGUARD_TOOLS_VERSION" -lt 20210223 ]] && local WIREGUARD_GO_VERSION=20201118 || local WIREGUARD_GO_VERSION=20230223
-      wget --no-check-certificate $STACK -O /usr/bin/wireguard-go https://${CDN}gitlab.com/fscarmen/warp/-/raw/main/wireguard-go/wireguard-go-linux-$ARCHITECTURE-$WIREGUARD_GO_VERSION && chmod +x /usr/bin/wireguard-go
-
+      [[ "$WIREGUARD_TOOLS_VERSION" < 20210223 ]] && mv /tmp/wireguard-go-20201118 /usr/bin/wireguard-go || mv /tmp/wireguard-go-20230223 /usr/bin/wireguard-go
+      rm -f /tmp/wireguard-go-*
       if [ "$KERNEL_ENABLE" = '1' ]; then
         cp -f /usr/bin/wg-quick{,.origin}
         cp -f /usr/bin/wg-quick{,.reserved}
@@ -2122,34 +2204,46 @@ EOF
 
   # 如有所有 endpoint 都不能连通的情况，脚本中止
   if [ -e /tmp/noudp ]; then
-    rm -f /tmp/noudp /usr/bin/wireguard-go /etc/wireguard/{wgcf-account.conf,warp-temp.conf,warp-account.conf,warp_unlock.sh,warp.conf.bak,warp.conf,up,proxy.conf.bak,proxy.conf,menu.sh,license,language,info-temp.log,info.log,down,account-temp.conf,NonGlobalUp.sh,NonGlobalDown.sh}
+    rm -f /tmp/{noudp,best_mtu,best_endpoint} /usr/bin/wireguard-go /etc/wireguard/{wgcf-account.conf,warp-temp.conf,warp-account.conf,warp_unlock.sh,warp.conf.bak,warp.conf,up,proxy.conf.bak,proxy.conf,menu.sh,license,language,info-temp.log,info.log,down,account-temp.conf,NonGlobalUp.sh,NonGlobalDown.sh}
     [[ -e /etc/wireguard && -z "$(ls -A /etc/wireguard/)" ]] && rmdir /etc/wireguard
     error "\n $(text 188) \n"
   fi
 
   # WARP 配置修改
-  MODIFY014="s/\(DNS[ ]\+=[ ]\+\).*/\12001:4860:4860::8888,2001:4860:4860::8844,2606:4700:4700::1111,8.8.8.8,8.8.4.4,1.1.1.1/g;7 s/^/PostUp = ip -6 rule add from $LAN6 lookup main\nPostDown = ip -6 rule delete from $LAN6 lookup main\n\n/;s/^.*\:\:\/0/#&/g;\$a\PersistentKeepalive = 30"
-  MODIFY016="s/\(DNS[ ]\+=[ ]\+\).*/\12001:4860:4860::8888,2001:4860:4860::8844,2606:4700:4700::1111,8.8.8.8,8.8.4.4,1.1.1.1/g;7 s/^/PostUp = ip -6 rule add from $LAN6 lookup main\nPostDown = ip -6 rule delete from $LAN6 lookup main\n\n/;s/^.*0\.\0\/0/#&/g;\$a\PersistentKeepalive = 30"
-  MODIFY01D="s/\(DNS[ ]\+=[ ]\+\).*/\12001:4860:4860::8888,2001:4860:4860::8844,2606:4700:4700::1111,8.8.8.8,8.8.4.4,1.1.1.1/g;7 s/^/PostUp = ip -6 rule add from $LAN6 lookup main\nPostDown = ip -6 rule delete from $LAN6 lookup main\n\n/;\$a\PersistentKeepalive = 30"
-  MODIFY104="s/\(DNS[ ]\+=[ ]\+\).*/\18.8.8.8,8.8.4.4,1.1.1.1,2001:4860:4860::8888,2001:4860:4860::8844,2606:4700:4700::1111/g;7 s/^/PostUp = ip -4 rule add from $LAN4 lookup main\nPostDown = ip -4 rule delete from $LAN4 lookup main\n\n/;s/^.*\:\:\/0/#&/g;\$a\PersistentKeepalive = 30"
-  MODIFY106="s/\(DNS[ ]\+=[ ]\+\).*/\18.8.8.8,8.8.4.4,1.1.1.1,2001:4860:4860::8888,2001:4860:4860::8844,2606:4700:4700::1111/g;7 s/^/PostUp = ip -4 rule add from $LAN4 lookup main\nPostDown = ip -4 rule delete from $LAN4 lookup main\n\n/;s/^.*0\.\0\/0/#&/g;\$a\PersistentKeepalive = 30"
-  MODIFY10D="s/\(DNS[ ]\+=[ ]\+\).*/\18.8.8.8,8.8.4.4,1.1.1.1,2001:4860:4860::8888,2001:4860:4860::8844,2606:4700:4700::1111/g;7 s/^/PostUp = ip -4 rule add from $LAN4 lookup main\nPostDown = ip -4 rule delete from $LAN4 lookup main\n\n/;\$a\PersistentKeepalive = 30"
-  MODIFY114="s/\(DNS[ ]\+=[ ]\+\).*/\18.8.8.8,8.8.4.4,1.1.1.1,2001:4860:4860::8888,2001:4860:4860::8844,2606:4700:4700::1111/g;7 s/^/PostUp = ip -4 rule add from $LAN4 lookup main\nPostDown = ip -4 rule delete from $LAN4 lookup main\nPostUp = ip -6 rule add from $LAN6 lookup main\nPostDown = ip -6 rule delete from $LAN6 lookup main\n\n/;s/^.*\:\:\/0/#&/g;\$a\PersistentKeepalive = 30"
-  MODIFY116="s/\(DNS[ ]\+=[ ]\+\).*/\18.8.8.8,8.8.4.4,1.1.1.1,2001:4860:4860::8888,2001:4860:4860::8844,2606:4700:4700::1111/g;7 s/^/PostUp = ip -4 rule add from $LAN4 lookup main\nPostDown = ip -4 rule delete from $LAN4 lookup main\nPostUp = ip -6 rule add from $LAN6 lookup main\nPostDown = ip -6 rule delete from $LAN6 lookup main\n\n/;s/^.*0\.\0\/0/#&/g;\$a\PersistentKeepalive = 30"
-  MODIFY11D="s/\(DNS[ ]\+=[ ]\+\).*/\18.8.8.8,8.8.4.4,1.1.1.1,2001:4860:4860::8888,2001:4860:4860::8844,2606:4700:4700::1111/g;7 s/^/PostUp = ip -4 rule add from $LAN4 lookup main\nPostDown = ip -4 rule delete from $LAN4 lookup main\nPostUp = ip -6 rule add from $LAN6 lookup main\nPostDown = ip -6 rule delete from $LAN6 lookup main\n\n/;\$a\PersistentKeepalive = 30"
-  MODIFY11N4="s/\(DNS[ ]\+=[ ]\+\).*/\18.8.8.8,8.8.4.4,1.1.1.1,2001:4860:4860::8888,2001:4860:4860::8844,2606:4700:4700::1111/g;7 s/^/PostUp = ip -4 rule add from $LAN4 lookup main\nPostDown = ip -4 rule delete from $LAN4 lookup main\nPostUp = ip -6 rule add from $LAN6 lookup main\nPostDown = ip -6 rule delete from $LAN6 lookup main\n\n/;s/^.*\:\:\/0/#&/g;\$a\PersistentKeepalive = 30"
-  MODIFY11N6="s/\(DNS[ ]\+=[ ]\+\).*/\18.8.8.8,8.8.4.4,1.1.1.1,2001:4860:4860::8888,2001:4860:4860::8844,2606:4700:4700::1111/g;7 s/^/PostUp = ip -4 rule add from $LAN4 lookup main\nPostDown = ip -4 rule delete from $LAN4 lookup main\nPostUp = ip -6 rule add from $LAN6 lookup main\nPostDown = ip -6 rule delete from $LAN6 lookup main\n\n/;s/^.*0\.\0\/0/#&/g;\$a\PersistentKeepalive = 30"
-  MODIFY11ND="s/\(DNS[ ]\+=[ ]\+\).*/\18.8.8.8,8.8.4.4,1.1.1.1,2001:4860:4860::8888,2001:4860:4860::8844,2606:4700:4700::1111/g;7 s/^/PostUp = ip -4 rule add from $LAN4 lookup main\nPostDown = ip -4 rule delete from $LAN4 lookup main\nPostUp = ip -6 rule add from $LAN6 lookup main\nPostDown = ip -6 rule delete from $LAN6 lookup main\n\n/;\$a\PersistentKeepalive = 30"
+  MODIFY014="s/\(DNS[ ]\+=[ ]\+\).*/\12606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4/g;7 s/^/PostUp = ip -6 rule add from $LAN6 lookup main\nPostDown = ip -6 rule delete from $LAN6 lookup main\n\n/;s/^.*\:\:\/0/#&/g;\$a\PersistentKeepalive = 30"
+  MODIFY016="s/\(DNS[ ]\+=[ ]\+\).*/\12606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4/g;7 s/^/PostUp = ip -6 rule add from $LAN6 lookup main\nPostDown = ip -6 rule delete from $LAN6 lookup main\n\n/;s/^.*0\.\0\/0/#&/g;\$a\PersistentKeepalive = 30"
+  MODIFY01D="s/\(DNS[ ]\+=[ ]\+\).*/\12606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4/g;7 s/^/PostUp = ip -6 rule add from $LAN6 lookup main\nPostDown = ip -6 rule delete from $LAN6 lookup main\n\n/;\$a\PersistentKeepalive = 30"
+  MODIFY104="s/\(DNS[ ]\+=[ ]\+\).*/\11.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostUp = ip -4 rule add from $LAN4 lookup main\nPostDown = ip -4 rule delete from $LAN4 lookup main\n\n/;s/^.*\:\:\/0/#&/g;\$a\PersistentKeepalive = 30"
+  MODIFY106="s/\(DNS[ ]\+=[ ]\+\).*/\11.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostUp = ip -4 rule add from $LAN4 lookup main\nPostDown = ip -4 rule delete from $LAN4 lookup main\n\n/;s/^.*0\.\0\/0/#&/g;\$a\PersistentKeepalive = 30"
+  MODIFY10D="s/\(DNS[ ]\+=[ ]\+\).*/\11.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostUp = ip -4 rule add from $LAN4 lookup main\nPostDown = ip -4 rule delete from $LAN4 lookup main\n\n/;\$a\PersistentKeepalive = 30"
+  MODIFY114="s/\(DNS[ ]\+=[ ]\+\).*/\11.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostUp = ip -4 rule add from $LAN4 lookup main\nPostDown = ip -4 rule delete from $LAN4 lookup main\nPostUp = ip -6 rule add from $LAN6 lookup main\nPostDown = ip -6 rule delete from $LAN6 lookup main\n\n/;s/^.*\:\:\/0/#&/g;\$a\PersistentKeepalive = 30"
+  MODIFY116="s/\(DNS[ ]\+=[ ]\+\).*/\11.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostUp = ip -4 rule add from $LAN4 lookup main\nPostDown = ip -4 rule delete from $LAN4 lookup main\nPostUp = ip -6 rule add from $LAN6 lookup main\nPostDown = ip -6 rule delete from $LAN6 lookup main\n\n/;s/^.*0\.\0\/0/#&/g;\$a\PersistentKeepalive = 30"
+  MODIFY11D="s/\(DNS[ ]\+=[ ]\+\).*/\11.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostUp = ip -4 rule add from $LAN4 lookup main\nPostDown = ip -4 rule delete from $LAN4 lookup main\nPostUp = ip -6 rule add from $LAN6 lookup main\nPostDown = ip -6 rule delete from $LAN6 lookup main\n\n/;\$a\PersistentKeepalive = 30"
+  MODIFY11N4="s/\(DNS[ ]\+=[ ]\+\).*/\11.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostUp = ip -4 rule add from $LAN4 lookup main\nPostDown = ip -4 rule delete from $LAN4 lookup main\nPostUp = ip -6 rule add from $LAN6 lookup main\nPostDown = ip -6 rule delete from $LAN6 lookup main\n\n/;s/^.*\:\:\/0/#&/g;\$a\PersistentKeepalive = 30"
+  MODIFY11N6="s/\(DNS[ ]\+=[ ]\+\).*/\11.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostUp = ip -4 rule add from $LAN4 lookup main\nPostDown = ip -4 rule delete from $LAN4 lookup main\nPostUp = ip -6 rule add from $LAN6 lookup main\nPostDown = ip -6 rule delete from $LAN6 lookup main\n\n/;s/^.*0\.\0\/0/#&/g;\$a\PersistentKeepalive = 30"
+  MODIFY11ND="s/\(DNS[ ]\+=[ ]\+\).*/\11.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostUp = ip -4 rule add from $LAN4 lookup main\nPostDown = ip -4 rule delete from $LAN4 lookup main\nPostUp = ip -6 rule add from $LAN6 lookup main\nPostDown = ip -6 rule delete from $LAN6 lookup main\n\n/;\$a\PersistentKeepalive = 30"
 
+  # 修改配置文件
   sed -i "$(eval echo "\$MODIFY$CONF")" /etc/wireguard/warp.conf
+  [ -e /tmp/best_mtu ] && MTU=$(cat /tmp/best_mtu) && rm -f /tmp/best_mtu && sed -i "s/MTU.*/MTU = $MTU/g" /etc/wireguard/warp.conf
+  [ -e /tmp/best_endpoint ] && ENDPOINT=$(cat /tmp/best_endpoint) && rm -f /tmp/best_endpoint && sed -i "s/engage.*/$ENDPOINT/g" /etc/wireguard/warp.conf
+  [ "$GLOBAL_OR_NOT" = "$(text 185)" ] && sed -i "/Table/s/#//g;/NonGlobal/s/#//g" /etc/wireguard/warp.conf
+  info "\n $(text 81) \n"
 
-  if [ "$PUFFERFFISH" = 1 ]; then
+  # 对于 CentOS 9 / AlmaLinux 9 / RockyLinux 9 及类似系统的处理
+  if [ "${SYSTEM}_${MAJOR_VERSION}" = 'CentOS_9' ]; then
+    centos9_resolv backup
+    centos9_resolv generate $m
+    sed -i 's/^\(DNS[[:space:]]=.*\)/#\1/' /etc/wireguard/warp.conf
+  fi
+
+  if [ "$IS_PUFFERFFISH" = 'is_pufferffish' ]; then
     # 默认 Endpoint 和 DNS 默认 IPv4 和 双栈的，如是 IPv6 修改默认值
     local ENDPOINT=$(awk '/^Endpoint/{print $NF}' /etc/wireguard/warp.conf)
     local MTU=$(awk '/^MTU/{print $NF}' /etc/wireguard/warp.conf)
     local FREE_ADDRESS6=$(awk '/^Address.*128$/{print $NF}' /etc/wireguard/warp.conf)
     local FREE_PRIVATEKEY=$(awk '/PrivateKey/{print $NF}' /etc/wireguard/warp.conf)
-    [ "$m" = 0 ] && local DNS='2001:4860:4860::8888,2001:4860:4860::8844,2606:4700:4700::1111,8.8.8.8,8.8.4.4,1.1.1.1' || local DNS='8.8.8.8,8.8.4.4,1.1.1.1,2001:4860:4860::8888,2001:4860:4860::8844,2606:4700:4700::1111'
+    [ "$m" = 0 ] && local DNS='2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4' || local DNS='1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844'
 
     # 创建 Wireproxy 配置文件
     cat > /etc/wireguard/proxy.conf << EOF
@@ -2198,7 +2292,18 @@ BindAddress = 127.0.0.1:$PORT
 EOF
 
     # 创建 WireProxy systemd 进程守护
-    if [ "$SYSTEM" != Alpine ]; then
+    if [ "$SYSTEM" = Alpine ]; then
+      cat > /etc/init.d/wireproxy << EOF
+#!/sbin/openrc-run
+
+description="WireProxy for WARP"
+command="/usr/bin/wireproxy"
+command_args="-c /etc/wireguard/proxy.conf"
+command_background=true
+pidfile="/var/run/wireproxy.pid"
+EOF
+      chmod +x /etc/init.d/wireproxy
+    else
       cat > /lib/systemd/system/wireproxy.service << EOF
 [Unit]
 Description=WireProxy for WARP
@@ -2217,9 +2322,9 @@ EOF
     fi
 
     # 保存好配置文件, 如有 Teams，改为 Teams 账户信息
-    mv -f menu.sh /etc/wireguard >/dev/null 2>&1
+    mv -f $0 /etc/wireguard/menu.sh >/dev/null 2>&1
     [ "$CHOOSE_TEAMS" = '2' ] && input_url_token token
-    if [[ "$CONFIRM_TEAMS_INFO" = [Yy] ]]; then
+    if [ "${CONFIRM_TEAMS_INFO,,}" = 'y' ]; then
       backup_restore_delete backup wireproxy
       sed -i "s#\(PrivateKey[ ]\+=[ ]\+\).*#\1$PRIVATEKEY#g; s#\(Address[ ]\+=[ ]\+\).*\(/128$\)#\1$ADDRESS6\2#g; s#\(.*Reserved[ ]\+=[ ]\+\).*#\1$CLIENT_ID#g" /etc/wireguard/warp.conf
       [ "$CHOOSE_TEAMS" = '2' ] && echo "$TEAMS" > /etc/wireguard/warp-account.conf || sed -i "s#\(\"private_key\":[ ]\+\"\).*\(\"\)#\1$PRIVATEKEY\2#; s#\(\"client_id\":[ ]\+\"\).*\(\"\)#\1$RESERVED\2#; s#\(\"v6\":[ ]\+\"\)[0-9a-f].*\(\"\)#\1$ADDRESS6\2#" /etc/wireguard/warp-account.conf
@@ -2235,7 +2340,7 @@ EOF
     # 如成功升级 Teams ，根据新账户信息修改配置文件并注销旧账户; 如失败则还原为原账户
     wireproxy_onoff no_output
     if [[ "$WIREPROXY_TRACE4$WIREPROXY_TRACE6" =~ on|plus ]]; then
-      cancel_account /etc/wireguard/warp-account.conf.bak
+      warp_api "cancel" "/etc/wireguard/warp-account.conf.bak" >/dev/null 2>&1
       backup_restore_delete delete
     else
       ACCOUNT_CHANGE_FAILED='Teams' && warning "\n $(text 187) \n"
@@ -2245,7 +2350,8 @@ EOF
     fi
 
     # 设置开机启动 wireproxy
-    systemctl enable --now wireproxy; sleep 1
+    [ "$SYSTEM" = Alpine ] && rc-update add wireproxy default || systemctl enable --now wireproxy
+    sleep 1
 
     # 结果提示，脚本运行时间，次数统计
     end=$(date +%s)
@@ -2255,11 +2361,11 @@ EOF
     hint " $(text 43) \n" && help
 
   else
-    [ "$ANEMONE" = 1 ] && ( iptables_solution; systemctl restart dnsmasq >/dev/null 2>&1 )
+    [ "$IS_ANEMONE" = 'is_anemone' ] && ( iptables_solution; systemctl restart dnsmasq >/dev/null 2>&1 )
 
     # 经过确认的 teams private key 和 address6，改为 Teams 账户信息，不确认则不升级
     [ "$CHOOSE_TEAMS" = '2' ] && input_url_token token
-    if [[ "$CONFIRM_TEAMS_INFO" = [Yy] ]]; then
+    if [ "${CONFIRM_TEAMS_INFO,,}" = 'y' ]; then
       backup_restore_delete backup warp
       sed -i "s#\(PrivateKey[ ]\+=[ ]\+\).*#\1$PRIVATEKEY#g; s#\(Address[ ]\+=[ ]\+\).*\(/128$\)#\1$ADDRESS6\2#g; s#\(.*Reserved[ ]\+=[ ]\+\).*#\1$CLIENT_ID#g" /etc/wireguard/warp.conf
       [ "$CHOOSE_TEAMS" = '2' ] && echo "$TEAMS" > /etc/wireguard/warp-account.conf || sed -i "s#\(\"private_key\":[ ]\+\"\).*\(\"\)#\1$PRIVATEKEY\2#; s#\(\"client_id\":[ ]\+\"\).*\(\"\)#\1$RESERVED\2#; s#\(\"v6\":[ ]\+\"\)[0-9a-f].*\(\"\)#\1$ADDRESS6\2#" /etc/wireguard/warp-account.conf
@@ -2267,7 +2373,7 @@ EOF
     fi
 
     # 创建再次执行的软链接快捷方式，再次运行可以用 warp 指令,设置默认语言
-    mv -f menu.sh /etc/wireguard >/dev/null 2>&1
+    mv -f $0 /etc/wireguard/menu.sh >/dev/null 2>&1
     chmod +x /etc/wireguard/menu.sh >/dev/null 2>&1
     ln -sf /etc/wireguard/menu.sh /usr/bin/warp && info " $(text 38) "
     echo "$L" >/etc/wireguard/language
@@ -2275,11 +2381,11 @@ EOF
     # 自动刷直至成功（ warp bug，有时候获取不了ip地址），重置之前的相关变量值，记录新的 IPv4 和 IPv6 地址和归属地，IPv4 / IPv6 优先级别
     info " $(text 39) "
     unset IP4 IP6 WAN4 WAN6 COUNTRY4 COUNTRY6 ASNORG4 ASNORG6 TRACE4 TRACE6 PLUS4 PLUS6 WARPSTATUS4 WARPSTATUS6
-    [ "$COMPANY" = amazon ] && warning " $(text 40) " && reboot || net no_output
+    net no_output
 
     # 如成功升级 Teams ，根据新账户信息修改配置文件并注销旧账户; 如失败则还原为原账户
     if [[ "$TRACE4$TRACE6" =~ on|plus ]]; then
-      cancel_account /etc/wireguard/warp-account.conf.bak
+      warp_api "cancel" "/etc/wireguard/warp-account.conf.bak" >/dev/null 2>&1
       backup_restore_delete delete
     else
       ACCOUNT_CHANGE_FAILED='Teams' && warning "\n $(text 187) \n"
@@ -2311,71 +2417,82 @@ client_install() {
   settings() {
     # 设置为代理模式，如有 WARP+ 账户，修改 license 并升级
     info " $(text 84) "
-    warp-cli --accept-tos register >/dev/null 2>&1
+    warp-cli --accept-tos registration new >/dev/null 2>&1
     # 注册失败，给予一个免费账户。否则根据是否有 License 来升级
-    if [[ $(warp-cli --accept-tos account) =~ 'Error: Missing registration' ]]; then
+    if [[ $(warp-cli --accept-tos registration show) =~ 'Error: Missing registration' ]]; then
       [ ! -d /var/lib/cloudflare-warp ] && mkdir -p /var/lib/cloudflare-warp
       echo '{"registration_id":"317b5a76-3da1-469f-88d6-c3b261da9f10","api_token":"11111111-1111-1111-1111-111111111111","secret_key":"CNUysnWWJmFGTkqYtg/wpDfURUWvHB8+U1FLlVAIB0Q=","public_key":"DuOi83pAIsbJMP3CJpxq6r3LVGHtqLlzybEIvbczRjo=","override_codes":null}' > /var/lib/cloudflare-warp/reg.json
       echo '{"own_public_key":"DuOi83pAIsbJMP3CJpxq6r3LVGHtqLlzybEIvbczRjo=","registration_id":"317b5a76-3da1-469f-88d6-c3b261da9f10","time_created":{"secs_since_epoch":1692163041,"nanos_since_epoch":81073202},"interface":{"v4":"172.16.0.2","v6":"2606:4700:110:8d4e:cef9:30c2:6d4a:f97b"},"endpoints":[{"v4":"162.159.192.7:2408","v6":"[2606:4700:d0::a29f:c007]:2408"},{"v4":"162.159.192.7:500","v6":"[2606:4700:d0::a29f:c007]:500"},{"v4":"162.159.192.7:1701","v6":"[2606:4700:d0::a29f:c007]:1701"},{"v4":"162.159.192.7:4500","v6":"[2606:4700:d0::a29f:c007]:4500"}],"public_key":"bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=","account":{"account_type":"free","id":"7e0e6c80-24c5-49ba-ba3d-087f45fcd1e9","license":"n01H3Cf4-3Za40C7b-5qOs0c42"},"policy":null,"valid_until":"2023-08-17T05:17:21.081073724Z","alternate_networks":null,"dex_tests":null,"custom_cert_settings":null}' > /var/lib/cloudflare-warp/conf.json
-      systemctl restart warp-svc
+      warp-cli --accept-tos disconnect >/dev/null 2>&1
+      warp-cli --accept-tos connect >/dev/null 2>&1
       sleep 1
-      [[ $(warp-cli --accept-tos account) =~ 'Free' ]] && warning "\n $(text 107) \n"
+      [[ $(warp-cli --accept-tos registration show) =~ 'Free' ]] && warning "\n $(text 107) \n"
     elif [ -n "$LICENSE" ]; then
-      hint " $(text 35) " && warp-cli --accept-tos set-license "$LICENSE" >/dev/null 2>&1 && sleep 1 &&
-      local CLIENT_ACCOUNT=$(warp-cli --accept-tos account 2>/dev/null | awk  '/type/{print $3}') &&
+      hint " $(text 35) " && warp-cli --accept-tos registration license "$LICENSE" >/dev/null 2>&1 && sleep 1 &&
+      local CLIENT_ACCOUNT=$(warp-cli --accept-tos registration show 2>/dev/null | awk  '/type/{print $3}') &&
       [ "$CLIENT_ACCOUNT" = Limited ] && TYPE='+' && echo "$LICENSE" > /etc/wireguard/license && info " $(text 62) " ||
       warning " $(text 36) "
     fi
-    if [ "$LUBAN" = 1 ]; then
+
+    wait
+    [ -e /tmp/noudp ] && rm -f /tmp/noudp && error "\n $(text 188) \n"
+
+    # 根据优选出来的 endpoint 设置
+    [ -e /tmp/best_endpoint ] && ENDPOINT=$(cat /tmp/best_endpoint) && rm -f /tmp/best_endpoint
+    warp-cli --accept-tos tunnel endpoint set $ENDPOINT >/dev/null 2>&1
+    [ "$(warp-cli --accept-tos settings | awk '/WARP endpoint/{print $NF}')" = "$ENDPOINT" ] && info "\n $(text 81) \n"
+
+    # 判断安装模式: IS_LUBAN=is_luban 为 warp interface 模式，否则为 socks5 proxy 模式
+    if [ "$IS_LUBAN" = 'is_luban' ]; then
       i=1; j=3
       hint " $(text 11)\n $(text 12) "
+      #####  warp-cli --accept-tos tunnel ip-range add/remove <cidr>
       warp-cli --accept-tos add-excluded-route 0.0.0.0/0 >/dev/null 2>&1
       warp-cli --accept-tos add-excluded-route ::0/0 >/dev/null 2>&1
-      warp-cli --accept-tos set-mode warp >/dev/null 2>&1
-      warp-cli --accept-tos set-custom-endpoint "$ENDPOINT" >/dev/null 2>&1
+      warp-cli --accept-tos mode warp >/dev/null 2>&1
+      warp-cli --accept-tos tunnel endpoint "$ENDPOINT" >/dev/null 2>&1
       warp-cli --accept-tos connect >/dev/null 2>&1
-      warp-cli --accept-tos enable-always-on >/dev/null 2>&1
       sleep 5
       rule_add >/dev/null 2>&1
-      ip_case d luban
+      ip_case d is_luban
       until [[ -n "$CFWARP_WAN4" && -n "$CFWARP_WAN6" ]]; do
         (( i++ )) || true
         hint " $(text 12) "
         warp-cli --accept-tos disconnect >/dev/null 2>&1
-        warp-cli --accept-tos disable-always-on >/dev/null 2>&1
         rule_del >/dev/null 2>&1
         sleep 2
         warp-cli --accept-tos connect >/dev/null 2>&1
-        warp-cli --accept-tos enable-always-on >/dev/null 2>&1
         sleep 5
         rule_add >/dev/null 2>&1
-        ip_case d luban
+        ip_case d is_luban
         if [ "$i" = "$j" ]; then
           warp-cli --accept-tos disconnect >/dev/null 2>&1
-          warp-cli --accept-tos disable-always-on >/dev/null 2>&1
           rule_del >/dev/null 2>&1
           error " $(text 13) "
         fi
       done
       info " $(text 14) "
     else
-      warp-cli --accept-tos set-mode proxy >/dev/null 2>&1
-      warp-cli --accept-tos set-proxy-port "$PORT" >/dev/null 2>&1
-      warp-cli --accept-tos set-custom-endpoint "$ENDPOINT" >/dev/null 2>&1
+      warp-cli --accept-tos mode proxy >/dev/null 2>&1
+      warp-cli --accept-tos proxy port "$PORT" >/dev/null 2>&1
+      warp-cli --accept-tos tunnel endpoint "$ENDPOINT" >/dev/null 2>&1
       warp-cli --accept-tos connect >/dev/null 2>&1
-      warp-cli --accept-tos enable-always-on >/dev/null 2>&1
       sleep 2 && [[ ! $(ss -nltp | awk '{print $NF}' | awk -F \" '{print $2}') =~ warp-svc ]] && error " $(text 87) " || info " $(text 86) "
     fi
   }
 
-  # 禁止安装的情况。重复安装，非 AMD64 CPU 架构
+  # 禁止安装的情况: 1. 重复安装; 2. 非 AMD64 CPU 架构; 3. 非 Ubuntu / Debian / CentOS 系统
   [ "$CLIENT" -ge 2 ] && error " $(text 85) "
-  [ "$ARCHITECTURE" != amd64 ] && error " $(text 101) "
+  [[ ! "$ARCHITECTURE" =~ ^(arm64|amd64)$ ]] && error " $(text 101) "
+  [[ ! "$SYSTEM" =~ Ubuntu|Debian|CentOS ]] && error " $(text 191) "
+
+  # 后台优选 WARP Endpoint
+  { best_endpoint; }&
 
   # 安装 WARP Linux Client
   [[ "$SYSTEM" = 'CentOS' && "$(expr "$SYS" : '.*\s\([0-9]\{1,\}\)\.*')" -le 7 ]] && error " $(text 145) "
   input_license
-  [ "$LUBAN" != 1 ] && input_port
+  [ "$IS_LUBAN" != 'is_luban' ] && input_port
   start=$(date +%s)
   mkdir -p /etc/wireguard/ >/dev/null 2>&1
   if [ "$CLIENT" = 0 ]; then
@@ -2383,17 +2500,16 @@ client_install() {
     if grep -q "CentOS\|Fedora" <<< "$SYSTEM"; then
       curl -fsSl https://pkg.cloudflareclient.com/cloudflare-warp-ascii.repo | tee /etc/yum.repos.d/cloudflare-warp.repo
     else
-      local VERSION_CODENAME=$(grep -i VERSION_CODENAME /etc/os-release | cut -d= -f2)
-      [[ "$SYSTEM" = Debian && ! $(type -P gpg 2>/dev/null) ]] && ${PACKAGE_INSTALL[int]} gnupg
-      [[ "$SYSTEM" = Debian && ! $(apt list 2>/dev/null | grep apt-transport-https ) =~ installed ]] && ${PACKAGE_INSTALL[int]} apt-transport-https
-      curl https://pkg.cloudflareclient.com/pubkey.gpg | gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
-      echo "deb [arch=amd64 signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $VERSION_CODENAME main" | tee /etc/apt/sources.list.d/cloudflare-client.list
+      # 暂时没有 Ubuntu 24.04 (noble)，替换为 22.04 (jammy)
+      local VERSION_CODENAME=$(awk -F '=' '/VERSION_CODENAME/{print $2}' /etc/os-release | sed 's/noble/jammy/')
+      curl -fsSL https://pkg.cloudflareclient.com/pubkey.gpg | gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
+      echo "deb [signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $VERSION_CODENAME main" | tee /etc/apt/sources.list.d/cloudflare-client.list
     fi
     ${PACKAGE_UPDATE[int]}
     ${PACKAGE_INSTALL[int]} cloudflare-warp
     [ "$(systemctl is-active warp-svc)" != active ] && ( systemctl start warp-svc; sleep 2 )
     settings
-  elif [[ "$CLIENT" = 2 && $(warp-cli --accept-tos status 2>/dev/null) =~ 'Registration missing' ]]; then
+  elif [[ "$CLIENT" = '2' && $(warp-cli --accept-tos status 2>/dev/null) =~ 'Registration missing' ]]; then
     [ "$(systemctl is-active warp-svc)" != active ] && ( systemctl start warp-svc; sleep 2 )
     settings
   else
@@ -2401,16 +2517,16 @@ client_install() {
   fi
 
   # 创建再次执行的软链接快捷方式，再次运行可以用 warp 指令,设置默认语言
-  mv -f menu.sh /etc/wireguard >/dev/null 2>&1
+  mv -f $0 /etc/wireguard/menu.sh >/dev/null 2>&1
   chmod +x /etc/wireguard/menu.sh >/dev/null 2>&1
   ln -sf /etc/wireguard/menu.sh /usr/bin/warp && info " $(text 38) "
   echo "$L" >/etc/wireguard/language
 
   # 结果提示，脚本运行时间，次数统计
-  local CLIENT_ACCOUNT=$(warp-cli --accept-tos account 2>/dev/null | awk  '/type/{print $3}')
+  local CLIENT_ACCOUNT=$(warp-cli --accept-tos registration show 2>/dev/null | awk  '/type/{print $3}')
   [ "$CLIENT_ACCOUNT" = Limited ] && CLIENT_AC='+' && check_quota client
 
-  if [ "$LUBAN" = 1 ]; then
+  if [ "$IS_LUBAN" = 'is_luban' ]; then
     end=$(date +%s)
     echo -e "\n==============================================================\n"
     info " $(text 94)\n WARP$CLIENT_AC IPv4: $CFWARP_WAN4 $CFWARP_COUNTRY4  $CFWARP_ASNORG4\n WARP$CLIENT_AC IPv6: $CFWARP_WAN6 $CFWARP_COUNTRY6  $CFWARP_ASNORG6 "
@@ -2438,7 +2554,7 @@ stream_solution() {
   reading " $(text 50) " IPTABLES
   case "$IPTABLES" in
     1 )
-      CONF=${CONF1[n]}; ANEMONE=1; install
+      CONF=${CONF1[n]}; IS_ANEMONE=is_anemone; install
       ;;
     0 )
       [ "$OPTION" != e ] && menu || exit
@@ -2460,7 +2576,7 @@ wireproxy_solution() {
   reading " $(text 50) " WIREPROXY_CHOOSE
   case "$WIREPROXY_CHOOSE" in
     1 )
-      PUFFERFFISH=1; install
+      IS_PUFFERFFISH=is_pufferffish; install
       ;;
     0 )
       [ "$OPTION" != w ] && menu || exit
@@ -2475,16 +2591,16 @@ check_quota() {
   local CHECK_TYPE="$1"
 
   if [ "$CHECK_TYPE" = 'client' ]; then
-    QUOTA=$(warp-cli --accept-tos account 2>/dev/null | awk -F' ' '/Quota/{print $NF}')
+    QUOTA=$(warp-cli --accept-tos registration show 2>/dev/null | awk -F' ' '/Quota/{print $NF}')
   elif [ -e /etc/wireguard/warp-account.conf ]; then
-    QUOTA=$(bash <(curl -m5 -sSL https://${CDN}gitlab.com/fscarmen/warp/-/raw/main/api.sh) --file /etc/wireguard/warp-account.conf --device | awk '/quota/{print $NF}' | sed "s#,##")
+    QUOTA=$(warp_api "device" "/etc/wireguard/warp-account.conf" | awk '/quota/{print $NF}' | sed "s#,##")
   fi
 
   # 部分系统没有依赖 bc，所以两个小数不能用 $(echo "scale=2; $QUOTA/1000000000000000" | bc)，改为从右往左数字符数的方法
   if [[ "$QUOTA" != 0 && "$QUOTA" =~ ^[0-9]+$ && "$QUOTA" -ge 1000000 ]]; then
     CONVERSION=("1000000000000000000" "1000000000000000" "1000000000000" "1000000000" "1000000")
     UNIT=("EB" "PB" "TB" "GB" "MB")
-    for ((o=0; o<${#CONVERSION[*]}; o++)); do
+    for o in ${!CONVERSION[*]}; do
       [[ "$QUOTA" -ge "${CONVERSION[o]}" ]] && break
     done
 
@@ -2496,9 +2612,9 @@ check_quota() {
 
 # 更换账户时，原有账户信息的备份、还原和删除
 backup_restore_delete() {
-  local backup_restore_delete="$1"
+  local EXECUTE="$1"
   local WARP_ACCOUNT_TYPE="$2"
-  if [ "$backup_restore_delete" = backup ]; then
+  if [ "$EXECUTE" = backup ]; then
     case "$WARP_ACCOUNT_TYPE" in
       warp )
         [ -e /etc/wireguard/warp.conf ] && cp -f /etc/wireguard/warp.conf{,.bak}
@@ -2516,7 +2632,7 @@ backup_restore_delete() {
       client )
         [ -e /etc/wireguard/license ] && mv -f /etc/wireguard/license{,.bak}
     esac
-  elif [ "$backup_restore_delete" = restore ]; then
+  elif [ "$EXECUTE" = restore ]; then
     case "$WARP_ACCOUNT_TYPE" in
       warp )
         [ -e /etc/wireguard/info.log ] && rm -f /etc/wireguard/info.log
@@ -2536,7 +2652,7 @@ backup_restore_delete() {
       client )
         [ -e /etc/wireguard/license.bak ] && mv -f /etc/wireguard/license.bak /etc/wireguard/license
     esac
-  elif [ "$backup_restore_delete" = delete ]; then
+  elif [ "$EXECUTE" = delete ]; then
     rm -f /etc/wireguard/*.bak
   fi
 }
@@ -2547,17 +2663,17 @@ change_to_free() {
   if [ "$UPDATE_ACCOUNT" = client ]; then
     # 流程1:注销原账户，删除原账户的 License(如有)，停止服务
     local CLIENT_MODE=$(warp-cli --accept-tos settings | awk '/Mode:/{for (i=0; i<NF; i++) if ($i=="Mode:") {print $(i+1)}}')
-    warp-cli --accept-tos delete >/dev/null 2>&1
+    warp-cli --accept-tos registration delete >/dev/null 2>&1
     [ -e /etc/wireguard/license ] && rm -f /etc/wireguard/license
     [ "$CLIENT_MODE" = 'Warp' ] && rule_del >/dev/null 2>&1
 
     # 流程2:注册新账户，并显示结果
-    warp-cli --accept-tos register >/dev/null 2>&1
+    warp-cli --accept-tos registration new >/dev/null 2>&1
     unset AC && TYPE=' Free'
     sleep 2
     if [ "$CLIENT_MODE" = 'Warp' ]; then
       rule_add >/dev/null 2>&1
-      ip_case d luban
+      ip_case d is_luban
       info " WARP$CLIENT_AC IPv4: $CFWARP_WAN4 $CFWARP_COUNTRY4  $CFWARP_ASNORG4\n WARP$CLIENT_AC IPv6: $CFWARP_WAN6 $CFWARP_COUNTRY6  $CFWARP_ASNORG6\n $(text 62) "
     elif [ "$CLIENT_MODE" = 'WarpProxy' ]; then
       ip_case d client
@@ -2597,16 +2713,16 @@ change_to_free() {
     esac
 
     # 流程3:注册新账户
-    bash <(curl -m5 -sSL https://${CDN}gitlab.com/fscarmen/warp/-/raw/main/api.sh | sed 's#cat $registe_path; ##') --registe --file /etc/wireguard/warp-account.conf 2>/dev/null
+    warp_api "register" > /etc/wireguard/warp-account.conf 2>/dev/null
 
     # 流程4:如成功，根据新账户信息修改配置文件并注销旧账户; 如失败则还原为原账户
     # 如升级成功的处理: 删除原账户信息文件，注销原账户
     if grep -q 'warp_plus' /etc/wireguard/warp-account.conf; then
-      cancel_account /etc/wireguard/warp-account.conf.bak
+      warp_api "cancel" "/etc/wireguard/warp-account.conf.bak" >/dev/null 2>&1
       backup_restore_delete delete
       local PRIVATEKEY="$(grep 'private_key' /etc/wireguard/warp-account.conf | cut -d\" -f4)"
       local ADDRESS6="$(grep '"v6.*"$' /etc/wireguard/warp-account.conf | cut -d\" -f4)"
-      local CLIENT_ID="$(reserved_and_clientid /etc/wireguard/warp-account.conf file)"
+      local CLIENT_ID="$(warp_api "convert" "/etc/wireguard/warp-account.conf" "" "" "" "" "file")"
       sed -i "s#\(PrivateKey[ ]\+=[ ]\+\).*#\1$PRIVATEKEY#g; s#\(Address[ ]\+=[ ]\+\).*\(/128$\)#\1$ADDRESS6\2#g; s#\(.*Reserved[ ]\+=[ ]\+\).*#\1$CLIENT_ID#g" /etc/wireguard/warp.conf
       [ "$UPDATE_ACCOUNT" = 'wireproxy' ] && sed -i "s#\(PrivateKey[ ]\+=[ ]\+\).*#\1$PRIVATEKEY#g; s#\(Address[ ]\+=[ ]\+\).*\(/128$\)#\1$ADDRESS6\2#g" /etc/wireguard/proxy.conf
       TYPE=' Free' && [ -e /etc/wireguard/info.log ] && TYPE=' Teams' && grep -q 'Device name' /etc/wireguard/info.log && TYPE='+'
@@ -2641,19 +2757,19 @@ change_to_plus() {
   update_license
   # client 两个模式升级 plus 流程: 1.如原账户为 plus，备份原 License; 2.注销原账户，停止服务; 3.使用新 License 升级账户; 4.如成功则删除原账户信息文件，保存 license 并显示结果; 如失败则看原账户有没有 License 用于还原
   if [ "$UPDATE_ACCOUNT" = client ]; then
-    [ "$(warp-cli --accept-tos account 2>/dev/null | awk '/License/{print $NF}')" = "$LICENSE" ] && KEY_LICENSE='License' && error " $(text 31) "
+    [ "$(warp-cli --accept-tos registration show 2>/dev/null | awk '/License/{print $NF}')" = "$LICENSE" ] && KEY_LICENSE='License' && error " $(text 31) "
     # 流程1:如原账户为 plus，备份原 License
     backup_restore_delete backup client
 
     # 流程2:注销原账户，停止服务
     hint "\n $(text 35) \n"
-    warp-cli --accept-tos delete >/dev/null 2>&1
+    warp-cli --accept-tos registration delete >/dev/null 2>&1
     local CLIENT_MODE=$(warp-cli --accept-tos settings | awk '/Mode:/{for (i=0; i<NF; i++) if ($i=="Mode:") {print $(i+1)}}')
     [ "$CLIENT_MODE" = 'Warp' ] && rule_del >/dev/null 2>&1
 
     # 流程3:使用新 License 升级账户
-    warp-cli --accept-tos register >/dev/null 2>&1 &&
-    [ -n "$LICENSE" ] && LICENSE_STATUS=$(warp-cli --accept-tos set-license "$LICENSE")
+    warp-cli --accept-tos registration new >/dev/null 2>&1 &&
+    [ -n "$LICENSE" ] && LICENSE_STATUS=$(warp-cli --accept-tos registration license "$LICENSE")
     sleep 1
 
     # 流程4:如成功则删除原账户信息文件，保存 license 并显示结果; 如失败则看原账户有没有 License 用于还原
@@ -2673,13 +2789,13 @@ change_to_plus() {
       esac
       ACCOUNT_CHANGE_FAILED='Plus' && warning "\n $(text 187) \n"
       backup_restore_delete restore client
-      [ -e /etc/wireguard/license ] && warp-cli --accept-tos set-license "$(cat /etc/wireguard/license)" >/dev/null 2>&1; sleep 1
+      [ -e /etc/wireguard/license ] && warp-cli --accept-tos registration license "$(cat /etc/wireguard/license)" >/dev/null 2>&1; sleep 1
     fi
-    local CLIENT_ACCOUNT=$(warp-cli --accept-tos account 2>/dev/null | awk '/type/{print $3}')
+    local CLIENT_ACCOUNT=$(warp-cli --accept-tos registration show 2>/dev/null | awk '/type/{print $3}')
     unset AC && TYPE=' Free' && [ "$CLIENT_ACCOUNT" = Limited ] && CLIENT_AC='+' && TYPE='+' && check_quota client
     if [ "$CLIENT_MODE" = 'Warp' ]; then
       rule_add >/dev/null 2>&1
-      ip_case d luban
+      ip_case d is_luban
       [ "$TYPE" = '+' ] && CLIENT_PLUS="$(text 63): $QUOTA"
       info " WARP$CLIENT_AC IPv4: $CFWARP_WAN4 $CFWARP_COUNTRY4  $CFWARP_ASNORG4\n WARP$CLIENT_AC IPv6: $CFWARP_WAN6 $CFWARP_COUNTRY6  $CFWARP_ASNORG6\n $CLIENT_PLUS\n $(text 62) \n"
     elif [ "$CLIENT_MODE" = 'WarpProxy' ]; then
@@ -2712,20 +2828,20 @@ change_to_plus() {
     esac
 
     # 流程3:注册新账户
-    bash <(curl -m5 -sSL https://${CDN}gitlab.com/fscarmen/warp/-/raw/main/api.sh | sed 's#cat $registe_path; ##') --registe --file /etc/wireguard/warp-account.conf 2>/dev/null
+    warp_api "register" > /etc/wireguard/warp-account.conf 2>/dev/null
 
     # 流程4:使用 License 升级账户
-    local UPDATE_RESULT=$(bash <(curl -m5 -sSL https://${CDN}gitlab.com/fscarmen/warp/-/raw/main/api.sh) --file /etc/wireguard/warp-account.conf --license $LICENSE)
+    local UPDATE_RESULT=$(warp_api "license" "/etc/wireguard/warp-account.conf" "$LICENSE")
 
     # 流程5:如成功，根据新账户信息修改配置文件并注销旧账户; 如失败则还原为原账户
     # 如升级成功的处理: 删除原账户信息文件，注销原账户
     if grep -q '"warp_plus": true' <<< "$UPDATE_RESULT"; then
-      [ -n "$NAME" ] && bash <(curl -m5 -sSL https://${CDN}gitlab.com/fscarmen/warp/-/raw/main/api.sh) --file /etc/wireguard/warp-account.conf --name $NAME >/dev/null 2>&1
-      cancel_account /etc/wireguard/warp-account.conf.bak
+      [ -n "$NAME" ] && warp_api "name" "/etc/wireguard/warp-account.conf" "" "$NAME" >/dev/null 2>&1
+      warp_api "cancel" "/etc/wireguard/warp-account.conf.bak" >/dev/null 2>&1
       backup_restore_delete delete
       local PRIVATEKEY="$(grep 'private_key' /etc/wireguard/warp-account.conf | cut -d\" -f4)"
       local ADDRESS6="$(grep '"v6.*"$' /etc/wireguard/warp-account.conf | cut -d\" -f4)"
-      local CLIENT_ID="$(reserved_and_clientid /etc/wireguard/warp-account.conf file)"
+      local CLIENT_ID="$(warp_api "convert" "/etc/wireguard/warp-account.conf" "" "" "" "" "file")"
       sed -i "s#\(PrivateKey[ ]\+=[ ]\+\).*#\1$PRIVATEKEY#g; s#\(Address[ ]\+=[ ]\+\).*\(/128$\)#\1$ADDRESS6\2#g; s#\(.*Reserved[ ]\+=[ ]\+\).*#\1$CLIENT_ID#g" /etc/wireguard/warp.conf
       [ "$UPDATE_ACCOUNT" = 'wireproxy' ] && sed -i "s#\(PrivateKey[ ]\+=[ ]\+\).*#\1$PRIVATEKEY#g; s#\(Address[ ]\+=[ ]\+\).*\(/128$\)#\1$ADDRESS6\2#g" /etc/wireguard/proxy.conf
       sed -i "s#\([ ]\+\"license\": \"\).*#\1$LICENSE\"#g; s#\"account_type\".*#\"account_type\": \"limited\",#g; s#\([ ]\+\"name\": \"\).*#\1$NAME\"#g" /etc/wireguard/warp-account.conf
@@ -2791,7 +2907,7 @@ change_to_teams() {
   grep -q "$PRIVATEKEY" /etc/wireguard/warp.conf && KEY_LICENSE='Private key' && error " $(text 31) "
 
   # 流程1:确认升级信息，停止服务
-  if [[ "$CONFIRM_TEAMS_INFO" = [Yy] ]]; then
+  if [ "${CONFIRM_TEAMS_INFO,,}" = 'y' ]; then
     case "$UPDATE_ACCOUNT" in
       warp )
         wg-quick down warp >/dev/null 2>&1
@@ -2824,7 +2940,7 @@ change_to_teams() {
     warp )
       net
       if [[ "$TRACE4$TRACE6" =~ on|plus ]]; then
-        cancel_account /etc/wireguard/warp-account.conf.bak
+        warp_api "cancel" "/etc/wireguard/warp-account.conf.bak" >/dev/null 2>&1
         backup_restore_delete delete
         TYPE=' Free' && [ -e /etc/wireguard/info.log ] && TYPE=' Teams' && grep -q 'Device name' /etc/wireguard/info.log && TYPE='+'
         info "\n $(text 62) \n"
@@ -2838,7 +2954,7 @@ change_to_teams() {
     wireproxy )
       wireproxy_onoff
       if [[ "$WIREPROXY_TRACE4$WIREPROXY_TRACE6" =~ on|plus ]]; then
-        cancel_account /etc/wireguard/warp-account.conf.bak
+        warp_api "cancel" "/etc/wireguard/warp-account.conf.bak" >/dev/null 2>&1
         backup_restore_delete delete
         TYPE=' Free' && [ -e /etc/wireguard/info.log ] && TYPE=' Teams' && grep -q 'Device name' /etc/wireguard/info.log && TYPE='+'
         info "\n $(text 62) \n"
@@ -2903,7 +3019,7 @@ update() {
 
     # 判断现 WARP 账户类型: free, plus，如果是 plus，查 WARP+ 余额流量
     local ACCOUNT_TYPE=Free && local CHANGE_TYPE=$(text 177)
-    local CLIENT_ACCOUNT=$(warp-cli --accept-tos account 2>/dev/null | awk  '/type/{print $3}')
+    local CLIENT_ACCOUNT=$(warp-cli --accept-tos registration show 2>/dev/null | awk  '/type/{print $3}')
     [ "$CLIENT_ACCOUNT" = Limited ] && ACCOUNT_TYPE='+' && CHANGE_TYPE=$(text 178) && check_quota client && PLUS_QUOTA="$(text 63): $QUOTA"
 
     if [ -z "$CHOOSE_TYPE" ]; then
@@ -2928,11 +3044,11 @@ update() {
   ACCOUNT2=("" ""  "" "wireproxy_account" "" "wireproxy_account" "client_account" "client_account")
   ACCOUNT3=("" ""  "" "" "" "" "" "wireproxy_account")
 
-  for ((c=0; c<${#INSTALL_CHECK[@]}; c++)); do
-    [ $(type -p ${INSTALL_CHECK[c]}) ] && INSTALL_RESULT[c]=1 || INSTALL_RESULT[c]=0
+  for c in ${!INSTALL_CHECK[@]}; do
+    [ -x "$(type -p ${INSTALL_CHECK[c]})" ] && INSTALL_RESULT[c]=1 || INSTALL_RESULT[c]=0
   done
 
-  for ((d=0; d<${#CASE_RESAULT[@]}; d++)); do
+  for d in ${!CASE_RESAULT[@]}; do
     [[ "${INSTALL_RESULT[@]}" = "${CASE_RESAULT[d]}" ]] && break
   done
 
@@ -2995,24 +3111,24 @@ menu_setting() {
     grep -q '#Table' /etc/wireguard/warp.conf && GLOBAL_OR_NOT="$(text 184)" || GLOBAL_OR_NOT="$(text 185)"
   fi
 
-  MENU_OPTION[5]="5.  $CLIENT_INSTALLED$AMD64_ONLY$(text 82)"
+  MENU_OPTION[5]="5.  ${CLIENT_INSTALLED}${CLIENT_NOT_ALLOWED_ARCHITECTURE}$(text 82)"
   MENU_OPTION[6]="6.  $(text 123)"
   MENU_OPTION[7]="7.  $(text 72)"
   MENU_OPTION[8]="8.  $(text 74)"
   MENU_OPTION[9]="9.  $(text 73)"
   MENU_OPTION[10]="10. $(text 75)"
   MENU_OPTION[11]="11. $(text 80)"
-  MENU_OPTION[12]="12. $IPTABLE_INSTALLED$(text 138)"
-  MENU_OPTION[13]="13. $WIREPROXY_INSTALLED$(text 148)"
-  MENU_OPTION[14]="14. $CLIENT_INSTALLED$AMD64_ONLY$(text 168)"
+  MENU_OPTION[12]="12. ${IPTABLE_INSTALLED}$(text 138)"
+  MENU_OPTION[13]="13. ${WIREPROXY_INSTALLED}$(text 148)"
+  MENU_OPTION[14]="14. ${CLIENT_INSTALLED}${CLIENT_NOT_ALLOWED_ARCHITECTURE}$(text 168)"
   MENU_OPTION[0]="0.  $(text 76)"
 
   ACTION[4]() { OPTION=o; onoff; }
   ACTION[5]() { client_install; }; ACTION[6]() { change_ip; }; ACTION[7]() { uninstall; }; ACTION[8]() { plus; }; ACTION[9]() { bbrInstall; }; ACTION[10]() { ver; };
-  ACTION[11]() { bash <(curl -sSL https://${CDN}gitlab.com/fscarmen/warp_unlock/-/raw/main/unlock.sh) -$L; };
-  ACTION[12]() { ANEMONE=1 ;install; };
-  ACTION[13]() { PUFFERFFISH=1; install; };
-  ACTION[14]() { LUBAN=1; client_install; };
+  ACTION[11]() { bash <(curl -sSL https://gitlab.com/fscarmen/warp_unlock/-/raw/main/unlock.sh) -$L; };
+  ACTION[12]() { IS_ANEMONE=is_anemone ;install; };
+  ACTION[13]() { IS_PUFFERFFISH=is_pufferffish; install; };
+  ACTION[14]() { IS_LUBAN=is_luban; client_install; };
   ACTION[0]() { exit; }
 
   [ -e /etc/wireguard/info.log ] && TYPE=' Teams' && grep -sq 'Device name' /etc/wireguard/info.log 2>/dev/null && check_quota warp && TYPE='+' && PLUSINFO="$(text 25): $(awk '/Device name/{print $NF}' /etc/wireguard/info.log)\t $(text 63): $QUOTA"
@@ -3074,16 +3190,16 @@ menu() {
 }
 
 # 传参选项 OPTION: 1=为 IPv4 或者 IPv6 补全另一栈WARP; 2=安装双栈 WARP; u=卸载 WARP; b=升级内核、开启BBR及DD; o=WARP开关；p=刷 WARP+ 流量; 其他或空值=菜单界面
-[ "$1" != '[option]' ] && OPTION=$(tr 'A-Z' 'a-z' <<< "$1")
+[ "$1" != '[option]' ] && OPTION="${1,,}"
 
 # 参数选项 URL 或 License 或转换 WARP 单双栈
 if [ "$2" != '[lisence]' ]; then
   case "$OPTION" in
     s )
-      [[ "$2" = [46Dd] ]] && PRIORITY_SWITCH=$(tr 'A-Z' 'a-z' <<< "$2")
+      [[ "${2,,}" = [46d] ]] && PRIORITY_SWITCH="${2,,}"
       ;;
     i )
-      [[ "$2" =~ ^[A-Za-z]{2}$ ]] && EXPECT=$2
+      [[ "${2,,}" =~ ^[a-z]{2}$ ]] && EXPECT="${2,,}"
   esac
 fi
 
@@ -3091,6 +3207,7 @@ fi
 NAME=$3
 
 # 主程序运行 1/3
+check_cdn
 statistics_of_run-times
 select_language
 check_operating_system
@@ -3111,8 +3228,7 @@ case "$OPTION" in
 esac
 
 # 主程序运行 2/3
-check_root_virt
-check_cdn
+check_root
 
 # 设置部分后缀 2/3
 case "$OPTION" in
@@ -3140,6 +3256,7 @@ esac
 
 # 主程序运行 3/3
 check_dependencies
+check_virt $SYSTEM
 check_system_info
 menu_setting
 
@@ -3158,7 +3275,7 @@ a )
 # 在已运行 Linux Client 前提下，不能安装 WARP IPv4 或者双栈网络接口。如已经运行 WARP ，参数 4,6,d 从原来的安装改为切换
 [46d] )
   if [ -e /etc/wireguard/warp.conf ]; then
-    SWITCHCHOOSE="$(tr 'a-z' 'A-Z' <<< "$OPTION")"
+    SWITCHCHOOSE="${OPTION^^}"
     stack_switch
   else
     case "$OPTION" in
@@ -3180,7 +3297,7 @@ c )
   client_install
   ;;
 l )
-  LUBAN=1 && client_install
+  IS_LUBAN=is_luban && client_install
   ;;
 a )
   update
