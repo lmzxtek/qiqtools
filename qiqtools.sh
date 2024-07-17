@@ -848,7 +848,7 @@ docker_install() {
   if ! command -v docker &>/dev/null; then
       echo -e "\n >>> Docker未安装 ..."
       
-    read -p "使用LinuxMirror安装吗？(Y|y): " choice
+    read -p "使用LinuxMirror安装吗，否则使用官方脚本安装？(Y|y): " choice
     case "$choice" in
       [Yy])
         bash <(curl -sSL https://linuxmirrors.cn/docker.sh)
@@ -1223,6 +1223,15 @@ dd_xitong_2() {
   wget --no-check-certificate -qO InstallNET.sh 'https://raw.githubusercontent.com/leitbogioro/Tools/master/Linux_reinstall/InstallNET.sh' && chmod a+x InstallNET.sh
 }
 
+dd_xitong_bin456789() {
+  country=$(curl -s --max-time 3 ipinfo.io/country)
+  if [ "$country" = "CN" ]; then
+      curl -O https://mirror.ghproxy.com/https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh
+  else
+      curl -O https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh
+  fi
+}
+
 dd_system_menu() {
   
 txtn " "
@@ -1232,32 +1241,30 @@ txtn "————————————————————————�
 txtn $(txby "> 系统虚拟化: ")$(txtp "${red}$VIRT${plain}\n")
 txtn "\t${pink} Linux   : ${blue}root${red}@${yellow}LeitboGi0ro${plain}"
 txtn "\t${pink} Windows : ${blue}Administrator${red}@${yellow}Teddysun.com"
+txtn "\t${pink} @bin456789 : ${blue}root|Administrator${red}@${yellow}123@@@"
 txtn "\t${pink}           ${white}(Windows need mininumn 15G Storage)${plain}\n"
 txtn "====================================="
 txtn $(txtp " 1.Debian 12")$(txtb "๑")"        "$(txtn "11.Ubuntu 24.04")$(txtb "☋")
 txtn $(txtn " 2.Debian 11")$(txtb "๑")"        "$(txtn "12.Ubuntu 22.04")$(txtb "☋")
 txtn $(txty " 3.Debian 10")$(txtr "๑")"        "$(txty "13.Ubuntu 20.04")$(txtp "☋")
-txtn $(txtn " 4.Debian 9 ")$(txtb "๑")"        "$(txtn "")$(txtb "")
-txtn $(txtn " 5.Debian 8 ")$(txtb "๑")"        "$(txtn "")$(txtb "")
-txtn $(txtn " 6.Debian 7 ")$(txtb "๑")"        "$(txtn "")$(txtb "")
+txtn $(txtn " 4.AlmaLinux 9")$(txtb "๑")"      "$(txtn "14.RockyLinux 9")$(txtb "❀")
+txtn $(txtn " 5.AlmaLinux 8")$(txtb "๑")"      "$(txtn "15.RockyLinux 8")$(txtb "❀")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txty "31.Alpine 3.19")$(txtb "A")"      "$(txtn "41.CentOS 9")$(txtb "☾")
-txtn $(txtn "32.Alpine 3.18")$(txtb "A")"      "$(txtn "42.CentOS 8")$(txtb "☾")
-txtn $(txtn "33.Alpine 3.17")$(txtb "A")"      "$(txtn "43.CentOS 7")$(txtb "☾")
-txtn $(txtn "34.Alpine Edge")$(txtb "A")"      "$(txtn "")$(txtb "")
+txtn $(txty "31.Alpine 3.20")$(txtb "A")"      "$(txtn "41.CentOS 9")$(txtb "☾")
+txtn $(txtn "32.Alpine 3.19")$(txtb "A")"      "$(txtn "42.CentOS 8")$(txtb "☾")
+txtn $(txtn "33.Alpine 3.18")$(txtb "A")"      "$(txtn "43.Kali Rolling")$(txtb "❀")
+txtn $(txtn "34.Alpine Edge")$(txtb "A")"      "$(txtn "44.Fedora 39")$(txtb "❀")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "51.Windows 2022")$(txtb "▣")"     "$(txtn "61.Windows 11(EN)")$(txtc "◕")
 txtn $(txtn "52.Windows 2019")$(txtb "▣")"     "$(txtn "62.Windows 11(CN)")$(txtc "◕")
 txtn $(txtn "53.Windows 2016")$(txtb "▣")"     "$(txtn "63.Windows 10(EN)")$(txtg "◕")
 txtn $(txtn "54.Windows 2012")$(txtb "▣")"     "$(txtn "64.Windows 10(CN)")$(txtg "◕")
+txtn $(txtn "55.Windows 7")$(txtb "◕")"        "$(txtn "")$(txtg "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "71.Kali Rolling")$(txtn "❉")"     "$(txtn "")$(txtg "")
-txtn $(txtn "72.AlmaLinux")$(txtb "❀")"        "$(txtn "")$(txtg "")
-txtn $(txtn "73.RockyLinux")$(txtb "❈")"       "$(txtn "")$(txtg "")
-txtn $(txtn "74.Fedora 39")$(txtb "❈")"        "$(txtn "")$(txtg "")
+txtn $(txtn "71.41合一脚本")$(txtn "❉")"       "$(txtn "")$(txtg "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
-txtn $(txtn " 0.返回主菜单")$(txtr "✖")"        "$(txtp "88.41合一脚本")$(txtc "❃")$(txty "")
+txtn $(txtn " 0.返回主菜单")$(txtr "✖")"        "$(txtp "")$(txtc "")$(txty "")
 txtn " "
 }
 
@@ -1266,6 +1273,7 @@ dd_system_run() {
   # https://github.com/MoeClub/Note
   # https://github.com/0oVicero0/Debian-ReInstall
   # https://github.com/mowwom/OvzReinstall
+  # https://github.com/bin456789/reinstall
 
   clear
   txty "\n请备份数据，将为你重装系统，预计花费15分钟。\n"
@@ -1294,30 +1302,9 @@ dd_system_run() {
     reading "请选择要重装的系统: " sys_choice
 
     dd_xitong_2 
+    dd_xitong_bin456789
 
     case "$sys_choice" in
-      11) 
-        # dd_xitong_2 
-        bash InstallNET.sh -ubuntu 24.04
-        reboot 
-        exit ;;
-        
-      12) 
-        # dd_xitong_2 
-        # bash InstallNET.sh -ubuntu 
-        bash InstallNET.sh -ubuntu 22.04
-        reboot 
-        exit ;;
-      13) 
-        bash InstallNET.sh -ubuntu 20.04
-        # bash InstallNET.sh -ubuntu 18.04
-        # bash InstallNET.sh -ubuntu 16.04
-        reboot 
-        exit ;;
-        # xitong="-u 20.04" 
-        # dd_xitong_1 
-        # reboot 
-        # exit ;;
        1) 
         # bash InstallNET.sh -debian
         bash InstallNET.sh -debian 12
@@ -1345,17 +1332,45 @@ dd_system_run() {
         # reboot 
         # exit ;;
        4) 
-        bash InstallNET.sh -debian 9
+        bash reinstall.sh alma 9
         reboot 
         exit ;;
        5) 
-        bash InstallNET.sh -debian 8
+        bash reinstall.sh alma 8
         reboot 
         exit ;;
-       6) 
-        bash InstallNET.sh -debian 7
+        
+      11) 
+        # dd_xitong_2 
+        bash InstallNET.sh -ubuntu 24.04
         reboot 
         exit ;;
+        
+      12) 
+        # dd_xitong_2 
+        # bash InstallNET.sh -ubuntu 
+        bash InstallNET.sh -ubuntu 22.04
+        reboot 
+        exit ;;
+      13) 
+        bash InstallNET.sh -ubuntu 20.04
+        # bash InstallNET.sh -ubuntu 18.04
+        # bash InstallNET.sh -ubuntu 16.04
+        reboot 
+        exit ;;
+        # xitong="-u 20.04" 
+        # dd_xitong_1 
+        # reboot 
+        # exit ;;
+      14) 
+        bash reinstall.sh rocky 9
+        reboot 
+        exit ;;
+      15) 
+        bash reinstall.sh rocky 8
+        reboot 
+        exit ;;
+        
       #============================== 
      41) 
         bash InstallNET.sh -centos 9
@@ -1365,21 +1380,29 @@ dd_system_run() {
         bash InstallNET.sh -centos 8
         reboot 
         exit ;;
-     43) 
-        bash InstallNET.sh -centos 7
+      43) 
+        bash InstallNET.sh -kali   
+        # bash InstallNET.sh -kali rolling   
+        # bash InstallNET.sh -kali dev   
+        # bash InstallNET.sh -kali experimental   
         reboot 
         exit ;;
+      44) 
+        bash reinstall.sh fedora
+        reboot 
+        exit ;;
+        
       #============================== 
       31) 
-        bash InstallNET.sh -alpine 3.19
+        bash InstallNET.sh -alpine 3.20
         reboot 
         exit ;;
       32) 
-        bash InstallNET.sh -alpine 3.18
+        bash InstallNET.sh -alpine 3.19
         reboot 
         exit ;;
       33) 
-        bash InstallNET.sh -alpine 3.17
+        bash InstallNET.sh -alpine 3.18
         reboot 
         exit ;;
       34) 
@@ -1390,28 +1413,7 @@ dd_system_run() {
         reboot 
         exit ;;
       #============================== 
-      71) 
-        bash InstallNET.sh -kali   
-        # bash InstallNET.sh -kali rolling   
-        # bash InstallNET.sh -kali dev   
-        # bash InstallNET.sh -kali experimental   
-        reboot 
-        exit ;;
-      72) 
-        bash InstallNET.sh -almalinux 9
-        # bash InstallNET.sh -almalinux 8   
-        reboot 
-        exit ;;
-      73) 
-        bash InstallNET.sh -rockylinux 9
-        # bash InstallNET.sh -rockylinux 8   
-        reboot 
-        exit ;;
-      74) 
-        bash InstallNET.sh -fedro 39
-        # bash InstallNET.sh -fedro 38   
-        reboot 
-        exit ;;
+      
       #============================== 
       51) 
         bash InstallNET.sh -windows 2022
@@ -1427,6 +1429,14 @@ dd_system_run() {
         exit ;;
       54) 
         bash InstallNET.sh -windows 2012
+        reboot 
+        exit ;;
+      55) 
+        URL="https://massgrave.dev/windows_7_links"
+        web_content=$(wget -q -O - "$URL")
+        iso_link=$(echo "$web_content" | grep -oP '(?<=href=")[^"]*cn[^"]*windows_7[^"]*professional[^"]*x64[^"]*\.iso')
+
+        bash reinstall.sh windows --iso="$iso_link" --image-name='Windows 7 PROFESSIONAL'
         reboot 
         exit ;;
       61) 
@@ -1451,7 +1461,7 @@ dd_system_run() {
         reboot 
         exit ;;
 
-      88) 
+      71) 
         apt update -y #&& apt dist-upgrade -y
         wget --no-check-certificate -O NewReinstall.sh https://raw.githubusercontent.com/fcurrk/reinstall/master/NewReinstall.sh && chmod a+x NewReinstall.sh && bash NewReinstall.sh
         ;;
