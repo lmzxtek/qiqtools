@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sh_v="2.6.5"
+sh_v="2.7.9"
 
 huang='\033[33m'
 bai='\033[0m'
@@ -10,7 +10,109 @@ hong='\033[31m'
 kjlan='\033[96m'
 hui='\e[37m'
 
+
+
+permission_granted="true"
+
+
+CheckFirstRun_true() {
+    if grep -q '^permission_granted="true"' /usr/local/bin/k > /dev/null 2>&1; then
+        sed -i 's/^permission_granted="false"/permission_granted="true"/' ~/kejilion.sh
+        sed -i 's/^permission_granted="false"/permission_granted="true"/' /usr/local/bin/k
+    fi
+}
+
+CheckFirstRun_true
+
+
+# 收集功能埋点信息的函数，记录当前脚本版本号，使用时间，系统版本，CPU架构，机器所在国家和用户使用的功能名称，绝对不涉及任何敏感信息，请放心！请相信我！
+# 为什么要设计这个功能，目的更好的了解用户喜欢使用的功能，进一步优化功能推出更多符合用户需求的功能。
+# 全文可搜搜 send_stats 函数调用位置，透明开源，如有顾虑可拒绝使用。
+
+
+
+
+ENABLE_STATS="true"
+
+send_stats() {
+
+    if [ "$ENABLE_STATS" == "false" ]; then
+        return
+    fi
+
+    country=$(curl -s ipinfo.io/country)
+    os_info=$(grep PRETTY_NAME /etc/os-release | cut -d '=' -f2 | tr -d '"')
+    cpu_arch=$(uname -m)
+    curl -s -X POST "https://api.kejilion.pro/api/log" \
+         -H "Content-Type: application/json" \
+         -d "{\"action\":\"$1\",\"timestamp\":\"$(date -u '+%Y-%m-%d %H:%M:%S')\",\"country\":\"$country\",\"os_info\":\"$os_info\",\"cpu_arch\":\"$cpu_arch\",\"version\":\"$sh_v\"}" &>/dev/null &
+}
+
+
+yinsiyuanquan1() {
+
+if grep -q '^ENABLE_STATS="true"' /usr/local/bin/k > /dev/null 2>&1; then
+    status_message="${lv}正在采集数据${bai}"
+elif grep -q '^ENABLE_STATS="false"' /usr/local/bin/k > /dev/null 2>&1; then
+    status_message="${hui}采集已关闭${bai}"
+else
+    status_message="无法确定的状态"
+fi
+
+}
+
+
+yinsiyuanquan2() {
+
+if grep -q '^ENABLE_STATS="true"' /usr/local/bin/k > /dev/null 2>&1; then
+    :
+elif grep -q '^ENABLE_STATS="false"' /usr/local/bin/k > /dev/null 2>&1; then
+    sed -i 's/^ENABLE_STATS="true"/ENABLE_STATS="false"/' ./kejilion.sh
+    sed -i 's/^ENABLE_STATS="true"/ENABLE_STATS="false"/' /usr/local/bin/k
+else
+    :
+fi
+
+}
+
+
+
+yinsiyuanquan2
 cp ./kejilion.sh /usr/local/bin/k > /dev/null 2>&1
+
+
+
+
+CheckFirstRun_false() {
+    if grep -q '^permission_granted="false"' /usr/local/bin/k > /dev/null 2>&1; then
+        UserLicenseAgreement
+    fi
+}
+
+# 提示用户同意条款
+UserLicenseAgreement() {
+    clear
+    echo -e "${kjlan}欢迎使用科技lion脚本工具箱${bai}"
+    echo "首次使用脚本，请先阅读并同意用户许可协议:"
+    echo "用户许可协议: https://blog.kejilion.pro/user-license-agreement/"
+    echo -e "----------------------"
+    read -r -p "是否同意以上条款？(y/n): " user_input
+
+
+    if [ "$user_input" = "y" ] || [ "$user_input" = "Y" ]; then
+        send_stats "许可同意"
+        sed -i 's/^permission_granted="false"/permission_granted="true"/' ~/kejilion.sh
+        sed -i 's/^permission_granted="false"/permission_granted="true"/' /usr/local/bin/k
+    else
+        clear
+        send_stats "许可拒绝"
+        echo "您未同意条款，脚本退出。"
+        exit 1
+    fi
+}
+
+CheckFirstRun_false
+
 
 
 
@@ -30,23 +132,29 @@ install() {
 
     for package in "$@"; do
         if ! command -v "$package" &>/dev/null; then
+            echo "正在安装 $package..."
             if command -v dnf &>/dev/null; then
-                dnf -y update && dnf install -y "$package"
+                dnf -y update && dnf install -y epel-release && dnf install -y "$package"
             elif command -v yum &>/dev/null; then
-                yum -y update && yum -y install "$package"
+                yum -y update && yum install -y epel-release && yum -y install "$package"
             elif command -v apt &>/dev/null; then
                 apt update -y && apt install -y "$package"
             elif command -v apk &>/dev/null; then
                 apk update && apk add "$package"
+            elif command -v pacman &>/dev/null; then
+                pacman -Syu --noconfirm && pacman -S --noconfirm "$package"
             else
                 echo "未知的包管理器!"
                 return 1
             fi
+        else
+            echo "$package 已经安装。"
         fi
     done
 
     return 0
 }
+
 
 
 install_dependency() {
@@ -62,6 +170,7 @@ remove() {
     fi
 
     for package in "$@"; do
+        echo "正在卸载 $package..."
         if command -v dnf &>/dev/null; then
             dnf remove -y "${package}*"
         elif command -v yum &>/dev/null; then
@@ -70,6 +179,8 @@ remove() {
             apt purge -y "${package}*"
         elif command -v apk &>/dev/null; then
             apk del "${package}*"
+        elif command -v pacman &>/dev/null; then
+            pacman -Rns --noconfirm "${package}"
         else
             echo "未知的包管理器!"
             return 1
@@ -78,6 +189,75 @@ remove() {
 
     return 0
 }
+
+
+# 通用 systemctl 函数，适用于各种发行版
+systemctl() {
+    COMMAND="$1"
+    SERVICE_NAME="$2"
+
+    if command -v apk &>/dev/null; then
+        service "$SERVICE_NAME" "$COMMAND"
+    else
+        /bin/systemctl "$COMMAND" "$SERVICE_NAME"
+    fi
+}
+
+
+# 重启服务
+restart() {
+    systemctl restart "$1"
+    if [ $? -eq 0 ]; then
+        echo "$1 服务已重启。"
+    else
+        echo "错误：重启 $1 服务失败。"
+    fi
+}
+
+# 启动服务
+start() {
+    systemctl start "$1"
+    if [ $? -eq 0 ]; then
+        echo "$1 服务已启动。"
+    else
+        echo "错误：启动 $1 服务失败。"
+    fi
+}
+
+# 停止服务
+stop() {
+    systemctl stop "$1"
+    if [ $? -eq 0 ]; then
+        echo "$1 服务已停止。"
+    else
+        echo "错误：停止 $1 服务失败。"
+    fi
+}
+
+# 查看服务状态
+status() {
+    systemctl status "$1"
+    if [ $? -eq 0 ]; then
+        echo "$1 服务状态已显示。"
+    else
+        echo "错误：无法显示 $1 服务状态。"
+    fi
+}
+
+
+enable() {
+    SERVICE_NAME="$1"
+    if command -v apk &>/dev/null; then
+        rc-update add "$SERVICE_NAME" default
+    else
+       /bin/systemctl enable "$SERVICE_NAME"
+    fi
+
+    echo "$SERVICE_NAME 已设置为开机自启。"
+}
+
+# 使用示例
+# enable <service_name>
 
 
 break_end() {
@@ -109,7 +289,7 @@ check_port() {
             echo ""
         else
             clear
-            echo -e "${hong}端口 ${huang}$PORT${hong} 已被占用，无法安装环境，卸载以下程序后重试！${bai}"
+            echo -e "${hong}注意：${bai}端口 ${huang}$PORT${hong} 已被占用，无法安装环境，卸载以下程序后重试！"
             echo "$result"
             break_end
             kejilion
@@ -121,31 +301,101 @@ check_port() {
 }
 
 
-install_add_docker() {
-    if [ -f "/etc/alpine-release" ]; then
-        apk update
-        apk add docker docker-compose
-        rc-update add docker default
-        service docker start
-    else
-        country=$(curl -s ipinfo.io/country)
-        if [ "$country" = "CN" ]; then
-            cd ~
-            curl -sS -O https://raw.gitmirror.com/kejilion/docker/main/install && chmod +x install
-            sh install --mirror Aliyun
-            rm -f install
-            cat > /etc/docker/daemon.json << EOF
+
+install_add_docker_guanfang() {
+country=$(curl -s ipinfo.io/country)
+if [ "$country" = "CN" ]; then
+    cd ~
+    curl -sS -O https://raw.gitmirror.com/kejilion/docker/main/install && chmod +x install
+    sh install --mirror Aliyun
+    rm -f install
+    cat > /etc/docker/daemon.json << EOF
 {
     "registry-mirrors": ["https://docker.kejilion.pro"]
 }
 EOF
-        else
-            curl -fsSL https://get.docker.com | sh
-        fi
-        systemctl start docker
-        systemctl enable docker
-    fi
 
+else
+    curl -fsSL https://get.docker.com | sh
+fi
+k enable docker
+k start docker
+
+}
+
+
+
+install_add_docker() {
+
+    if  [ -f /etc/os-release ] && grep -q "Fedora" /etc/os-release; then
+        install_add_docker_guanfang
+    elif command -v dnf &>/dev/null; then
+        dnf update -y
+        dnf install -y yum-utils device-mapper-persistent-data lvm2
+        rm -f /etc/yum.repos.d/docker*.repo > /dev/null
+        country=$(curl -s ipinfo.io/country)
+        arch=$(uname -m)
+        if [ "$country" = "CN" ]; then
+            if [ "$arch" = "x86_64" ]; then
+                curl -fsSL https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo | tee /etc/yum.repos.d/docker-ce.repo > /dev/null
+            elif [ "$arch" = "aarch64" ]; then
+                curl -fsSL https://mirrors.aliyun.com/docker-ce/linux/centos/arm64/docker-ce.repo | tee /etc/yum.repos.d/docker-ce.repo > /dev/null
+            fi
+        else
+            if [ "$arch" = "x86_64" ]; then
+                yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo > /dev/null
+            elif [ "$arch" = "aarch64" ]; then
+                yum-config-manager --add-repo https://download.docker.com/linux/centos/arm64/docker-ce.repo > /dev/null
+            fi
+        fi
+        dnf install -y docker-ce docker-ce-cli containerd.io
+        k enable docker
+        k start docker
+
+    elif [ -f /etc/os-release ] && grep -q "Kali" /etc/os-release; then
+        apt update
+        apt upgrade -y
+        apt install -y apt-transport-https ca-certificates curl gnupg lsb-release
+        rm -f /usr/share/keyrings/docker-archive-keyring.gpg
+        country=$(curl -s ipinfo.io/country)
+        arch=$(uname -m)
+        if [ "$country" = "CN" ]; then
+            if [ "$arch" = "x86_64" ]; then
+                sed -i '/^deb \[arch=amd64 signed-by=\/etc\/apt\/keyrings\/docker-archive-keyring.gpg\] https:\/\/mirrors.aliyun.com\/docker-ce\/linux\/debian bullseye stable/d' /etc/apt/sources.list.d/docker.list > /dev/null
+                mkdir -p /etc/apt/keyrings
+                curl -fsSL https://mirrors.aliyun.com/docker-ce/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker-archive-keyring.gpg > /dev/null
+                echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker-archive-keyring.gpg] https://mirrors.aliyun.com/docker-ce/linux/debian bullseye stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+            elif [ "$arch" = "aarch64" ]; then
+                sed -i '/^deb \[arch=arm64 signed-by=\/etc\/apt\/keyrings\/docker-archive-keyring.gpg\] https:\/\/mirrors.aliyun.com\/docker-ce\/linux\/debian bullseye stable/d' /etc/apt/sources.list.d/docker.list > /dev/null
+                mkdir -p /etc/apt/keyrings
+                curl -fsSL https://mirrors.aliyun.com/docker-ce/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker-archive-keyring.gpg > /dev/null
+                echo "deb [arch=arm64 signed-by=/etc/apt/keyrings/docker-archive-keyring.gpg] https://mirrors.aliyun.com/docker-ce/linux/debian bullseye stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+            fi
+        else
+            if [ "$arch" = "x86_64" ]; then
+                sed -i '/^deb \[arch=amd64 signed-by=\/usr\/share\/keyrings\/docker-archive-keyring.gpg\] https:\/\/download.docker.com\/linux\/debian bullseye stable/d' /etc/apt/sources.list.d/docker.list > /dev/null
+                mkdir -p /etc/apt/keyrings
+                curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker-archive-keyring.gpg > /dev/null
+                echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian bullseye stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+            elif [ "$arch" = "aarch64" ]; then
+                sed -i '/^deb \[arch=arm64 signed-by=\/usr\/share\/keyrings\/docker-archive-keyring.gpg\] https:\/\/download.docker.com\/linux\/debian bullseye stable/d' /etc/apt/sources.list.d/docker.list > /dev/null
+                mkdir -p /etc/apt/keyrings
+                curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker-archive-keyring.gpg > /dev/null
+                echo "deb [arch=arm64 signed-by=/etc/apt/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian bullseye stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+            fi
+        fi
+        apt update
+        apt install -y docker-ce docker-ce-cli containerd.io
+        k enable docker
+        k start docker
+
+    elif command -v apt &>/dev/null || command -v yum &>/dev/null; then
+        install_add_docker_guanfang
+    else
+        k install docker docker-compose
+        k enable docker
+        k start docker
+    fi
     sleep 2
 }
 
@@ -158,14 +408,62 @@ install_docker() {
     fi
 }
 
-docker_restart() {
-if [ -f "/etc/alpine-release" ]; then
-    service docker restart
-else
-    systemctl restart docker
-fi
 
+
+
+
+check_crontab_installed() {
+    if command -v crontab >/dev/null 2>&1; then
+        echo "crontab 已经安装。"
+        return 1
+    else
+        install_crontab
+        return 0
+    fi
 }
+
+
+# 在不同发行版上安装 crontab 的函数
+install_crontab() {
+    # 根据发行版更新包列表并安装 crontab
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        case "$ID" in
+            ubuntu|debian|kali)
+                apt update
+                apt install -y cron
+                systemctl enable cron
+                systemctl start cron
+                ;;
+            centos|rhel|almalinux|rocky|fedora)
+                yum install -y cronie
+                systemctl enable crond
+                systemctl start crond
+                ;;
+            alpine)
+                apk add --no-cache cronie
+                rc-update add crond
+                rc-service crond start
+                ;;
+            arch|manjaro)
+                pacman -S --noconfirm cronie
+                systemctl enable cronie
+                systemctl start cronie
+                ;;
+            *)
+                echo "不支持的发行版: $ID"
+                exit 1
+                ;;
+        esac
+    else
+        echo "无法确定操作系统。"
+        exit 1
+    fi
+
+    echo "crontab 已安装且 cron 服务正在运行。"
+}
+
+
 
 docker_ipv6_on() {
 mkdir -p /etc/docker &>/dev/null
@@ -179,7 +477,7 @@ cat > /etc/docker/daemon.json << EOF
 
 EOF
 
-docker_restart
+k restart docker
 
 echo "Docker已开启v6访问"
 
@@ -190,7 +488,7 @@ docker_ipv6_off() {
 
 rm -rf etc/docker/daemon.json &>/dev/null
 
-docker_restart
+k restart docker
 
 echo "Docker已关闭v6访问"
 
@@ -306,6 +604,7 @@ install_ldnmp() {
           "docker exec php74 chmod +x /usr/local/bin/install-php-extensions > /dev/null 2>&1"
 
           # php安装扩展
+          "docker exec php install-php-extensions imagick > /dev/null 2>&1"
           "docker exec php install-php-extensions mysqli > /dev/null 2>&1"
           "docker exec php install-php-extensions pdo_mysql > /dev/null 2>&1"
           "docker exec php install-php-extensions gd > /dev/null 2>&1"
@@ -314,8 +613,8 @@ install_ldnmp() {
           "docker exec php install-php-extensions exif > /dev/null 2>&1"
           "docker exec php install-php-extensions bcmath > /dev/null 2>&1"
           "docker exec php install-php-extensions opcache > /dev/null 2>&1"
-          "docker exec php install-php-extensions imagick > /dev/null 2>&1"
           "docker exec php install-php-extensions redis > /dev/null 2>&1"
+
 
           # php配置参数
           "docker exec php sh -c 'echo \"upload_max_filesize=50M \" > /usr/local/etc/php/conf.d/uploads.ini' > /dev/null 2>&1"
@@ -327,8 +626,10 @@ install_ldnmp() {
           # php重启
           "docker exec php chmod -R 777 /var/www/html"
           "docker restart php > /dev/null 2>&1"
+          "docker exec php install-php-extensions imagick > /dev/null 2>&1"
 
           # php7.4安装扩展
+          "docker exec php74 install-php-extensions imagick > /dev/null 2>&1"
           "docker exec php74 install-php-extensions mysqli > /dev/null 2>&1"
           "docker exec php74 install-php-extensions pdo_mysql > /dev/null 2>&1"
           "docker exec php74 install-php-extensions gd > /dev/null 2>&1"
@@ -337,7 +638,6 @@ install_ldnmp() {
           "docker exec php74 install-php-extensions exif > /dev/null 2>&1"
           "docker exec php74 install-php-extensions bcmath > /dev/null 2>&1"
           "docker exec php74 install-php-extensions opcache > /dev/null 2>&1"
-          "docker exec php74 install-php-extensions imagick > /dev/null 2>&1"
           "docker exec php74 install-php-extensions redis > /dev/null 2>&1"
 
           # php7.4配置参数
@@ -354,6 +654,11 @@ install_ldnmp() {
           # redis调优
           "docker exec -it redis redis-cli CONFIG SET maxmemory 512mb > /dev/null 2>&1"
           "docker exec -it redis redis-cli CONFIG SET maxmemory-policy allkeys-lru > /dev/null 2>&1"
+
+          # 最后一次php重启
+          "docker restart php > /dev/null 2>&1"
+          "docker restart php74 > /dev/null 2>&1"
+
 
       )
 
@@ -391,20 +696,16 @@ install_ldnmp() {
 
 install_certbot() {
 
-    if command -v yum &>/dev/null; then
-        install epel-release certbot
-    else
-        install certbot
-    fi
+    install certbot
 
-    # 切换到一个一致的目录（例如，家目录）
-    cd ~ || exit
+    cd ~
 
     # 下载并使脚本可执行
     curl -O https://raw.githubusercontent.com/kejilion/sh/main/auto_cert_renewal.sh
     chmod +x auto_cert_renewal.sh
 
     # 设置定时任务字符串
+    check_crontab_installed
     cron_job="0 0 * * * ~/auto_cert_renewal.sh"
 
     # 检查是否存在相同的定时任务
@@ -419,9 +720,10 @@ install_certbot() {
     fi
 }
 
+
 install_ssltls() {
       docker stop nginx > /dev/null 2>&1
-      iptables_open
+      iptables_open > /dev/null 2>&1
       cd ~
 
       certbot_version=$(certbot --version 2>&1 | grep -oP "\d+\.\d+\.\d+")
@@ -430,16 +732,80 @@ install_ssltls() {
           [ "$(printf '%s\n' "$1" "$2" | sort -V | head -n1)" != "$1" ]
       }
 
-      if version_ge "$certbot_version" "1.10.0"; then
+      if version_ge "$certbot_version" "1.17.0"; then
           certbot certonly --standalone -d $yuming --email your@email.com --agree-tos --no-eff-email --force-renewal --key-type ecdsa
       else
           certbot certonly --standalone -d $yuming --email your@email.com --agree-tos --no-eff-email --force-renewal
       fi
 
-      cp /etc/letsencrypt/live/$yuming/fullchain.pem /home/web/certs/${yuming}_cert.pem
-      cp /etc/letsencrypt/live/$yuming/privkey.pem /home/web/certs/${yuming}_key.pem
+      cp /etc/letsencrypt/live/$yuming/fullchain.pem /home/web/certs/${yuming}_cert.pem > /dev/null 2>&1
+      cp /etc/letsencrypt/live/$yuming/privkey.pem /home/web/certs/${yuming}_key.pem > /dev/null 2>&1
       docker start nginx > /dev/null 2>&1
 }
+
+
+
+install_ssltls_text() {
+    echo -e "${huang}$yuming 公钥信息${bai}"
+    cat /etc/letsencrypt/live/$yuming/fullchain.pem
+    echo ""
+    echo -e "${huang}$yuming 私钥信息${bai}"
+    cat /etc/letsencrypt/live/$yuming/privkey.pem
+    echo ""
+    echo -e "${huang}证书存放路径${bai}"
+    echo "公钥: /etc/letsencrypt/live/$yuming/fullchain.pem"
+    echo "私钥: /etc/letsencrypt/live/$yuming/privkey.pem"
+    echo ""
+}
+
+
+
+
+
+add_ssl() {
+
+add_yuming
+
+if ! command -v certbot &> /dev/null
+then
+    install_certbot
+fi
+
+install_ssltls
+install_ssltls_text
+ssl_ps
+}
+
+
+ssl_ps() {
+    echo -e "${huang}已申请的证书到期情况${bai}"
+    echo "站点信息                      证书到期时间"
+    echo "------------------------"
+    for cert_dir in /etc/letsencrypt/live/*; do
+      cert_file="$cert_dir/fullchain.pem"
+      if [ -f "$cert_file" ]; then
+        domain=$(basename "$cert_dir")
+        expire_date=$(openssl x509 -noout -enddate -in "$cert_file" | awk -F'=' '{print $2}')
+        formatted_date=$(date -d "$expire_date" '+%Y-%m-%d')
+        printf "%-30s%s\n" "$domain" "$formatted_date"
+      fi
+    done
+    echo ""
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 default_server_ssl() {
@@ -482,7 +848,7 @@ nginx_status() {
         dbrootpasswd=$(grep -oP 'MYSQL_ROOT_PASSWORD:\s*\K.*' /home/web/docker-compose.yml | tr -d '[:space:]')
         docker exec mysql mysql -u root -p"$dbrootpasswd" -e "DROP DATABASE $dbname;" 2> /dev/null
 
-        echo -e "${hong}检测到域名证书申请失败，请检测域名是否正确解析或更换域名重新尝试！${bai}"
+        echo -e "${hong}注意：${bai}检测到域名证书申请失败，请检测域名是否正确解析或更换域名重新尝试！"
     fi
 
 }
@@ -491,19 +857,19 @@ repeat_add_yuming() {
 
 domain_regex="^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$"
 if [[ $yuming =~ $domain_regex ]]; then
-  echo "域名格式正确"
+  :
 else
-  echo "域名格式不正确，请重新输入"
+  echo -e "${huang}注意：${bai}域名格式不正确，请重新输入"
   break_end
   kejilion
 fi
 
 if [ -e /home/web/conf.d/$yuming.conf ]; then
-    echo -e "${huang}当前 ${yuming} 域名已被使用，请前往31站点管理，删除站点，再部署 ${webname} ！${bai}"
+    echo -e "${huang}注意：${bai}当前 ${yuming} 域名已被使用，请前往31站点管理，删除站点，再部署 ${webname} ！"
     break_end
     kejilion
 else
-    echo "当前 ${yuming} 域名可用"
+    :
 fi
 
 }
@@ -570,7 +936,7 @@ fi
 }
 
 docker_app() {
-
+send_stats "搭建$docker_name"
 has_ipv4_has_ipv6
 if docker inspect "$docker_name" &>/dev/null; then
     clear
@@ -719,7 +1085,7 @@ f2b_install_sshd() {
         curl -sS -O https://raw.githubusercontent.com/kejilion/config/main/fail2ban/alpine-sshd-ddos.conf
         cd /path/to/fail2ban/config/fail2ban/jail.d/
         curl -sS -O https://raw.githubusercontent.com/kejilion/config/main/fail2ban/alpine-ssh.conf
-    elif grep -qi 'CentOS' /etc/redhat-release; then
+    elif command -v dnf &>/dev/null; then
         cd /path/to/fail2ban/config/fail2ban/jail.d/
         curl -sS -O https://raw.githubusercontent.com/kejilion/config/main/fail2ban/centos-ssh.conf
     else
@@ -735,7 +1101,7 @@ f2b_sshd() {
     if grep -q 'Alpine' /etc/issue; then
         xxx=alpine-sshd
         f2b_status_xxx
-    elif grep -qi 'CentOS' /etc/redhat-release; then
+    elif command -v dnf &>/dev/null; then
         xxx=centos-sshd
         f2b_status_xxx
     else
@@ -751,7 +1117,7 @@ f2b_sshd() {
 
 server_reboot() {
 
-    read -p "$(echo -e "${huang}现在重启服务器吗？(Y/N): ${bai}")" rboot
+    read -p "$(echo -e "${huang}提示：${bai}现在重启服务器吗？(Y/N): ")" rboot
     case "$rboot" in
       [Yy])
         echo "已重启"
@@ -848,6 +1214,7 @@ nginx_web_on() {
 
 
 install_panel() {
+            send_stats "搭建$panelname "
             if $lujing ; then
                 clear
                 echo "$panelname 已安装，应用操作"
@@ -894,7 +1261,7 @@ install_panel() {
                         if grep -q 'Alpine' /etc/issue; then
                             $ubuntu_mingling
                             $ubuntu_mingling2
-                        elif grep -qi 'CentOS' /etc/redhat-release; then
+                        elif command -v dnf &>/dev/null; then
                             $centos_mingling
                             $centos_mingling2
                         elif grep -qi 'Ubuntu' /etc/os-release; then
@@ -941,29 +1308,63 @@ set_timedate() {
 }
 
 
+wait_for_lock() {
+    while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do
+        echo "等待dpkg锁释放..."
+        sleep 1
+    done
+}
+
+# 修复dpkg中断问题
+fix_dpkg() {
+    DEBIAN_FRONTEND=noninteractive dpkg --configure -a
+}
+
+
 
 linux_update() {
-
-    # Update system on Debian-based systems
-    if [ -f "/etc/debian_version" ]; then
-        apt update -y && DEBIAN_FRONTEND=noninteractive apt full-upgrade -y
-    fi
-
-    # Update system on Red Hat-based systems
-    if [ -f "/etc/redhat-release" ]; then
+    if command -v dnf &>/dev/null; then
+        dnf -y update
+    elif command -v yum &>/dev/null; then
         yum -y update
-    fi
-
-    # Update system on Alpine Linux
-    if [ -f "/etc/alpine-release" ]; then
+    elif command -v apt &>/dev/null; then
+        wait_for_lock
+        fix_dpkg
+        DEBIAN_FRONTEND=noninteractive apt update -y
+        DEBIAN_FRONTEND=noninteractive apt full-upgrade -y
+    elif command -v apk &>/dev/null; then
         apk update && apk upgrade
+    elif command -v pacman &>/dev/null; then
+        pacman -Syu --noconfirm
+    else
+        echo "未知的包管理器!"
+        return 1
     fi
-
 }
 
 
 linux_clean() {
-    clean_debian() {
+    if command -v dnf &>/dev/null; then
+        dnf autoremove -y
+        dnf clean all
+        dnf makecache
+        journalctl --rotate
+        journalctl --vacuum-time=1s
+        journalctl --vacuum-size=50M
+        dnf remove $(dnf repoquery --installonly --latest-limit=-1 -q) -y
+
+    elif command -v yum &>/dev/null; then
+        yum autoremove -y
+        yum clean all
+        yum makecache
+        journalctl --rotate
+        journalctl --vacuum-time=1s
+        journalctl --vacuum-size=50M
+        yum remove $(rpm -q kernel | grep -v $(uname -r)) -y
+
+    elif command -v apt &>/dev/null; then
+        wait_for_lock
+        fix_dpkg
         apt autoremove --purge -y
         apt clean -y
         apt autoclean -y
@@ -972,39 +1373,27 @@ linux_clean() {
         journalctl --vacuum-time=1s
         journalctl --vacuum-size=50M
         apt remove --purge $(dpkg -l | awk '/^ii linux-(image|headers)-[^ ]+/{print $2}' | grep -v $(uname -r | sed 's/-.*//') | xargs) -y
-    }
 
-    clean_redhat() {
-        yum autoremove -y
-        yum clean all
-        journalctl --rotate
-        journalctl --vacuum-time=1s
-        journalctl --vacuum-size=50M
-        yum remove $(rpm -q kernel | grep -v $(uname -r)) -y
-    }
-
-    clean_alpine() {
+    elif command -v apk &>/dev/null; then
         apk del --purge $(apk info --installed | awk '{print $1}' | grep -v $(apk info --available | awk '{print $1}'))
         apk autoremove
         apk cache clean
         rm -rf /var/log/*
         rm -rf /var/cache/apk/*
 
-    }
+    elif command -v pacman &>/dev/null; then
+        pacman -Rns $(pacman -Qdtq) --noconfirm
+        pacman -Scc --noconfirm
+        journalctl --rotate
+        journalctl --vacuum-time=1s
+        journalctl --vacuum-size=50M
 
-    # Main script
-    if [ -f "/etc/debian_version" ]; then
-        # Debian-based systems
-        clean_debian
-    elif [ -f "/etc/redhat-release" ]; then
-        # Red Hat-based systems
-        clean_redhat
-    elif [ -f "/etc/alpine-release" ]; then
-        # Alpine Linux
-        clean_alpine
+    else
+        echo "未知的包管理器!"
+        return 1
     fi
 
-
+    return 0
 }
 
 
@@ -1047,20 +1436,7 @@ echo "------------------------"
 
 
 restart_ssh() {
-
-if command -v dnf &>/dev/null; then
-    systemctl restart sshd
-elif command -v yum &>/dev/null; then
-    systemctl restart sshd
-elif command -v apt &>/dev/null; then
-    service ssh restart
-elif command -v apk &>/dev/null; then
-    service sshd restart
-else
-    echo "未知的包管理器!"
-    return 1
-fi
-
+    restart sshd
 }
 
 
@@ -1129,12 +1505,702 @@ echo -e "${lv}ROOT登录设置完毕！${bai}"
 
 root_use() {
 clear
-[ "$EUID" -ne 0 ] && echo -e "${huang}请注意，该功能需要root用户才能运行！${bai}" && break_end && kejilion
+[ "$EUID" -ne 0 ] && echo -e "${huang}注意：${bai}该功能需要root用户才能运行！" && break_end && kejilion
+}
+
+
+
+dd_xitong() {
+        send_stats "重装系统"
+        dd_xitong_MollyLau() {
+          country=$(curl -s ipinfo.io/country)
+          if [ "$country" = "CN" ]; then
+              wget --no-check-certificate -qO InstallNET.sh 'https://gitee.com/mb9e8j2/Tools/raw/master/Linux_reinstall/InstallNET.sh' && chmod a+x InstallNET.sh
+          else
+              wget --no-check-certificate -qO InstallNET.sh 'https://raw.githubusercontent.com/leitbogioro/Tools/master/Linux_reinstall/InstallNET.sh' && chmod a+x InstallNET.sh
+          fi
+        }
+
+        dd_xitong_bin456789() {
+          country=$(curl -s ipinfo.io/country)
+          if [ "$country" = "CN" ]; then
+              curl -O https://mirror.ghproxy.com/https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh
+          else
+              curl -O https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh
+          fi
+        }
+
+
+        dd_xitong_1() {
+          echo -e "重装后初始用户名: ${huang}root${bai}  初始密码: ${huang}LeitboGi0ro${bai}  初始端口: ${huang}22${bai}"
+          echo -e "按任意键继续..."
+          read -n 1 -s -r -p ""
+          install wget
+          dd_xitong_MollyLau
+        }
+
+        dd_xitong_2() {
+          echo -e "重装后初始用户名: ${huang}Administrator${bai}  初始密码: ${huang}Teddysun.com${bai}  初始端口: ${huang}3389${bai}"
+          echo -e "按任意键继续..."
+          read -n 1 -s -r -p ""
+          install wget
+          dd_xitong_MollyLau
+        }
+
+        dd_xitong_3() {
+          echo -e "重装后初始用户名: ${huang}root${bai}  初始密码: ${huang}123@@@${bai}  初始端口: ${huang}22${bai}"
+          echo -e "按任意键继续..."
+          read -n 1 -s -r -p ""
+          dd_xitong_bin456789
+        }
+
+        dd_xitong_4() {
+          echo -e "重装后初始用户名: ${huang}Administrator${bai}  初始密码: ${huang}123@@@${bai}  初始端口: ${huang}3389${bai}"
+          echo -e "按任意键继续..."
+          read -n 1 -s -r -p ""
+          dd_xitong_bin456789
+        }
+
+          while true; do
+            root_use
+            echo "请备份数据，将为你重装系统，预计花费15分钟。"
+            echo -e "${hui}感谢MollyLau大佬和bin456789大佬的脚本支持！${bai} "
+            echo "------------------------"
+            echo "1. Debian 12                  2. Debian 11"
+            echo "3. Debian 10                  4. Debian 9"
+            echo "------------------------"
+            echo "11. Ubuntu 24.04              12. Ubuntu 22.04"
+            echo "13. Ubuntu 20.04              14. Ubuntu 18.04"
+            echo "------------------------"
+            echo "21. Rocky Linux 9             22. Rocky Linux 8"
+            echo "23. Alma Linux 9              24. Alma Linux 8"
+            echo "25. oracle Linux 9            26. oracle Linux 8"
+            echo "27. Fedora Linux 40           28. Fedora Linux 39"
+            echo "29. CentOS 7"
+            echo "------------------------"
+            echo "31. Alpine Linux              32. Arch Linux"
+            echo "33. Kali Linux                34. openEuler"
+            echo "------------------------"
+            echo "41. Windows 11                42. Windows 10"
+            echo "43. Windows 7                 44. Windows Server 2022"
+            echo "45. Windows Server 2019       46. Windows Server 2016"
+            echo "------------------------"
+            echo "0. 返回上一级选单"
+            echo "------------------------"
+            read -p "请选择要重装的系统: " sys_choice
+            case "$sys_choice" in
+              1)
+                send_stats "重装debian 12"
+                dd_xitong_1
+                bash InstallNET.sh -debian 12
+                reboot
+                exit
+                ;;
+              2)
+                send_stats "重装debian 11"
+                dd_xitong_1
+                bash InstallNET.sh -debian 11
+                reboot
+                exit
+                ;;
+              3)
+                send_stats "重装debian 10"
+                dd_xitong_1
+                bash InstallNET.sh -debian 10
+                reboot
+                exit
+                ;;
+              4)
+                send_stats "重装debian 9"
+                dd_xitong_1
+                bash InstallNET.sh -debian 9
+                reboot
+                exit
+                ;;
+              11)
+                send_stats "重装ubuntu 24.04"
+                dd_xitong_1
+                bash InstallNET.sh -ubuntu 24.04
+                reboot
+                exit
+                ;;
+              12)
+                send_stats "重装ubuntu 22.04"
+                dd_xitong_1
+                bash InstallNET.sh -ubuntu 22.04
+                reboot
+                exit
+                ;;
+              13)
+                send_stats "重装ubuntu 20.04"
+                dd_xitong_1
+                bash InstallNET.sh -ubuntu 20.04
+                reboot
+                exit
+                ;;
+              14)
+                send_stats "重装ubuntu 18.04"
+                dd_xitong_1
+                bash InstallNET.sh -ubuntu 18.04
+                reboot
+                exit
+                ;;
+
+
+              21)
+                send_stats "重装rockylinux9"
+                dd_xitong_3
+                bash reinstall.sh rocky
+                reboot
+                exit
+                ;;
+
+              22)
+                send_stats "重装rockylinux8"
+                dd_xitong_3
+                bash reinstall.sh rocky 8
+                reboot
+                exit
+                ;;
+
+              23)
+                send_stats "重装alma9"
+                dd_xitong_3
+                bash reinstall.sh alma
+                reboot
+                exit
+                ;;
+
+              24)
+                send_stats "重装alma8"
+                dd_xitong_3
+                bash reinstall.sh alma 8
+                reboot
+                exit
+                ;;
+
+              25)
+                send_stats "重装oracle9"
+                dd_xitong_3
+                bash reinstall.sh oracle
+                reboot
+                exit
+                ;;
+
+              26)
+                send_stats "重装oracle8"
+                dd_xitong_3
+                bash reinstall.sh oracle 8
+                reboot
+                exit
+                ;;
+
+              27)
+                send_stats "重装fedora40"
+                dd_xitong_3
+                bash reinstall.sh fedora
+                reboot
+                exit
+                ;;
+
+              28)
+                send_stats "重装fedora39"
+                dd_xitong_3
+                bash reinstall.sh fedora 39
+                reboot
+                exit
+                ;;
+
+              29)
+                send_stats "重装centos 7"
+                dd_xitong_1
+                bash InstallNET.sh -centos 7
+                reboot
+                exit
+                ;;
+
+              31)
+                send_stats "重装alpine"
+                dd_xitong_1
+                bash InstallNET.sh -alpine
+                reboot
+                exit
+                ;;
+
+              32)
+                send_stats "重装arch"
+                dd_xitong_3
+                bash reinstall.sh arch
+                reboot
+                exit
+                ;;
+
+              33)
+                send_stats "重装kali"
+                dd_xitong_3
+                bash reinstall.sh kali
+                reboot
+                exit
+                ;;
+
+              34)
+                send_stats "重装openeuler"
+                dd_xitong_3
+                bash reinstall.sh openeuler
+                reboot
+                exit
+                ;;
+
+              41)
+                send_stats "重装windows11"
+                dd_xitong_2
+                bash InstallNET.sh -windows 11 -lang "cn"
+                reboot
+                exit
+                ;;
+              42)
+                dd_xitong_2
+                send_stats "重装windows10"
+                bash InstallNET.sh -windows 10 -lang "cn"
+                reboot
+                exit
+                ;;
+              43)
+                send_stats "重装windows7"
+                dd_xitong_4
+                URL="https://massgrave.dev/windows_7_links"
+                web_content=$(wget -q -O - "$URL")
+                iso_link=$(echo "$web_content" | grep -oP '(?<=href=")[^"]*cn[^"]*windows_7[^"]*professional[^"]*x64[^"]*\.iso')
+                # bash reinstall.sh windows --image-name 'Windows 7 Professional' --lang zh-cn
+                # bash reinstall.sh windows --iso='$iso_link' --image-name='Windows 7 PROFESSIONAL'
+                bash reinstall.sh windows --iso="$iso_link" --image-name='Windows 7 PROFESSIONAL'
+                reboot
+                exit
+                ;;
+              44)
+                send_stats "重装windows server 22"
+                dd_xitong_4
+                URL="https://massgrave.dev/windows_server_links"
+                web_content=$(wget -q -O - "$URL")
+                iso_link=$(echo "$web_content" | grep -oP '(?<=href=")[^"]*cn[^"]*windows_server[^"]*2022[^"]*x64[^"]*\.iso')
+                bash reinstall.sh windows --iso="$iso_link" --image-name='Windows Server 2022 SERVERDATACENTER'
+                reboot
+                exit
+                ;;
+              45)
+                send_stats "重装windows server 19"
+                dd_xitong_2
+                bash InstallNET.sh -windows 2019 -lang "cn"
+                reboot
+                exit
+                ;;
+              46)
+                send_stats "重装windows server 16"
+                dd_xitong_2
+                bash InstallNET.sh -windows 2016 -lang "cn"
+                reboot
+                exit
+                ;;
+              0)
+                break
+                ;;
+              *)
+                echo "无效的选择，请重新输入。"
+                break
+                ;;
+            esac
+          done
+}
+
+
+bbrv3() {
+          root_use
+          send_stats "bbrv3管理"
+          if dpkg -l | grep -q 'linux-xanmod'; then
+            while true; do
+                  clear
+                  kernel_version=$(uname -r)
+                  echo "您已安装xanmod的BBRv3内核"
+                  echo "当前内核版本: $kernel_version"
+
+                  echo ""
+                  echo "内核管理"
+                  echo "------------------------"
+                  echo "1. 更新BBRv3内核              2. 卸载BBRv3内核"
+                  echo "------------------------"
+                  echo "0. 返回上一级选单"
+                  echo "------------------------"
+                  read -p "请输入你的选择: " sub_choice
+
+                  case $sub_choice in
+                      1)
+                        apt purge -y 'linux-*xanmod1*'
+                        update-grub
+
+                        # wget -qO - https://dl.xanmod.org/archive.key | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
+                        wget -qO - https://raw.githubusercontent.com/kejilion/sh/main/archive.key | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
+
+                        # 步骤3：添加存储库
+                        echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' | tee /etc/apt/sources.list.d/xanmod-release.list
+
+                        # version=$(wget -q https://dl.xanmod.org/check_x86-64_psabi.sh && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
+                        version=$(wget -q https://raw.githubusercontent.com/kejilion/sh/main/check_x86-64_psabi.sh && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
+
+                        apt update -y
+                        apt install -y linux-xanmod-x64v$version
+
+                        echo "XanMod内核已更新。重启后生效"
+                        rm -f /etc/apt/sources.list.d/xanmod-release.list
+                        rm -f check_x86-64_psabi.sh*
+
+                        server_reboot
+
+                          ;;
+                      2)
+                        apt purge -y 'linux-*xanmod1*'
+                        update-grub
+                        echo "XanMod内核已卸载。重启后生效"
+                        server_reboot
+                          ;;
+                      0)
+                          break  # 跳出循环，退出菜单
+                          ;;
+
+                      *)
+                          break  # 跳出循环，退出菜单
+                          ;;
+
+                  esac
+            done
+        else
+
+          clear
+          echo "请备份数据，将为你升级Linux内核开启BBR3"
+          echo "官网介绍: https://xanmod.org/"
+          echo "------------------------------------------------"
+          echo "仅支持Debian/Ubuntu 仅支持x86_64架构"
+          echo "VPS是512M内存的，请提前添加1G虚拟内存，防止因内存不足失联！"
+          echo "------------------------------------------------"
+          read -p "确定继续吗？(Y/N): " choice
+
+          case "$choice" in
+            [Yy])
+            if [ -r /etc/os-release ]; then
+                . /etc/os-release
+                if [ "$ID" != "debian" ] && [ "$ID" != "ubuntu" ]; then
+                    echo "当前环境不支持，仅支持Debian和Ubuntu系统"
+                    break_end
+                    kejilion
+                fi
+            else
+                echo "无法确定操作系统类型"
+                break_end
+                kejilion
+            fi
+
+            # 检查系统架构
+            arch=$(dpkg --print-architecture)
+            if [ "$arch" != "amd64" ]; then
+              echo "当前环境不支持，仅支持x86_64架构"
+              break
+            fi
+
+            new_swap=1024
+            add_swap
+            install wget gnupg
+
+            # wget -qO - https://dl.xanmod.org/archive.key | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
+            wget -qO - https://raw.githubusercontent.com/kejilion/sh/main/archive.key | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
+
+            # 步骤3：添加存储库
+            echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' | tee /etc/apt/sources.list.d/xanmod-release.list
+
+            # version=$(wget -q https://dl.xanmod.org/check_x86-64_psabi.sh && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
+            version=$(wget -q https://raw.githubusercontent.com/kejilion/sh/main/check_x86-64_psabi.sh && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
+
+            apt update -y
+            apt install -y linux-xanmod-x64v$version
+
+            # 步骤5：启用BBR3
+            cat > /etc/sysctl.conf << EOF
+net.core.default_qdisc=fq_pie
+net.ipv4.tcp_congestion_control=bbr
+EOF
+            sysctl -p
+            echo "XanMod内核安装并BBR3启用成功。重启后生效"
+            rm -f /etc/apt/sources.list.d/xanmod-release.list
+            rm -f check_x86-64_psabi.sh*
+            server_reboot
+
+              ;;
+            [Nn])
+              echo "已取消"
+              ;;
+            *)
+              echo "无效的选择，请输入 Y 或 N。"
+              ;;
+          esac
+        fi
+
+
+
+}
+
+
+elrepo_install() {
+    # 导入 ELRepo GPG 公钥
+    echo "导入 ELRepo GPG 公钥..."
+    rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+    # 检测系统版本
+    os_version=$(rpm -q --qf "%{VERSION}" $(rpm -qf /etc/os-release) 2>/dev/null | awk -F '.' '{print $1}')
+    os_name=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
+    # 确保我们在一个支持的操作系统上运行
+    if [[ "$os_name" != *"Red Hat"* && "$os_name" != *"AlmaLinux"* && "$os_name" != *"Rocky"* && "$os_name" != *"Oracle"* && "$os_name" != *"CentOS"* ]]; then
+        echo "不支持的操作系统：$os_name"
+        break_end
+        kejilion
+    fi
+    # 打印检测到的操作系统信息
+    echo "检测到的操作系统: $os_name $os_version"
+    # 根据系统版本安装对应的 ELRepo 仓库配置
+    if [[ "$os_version" == 8 ]]; then
+        echo "安装 ELRepo 仓库配置 (版本 8)..."
+        yum -y install https://www.elrepo.org/elrepo-release-8.el8.elrepo.noarch.rpm
+    elif [[ "$os_version" == 9 ]]; then
+        echo "安装 ELRepo 仓库配置 (版本 9)..."
+        yum -y install https://www.elrepo.org/elrepo-release-9.el9.elrepo.noarch.rpm
+    else
+        echo "不支持的系统版本：$os_version"
+        break_end
+        kejilion
+    fi
+    # 启用 ELRepo 内核仓库并安装最新的主线内核
+    echo "启用 ELRepo 内核仓库并安装最新的主线内核..."
+    yum -y --enablerepo=elrepo-kernel install kernel-ml
+    echo "已安装 ELRepo 仓库配置并更新到最新主线内核。"
+    server_reboot
+
+}
+
+
+elrepo() {
+          root_use
+          send_stats "红帽内核管理"
+          if uname -r | grep -q 'elrepo'; then
+            while true; do
+                  clear
+                  kernel_version=$(uname -r)
+                  echo "您已安装elrepo内核"
+                  echo "当前内核版本: $kernel_version"
+
+                  echo ""
+                  echo "内核管理"
+                  echo "------------------------"
+                  echo "1. 更新elrepo内核              2. 卸载elrepo内核"
+                  echo "------------------------"
+                  echo "0. 返回上一级选单"
+                  echo "------------------------"
+                  read -p "请输入你的选择: " sub_choice
+
+                  case $sub_choice in
+                      1)
+                        dnf remove -y elrepo-release
+                        rpm -qa | grep elrepo | grep kernel | xargs rpm -e --nodeps
+                        elrepo_install
+                        send_stats "更新红帽内核"
+                        server_reboot
+
+                          ;;
+                      2)
+                        dnf remove -y elrepo-release
+                        rpm -qa | grep elrepo | grep kernel | xargs rpm -e --nodeps
+                        echo "elrepo内核已卸载。重启后生效"
+                        send_stats "卸载红帽内核"
+                        server_reboot
+
+                          ;;
+                      0)
+                          break  # 跳出循环，退出菜单
+                          ;;
+
+                      *)
+                          break  # 跳出循环，退出菜单
+                          ;;
+
+                  esac
+            done
+        else
+
+          clear
+          echo "请备份数据，将为你升级Linux内核"
+          echo "官网介绍: https://elrepo.org/"
+          echo "------------------------------------------------"
+          echo "仅支持红帽系列发行版 CentOS/RedHat/Alma/Rocky/oracle "
+          echo "升级Linux内核可提升系统性能和安全，建议有条件的尝试，生产环境谨慎升级！"
+          echo "------------------------------------------------"
+          read -p "确定继续吗？(Y/N): " choice
+
+          case "$choice" in
+            [Yy])
+              new_swap=1024
+              add_swap
+              elrepo_install
+              send_stats "升级红帽内核"
+              server_reboot
+              ;;
+            [Nn])
+              echo "已取消"
+              ;;
+            *)
+              echo "无效的选择，请输入 Y 或 N。"
+              ;;
+          esac
+        fi
+
+}
+
+
+# 高性能模式优化函数
+optimize_high_performance() {
+    echo -e "${lv}切换到高性能模式...${bai}"
+
+    echo -e "${lv}优化文件描述符...${bai}"
+    ulimit -n 65535
+
+    echo -e "${lv}优化虚拟内存...${bai}"
+    sysctl -w vm.swappiness=10 2>/dev/null
+    sysctl -w vm.dirty_ratio=15 2>/dev/null
+    sysctl -w vm.dirty_background_ratio=5 2>/dev/null
+    sysctl -w vm.overcommit_memory=1 2>/dev/null
+    sysctl -w vm.min_free_kbytes=65536 2>/dev/null
+
+    echo -e "${lv}优化网络设置...${bai}"
+    sysctl -w net.core.rmem_max=16777216 2>/dev/null
+    sysctl -w net.core.wmem_max=16777216 2>/dev/null
+    sysctl -w net.core.netdev_max_backlog=250000 2>/dev/null
+    sysctl -w net.core.somaxconn=4096 2>/dev/null
+    sysctl -w net.ipv4.tcp_rmem='4096 87380 16777216' 2>/dev/null
+    sysctl -w net.ipv4.tcp_wmem='4096 65536 16777216' 2>/dev/null
+    sysctl -w net.ipv4.tcp_congestion_control=htcp 2>/dev/null
+    sysctl -w net.ipv4.tcp_max_syn_backlog=8192 2>/dev/null
+    sysctl -w net.ipv4.tcp_tw_reuse=1 2>/dev/null
+    sysctl -w net.ipv4.ip_local_port_range='1024 65535' 2>/dev/null
+
+    echo -e "${lv}优化缓存管理...${bai}"
+    sysctl -w vm.vfs_cache_pressure=50 2>/dev/null
+
+    echo -e "${lv}优化CPU设置...${bai}"
+    sysctl -w kernel.sched_autogroup_enabled=0 2>/dev/null
+}
+
+# 均衡模式优化函数
+optimize_balanced() {
+    echo -e "${lv}切换到均衡模式...${bai}"
+
+    echo -e "${lv}优化文件描述符...${bai}"
+    ulimit -n 32768
+
+    echo -e "${lv}优化虚拟内存...${bai}"
+    sysctl -w vm.swappiness=30 2>/dev/null
+    sysctl -w vm.dirty_ratio=20 2>/dev/null
+    sysctl -w vm.dirty_background_ratio=10 2>/dev/null
+    sysctl -w vm.overcommit_memory=0 2>/dev/null
+    sysctl -w vm.min_free_kbytes=32768 2>/dev/null
+
+    echo -e "${lv}优化网络设置...${bai}"
+    sysctl -w net.core.rmem_max=8388608 2>/dev/null
+    sysctl -w net.core.wmem_max=8388608 2>/dev/null
+    sysctl -w net.core.netdev_max_backlog=125000 2>/dev/null
+    sysctl -w net.core.somaxconn=2048 2>/dev/null
+    sysctl -w net.ipv4.tcp_rmem='4096 87380 8388608' 2>/dev/null
+    sysctl -w net.ipv4.tcp_wmem='4096 32768 8388608' 2>/dev/null
+    sysctl -w net.ipv4.tcp_congestion_control=cubic 2>/dev/null
+    sysctl -w net.ipv4.tcp_max_syn_backlog=4096 2>/dev/null
+    sysctl -w net.ipv4.tcp_tw_reuse=1 2>/dev/null
+    sysctl -w net.ipv4.ip_local_port_range='1024 49151' 2>/dev/null
+
+    echo -e "${lv}优化缓存管理...${bai}"
+    sysctl -w vm.vfs_cache_pressure=75 2>/dev/null
+
+    echo -e "${lv}优化CPU设置...${bai}"
+    sysctl -w kernel.sched_autogroup_enabled=1 2>/dev/null
+}
+
+# 还原默认设置函数
+restore_defaults() {
+    echo -e "${lv}还原到默认设置...${bai}"
+
+    echo -e "${lv}还原文件描述符...${bai}"
+    ulimit -n 1024
+
+    echo -e "${lv}还原虚拟内存...${bai}"
+    sysctl -w vm.swappiness=60 2>/dev/null
+    sysctl -w vm.dirty_ratio=20 2>/dev/null
+    sysctl -w vm.dirty_background_ratio=10 2>/dev/null
+    sysctl -w vm.overcommit_memory=0 2>/dev/null
+    sysctl -w vm.min_free_kbytes=16384 2>/dev/null
+
+    echo -e "${lv}还原网络设置...${bai}"
+    sysctl -w net.core.rmem_max=212992 2>/dev/null
+    sysctl -w net.core.wmem_max=212992 2>/dev/null
+    sysctl -w net.core.netdev_max_backlog=1000 2>/dev/null
+    sysctl -w net.core.somaxconn=128 2>/dev/null
+    sysctl -w net.ipv4.tcp_rmem='4096 87380 6291456' 2>/dev/null
+    sysctl -w net.ipv4.tcp_wmem='4096 16384 4194304' 2>/dev/null
+    sysctl -w net.ipv4.tcp_congestion_control=cubic 2>/dev/null
+    sysctl -w net.ipv4.tcp_max_syn_backlog=2048 2>/dev/null
+    sysctl -w net.ipv4.tcp_tw_reuse=0 2>/dev/null
+    sysctl -w net.ipv4.ip_local_port_range='32768 60999' 2>/dev/null
+
+    echo -e "${lv}还原缓存管理...${bai}"
+    sysctl -w vm.vfs_cache_pressure=100 2>/dev/null
+
+    echo -e "${lv}还原CPU设置...${bai}"
+    sysctl -w kernel.sched_autogroup_enabled=1 2>/dev/null
+}
+
+
+
+# 网站搭建优化函数
+optimize_web_server() {
+    echo -e "${lv}切换到网站搭建优化模式...${bai}"
+
+    echo -e "${lv}优化文件描述符...${bai}"
+    ulimit -n 65536
+
+    echo -e "${lv}优化虚拟内存...${bai}"
+    sysctl -w vm.swappiness=10 2>/dev/null
+    sysctl -w vm.dirty_ratio=20 2>/dev/null
+    sysctl -w vm.dirty_background_ratio=10 2>/dev/null
+    sysctl -w vm.overcommit_memory=1 2>/dev/null
+    sysctl -w vm.min_free_kbytes=65536 2>/dev/null
+
+    echo -e "${lv}优化网络设置...${bai}"
+    sysctl -w net.core.rmem_max=16777216 2>/dev/null
+    sysctl -w net.core.wmem_max=16777216 2>/dev/null
+    sysctl -w net.core.netdev_max_backlog=5000 2>/dev/null
+    sysctl -w net.core.somaxconn=4096 2>/dev/null
+    sysctl -w net.ipv4.tcp_rmem='4096 87380 16777216' 2>/dev/null
+    sysctl -w net.ipv4.tcp_wmem='4096 65536 16777216' 2>/dev/null
+    sysctl -w net.ipv4.tcp_congestion_control=htcp 2>/dev/null
+    sysctl -w net.ipv4.tcp_max_syn_backlog=8192 2>/dev/null
+    sysctl -w net.ipv4.tcp_tw_reuse=1 2>/dev/null
+    sysctl -w net.ipv4.ip_local_port_range='1024 65535' 2>/dev/null
+
+    echo -e "${lv}优化缓存管理...${bai}"
+    sysctl -w vm.vfs_cache_pressure=50 2>/dev/null
+
+    echo -e "${lv}优化CPU设置...${bai}"
+    sysctl -w kernel.sched_autogroup_enabled=0 2>/dev/null
+
 }
 
 
 
 
+
+
+kejilion_sh() {
 while true; do
 clear
 
@@ -1142,8 +2208,9 @@ echo -e "${kjlan}_  _ ____  _ _ _    _ ____ _  _ "
 echo "|_/  |___  | | |    | |  | |\ | "
 echo "| \_ |___ _| | |___ | |__| | \| "
 echo "                                "
-echo -e "${kjlan}科技lion一键脚本工具 v$sh_v （支持Ubuntu/Debian/CentOS/Alpine系统）${bai}"
-echo -e "${kjlan}-输入${huang}k${kjlan}可快速启动此脚本-${bai}"
+echo -e "${kjlan}科技lion脚本工具箱 v$sh_v 只为更简单的Linux的使用！"
+echo -e "适配Ubuntu/Debian/CentOS/Alpine/Kali/Arch/RedHat/Fedora/Alma/Rocky系统"
+echo -e "-输入${huang}k${kjlan}可快速启动此脚本-${bai}"
 echo "------------------------"
 echo "1. 系统信息查询"
 echo "2. 系统更新"
@@ -1171,19 +2238,14 @@ read -p "请输入你的选择: " choice
 case $choice in
   1)
     clear
-    # 函数: 获取IPv4和IPv6地址
+    send_stats "系统信息查询"
+
     ip_address
 
-    if [ "$(uname -m)" == "x86_64" ]; then
-      cpu_info=$(cat /proc/cpuinfo | grep 'model name' | uniq | sed -e 's/model name[[:space:]]*: //')
-    else
-      cpu_info=$(lscpu | grep 'BIOS Model name' | awk -F': ' '{print $2}' | sed 's/^[ \t]*//')
-    fi
-
+    cpu_info=$(lscpu | awk -F': +' '/Model name:/ {print $2; exit}')
 
     cpu_usage_percent=$(awk '{u=$2+$4; t=$2+$4+$5; if (NR==1){u1=u; t1=t;} else printf "%.0f\n", (($2+$4-u1) * 100 / (t-t1))}' \
         <(grep 'cpu ' /proc/stat) <(sleep 1; grep 'cpu ' /proc/stat))
-
 
     cpu_cores=$(nproc)
 
@@ -1191,10 +2253,11 @@ case $choice in
 
     disk_info=$(df -h | awk '$NF=="/"{printf "%s/%s (%s)", $3, $2, $5}')
 
-    country=$(curl -s ipinfo.io/country)
-    city=$(curl -s ipinfo.io/city)
+    ipinfo=$(curl -s ipinfo.io)
+    country=$(echo "$ipinfo" | grep 'country' | awk -F': ' '{print $2}' | tr -d '",')
+    city=$(echo "$ipinfo" | grep 'city' | awk -F': ' '{print $2}' | tr -d '",')
+    isp_info=$(echo "$ipinfo" | grep 'org' | awk -F': ' '{print $2}' | tr -d '",')
 
-    isp_info=$(curl -s ipinfo.io/org)
 
     cpu_arch=$(uname -m)
 
@@ -1206,37 +2269,14 @@ case $choice in
     queue_algorithm=$(sysctl -n net.core.default_qdisc)
 
     # 尝试使用 lsb_release 获取系统信息
-    os_info=$(lsb_release -ds 2>/dev/null)
-
-    # 如果 lsb_release 命令失败，则尝试其他方法
-    if [ -z "$os_info" ]; then
-      # 检查常见的发行文件
-      if [ -f "/etc/os-release" ]; then
-        os_info=$(source /etc/os-release && echo "$PRETTY_NAME")
-      elif [ -f "/etc/debian_version" ]; then
-        os_info="Debian $(cat /etc/debian_version)"
-      elif [ -f "/etc/redhat-release" ]; then
-        os_info=$(cat /etc/redhat-release)
-      else
-        os_info="Unknown"
-      fi
-    fi
+    os_info=$(grep PRETTY_NAME /etc/os-release | cut -d '=' -f2 | tr -d '"')
 
     output_status
 
     current_time=$(date "+%Y-%m-%d %I:%M %p")
 
 
-    swap_used=$(free -m | awk 'NR==3{print $3}')
-    swap_total=$(free -m | awk 'NR==3{print $2}')
-
-    if [ "$swap_total" -eq 0 ]; then
-        swap_percentage=0
-    else
-        swap_percentage=$((swap_used * 100 / swap_total))
-    fi
-
-    swap_info="${swap_used}MB/${swap_total}MB (${swap_percentage}%)"
+    swap_info=$(free -m | awk 'NR==3{used=$3; total=$2; if (total == 0) {percentage=0} else {percentage=used*100/total}; printf "%dMB/%dMB (%d%%)", used, total, percentage}')
 
     runtime=$(cat /proc/uptime | awk -F. '{run_days=int($1 / 86400);run_hours=int(($1 % 86400) / 3600);run_minutes=int(($1 % 3600) / 60); if (run_days > 0) printf("%d天 ", run_days); if (run_hours > 0) printf("%d时 ", run_hours); printf("%d分\n", run_minutes)}')
 
@@ -1279,17 +2319,20 @@ case $choice in
 
   2)
     clear
+    send_stats "系统更新"
     linux_update
     ;;
 
   3)
     clear
+    send_stats "系统清理"
     linux_clean
     ;;
 
   4)
   while true; do
       clear
+      send_stats "常用工具"
       echo "▶ 安装常用工具"
       echo "------------------------"
       echo "1. curl 下载工具"
@@ -1306,6 +2349,8 @@ case $choice in
       echo "12. ranger 文件管理工具"
       echo "13. gdu 磁盘占用查看工具"
       echo "14. fzf 全局搜索工具"
+      echo "15. vim 文本编辑器"
+      echo "16. nano 文本编辑器"
       echo "------------------------"
       echo "21. cmatrix 黑客帝国屏保"
       echo "22. sl 跑火车屏保"
@@ -1331,6 +2376,7 @@ case $choice in
               clear
               echo "工具已安装，使用方法如下："
               curl --help
+              send_stats "安装curl"
               ;;
           2)
               clear
@@ -1338,6 +2384,7 @@ case $choice in
               clear
               echo "工具已安装，使用方法如下："
               wget --help
+              send_stats "安装wget"
               ;;
             3)
               clear
@@ -1345,6 +2392,7 @@ case $choice in
               clear
               echo "工具已安装，使用方法如下："
               sudo --help
+              send_stats "安装sudo"
               ;;
             4)
               clear
@@ -1352,18 +2400,21 @@ case $choice in
               clear
               echo "工具已安装，使用方法如下："
               socat -h
+              send_stats "安装socat"
               ;;
             5)
               clear
               install htop
               clear
               htop
+              send_stats "安装htop"
               ;;
             6)
               clear
               install iftop
               clear
               iftop
+              send_stats "安装iftop"
               ;;
             7)
               clear
@@ -1371,6 +2422,7 @@ case $choice in
               clear
               echo "工具已安装，使用方法如下："
               unzip
+              send_stats "安装unzip"
               ;;
             8)
               clear
@@ -1378,6 +2430,7 @@ case $choice in
               clear
               echo "工具已安装，使用方法如下："
               tar --help
+              send_stats "安装tar"
               ;;
             9)
               clear
@@ -1385,6 +2438,7 @@ case $choice in
               clear
               echo "工具已安装，使用方法如下："
               tmux --help
+              send_stats "安装tmux"
               ;;
             10)
               clear
@@ -1392,6 +2446,7 @@ case $choice in
               clear
               echo "工具已安装，使用方法如下："
               ffmpeg --help
+              send_stats "安装ffmpeg"
               ;;
 
             11)
@@ -1399,6 +2454,7 @@ case $choice in
               install btop
               clear
               btop
+              send_stats "安装btop"
               ;;
             12)
               clear
@@ -1407,6 +2463,7 @@ case $choice in
               clear
               ranger
               cd ~
+              send_stats "安装ranger"
               ;;
             13)
               clear
@@ -1415,6 +2472,7 @@ case $choice in
               clear
               gdu
               cd ~
+              send_stats "安装gdu"
               ;;
             14)
               clear
@@ -1423,6 +2481,25 @@ case $choice in
               clear
               fzf
               cd ~
+              send_stats "安装fzf"
+              ;;
+            15)
+              clear
+              install vim
+              cd /
+              clear
+              vim -h
+              cd ~
+              send_stats "安装vim"
+              ;;
+            16)
+              clear
+              install nano
+              cd /
+              clear
+              nano -h
+              cd ~
+              send_stats "安装nano"
               ;;
 
             21)
@@ -1430,52 +2507,61 @@ case $choice in
               install cmatrix
               clear
               cmatrix
+              send_stats "安装cmatrix"
               ;;
             22)
               clear
               install sl
               clear
-              /usr/games/sl
+              sl
+              send_stats "安装sl"
               ;;
             26)
               clear
               install bastet
               clear
-              /usr/games/bastet
+              bastet
+              send_stats "安装bastet"
               ;;
             27)
               clear
               install nsnake
               clear
-              /usr/games/nsnake
+              nsnake
+              send_stats "安装nsnake"
               ;;
             28)
               clear
               install ninvaders
               clear
-              /usr/games/ninvaders
+              ninvaders
+              send_stats "安装ninvaders"
 
               ;;
 
           31)
               clear
-              install curl wget sudo socat htop iftop unzip tar tmux ffmpeg btop ranger gdu fzf cmatrix sl bastet nsnake ninvaders
+              send_stats "全部安装"
+              install curl wget sudo socat htop iftop unzip tar tmux ffmpeg btop ranger gdu fzf cmatrix sl bastet nsnake ninvaders vim nano
               ;;
 
           32)
               clear
-              remove htop iftop unzip tmux ffmpeg btop ranger gdu fzf cmatrix sl bastet nsnake ninvaders
+              send_stats "全部卸载"
+              remove htop iftop unzip tmux ffmpeg btop ranger gdu fzf cmatrix sl bastet nsnake ninvaders vim nano
               ;;
 
           41)
               clear
               read -p "请输入安装的工具名（wget curl sudo htop）: " installname
               install $installname
+              send_stats "安装指定软件"
               ;;
           42)
               clear
               read -p "请输入卸载的工具名（htop ufw tmux cmatrix）: " removename
               remove $removename
+              send_stats "卸载指定软件"
               ;;
 
           0)
@@ -1494,6 +2580,7 @@ case $choice in
 
   5)
     clear
+    send_stats "bbr管理"
     if [ -f "/etc/alpine-release" ]; then
         while true; do
               clear
@@ -1513,7 +2600,7 @@ case $choice in
               case $sub_choice in
                   1)
                     bbr_on
-
+                    send_stats "alpine开启bbr3"
                       ;;
                   2)
                     sed -i '/net.core.default_qdisc=fq_pie/d' /etc/sysctl.conf
@@ -1543,6 +2630,7 @@ case $choice in
   6)
     while true; do
       clear
+      # send_stats "docker管理"
       echo "▶ Docker管理器"
       echo "------------------------"
       echo "1. 安装更新Docker环境"
@@ -1571,11 +2659,13 @@ case $choice in
       case $sub_choice in
           1)
             clear
+            send_stats "安装docker环境"
             install_add_docker
 
               ;;
           2)
               clear
+              send_stats "docker全局状态"
               echo "Docker版本"
               docker -v
               docker compose version
@@ -1598,6 +2688,7 @@ case $choice in
           3)
               while true; do
                   clear
+                  send_stats "Docker容器管理"
                   echo "Docker容器列表"
                   docker ps -a
                   echo ""
@@ -1618,34 +2709,42 @@ case $choice in
 
                   case $sub_choice in
                       1)
+                          send_stats "新建容器"
                           read -p "请输入创建命令: " dockername
                           $dockername
                           ;;
 
                       2)
+                          send_stats "启动指定容器"
                           read -p "请输入容器名: " dockername
                           docker start $dockername
                           ;;
                       3)
+                          send_stats "停止指定容器"
                           read -p "请输入容器名: " dockername
                           docker stop $dockername
                           ;;
                       4)
+                          send_stats "删除指定容器"
                           read -p "请输入容器名: " dockername
                           docker rm -f $dockername
                           ;;
                       5)
+                          send_stats "重启指定容器"
                           read -p "请输入容器名: " dockername
                           docker restart $dockername
                           ;;
                       6)
+                          send_stats "启动所有容器"
                           docker start $(docker ps -a -q)
                           ;;
                       7)
+                          send_stats "停止所有容器"
                           docker stop $(docker ps -q)
                           ;;
                       8)
-                          read -p "$(echo -e "${hong}确定删除所有容器吗？(Y/N): ${bai}")" choice
+                          send_stats "删除所有容器"
+                          read -p "$(echo -e "${hong}注意：${bai}确定删除所有容器吗？(Y/N): ")" choice
                           case "$choice" in
                             [Yy])
                               docker rm -f $(docker ps -a -q)
@@ -1658,19 +2757,23 @@ case $choice in
                           esac
                           ;;
                       9)
+                          send_stats "重启所有容器"
                           docker restart $(docker ps -q)
                           ;;
                       11)
+                          send_stats "进入容器"
                           read -p "请输入容器名: " dockername
                           docker exec -it $dockername /bin/sh
                           break_end
                           ;;
                       12)
+                          send_stats "查看容器日志"
                           read -p "请输入容器名: " dockername
                           docker logs $dockername
                           break_end
                           ;;
                       13)
+                          send_stats "查看容器网络"
                           echo ""
                           container_ids=$(docker ps -q)
 
@@ -1707,6 +2810,7 @@ case $choice in
           4)
               while true; do
                   clear
+                  send_stats "Docker镜像管理"
                   echo "Docker镜像列表"
                   docker image ls
                   echo ""
@@ -1721,19 +2825,23 @@ case $choice in
 
                   case $sub_choice in
                       1)
+                          send_stats "拉取镜像"
                           read -p "请输入镜像名: " dockername
                           docker pull $dockername
                           ;;
                       2)
+                          send_stats "更新镜像"
                           read -p "请输入镜像名: " dockername
                           docker pull $dockername
                           ;;
                       3)
+                          send_stats "删除镜像"
                           read -p "请输入镜像名: " dockername
                           docker rmi -f $dockername
                           ;;
                       4)
-                          read -p "$(echo -e "${hong}确定删除所有镜像吗？(Y/N): ${bai}")" choice
+                          send_stats "删除所有镜像"
+                          read -p "$(echo -e "${hong}注意：${bai}确定删除所有镜像吗？(Y/N): ")" choice
                           case "$choice" in
                             [Yy])
                               docker rmi -f $(docker images -q)
@@ -1760,6 +2868,7 @@ case $choice in
           5)
               while true; do
                   clear
+                  send_stats "Docker网络管理"
                   echo "Docker网络列表"
                   echo "------------------------------------------------------------"
                   docker network ls
@@ -1797,16 +2906,19 @@ case $choice in
 
                   case $sub_choice in
                       1)
+                          send_stats "创建网络"
                           read -p "设置新网络名: " dockernetwork
                           docker network create $dockernetwork
                           ;;
                       2)
+                          send_stats "加入网络"
                           read -p "加入网络名: " dockernetwork
                           read -p "那些容器加入该网络: " dockername
                           docker network connect $dockernetwork $dockername
                           echo ""
                           ;;
                       3)
+                          send_stats "退出网络"
                           read -p "退出网络名: " dockernetwork
                           read -p "那些容器退出该网络: " dockername
                           docker network disconnect $dockernetwork $dockername
@@ -1814,6 +2926,7 @@ case $choice in
                           ;;
 
                       4)
+                          send_stats "删除网络"
                           read -p "请输入要删除的网络名: " dockernetwork
                           docker network rm $dockernetwork
                           ;;
@@ -1831,6 +2944,7 @@ case $choice in
           6)
               while true; do
                   clear
+                  send_stats "Docker卷管理"
                   echo "Docker卷列表"
                   docker volume ls
                   echo ""
@@ -1845,11 +2959,13 @@ case $choice in
 
                   case $sub_choice in
                       1)
+                          send_stats "新建卷"
                           read -p "设置新卷名: " dockerjuan
                           docker volume create $dockerjuan
 
                           ;;
                       2)
+                          send_stats "删除卷"
                           read -p "输入删除卷名: " dockerjuan
                           docker volume rm $dockerjuan
 
@@ -1866,7 +2982,8 @@ case $choice in
               ;;
           7)
               clear
-              read -p "$(echo -e "${huang}确定清理无用的镜像容器网络吗？(Y/N): ${bai}")" choice
+              send_stats "Docker清理"
+              read -p "$(echo -e "${huang}注意：${bai}将清理无用的镜像容器网络，包括停止的容器，确定清理吗？(Y/N): ")" choice
               case "$choice" in
                 [Yy])
                   docker system prune -af --volumes
@@ -1880,6 +2997,7 @@ case $choice in
               ;;
           8)
               clear
+              send_stats "Docker源"
               bash <(curl -sSL https://linuxmirrors.cn/docker.sh)
               ;;
 
@@ -1887,30 +3005,30 @@ case $choice in
               clear
               install nano
               mkdir -p /etc/docker && nano /etc/docker/daemon.json
-              if command -v dnf &>/dev/null || command -v yum &>/dev/null; then
-                  systemctl restart docker
-              else
-                  service docker restart
-              fi
+              restart docker
               ;;
 
           11)
               clear
+              send_stats "Docker v6 开"
               docker_ipv6_on
               ;;
 
           12)
               clear
+              send_stats "Docker v6 关"
               docker_ipv6_off
               ;;
 
           20)
               clear
-              read -p "$(echo -e "${hong}确定卸载docker环境吗？(Y/N): ${bai}")" choice
+              send_stats "Docker卸载"
+              read -p "$(echo -e "${hong}注意：${bai}确定卸载docker环境吗？(Y/N): ")" choice
               case "$choice" in
                 [Yy])
                   docker rm $(docker ps -a -q) && docker rmi $(docker images -q) && docker network prune
-                  remove docker > /dev/null 2>&1
+                  k remove docker docker-compose
+
                   ;;
                 [Nn])
                   ;;
@@ -1937,6 +3055,7 @@ case $choice in
 
   7)
     clear
+    send_stats "warp管理"
     install wget
     wget -N https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh && bash menu.sh [option] [lisence/url/token]
     ;;
@@ -1944,6 +3063,7 @@ case $choice in
   8)
     while true; do
       clear
+      # send_stats "测试脚本合集"
       echo "▶ 测试脚本合集"
       echo ""
       echo "----IP及解锁状态检测-----------"
@@ -1977,42 +3097,50 @@ case $choice in
       case $sub_choice in
           1)
               clear
+              send_stats "ChatGPT解锁状态检测"
               bash <(curl -Ls https://cdn.jsdelivr.net/gh/missuo/OpenAI-Checker/openai.sh)
               ;;
           2)
               clear
+              send_stats "Region流媒体解锁测试"
               bash <(curl -L -s check.unlock.media)
               ;;
           3)
               clear
+              send_stats "yeahwu流媒体解锁检测"
               install wget
               wget -qO- https://github.com/yeahwu/check/raw/main/check.sh | bash
               ;;
           4)
               clear
+              send_stats "xykt_IP质量体检脚本"
               bash <(curl -Ls IP.Check.Place)
               ;;
           11)
               clear
+              send_stats "besttrace三网回程延迟路由测试"
               install wget
               wget -qO- git.io/besttrace | bash
               ;;
           12)
               clear
+              send_stats "mtr_trace三网回程线路测试"
               curl https://raw.githubusercontent.com/zhucaidan/mtr_trace/main/mtr_trace.sh | bash
               ;;
           13)
               clear
+              send_stats "Superspeed三网测速"
               bash <(curl -Lso- https://git.io/superspeed_uxh)
               ;;
           14)
               clear
+              send_stats "nxtrace快速回程测试脚本"
               curl nxtrace.org/nt |bash
               nexttrace --fast-trace --tcp
               ;;
           15)
               clear
-
+              send_stats "nxtrace指定IP回程测试脚本"
               echo "可参考的IP列表"
               echo "------------------------"
               echo "北京电信: 219.141.136.12"
@@ -2039,23 +3167,27 @@ case $choice in
 
           16)
               clear
+              send_stats "ludashi2020三网线路测试"
               curl https://raw.githubusercontent.com/ludashi2020/backtrace/main/install.sh -sSf | sh
               ;;
 
           17)
               clear
+              send_stats "i-abc多功能测速脚本"
               bash <(curl -sL bash.icu/speedtest)
               ;;
 
 
           21)
               clear
+              send_stats "yabs性能测试"
               new_swap=1024
               add_swap
               curl -sL yabs.sh | bash -s -- -i -5
               ;;
           22)
               clear
+              send_stats "icu/gb5 CPU性能测试脚本"
               new_swap=1024
               add_swap
               bash <(curl -sL bash.icu/gb5)
@@ -2063,13 +3195,14 @@ case $choice in
 
           31)
               clear
+              send_stats "bench性能测试"
               curl -Lso- bench.sh | bash
               ;;
           32)
+              send_stats "spiritysdx融合怪测评"
               clear
               curl -L https://gitlab.com/spiritysdx/za/-/raw/main/ecs.sh -o ecs.sh && chmod +x ecs.sh && bash ecs.sh
               ;;
-
 
           0)
               kejilion
@@ -2087,6 +3220,7 @@ case $choice in
   9)
      while true; do
       clear
+      send_stats "甲骨文云脚本合集"
       echo "▶ 甲骨文云脚本合集"
       echo "------------------------"
       echo "1. 安装闲置机器活跃脚本"
@@ -2111,13 +3245,35 @@ case $choice in
 
                   install_docker
 
+                  # 设置默认值
+                  DEFAULT_CPU_CORE=1
+                  DEFAULT_CPU_UTIL="10-20"
+                  DEFAULT_MEM_UTIL=20
+                  DEFAULT_SPEEDTEST_INTERVAL=120
+
+                  # 提示用户输入CPU核心数和占用百分比，如果回车则使用默认值
+                  read -p "请输入CPU核心数 [默认: $DEFAULT_CPU_CORE]: " cpu_core
+                  cpu_core=${cpu_core:-$DEFAULT_CPU_CORE}
+
+                  read -p "请输入CPU占用百分比范围（例如10-20） [默认: $DEFAULT_CPU_UTIL]: " cpu_util
+                  cpu_util=${cpu_util:-$DEFAULT_CPU_UTIL}
+
+                  read -p "请输入内存占用百分比 [默认: $DEFAULT_MEM_UTIL]: " mem_util
+                  mem_util=${mem_util:-$DEFAULT_MEM_UTIL}
+
+                  read -p "请输入Speedtest间隔时间（秒） [默认: $DEFAULT_SPEEDTEST_INTERVAL]: " speedtest_interval
+                  speedtest_interval=${speedtest_interval:-$DEFAULT_SPEEDTEST_INTERVAL}
+
+                  # 运行Docker容器
                   docker run -itd --name=lookbusy --restart=always \
-                          -e TZ=Asia/Shanghai \
-                          -e CPU_UTIL=10-20 \
-                          -e CPU_CORE=1 \
-                          -e MEM_UTIL=20 \
-                          -e SPEEDTEST_INTERVAL=120 \
-                          fogforest/lookbusy
+                      -e TZ=Asia/Shanghai \
+                      -e CPU_UTIL="$cpu_util" \
+                      -e CPU_CORE="$cpu_core" \
+                      -e MEM_UTIL="$mem_util" \
+                      -e SPEEDTEST_INTERVAL="$speedtest_interval" \
+                      fogforest/lookbusy
+                  send_stats "甲骨文云安装活跃脚本"
+
                   ;;
                 [Nn])
 
@@ -2131,6 +3287,7 @@ case $choice in
               clear
               docker rm -f lookbusy
               docker rmi fogforest/lookbusy
+              send_stats "甲骨文云卸载活跃脚本"
               ;;
 
           3)
@@ -2161,6 +3318,7 @@ case $choice in
               read -p "请输入你重装后的密码: " vpspasswd
               install wget
               bash <(wget --no-check-certificate -qO- 'https://raw.githubusercontent.com/MoeClub/Note/master/InstallNET.sh') $xitong -v 64 -p $vpspasswd -port 22
+              send_stats "甲骨文云重装系统脚本"
               ;;
             [Nn])
               echo "已取消"
@@ -2198,6 +3356,7 @@ case $choice in
 
   while true; do
     clear
+    # send_stats "LDNMP建站"
     echo -e "${huang}▶ LDNMP建站${bai}"
     echo  "------------------------"
     echo  "1. 安装LDNMP环境"
@@ -2237,6 +3396,7 @@ case $choice in
 
     case $sub_choice in
       1)
+      send_stats "安装LDNMP环境"
       root_use
       ldnmp_install_status_one
       check_port
@@ -2268,6 +3428,8 @@ case $choice in
       clear
       # wordpress
       webname="WordPress"
+      send_stats "安装$webname"
+
       ldnmp_install_status
       add_yuming
       install_ssltls
@@ -2300,6 +3462,7 @@ case $choice in
       clear
       # Discuz论坛
       webname="Discuz论坛"
+      send_stats "安装$webname"
       ldnmp_install_status
       add_yuming
       install_ssltls
@@ -2333,6 +3496,7 @@ case $choice in
       clear
       # 可道云桌面
       webname="可道云桌面"
+      send_stats "安装$webname"
       ldnmp_install_status
       add_yuming
       install_ssltls
@@ -2347,7 +3511,7 @@ case $choice in
       wget -O latest.zip https://github.com/kalcaddle/kodbox/archive/refs/tags/1.50.02.zip
       unzip -o latest.zip
       rm latest.zip
-
+      mv /home/web/html/$yuming/kodbox* /home/web/html/$yuming/kodbox
       restart_ldnmp
 
       ldnmp_web_on
@@ -2363,6 +3527,7 @@ case $choice in
       clear
       # 苹果CMS
       webname="苹果CMS"
+      send_stats "安装$webname"
       ldnmp_install_status
       add_yuming
       install_ssltls
@@ -2402,6 +3567,7 @@ case $choice in
       clear
       # 独脚数卡
       webname="独脚数卡"
+      send_stats "安装$webname"
       ldnmp_install_status
       add_yuming
       install_ssltls
@@ -2446,6 +3612,7 @@ case $choice in
       clear
       # flarum论坛
       webname="flarum论坛"
+      send_stats "安装$webname"
       ldnmp_install_status
       add_yuming
       install_ssltls
@@ -2484,6 +3651,7 @@ case $choice in
       clear
       # typecho
       webname="typecho"
+      send_stats "安装$webname"
       ldnmp_install_status
       add_yuming
       install_ssltls
@@ -2515,6 +3683,7 @@ case $choice in
       20)
       clear
       webname="PHP动态站点"
+      send_stats "安装$webname"
       ldnmp_install_status
       add_yuming
       install_ssltls
@@ -2635,6 +3804,7 @@ case $choice in
 
 
       21)
+      send_stats "安装nginx环境"
       root_use
       check_port
       install_dependency
@@ -2661,6 +3831,7 @@ case $choice in
       22)
       clear
       webname="站点重定向"
+      send_stats "安装$webname"
       nginx_install_status
       ip_address
       add_yuming
@@ -2682,6 +3853,7 @@ case $choice in
       23)
       clear
       webname="反向代理-IP+端口"
+      send_stats "安装$webname"
       nginx_install_status
       ip_address
       add_yuming
@@ -2704,6 +3876,7 @@ case $choice in
       24)
       clear
       webname="反向代理-域名"
+      send_stats "安装$webname"
       nginx_install_status
       ip_address
       add_yuming
@@ -2726,6 +3899,7 @@ case $choice in
       25)
       clear
       webname="静态站点"
+      send_stats "安装$webname"
       nginx_install_status
       add_yuming
       install_ssltls
@@ -2772,6 +3946,7 @@ case $choice in
       26)
       clear
       webname="Bitwarden"
+      send_stats "安装$webname"
       nginx_install_status
       add_yuming
       install_ssltls
@@ -2792,6 +3967,7 @@ case $choice in
       27)
       clear
       webname="halo"
+      send_stats "安装$webname"
       nginx_install_status
       add_yuming
       install_ssltls
@@ -2810,6 +3986,7 @@ case $choice in
     root_use
     while true; do
         clear
+        send_stats "LDNMP站点管理"
         echo "LDNMP环境"
         echo "------------------------"
         ldnmp_v
@@ -2853,6 +4030,7 @@ case $choice in
         read -p "请输入你的选择: " sub_choice
         case $sub_choice in
             1)
+                send_stats "申请域名证书"
                 read -p "请输入你的域名: " yuming
                 install_ssltls
 
@@ -2876,6 +4054,7 @@ case $choice in
 
 
             3)
+                send_stats "清理站点缓存"
                 # docker exec -it nginx rm -rf /var/cache/nginx
                 docker restart nginx
                 docker exec php php -r 'opcache_reset();'
@@ -2889,18 +4068,21 @@ case $choice in
 
                 ;;
             4)
+                send_stats "查看站点数据"
                 install goaccess
                 goaccess --log-format=COMBINED /home/web/log/nginx/access.log
 
                 ;;
 
             5)
+                send_stats "编辑全局配置"
                 install nano
                 nano /home/web/nginx.conf
                 docker restart nginx
                 ;;
 
             6)
+                send_stats "编辑站点配置"
                 read -p "编辑站点配置，请输入你要编辑的域名: " yuming
                 install nano
                 nano /home/web/conf.d/$yuming.conf
@@ -2908,6 +4090,7 @@ case $choice in
                 ;;
 
             7)
+                send_stats "删除站点数据目录"
                 read -p "删除站点数据目录，请输入你的域名: " yuming
                 rm -r /home/web/html/$yuming
                 rm /home/web/conf.d/$yuming.conf
@@ -2916,6 +4099,7 @@ case $choice in
                 docker restart nginx
                 ;;
             8)
+                send_stats "删除站点数据库"
                 read -p "删除站点数据库，请输入数据库名: " shujuku
                 dbrootpasswd=$(grep -oP 'MYSQL_ROOT_PASSWORD:\s*\K.*' /home/web/docker-compose.yml | tr -d '[:space:]')
                 docker exec mysql mysql -u root -p"$dbrootpasswd" -e "DROP DATABASE $shujuku;" 2> /dev/null
@@ -2934,6 +4118,7 @@ case $choice in
 
     32)
       clear
+      send_stats "LDNMP环境备份"
       cd /home/ && tar czvf web_$(date +"%Y%m%d%H%M%S").tar.gz web
 
       while true; do
@@ -2969,6 +4154,7 @@ case $choice in
 
     33)
       clear
+      send_stats "定时远程备份"
       read -p "输入远程服务器IP: " useip
       read -p "输入远程服务器密码: " usepasswd
 
@@ -2985,10 +4171,12 @@ case $choice in
 
       case $dingshi in
           1)
+              check_crontab_installed
               read -p "选择每周备份的星期几 (0-6，0代表星期日): " weekday
               (crontab -l ; echo "0 0 * * $weekday ./${useip}_beifen.sh") | crontab - > /dev/null 2>&1
               ;;
           2)
+              check_crontab_installed
               read -p "选择每天备份的时间（小时，0-23）: " hour
               (crontab -l ; echo "0 $hour * * * ./${useip}_beifen.sh") | crontab - > /dev/null 2>&1
               ;;
@@ -3003,6 +4191,7 @@ case $choice in
 
     34)
       root_use
+      send_stats "LDNMP环境还原"
       echo "请确认home目录中已经放置网站备份的gz压缩包，按任意键继续……"
       read -n 1 -s -r -p ""
       echo "开始解压……"
@@ -3017,7 +4206,7 @@ case $choice in
       ;;
 
     35)
-
+        send_stats "LDNMP环境防御"
         if docker inspect fail2ban &>/dev/null ; then
           while true; do
               clear
@@ -3111,6 +4300,7 @@ case $choice in
                       break
                       ;;
                   21)
+                      send_stats "cloudflare模式"
                       echo "到cf后台右上角我的个人资料，选择左侧API令牌，获取Global API Key"
                       echo "https://dash.cloudflare.com/login"
                       read -p "输入CF的账号: " cfuser
@@ -3133,6 +4323,7 @@ case $choice in
                       ;;
 
                   22)
+                      send_stats "高负载开启5秒盾"
                       echo -e "${huang}网站每5分钟自动检测，当达检测到高负载会自动开盾，低负载也会自动关闭5秒盾。${bai}"
                       echo "--------------"
                       echo "获取CF参数: "
@@ -3146,6 +4337,7 @@ case $choice in
 
                       cd ~
                       install jq bc
+                      check_crontab_installed
                       curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/CF-Under-Attack.sh
                       chmod +x CF-Under-Attack.sh
                       sed -i "s/AAAA/$cfuser/g" ~/CF-Under-Attack.sh
@@ -3223,6 +4415,7 @@ case $choice in
     36)
           while true; do
               clear
+              send_stats "优化LDNMP环境"
               echo "优化LDNMP环境"
               echo "------------------------"
               echo "1. 标准模式              2. 高性能模式 (推荐2H2G以上)"
@@ -3232,6 +4425,7 @@ case $choice in
               read -p "请输入你的选择: " sub_choice
               case $sub_choice in
                   1)
+                  send_stats "站点标准模式"
                   # nginx调优
                   sed -i 's/worker_connections.*/worker_connections 1024;/' /home/web/nginx.conf
 
@@ -3264,7 +4458,7 @@ case $choice in
 
                       ;;
                   2)
-
+                  send_stats "站点高性能模式"
                   # nginx调优
                   sed -i 's/worker_connections.*/worker_connections 10240;/' /home/web/nginx.conf
 
@@ -3305,20 +4499,31 @@ case $choice in
 
     37)
       root_use
-      docker rm -f nginx php php74 mysql redis
-      docker rmi nginx nginx:alpine php:fpm php:fpm-alpine php:7.4.33-fpm php:7.4-fpm-alpine mysql redis redis:alpine
+      send_stats "更新LDNMP环境"
 
-      check_port
-      install_dependency
-      install_docker
-      install_ldnmp
+        read -p "$(echo -e "${huang}注意：${bai}长时间不更新环境的用户，请慎重更新LDNMP环境，会有数据库更新失败的风险。确定更新LDNMP环境吗？(Y/N): ")" choice
+        case "$choice" in
+          [Yy])
+            docker rm -f nginx php php74 mysql redis
+            docker rmi nginx nginx:alpine php:fpm php:fpm-alpine php:7.4.33-fpm php:7.4-fpm-alpine mysql redis redis:alpine
+
+            check_port
+            install_dependency
+            install_docker
+            install_ldnmp
+            ;;
+          [Nn])
+            ;;
+          *)
+            echo "无效的选择，请输入 Y 或 N。"
+            ;;
+        esac
       ;;
-
-
 
     38)
         root_use
-        read -p "$(echo -e "${hong}强烈建议先备份全部网站数据，再卸载LDNMP环境。确定删除所有网站数据吗？(Y/N): ${bai}")" choice
+        send_stats "卸载LDNMP环境"
+        read -p "$(echo -e "${hong}强烈建议：${bai}先备份全部网站数据，再卸载LDNMP环境。确定删除所有网站数据吗？(Y/N): ")" choice
         case "$choice" in
           [Yy])
             docker rm -f nginx php php74 mysql redis
@@ -3350,6 +4555,7 @@ case $choice in
   11)
     while true; do
       clear
+      # send_stats "面板工具"
       echo "▶ 面板工具"
       echo "------------------------"
       echo "1. 宝塔面板官方版                       2. aaPanel宝塔国际版"
@@ -3373,7 +4579,7 @@ case $choice in
       echo "31. StirlingPDF工具大全                 32. drawio免费的在线图表软件"
       echo "33. Sun-Panel导航面板                   34. Pingvin-Share文件分享平台"
       echo "35. 极简朋友圈                          36. LobeChatAI聊天聚合网站"
-      echo "37. MyIP工具箱"
+      echo "37. MyIP工具箱                          38. 小雅alist全家桶"
       echo "------------------------"
       echo "51. PVE开小鸡面板"
       echo "------------------------"
@@ -3521,6 +4727,7 @@ case $choice in
               ;;
           7)
             clear
+            send_stats "搭建哪吒"
             curl -L https://raw.githubusercontent.com/naiba/nezha/master/script/install.sh  -o nezha.sh && chmod +x nezha.sh
             ./nezha.sh
               ;;
@@ -3553,6 +4760,7 @@ case $choice in
               ;;
 
           9)
+            send_stats "搭建邮局"
             if docker inspect mailserver &>/dev/null; then
 
                     clear
@@ -3683,7 +4891,7 @@ case $choice in
               ;;
 
           10)
-
+            send_stats "搭建聊天"
             has_ipv4_has_ipv6
 
             if docker inspect rocketchat &>/dev/null; then
@@ -3831,6 +5039,7 @@ case $choice in
 
               ;;
           13)
+            send_stats "搭建网盘"
             has_ipv4_has_ipv6
 
             if docker inspect cloudreve &>/dev/null; then
@@ -4037,7 +5246,7 @@ case $choice in
               ;;
 
           19)
-
+            send_stats "搭建雷池"
             if docker inspect safeline-tengine &>/dev/null; then
 
                     clear
@@ -4405,10 +5614,16 @@ case $choice in
             docker_app
               ;;
 
+          38)
+            send_stats "小雅全家桶"
+            install_docker
+            bash -c "$(curl --insecure -fsSL https://ddsrem.com/xiaoya_install.sh)"
+              ;;
 
           51)
-          clear
-          curl -L https://raw.githubusercontent.com/oneclickvirt/pve/main/scripts/install_pve.sh -o install_pve.sh && chmod +x install_pve.sh && bash install_pve.sh
+            clear
+            send_stats "PVE开小鸡"
+            curl -L https://raw.githubusercontent.com/oneclickvirt/pve/main/scripts/install_pve.sh -o install_pve.sh && chmod +x install_pve.sh && bash install_pve.sh
               ;;
           0)
               kejilion
@@ -4425,10 +5640,11 @@ case $choice in
   12)
     while true; do
       clear
+      send_stats "我的工作区"
       echo "▶ 我的工作区"
       echo "系统将为你提供可以后台常驻运行的工作区，你可以用来执行长时间的任务"
       echo "即使你断开SSH，工作区中的任务也不会中断，后台常驻任务。"
-      echo -e "${huang}注意: 进入工作区后使用Ctrl+b再单独按d，退出工作区！${bai}"
+      echo -e "${huang}注意：${bai}进入工作区后使用Ctrl+b再单独按d，退出工作区！"
       echo "------------------------"
       echo "1. 1号工作区"
       echo "2. 2号工作区"
@@ -4454,6 +5670,7 @@ case $choice in
               clear
               install tmux
               SESSION_NAME="work1"
+              send_stats "启动工作区$SESSION_NAME"
               tmux_run
 
               ;;
@@ -4461,60 +5678,70 @@ case $choice in
               clear
               install tmux
               SESSION_NAME="work2"
+              send_stats "启动工作区$SESSION_NAME"
               tmux_run
               ;;
           3)
               clear
               install tmux
               SESSION_NAME="work3"
+              send_stats "启动工作区$SESSION_NAME"
               tmux_run
               ;;
           4)
               clear
               install tmux
               SESSION_NAME="work4"
+              send_stats "启动工作区$SESSION_NAME"
               tmux_run
               ;;
           5)
               clear
               install tmux
               SESSION_NAME="work5"
+              send_stats "启动工作区$SESSION_NAME"
               tmux_run
               ;;
           6)
               clear
               install tmux
               SESSION_NAME="work6"
+              send_stats "启动工作区$SESSION_NAME"
               tmux_run
               ;;
           7)
               clear
               install tmux
               SESSION_NAME="work7"
+              send_stats "启动工作区$SESSION_NAME"
               tmux_run
               ;;
           8)
               clear
               install tmux
               SESSION_NAME="work8"
+              send_stats "启动工作区$SESSION_NAME"
               tmux_run
               ;;
           9)
               clear
               install tmux
               SESSION_NAME="work9"
+              send_stats "启动工作区$SESSION_NAME"
               tmux_run
               ;;
           10)
               clear
               install tmux
               SESSION_NAME="work10"
+              send_stats "启动工作区$SESSION_NAME"
               tmux_run
               ;;
 
           11)
               clear
               install tmux
+              send_stats "自定义工作区"
               clear
               echo "当前已存在的工作区列表"
               echo "------------------------"
@@ -4527,6 +5754,7 @@ case $choice in
           99)
             while true; do
               clear
+              send_stats "当前工作区列表"
               echo "当前已存在的工作区列表"
               echo "------------------------"
               tmux list-sessions
@@ -4563,6 +5791,7 @@ case $choice in
   13)
     while true; do
       clear
+      # send_stats "系统工具"
       echo "▶ 系统工具"
       echo "------------------------"
       echo "1. 设置脚本启动快捷键                  2. 修改登录密码"
@@ -4579,11 +5808,14 @@ case $choice in
       echo "------------------------"
       echo "21. 本机host解析                       22. fail2banSSH防御程序"
       echo "23. 限流自动关机                       24. ROOT私钥登录模式"
-      echo "25. TG-bot系统监控预警"
+      echo "25. TG-bot系统监控预警                 26. 修复OpenSSH高危漏洞（岫源）"
+      echo "27. 红帽系Linux内核升级                28. Linux系统内核参数优化"
       echo "------------------------"
       echo "31. 留言板                             66. 一条龙系统调优"
       echo "------------------------"
-      echo "99. 重启服务器"
+      echo "99. 重启服务器                         100. 隐私与安全"
+      echo "------------------------"
+      echo "101. 卸载科技lion脚本"
       echo "------------------------"
       echo "0. 返回主菜单"
       echo "------------------------"
@@ -4596,20 +5828,24 @@ case $choice in
               echo "alias $kuaijiejian='~/kejilion.sh'" >> ~/.bashrc
               source ~/.bashrc
               echo "快捷键已设置"
+              send_stats "脚本快捷键已设置"
               ;;
 
           2)
               clear
+              send_stats "设置你的登录密码"
               echo "设置你的登录密码"
               passwd
               ;;
           3)
               root_use
+              send_stats "root密码模式"
               add_sshpasswd
               ;;
 
           4)
             root_use
+            send_stats "py版本管理"
             VERSION=$(python3 -V 2>&1 | awk '{print $2}')
             echo -e "当前python版本号: ${huang}$VERSION${bai}"
             echo "------------"
@@ -4680,6 +5916,7 @@ EOF
 
           5)
               root_use
+              send_stats "开放端口"
               iptables_open
               remove iptables-persistent ufw firewalld iptables-services > /dev/null 2>&1
               echo "端口已全部开放"
@@ -4687,7 +5924,7 @@ EOF
               ;;
           6)
               root_use
-
+              send_stats "修改SSH端口"
               # 去掉 #Port 的注释
               sed -i 's/#Port/Port/' /etc/ssh/sshd_config
 
@@ -4704,11 +5941,14 @@ EOF
 
               new_ssh_port
 
+              send_stats "SSH端口已修改"
+
               ;;
 
 
           7)
             root_use
+            send_stats "优化DNS"
             echo "当前DNS地址"
             echo "------------------------"
             cat /etc/resolv.conf
@@ -4728,6 +5968,7 @@ EOF
                     dns1_ipv6="2606:4700:4700::1111"
                     dns2_ipv6="2001:4860:4860::8888"
                     set_dns
+                    send_stats "国外DNS优化"
                     ;;
 
                   2)
@@ -4736,6 +5977,7 @@ EOF
                     dns1_ipv6="2400:3200::1"
                     dns2_ipv6="2400:da00::6666"
                     set_dns
+                    send_stats "国内DNS优化"
                     ;;
                   0)
                     echo "已取消"
@@ -4754,244 +5996,11 @@ EOF
 
           8)
 
-          dd_xitong_1() {
-            echo -e "重装后初始用户名: ${huang}root${bai}  初始密码: ${huang}LeitboGi0ro${bai}  初始端口: ${huang}22${bai}"
-            echo -e "按任意键继续..."
-            read -n 1 -s -r -p ""
-            install wget
-            wget --no-check-certificate -qO InstallNET.sh 'https://raw.githubusercontent.com/leitbogioro/Tools/master/Linux_reinstall/InstallNET.sh' && chmod a+x InstallNET.sh
-          }
-
-          dd_xitong_2() {
-            echo -e "重装后初始用户名: ${huang}Administrator${bai}  初始密码: ${huang}Teddysun.com${bai}  初始端口: ${huang}3389${bai}"
-            echo -e "按任意键继续..."
-            read -n 1 -s -r -p ""
-            install wget
-            wget --no-check-certificate -qO InstallNET.sh 'https://raw.githubusercontent.com/leitbogioro/Tools/master/Linux_reinstall/InstallNET.sh' && chmod a+x InstallNET.sh
-          }
-
-          dd_xitong_3() {
-            echo -e "重装后初始用户名: ${huang}root${bai}  初始密码: ${huang}123@@@${bai}  初始端口: ${huang}22${bai}"
-            echo -e "按任意键继续..."
-            read -n 1 -s -r -p ""
-            curl -O https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh
-          }
-
-          dd_xitong_4() {
-            echo -e "重装后初始用户名: ${huang}Administrator${bai}  初始密码: ${huang}123@@@${bai}  初始端口: ${huang}3389${bai}"
-            echo -e "按任意键继续..."
-            read -n 1 -s -r -p ""
-            curl -O https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh
-          }
-
-
-
-            while true; do
-              root_use
-              echo "请备份数据，将为你重装系统，预计花费15分钟。"
-              echo -e "${hui}感谢MollyLau大佬和bin456789大佬的脚本支持！${bai} "
-              echo "------------------------"
-              echo "1. Debian 12"
-              echo "2. Debian 11"
-              echo "3. Debian 10"
-              echo "4. Debian 9"
-              echo "------------------------"
-              echo "11. Ubuntu 24.04"
-              echo "12. Ubuntu 22.04"
-              echo "13. Ubuntu 20.04"
-              echo "14. Ubuntu 18.04"
-              echo "------------------------"
-              echo "21. CentOS 9"
-              echo "22. CentOS 8"
-              echo "23. CentOS 7"
-              echo "------------------------"
-              echo "31. Alpine Linux"
-              echo "32. Rocky Linux"
-              echo "33. Alma Linux"
-              echo "34. Fedora Linux"
-              echo "------------------------"
-              echo "41. Windows 11"
-              echo "42. Windows 10"
-              echo "43. Windows 7"
-              echo "44. Windows Server 2022"
-              echo "45. Windows Server 2019"
-              echo "46. Windows Server 2016"
-              echo "------------------------"
-              echo "0. 返回上一级选单"
-              echo "------------------------"
-              read -p "请选择要重装的系统: " sys_choice
-
-              case "$sys_choice" in
-                1)
-                  dd_xitong_1
-                  bash InstallNET.sh -debian 12
-                  reboot
-                  exit
-                  ;;
-
-                2)
-                  dd_xitong_1
-                  bash InstallNET.sh -debian 11
-                  reboot
-                  exit
-                  ;;
-
-                3)
-                  dd_xitong_1
-                  bash InstallNET.sh -debian 10
-                  reboot
-                  exit
-                  ;;
-                4)
-                  dd_xitong_1
-                  bash InstallNET.sh -debian 9
-                  reboot
-                  exit
-                  ;;
-
-                11)
-                  dd_xitong_1
-                  bash InstallNET.sh -ubuntu 24.04
-                  reboot
-                  exit
-                  ;;
-                12)
-                  dd_xitong_1
-                  bash InstallNET.sh -ubuntu 22.04
-                  reboot
-                  exit
-                  ;;
-
-                13)
-                  dd_xitong_1
-                  bash InstallNET.sh -ubuntu 20.04
-                  reboot
-                  exit
-                  ;;
-                14)
-                  dd_xitong_1
-                  bash InstallNET.sh -ubuntu 18.04
-                  reboot
-                  exit
-                  ;;
-
-
-                21)
-                  dd_xitong_1
-                  bash InstallNET.sh -centos 9
-                  reboot
-                  exit
-                  ;;
-
-
-                22)
-                  dd_xitong_1
-                  bash InstallNET.sh -centos 8
-                  reboot
-                  exit
-                  ;;
-
-                23)
-                  dd_xitong_1
-                  bash InstallNET.sh -centos 7
-                  reboot
-                  exit
-                  ;;
-
-                31)
-                  dd_xitong_1
-                  bash InstallNET.sh -alpine
-                  reboot
-                  exit
-                  ;;
-
-                32)
-                  dd_xitong_1
-                  bash InstallNET.sh -rockylinux
-                  reboot
-                  exit
-                  ;;
-
-                33)
-                  dd_xitong_3
-                  bash reinstall.sh alma
-                  reboot
-                  exit
-                  ;;
-
-                34)
-                  dd_xitong_3
-                  bash reinstall.sh fedora
-                  reboot
-                  exit
-                  ;;
-
-                41)
-                  dd_xitong_2
-                  bash InstallNET.sh -windows 11 -lang "cn"
-                  reboot
-                  exit
-                  ;;
-
-                42)
-                  dd_xitong_2
-                  bash InstallNET.sh -windows 10 -lang "cn"
-                  reboot
-                  exit
-                  ;;
-
-                43)
-                  dd_xitong_4
-                  URL="https://massgrave.dev/windows_7_links"
-                  web_content=$(wget -q -O - "$URL")
-                  iso_link=$(echo "$web_content" | grep -oP '(?<=href=")[^"]*cn[^"]*windows_7[^"]*professional[^"]*x64[^"]*\.iso')
-                  # bash reinstall.sh windows --image-name 'Windows 7 Professional' --lang zh-cn
-                  # bash reinstall.sh windows --iso='$iso_link' --image-name='Windows 7 PROFESSIONAL'
-                  bash reinstall.sh windows --iso="$iso_link" --image-name='Windows 7 PROFESSIONAL'
-
-                  reboot
-                  exit
-                  ;;
-
-                44)
-                  dd_xitong_4
-                  URL="https://massgrave.dev/windows_server_links"
-                  web_content=$(wget -q -O - "$URL")
-                  iso_link=$(echo "$web_content" | grep -oP '(?<=href=")[^"]*cn[^"]*windows_server[^"]*2022[^"]*x64[^"]*\.iso')
-                  bash reinstall.sh windows --iso="$iso_link" --image-name='Windows Server 2022 SERVERDATACENTER'
-                  reboot
-                  exit
-                  ;;
-
-                45)
-                  dd_xitong_2
-                  bash InstallNET.sh -windows 2019 -lang "cn"
-                  reboot
-                  exit
-                  ;;
-
-                46)
-                  dd_xitong_2
-                  bash InstallNET.sh -windows 2016 -lang "cn"
-                  reboot
-                  exit
-                  ;;
-
-                0)
-                  break
-                  ;;
-
-                *)
-                  echo "无效的选择，请重新输入。"
-                  break
-                  ;;
-              esac
-            done
-
+            dd_xitong
               ;;
           9)
             root_use
-
+            send_stats "新用户禁用root"
             # 提示用户输入新用户名
             read -p "请输入新用户名: " new_username
 
@@ -5011,6 +6020,7 @@ EOF
 
           10)
             root_use
+            send_stats "设置v4/v6优先级"
             ipv6_disabled=$(sysctl -n net.ipv6.conf.all.disable_ipv6)
 
             echo ""
@@ -5032,10 +6042,12 @@ EOF
                 1)
                     sysctl -w net.ipv6.conf.all.disable_ipv6=1 > /dev/null 2>&1
                     echo "已切换为 IPv4 优先"
+                    send_stats "已切换为 IPv4 优先"
                     ;;
                 2)
                     sysctl -w net.ipv6.conf.all.disable_ipv6=0 > /dev/null 2>&1
                     echo "已切换为 IPv6 优先"
+                    send_stats "已切换为 IPv6 优先"
                     ;;
                 *)
                     echo "无效的选择"
@@ -5053,17 +6065,13 @@ EOF
 
 
             root_use
+            send_stats "设置虚拟内存"
             # 获取当前交换空间信息
             swap_used=$(free -m | awk 'NR==3{print $3}')
             swap_total=$(free -m | awk 'NR==3{print $2}')
 
-            if [ "$swap_total" -eq 0 ]; then
-              swap_percentage=0
-            else
-              swap_percentage=$((swap_used * 100 / swap_total))
-            fi
 
-            swap_info="${swap_used}MB/${swap_total}MB (${swap_percentage}%)"
+            swap_info=$(free -m | awk 'NR==3{used=$3; total=$2; if (total == 0) {percentage=0} else {percentage=used*100/total}; printf "%dMB/%dMB (%d%%)", used, total, percentage}')
 
             echo "当前虚拟内存: $swap_info"
 
@@ -5074,6 +6082,7 @@ EOF
                 # 输入新的虚拟内存大小
                 read -p "请输入虚拟内存大小MB: " new_swap
                 add_swap
+                send_stats "虚拟内存已设置"
 
                 ;;
               [Nn])
@@ -5088,7 +6097,7 @@ EOF
           13)
               while true; do
                 root_use
-
+                send_stats "用户管理"
                 # 显示所有用户、用户权限、用户组和是否在sudoers中
                 echo "用户列表"
                 echo "----------------------------------------------------------------------------"
@@ -5169,7 +6178,7 @@ EOF
 
           14)
             clear
-
+            send_stats "用户信息生成器"
             echo "随机用户名"
             echo "------------------------"
             for i in {1..5}; do
@@ -5220,8 +6229,9 @@ EOF
 
           15)
             root_use
+            send_stats "换时区"
             while true; do
-
+                clear
                 echo "系统时间信息"
 
                 # 获取当前系统时区
@@ -5283,137 +6293,17 @@ EOF
               ;;
 
           16)
-          root_use
-          if dpkg -l | grep -q 'linux-xanmod'; then
-            while true; do
 
-                  kernel_version=$(uname -r)
-                  echo "您已安装xanmod的BBRv3内核"
-                  echo "当前内核版本: $kernel_version"
-
-                  echo ""
-                  echo "内核管理"
-                  echo "------------------------"
-                  echo "1. 更新BBRv3内核              2. 卸载BBRv3内核"
-                  echo "------------------------"
-                  echo "0. 返回上一级选单"
-                  echo "------------------------"
-                  read -p "请输入你的选择: " sub_choice
-
-                  case $sub_choice in
-                      1)
-                        apt purge -y 'linux-*xanmod1*'
-                        update-grub
-
-                        # wget -qO - https://dl.xanmod.org/archive.key | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
-                        wget -qO - https://raw.githubusercontent.com/kejilion/sh/main/archive.key | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
-
-                        # 步骤3：添加存储库
-                        echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' | tee /etc/apt/sources.list.d/xanmod-release.list
-
-                        # version=$(wget -q https://dl.xanmod.org/check_x86-64_psabi.sh && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
-                        version=$(wget -q https://raw.githubusercontent.com/kejilion/sh/main/check_x86-64_psabi.sh && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
-
-                        apt update -y
-                        apt install -y linux-xanmod-x64v$version
-
-                        echo "XanMod内核已更新。重启后生效"
-                        rm -f /etc/apt/sources.list.d/xanmod-release.list
-                        rm -f check_x86-64_psabi.sh*
-
-                        server_reboot
-
-                          ;;
-                      2)
-                        apt purge -y 'linux-*xanmod1*'
-                        update-grub
-                        echo "XanMod内核已卸载。重启后生效"
-                        server_reboot
-                          ;;
-                      0)
-                          break  # 跳出循环，退出菜单
-                          ;;
-
-                      *)
-                          break  # 跳出循环，退出菜单
-                          ;;
-
-                  esac
-            done
-        else
-
-          clear
-          echo "请备份数据，将为你升级Linux内核开启BBR3"
-          echo "官网介绍: https://xanmod.org/"
-          echo "------------------------------------------------"
-          echo "仅支持Debian/Ubuntu 仅支持x86_64架构"
-          echo "VPS是512M内存的，请提前添加1G虚拟内存，防止因内存不足失联！"
-          echo "------------------------------------------------"
-          read -p "确定继续吗？(Y/N): " choice
-
-          case "$choice" in
-            [Yy])
-            if [ -r /etc/os-release ]; then
-                . /etc/os-release
-                if [ "$ID" != "debian" ] && [ "$ID" != "ubuntu" ]; then
-                    echo "当前环境不支持，仅支持Debian和Ubuntu系统"
-                    break
-                fi
-            else
-                echo "无法确定操作系统类型"
-                break
-            fi
-
-            # 检查系统架构
-            arch=$(dpkg --print-architecture)
-            if [ "$arch" != "amd64" ]; then
-              echo "当前环境不支持，仅支持x86_64架构"
-              break
-            fi
-
-            new_swap=1024
-            add_swap
-            install wget gnupg
-
-            # wget -qO - https://dl.xanmod.org/archive.key | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
-            wget -qO - https://raw.githubusercontent.com/kejilion/sh/main/archive.key | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
-
-            # 步骤3：添加存储库
-            echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' | tee /etc/apt/sources.list.d/xanmod-release.list
-
-            # version=$(wget -q https://dl.xanmod.org/check_x86-64_psabi.sh && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
-            version=$(wget -q https://raw.githubusercontent.com/kejilion/sh/main/check_x86-64_psabi.sh && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
-
-            apt update -y
-            apt install -y linux-xanmod-x64v$version
-
-            # 步骤5：启用BBR3
-            cat > /etc/sysctl.conf << EOF
-net.core.default_qdisc=fq_pie
-net.ipv4.tcp_congestion_control=bbr
-EOF
-            sysctl -p
-            echo "XanMod内核安装并BBR3启用成功。重启后生效"
-            rm -f /etc/apt/sources.list.d/xanmod-release.list
-            rm -f check_x86-64_psabi.sh*
-            server_reboot
-
-              ;;
-            [Nn])
-              echo "已取消"
-              ;;
-            *)
-              echo "无效的选择，请输入 Y 或 N。"
-              ;;
-          esac
-        fi
+            bbrv3
               ;;
 
           17)
           root_use
+          send_stats "高级防火墙管理"
           if dpkg -l | grep -q iptables-persistent; then
             while true; do
                   echo "防火墙已安装"
+                  send_stats "高级防火墙已安装"
                   echo "------------------------"
                   iptables -L INPUT
 
@@ -5578,6 +6468,7 @@ EOF
 
           18)
           root_use
+          send_stats "修改主机名"
           current_hostname=$(hostname)
           echo "当前主机名: $current_hostname"
           read -p "是否要更改主机名？(y/n): " answer
@@ -5596,6 +6487,7 @@ EOF
                       systemctl restart systemd-hostnamed
                   fi
                   echo "主机名已更改为: $new_hostname"
+                  send_stats "主机名已更改"
               else
                   echo "无效的主机名。未更改主机名。"
                   exit 1
@@ -5607,6 +6499,7 @@ EOF
 
           19)
           root_use
+          send_stats "换系统更新源"
           # 获取系统信息
           source /etc/os-release
 
@@ -5633,7 +6526,7 @@ EOF
               debian)
                   initial_debian_source=$(grep -E '^deb ' /etc/apt/sources.list | head -n 1 | awk '{print $2}')
                   ;;
-              centos)
+              centos|rhel|almalinux|rocky|fedora)
                   initial_centos_source=$(awk -F= '/^baseurl=/ {print $2}' /etc/yum.repos.d/CentOS-Base.repo | head -n 1 | tr -d ' ')
                   ;;
               *)
@@ -5651,7 +6544,7 @@ EOF
                   debian)
                       cp /etc/apt/sources.list /etc/apt/sources.list.bak
                       ;;
-                  centos)
+                  centos|rhel|almalinux|rocky|fedora)
                       if [ ! -f /etc/yum.repos.d/CentOS-Base.repo.bak ]; then
                           cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
                       else
@@ -5675,7 +6568,7 @@ EOF
                   debian)
                       cp /etc/apt/sources.list.bak /etc/apt/sources.list
                       ;;
-                  centos)
+                  centos|rhel|almalinux|rocky|fedora)
                       cp /etc/yum.repos.d/CentOS-Base.repo.bak /etc/yum.repos.d/CentOS-Base.repo
                       ;;
                   *)
@@ -5695,7 +6588,7 @@ EOF
                   debian)
                       sed -i 's|'"$initial_debian_source"'|'"$1"'|g' /etc/apt/sources.list
                       ;;
-                  centos)
+                  centos|rhel|almalinux|rocky|fedora)
                       sed -i "s|^baseurl=.*$|baseurl=$1|g" /etc/yum.repos.d/CentOS-Base.repo
                       ;;
                   *)
@@ -5716,7 +6609,7 @@ EOF
                       echo "Debian 更新源切换脚本"
                       echo "------------------------"
                       ;;
-                  centos)
+                  centos|rhel|almalinux|rocky|fedora)
                       echo "CentOS 更新源切换脚本"
                       echo "------------------------"
                       ;;
@@ -5746,7 +6639,7 @@ EOF
                           debian)
                               switch_source $aliyun_debian_source
                               ;;
-                          centos)
+                          centos|rhel|almalinux|rocky|fedora)
                               switch_source $aliyun_centos_source
                               ;;
                           *)
@@ -5765,7 +6658,7 @@ EOF
                           debian)
                               switch_source $official_debian_source
                               ;;
-                          centos)
+                          centos|rhel|almalinux|rocky|fedora)
                               switch_source $official_centos_source
                               ;;
                           *)
@@ -5784,7 +6677,7 @@ EOF
                           debian)
                               switch_source $initial_debian_source
                               ;;
-                          centos)
+                          centos|rhel|almalinux|rocky|fedora)
                               switch_source $initial_centos_source
                               ;;
                           *)
@@ -5811,8 +6704,10 @@ EOF
               ;;
 
           20)
-
+          send_stats "定时任务管理"
               while true; do
+                  clear
+                  check_crontab_installed
                   clear
                   echo "定时任务列表"
                   crontab -l
@@ -5877,7 +6772,9 @@ EOF
 
           21)
               root_use
+              send_stats "本地host解析"
               while true; do
+                  clear
                   echo "本机host解析列表"
                   echo "如果你在这里添加解析匹配，将不再使用动态解析了"
                   cat /etc/hosts
@@ -5894,11 +6791,13 @@ EOF
                       1)
                           read -p "请输入新的解析记录 格式: 110.25.5.33 kejilion.pro : " addhost
                           echo "$addhost" >> /etc/hosts
+                          send_stats "本地host解析新增"
 
                           ;;
                       2)
                           read -p "请输入需要删除的解析内容关键字: " delhost
                           sed -i "/$delhost/d" /etc/hosts
+                          send_stats "本地host解析删除"
                           ;;
                       0)
                           break  # 跳出循环，退出菜单
@@ -5913,6 +6812,7 @@ EOF
 
           22)
             root_use
+            send_stats "ssh防御"
             if docker inspect fail2ban &>/dev/null ; then
                 while true; do
                     clear
@@ -5992,6 +6892,7 @@ EOF
                   cd ~
                   f2b_status
                   echo "Fail2Ban防御程序已开启"
+                  send_stats "Fail2Ban防御程序已开启"
 
                   ;;
                 [Nn])
@@ -6007,6 +6908,7 @@ EOF
 
           23)
             root_use
+            send_stats "限流关机功能"
             echo "当前流量使用情况，重启服务器流量计算会清零！"
             output_status
             echo "$output"
@@ -6014,8 +6916,10 @@ EOF
             # 检查是否存在 Limiting_Shut_down.sh 文件
             if [ -f ~/Limiting_Shut_down.sh ]; then
                 # 获取 threshold_gb 的值
-                threshold_gb=$(grep -oP 'threshold_gb=\K\d+' ~/Limiting_Shut_down.sh)
-                echo -e "当前设置的限流阈值为 ${hang}${threshold_gb}${bai}GB"
+                rx_threshold_gb=$(grep -oP 'rx_threshold_gb=\K\d+' ~/Limiting_Shut_down.sh)
+                tx_threshold_gb=$(grep -oP 'tx_threshold_gb=\K\d+' ~/Limiting_Shut_down.sh)
+                echo -e "当前设置的进站限流阈值为 ${hang}${rx_threshold_gb}${bai}GB"
+                echo -e "当前设置的出站限流阈值为 ${hang}${tx_threshold_gb}${bai}GB"
             else
                 echo -e "${hui}前未启用限流关机功能${bai}"
             fi
@@ -6029,22 +6933,26 @@ EOF
               1)
                 # 输入新的虚拟内存大小
                 echo "如果实际服务器就100G流量，可设置阈值为95G，提前关机，以免出现流量误差或溢出."
-                read -p "请输入流量阈值（单位为GB）: " threshold_gb
+                read -p "请输入进站流量阈值（单位为GB）: " rx_threshold_gb
+                read -p "请输入出站流量阈值（单位为GB）: " tx_threshold_gb
                 cd ~
-                curl -Ss -O https://raw.githubusercontent.com/kejilion/sh/main/Limiting_Shut_down.sh
+                curl -Ss -o ~/Limiting_Shut_down.sh https://raw.githubusercontent.com/kejilion/sh/main/Limiting_Shut_down1.sh
                 chmod +x ~/Limiting_Shut_down.sh
-                sed -i "s/110/$threshold_gb/g" ~/Limiting_Shut_down.sh
+                sed -i "s/110/$rx_threshold_gb/g" ~/Limiting_Shut_down.sh
+                sed -i "s/120/$tx_threshold_gb/g" ~/Limiting_Shut_down.sh
+                check_crontab_installed
                 crontab -l | grep -v '~/Limiting_Shut_down.sh' | crontab -
                 (crontab -l ; echo "* * * * * ~/Limiting_Shut_down.sh") | crontab - > /dev/null 2>&1
                 crontab -l | grep -v 'reboot' | crontab -
                 (crontab -l ; echo "0 1 1 * * reboot") | crontab - > /dev/null 2>&1
                 echo "限流关机已设置"
-
+                send_stats "限流关机已设置"
                 ;;
               0)
                 echo "已取消"
                 ;;
               2)
+                check_crontab_installed
                 crontab -l | grep -v '~/Limiting_Shut_down.sh' | crontab -
                 crontab -l | grep -v 'reboot' | crontab -
                 rm ~/Limiting_Shut_down.sh
@@ -6060,6 +6968,7 @@ EOF
 
           24)
               root_use
+              send_stats "私钥登录"
               echo "ROOT私钥登录模式"
               echo "------------------------------------------------"
               echo "将会生成密钥对，更安全的方式SSH登录"
@@ -6068,6 +6977,7 @@ EOF
               case "$choice" in
                 [Yy])
                   clear
+                  send_stats "私钥登录使用"
                   add_sshkey
                   ;;
                 [Nn])
@@ -6082,27 +6992,48 @@ EOF
 
           25)
               root_use
+              send_stats "电报预警"
               echo "TG-bot监控预警功能"
               echo "------------------------------------------------"
-              echo "您需要配置tg机器人API和接收预警的用户ID，即可实现本机CPU，内存，硬盘，流量的实时监控预警"
+              echo "您需要配置tg机器人API和接收预警的用户ID，即可实现本机CPU，内存，硬盘，流量，SSH登录的实时监控预警"
               echo "到达阈值后会向用户发预警消息"
+              echo -e "${hui}-关于流量，重启服务器将重新计算-${bai}"
               read -p "确定继续吗？(Y/N): " choice
 
               case "$choice" in
                 [Yy])
+                  send_stats "电报预警启用"
                   cd ~
-                  install nano tmux bc
+                  install nano tmux bc jq > /dev/null 2>&1
+                  check_crontab_installed
                   if [ -f ~/TG-check-notify.sh ]; then
                       chmod +x ~/TG-check-notify.sh
                       nano ~/TG-check-notify.sh
                   else
                       curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/TG-check-notify.sh
-
                       chmod +x ~/TG-check-notify.sh
                       nano ~/TG-check-notify.sh
                   fi
                   tmux kill-session -t TG-check-notify > /dev/null 2>&1
                   tmux new -d -s TG-check-notify "~/TG-check-notify.sh"
+                  crontab -l | grep -v '~/TG-check-notify.sh' | crontab - > /dev/null 2>&1
+                  (crontab -l ; echo "@reboot tmux new -d -s TG-check-notify '~/TG-check-notify.sh'") | crontab - > /dev/null 2>&1
+
+                  curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/TG-SSH-check-notify.sh > /dev/null 2>&1
+                  sed -i "3i$(grep '^TELEGRAM_BOT_TOKEN=' ~/TG-check-notify.sh)" TG-SSH-check-notify.sh > /dev/null 2>&1
+                  sed -i "4i$(grep '^CHAT_ID=' ~/TG-check-notify.sh)" TG-SSH-check-notify.sh
+                  chmod +x ~/TG-SSH-check-notify.sh
+
+                  # 添加到 ~/.profile 文件中
+                  if ! grep -q 'bash ~/TG-SSH-check-notify.sh' ~/.profile > /dev/null 2>&1; then
+                      echo 'bash ~/TG-SSH-check-notify.sh' >> ~/.profile
+                      if command -v dnf &>/dev/null || command -v yum &>/dev/null; then
+                         echo 'source ~/.profile' >> ~/.bashrc
+                      fi
+                  fi
+
+                  source ~/.profile
+
                   clear
                   echo "TG-bot预警系统已启动"
                   echo -e "${hui}你还可以将root目录中的TG-check-notify.sh预警文件放到其他机器上直接使用！${bai}"
@@ -6117,11 +7048,82 @@ EOF
 
               ;;
 
+          26)
+              root_use
+              send_stats "修复SSH高危漏洞"
+              cd ~
+              curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/upgrade_openssh9.8p1.sh
+              chmod +x ~/upgrade_openssh9.8p1.sh
+              ~/upgrade_openssh9.8p1.sh
+              rm -f ~/upgrade_openssh9.8p1.sh
+              ;;
 
+          27)
+              elrepo
+              ;;
+
+
+          28)
+            root_use
+            while true; do
+              clear
+              send_stats "Linux内核调优管理"
+              echo -e "Linux系统内核参数优化 ${huang}测试版${bai}"
+              echo "------------------------------------------------"
+              echo "提供三种系统配置模式：高性能模式、均衡模式和还原默认设置。用户可以通过执行相应的命令快速切换系统配置。"
+              echo -e "${huang}提示: ${bai}生产环境请谨慎调优！"
+              echo "--------------------"
+              echo "1. 高性能优化模式：     最大化系统性能，优化文件描述符、虚拟内存、网络设置、缓存管理和CPU设置。"
+              echo "2. 均衡优化模式：       在性能与资源消耗之间取得平衡，适合日常使用。"
+              echo "3. 网站优化模式：       针对网站服务器进行优化，提高并发连接处理能力、响应速度和整体性能。"
+              echo "4. 还原默认设置：       将系统设置还原为默认配置。"
+              echo "--------------------"
+              echo "0. 返回上一级"
+              echo "--------------------"
+              read -p "请输入你的选择: " sub_choice
+              case $sub_choice in
+                  1)
+                      cd ~
+                      clear
+                      optimize_high_performance
+                      send_stats "高性能模式优化"
+                      break_end
+                      ;;
+                  2)
+                      cd ~
+                      clear
+                      optimize_balanced
+                      send_stats "均衡模式优化"
+                      break_end
+                      ;;
+                  3)
+                      cd ~
+                      clear
+                      optimize_web_server
+                      send_stats "网站优化模式"
+                      break_end
+                      ;;
+                  4)
+                      cd ~
+                      clear
+                      restore_defaults
+                      send_stats "还原默认设置"
+                      break_end
+                      ;;
+                  0)
+                      break
+                      ;;
+                  *)
+                      echo "无效的选择，请重新输入。"
+                      ;;
+              esac
+            done
+              ;;
 
 
           31)
             clear
+            send_stats "留言板"
             install sshpass
 
             remote_ip="66.42.61.110"
@@ -6161,6 +7163,7 @@ EOF
           66)
 
               root_use
+              send_stats "一条龙调优"
               echo "一条龙系统调优"
               echo "------------------------------------------------"
               echo "将对以下内容进行操作与优化"
@@ -6171,56 +7174,70 @@ EOF
               echo -e "5. 开放所有端口"
               echo -e "6. 开启${huang}BBR${bai}加速"
               echo -e "7. 设置时区到${huang}上海${bai}"
-              echo -e "8. 优化DNS地址到${huang}1111 8888${bai}"
-              echo -e "9. 安装常用工具${huang}docker wget sudo tar unzip socat btop${bai}"
+              echo -e "8. 自动优化DNS地址${huang}海外: 1.1.1.1 8.8.8.8  国内: 223.5.5.5 ${bai}"
+              echo -e "9. 安装常用工具${huang}docker wget sudo tar unzip socat btop nano vim${bai}"
+              echo -e "10. Linux系统内核参数优化切换到${huang}均衡优化模式${bai}"
               echo "------------------------------------------------"
               read -p "确定一键保养吗？(Y/N): " choice
 
               case "$choice" in
                 [Yy])
                   clear
-
+                  send_stats "一条龙调优启动"
                   echo "------------------------------------------------"
                   linux_update
-                  echo -e "[${lv}OK${bai}] 1/9. 更新系统到最新"
+                  echo -e "[${lv}OK${bai}] 1/10. 更新系统到最新"
 
                   echo "------------------------------------------------"
                   linux_clean
-                  echo -e "[${lv}OK${bai}] 2/9. 清理系统垃圾文件"
+                  echo -e "[${lv}OK${bai}] 2/10. 清理系统垃圾文件"
 
                   echo "------------------------------------------------"
                   new_swap=1024
                   add_swap
-                  echo -e "[${lv}OK${bai}] 3/9. 设置虚拟内存${huang}1G${bai}"
+                  echo -e "[${lv}OK${bai}] 3/10. 设置虚拟内存${huang}1G${bai}"
 
                   echo "------------------------------------------------"
                   new_port=5522
                   new_ssh_port
-                  echo -e "[${lv}OK${bai}] 4/9. 设置SSH端口号为${huang}5522${bai}"
+                  echo -e "[${lv}OK${bai}] 4/10. 设置SSH端口号为${huang}5522${bai}"
                   echo "------------------------------------------------"
-                  echo -e "[${lv}OK${bai}] 5/9. 开放所有端口"
+                  echo -e "[${lv}OK${bai}] 5/10. 开放所有端口"
 
                   echo "------------------------------------------------"
                   bbr_on
-                  echo -e "[${lv}OK${bai}] 6/9. 开启${huang}BBR${bai}加速"
+                  echo -e "[${lv}OK${bai}] 6/10. 开启${huang}BBR${bai}加速"
 
                   echo "------------------------------------------------"
                   set_timedate Asia/Shanghai
-                  echo -e "[${lv}OK${bai}] 7/9. 设置时区到${huang}上海${bai}"
+                  echo -e "[${lv}OK${bai}] 7/10. 设置时区到${huang}上海${bai}"
 
                   echo "------------------------------------------------"
-                  dns1_ipv4="1.1.1.1"
-                  dns2_ipv4="8.8.8.8"
-                  dns1_ipv6="2606:4700:4700::1111"
-                  dns2_ipv6="2001:4860:4860::8888"
+
+                  if [ "$country" = "CN" ]; then
+                      dns1_ipv4="223.5.5.5"
+                      dns2_ipv4="183.60.83.19"
+                      dns1_ipv6="2400:3200::1"
+                      dns2_ipv6="2400:da00::6666"
+                  else
+                      dns1_ipv4="1.1.1.1"
+                      dns2_ipv4="8.8.8.8"
+                      dns1_ipv6="2606:4700:4700::1111"
+                      dns2_ipv6="2001:4860:4860::8888"
+                  fi
+
                   set_dns
-                  echo -e "[${lv}OK${bai}] 8/9. 优化DNS地址到${huang}1111 8888${bai}"
+                  echo -e "[${lv}OK${bai}] 8/10. 自动优化DNS地址${huang}${bai}"
 
                   echo "------------------------------------------------"
                   install_add_docker
-                  install wget sudo tar unzip socat btop
-                  echo -e "[${lv}OK${bai}] 9/9. 安装常用工具${huang}docker wget sudo tar unzip socat btop${bai}"
+                  install wget sudo tar unzip socat btop nano vim
+                  echo -e "[${lv}OK${bai}] 9/10. 安装常用工具${huang}docker wget sudo tar unzip socat btop${bai}"
                   echo "------------------------------------------------"
+
+                  echo "------------------------------------------------"
+                  optimize_balanced
+                  echo -e "[${lv}OK${bai}] 10/10. Linux系统内核参数优化"
                   echo -e "${lv}一条龙系统调优已完成${bai}"
 
                   ;;
@@ -6236,8 +7253,79 @@ EOF
 
           99)
               clear
+              send_stats "重启系统"
               server_reboot
               ;;
+          100)
+
+            root_use
+            while true; do
+              clear
+              yinsiyuanquan1
+              echo "隐私与安全"
+              echo "脚本将收集用户使用功能的数据，优化脚本体验，制作更多好玩好用的功能"
+              echo "将收集脚本版本号，使用的时间，系统版本，CPU架构，机器所属国家和使用的功能的名称，"
+              echo "------------------------------------------------"
+              echo -e "当前状态: $status_message"
+              echo "--------------------"
+              echo "1. 开启采集"
+              echo "2. 关闭采集"
+              echo "--------------------"
+              echo "0. 返回上一级"
+              echo "--------------------"
+              read -p "请输入你的选择: " sub_choice
+              case $sub_choice in
+                  1)
+                      cd ~
+                      sed -i 's/^ENABLE_STATS="false"/ENABLE_STATS="true"/' /usr/local/bin/k
+                      sed -i 's/^ENABLE_STATS="false"/ENABLE_STATS="true"/' ~/kejilion.sh
+                      echo "已开启采集"
+                      send_stats "隐私与安全已开启采集"
+                      ;;
+                  2)
+                      cd ~
+                      sed -i 's/^ENABLE_STATS="true"/ENABLE_STATS="false"/' /usr/local/bin/k
+                      sed -i 's/^ENABLE_STATS="true"/ENABLE_STATS="false"/' ~/kejilion.sh
+                      echo "已关闭采集"
+                      send_stats "隐私与安全已关闭采集"
+                      ;;
+                  0)
+                      break
+                      ;;
+                  *)
+                      echo "无效的选择，请重新输入。"
+                      ;;
+              esac
+            done
+              ;;
+
+          101)
+              clear
+              send_stats "卸载科技lion脚本"
+              echo "卸载科技lion脚本"
+              echo "------------------------------------------------"
+              echo "将彻底卸载kejilion脚本，不影响你其他功能"
+              read -p "确定继续吗？(Y/N): " choice
+
+              case "$choice" in
+                [Yy])
+                  clear
+                  rm -f /usr/local/bin/k
+                  rm ~/kejilion.sh
+                  echo "脚本已卸载，再见！"
+                  break_end
+                  clear
+                  exit
+                  ;;
+                [Nn])
+                  echo "已取消"
+                  ;;
+                *)
+                  echo "无效的选择，请输入 Y 或 N。"
+                  ;;
+              esac
+              ;;
+
           0)
               kejilion
 
@@ -6253,6 +7341,7 @@ EOF
 
   14)
     clear
+    send_stats "集群控制"
     while true; do
       clear
       echo "▶ VPS集群控制"
@@ -6273,6 +7362,7 @@ EOF
       case $sub_choice in
           1)
             clear
+            send_stats "安装集群环境"
             install python3 python3-paramiko speedtest-cli lrzsz
             mkdir cluster && cd cluster
             touch servers.py
@@ -6288,6 +7378,7 @@ EOF
 
               while true; do
                   clear
+                  send_stats "集群控制中心"
                   echo "集群服务器列表"
                   cat ~/cluster/servers.py
 
@@ -6308,6 +7399,7 @@ EOF
 
                   case $sub_choice in
                       1)
+                          send_stats "添加集群服务器"
                           read -p "服务器名称: " server_name
                           read -p "服务器IP: " server_ip
                           read -p "服务器端口（22）: " server_port
@@ -6320,10 +7412,12 @@ EOF
 
                           ;;
                       2)
+                          send_stats "删除集群服务器"
                           read -p "请输入需要删除的关键字: " rmserver
                           sed -i "/$rmserver/d" ~/cluster/servers.py
                           ;;
                       3)
+                          send_stats "编辑集群服务器"
                           install nano
                           nano ~/cluster/servers.py
                           ;;
@@ -6360,7 +7454,7 @@ EOF
                           cluster_python3
                           ;;
                       51)
-
+                          send_stats "自定义执行命令"
                           read -p "请输入批量执行的命令: " mingling
                           py_task=custom_tasks.py
                           cd ~/cluster/
@@ -6384,6 +7478,7 @@ EOF
               ;;
           7)
             clear
+            send_stats "备份集群"
             echo "将下载服务器列表数据，按任意键下载！"
             read -n 1 -s -r -p ""
             sz -y ~/cluster/servers.py
@@ -6392,6 +7487,7 @@ EOF
 
           8)
             clear
+            send_stats "还原集群"
             echo "请上传您的servers.py，按任意键开始上传！"
             read -n 1 -s -r -p ""
             cd ~/cluster/
@@ -6401,6 +7497,7 @@ EOF
           9)
 
             clear
+            send_stats "卸载集群"
             read -p "请先备份环境，确定要卸载集群控制环境吗？(Y/N): " choice
             case "$choice" in
               [Yy])
@@ -6431,6 +7528,7 @@ EOF
     ;;
 
   p)
+    send_stats "幻兽帕鲁开服脚本"
     cd ~
     curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/palworld.sh && chmod +x palworld.sh && ./palworld.sh
     exit
@@ -6438,14 +7536,15 @@ EOF
 
 
   00)
+    send_stats "脚本更新"
     cd ~
     clear
     echo "更新日志"
     echo "------------------------"
     echo "全部日志: https://raw.githubusercontent.com/kejilion/sh/main/kejilion_sh_log.txt"
     echo "------------------------"
-    curl -s https://raw.githubusercontent.com/kejilion/sh/main/kejilion_sh_log.txt | tail -n 35
 
+    curl -s https://raw.githubusercontent.com/kejilion/sh/main/kejilion_sh_log.txt | tail -n 35
     sh_v_new=$(curl -s https://raw.githubusercontent.com/kejilion/sh/main/kejilion.sh | grep -o 'sh_v="[0-9.]*"' | cut -d '"' -f 2)
 
     if [ "$sh_v" = "$sh_v_new" ]; then
@@ -6458,7 +7557,14 @@ EOF
         case "$choice" in
             [Yy])
                 clear
-                curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/kejilion.sh && chmod +x kejilion.sh
+                country=$(curl -s ipinfo.io/country)
+                if [ "$country" = "CN" ]; then
+                    curl -sS -O https://raw.gitmirror.com/kejilion/sh/main/cn/kejilion.sh && chmod +x kejilion.sh
+                else
+                    curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/kejilion.sh && chmod +x kejilion.sh
+                fi
+                CheckFirstRun_true
+                yinsiyuanquan2
                 cp ./kejilion.sh /usr/local/bin/k > /dev/null 2>&1
                 echo -e "${lv}脚本已更新到最新版本！${huang}v$sh_v_new${bai}"
                 break_end
@@ -6485,3 +7591,95 @@ EOF
 esac
     break_end
 done
+
+}
+
+
+
+
+if [ "$#" -eq 0 ]; then
+    # 如果没有参数，运行交互式逻辑
+    kejilion_sh
+else
+    # 如果有参数，执行相应函数
+    case $1 in
+        install|add|安装)
+            shift
+            send_stats "安装软件"
+            install "$@"
+            ;;
+        remove|del|uninstall|卸载)
+            shift
+            send_stats "卸载软件"
+            remove "$@"
+            ;;
+        update|更新)
+            linux_update
+            ;;
+        clean|清理)
+            linux_clean
+            ;;
+        dd|重装)
+            dd_xitong
+            ;;
+        bbr3|bbrv3)
+            bbrv3
+            ;;
+        status|状态)
+            shift
+            send_stats "软件状态查看"
+            status "$@"
+            ;;
+        start|启动)
+            shift
+            send_stats "软件启动"
+            start "$@"
+            ;;
+        stop|停止)
+            shift
+            send_stats "软件暂停"
+            stop "$@"
+            ;;
+        restart|重启)
+            shift
+            send_stats "软件重启"
+            restart "$@"
+            ;;
+
+        enable|autostart|开机启动)
+            shift
+            send_stats "软件开机自启"
+            enable "$@"
+            ;;
+
+        ssl)
+            send_stats "快捷证书申请"
+            add_ssl
+            ;;
+
+        sslps)
+            send_stats "查看证书到期情况"
+            ssl_ps
+            ;;
+
+        *)
+            send_stats "k命令参考用例"
+            echo "无效参数，以下是k命令参考用例："
+            echo "启动脚本            k"
+            echo "安装软件包          k install nano wget | k add nano wget | k 安装 nano wget"
+            echo "卸载软件包          k remove nano wget | k del nano wget | k uninstall nano wget | k 卸载 nano wget"
+            echo "更新系统            k update | k 更新"
+            echo "清理系统垃圾        k clean | k 清理"
+            echo "打开重装系统面板    k dd | k 重装"
+            echo "打开bbr3控制面板    k bbr3 | k bbrv3"
+            echo "软件启动            k start sshd | k 启动 sshd "
+            echo "软件停止            k stop sshd | k 停止 sshd "
+            echo "软件重启            k restart sshd | k 重启 sshd "
+            echo "软件状态查看        k status sshd | k 状态 sshd "
+            echo "软件开机启动        k enable docker | k autostart docke | k 开机启动 docker "
+            echo "域名证书申请        k ssl"
+            echo "域名证书到期查询    k sslps"
+            ;;
+    esac
+fi
+

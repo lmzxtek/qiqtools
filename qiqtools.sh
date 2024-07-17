@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.5.8
+script_version=v0.5.9
 #==========================
 
 # Language
@@ -843,8 +843,20 @@ install_add_docker() {
 docker_install() {
   if ! command -v docker &>/dev/null; then
       echo -e "\n >>> Docker未安装 ..."
-      install_add_docker
-      docker_set_1ckl
+      
+    read -p "使用LinuxMirror安装吗？(Y|y): " choice
+    case "$choice" in
+      [Yy])
+        bash <(curl -sSL https://linuxmirrors.cn/docker.sh)
+        ;;
+        *) 
+        install_add_docker
+        docker_set_1ckl
+        ;;
+      # [Nn]) 
+      #   echo "无效的选择，请输入 Y 或 N。" ;;
+    esac
+
   else
     echo -e "\n >>> Docker已安装 ..."
     docker --version
@@ -1718,6 +1730,10 @@ alter_sourcelist(){
       echo "8. 备份当前更新源"
       echo "9. 还原初始更新源"
       echo "------------------------"
+      echo "11.LinuxMirror(CN)"
+      echo "12.LinuxMirror(Edu)"
+      echo "13.LinuxMirror(All)"
+      echo "------------------------"
       echo "0. 返回上一级"
       echo "------------------------"
       read -p "请选择操作: " choice
@@ -1783,7 +1799,13 @@ alter_sourcelist(){
               esac
               echo "已切换到初始更新源"
               ;;
+
           9) restore_initial_source ;;
+
+          # https://linuxmirrors.cn/
+         11) clear &&  bash <(curl -sSL https://linuxmirrors.cn/main.sh);;
+         12) clear &&  bash <(curl -sSL https://linuxmirrors.cn/main.sh) --edu ;;
+         13) clear &&  bash <(curl -sSL https://linuxmirrors.cn/main.sh) --abroard ;;
 
           0) break ;;
           *) echo "无效的选择，请重新输入" ;;
@@ -2673,7 +2695,7 @@ install_1panel() {
           elif [ "$ID" == "debian" ]; then
             echo "debian"
           else
-            echo "unknown"
+            echo "others"
           fi
         else
           echo "unknown"
@@ -2696,6 +2718,8 @@ install_1panel() {
               curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && bash quick_start.sh
             elif [ "$system_type" == "debian" ]; then
               curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && bash quick_start.sh
+            elif [ "$system_type" == "others" ]; then
+              bash <(curl -sSL https://linuxmirrors.cn/docker.sh) && curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && sh quick_start.sh
             fi
             ;;
           [Nn]) ;;
