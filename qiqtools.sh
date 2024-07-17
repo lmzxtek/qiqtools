@@ -202,6 +202,8 @@ remove() {
     for package in "$@"; do
         if command -v apt &>/dev/null; then
             apt purge -y "$package"
+        elif command -v dnf &>/dev/null; then
+            dnf remove -y "$package"
         elif command -v yum &>/dev/null; then
             yum remove -y "$package"
         elif command -v apk &>/dev/null; then
