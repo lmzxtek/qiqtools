@@ -1253,7 +1253,7 @@ txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "31.Alpine 3.20")$(txtb "A")"      "$(txtn "41.CentOS 9")$(txtb "☾")
 txtn $(txtn "32.Alpine 3.19")$(txtb "A")"      "$(txtn "42.CentOS 8")$(txtb "☾")
 txtn $(txtn "33.Alpine 3.18")$(txtb "A")"      "$(txtn "43.Kali Rolling")$(txtb "❀")
-txtn $(txtn "34.Alpine Edge")$(txtb "A")"      "$(txtn "44.Fedora 39")$(txtb "❀")
+txtn $(txtn "34.Arch Linux")$(txtb "A")"       "$(txtn "44.Fedora")$(txtb "❀")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "51.Windows 2022")$(txtb "▣")"     "$(txtn "61.Windows 11(EN)")$(txtc "◕")
 txtn $(txtn "52.Windows 2019")$(txtb "▣")"     "$(txtn "62.Windows 11(CN)")$(txtc "◕")
@@ -1406,8 +1406,9 @@ dd_system_run() {
         reboot 
         exit ;;
       34) 
+        bash reinstall.sh arch
         # bash InstallNET.sh -alpine
-        bash InstallNET.sh -alpine edge
+        # bash InstallNET.sh -alpine edge
         # bash InstallNET.sh -alpine 3.19
         # bash InstallNET.sh -alpine 3.18
         reboot 
