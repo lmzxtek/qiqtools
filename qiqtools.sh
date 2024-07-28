@@ -5068,7 +5068,7 @@ txtn $(txtn "32.Python")$(txtg "✔")"          "$(txtn "52.RustDesk Server")$(t
 txtn $(txtn "33.pip")$(txtg "✔")"             "$(txtn "53.DeepLX Server")$(txtg "✔")
 txtn $(txtn "34.miniConda")$(txtr "✔")"       "$(txtn "54.Chrome")$(txtg "✔")
 txtn $(txtn "35.Conda-forge")$(txtr "✔")"     "$(txtn "55.Jupyter-lab")$(txtg "✔")
-# txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
+txtn $(txtn "36.TA-Lib")$(txtg "✔")"          "$(txtn "")$(txtb "")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
 txtn " "
@@ -5141,6 +5141,7 @@ other_tools_run() {
             wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh" && bash Miniforge3-$(uname)-$(uname -m).sh 
           fi
           ;;
+      36) clear && curl -O https://netcologne.dl.sourceforge.net/project/ta-lib/ta-lib/0.4.0/ta-lib-0.4.0-src.tar.gz && tar -xzf ta-lib-0.4.0-src.tar.gz && cd ta-lib/ && ./configure --prefix=/usr && make && make install && cd .. ;;
 
       51) clear && install_ub_desktop ;;
       52) clear && install wget && wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
