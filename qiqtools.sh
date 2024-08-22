@@ -1417,19 +1417,19 @@ dd_system_run() {
       
       #============================== 
       51) 
-        bash InstallNET.sh -windows 2022 -lang "cn"
+        bash InstallNET.sh -windows 2022
         reboot 
         exit ;;
       52) 
-        bash InstallNET.sh -windows 2019 -lang "cn"
+        bash InstallNET.sh -windows 2019
         reboot 
         exit ;;
       53) 
-        bash InstallNET.sh -windows 2016 -lang "cn"
+        bash InstallNET.sh -windows 2016
         reboot 
         exit ;;
       54) 
-        bash InstallNET.sh -windows 2012 -lang "cn"
+        bash InstallNET.sh -windows 2012
         reboot 
         exit ;;
       55) 
