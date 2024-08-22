@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.5.9
+script_version=v0.6.0
 #==========================
 
 # Language
@@ -1417,19 +1417,19 @@ dd_system_run() {
       
       #============================== 
       51) 
-        bash InstallNET.sh -windows 2022
+        bash InstallNET.sh -windows 2022 -lang "cn"
         reboot 
         exit ;;
       52) 
-        bash InstallNET.sh -windows 2019
+        bash InstallNET.sh -windows 2019 -lang "cn"
         reboot 
         exit ;;
       53) 
-        bash InstallNET.sh -windows 2016
+        bash InstallNET.sh -windows 2016 -lang "cn"
         reboot 
         exit ;;
       54) 
-        bash InstallNET.sh -windows 2012
+        bash InstallNET.sh -windows 2012 -lang "cn"
         reboot 
         exit ;;
       55) 
