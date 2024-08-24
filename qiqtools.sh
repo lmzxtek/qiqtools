@@ -423,6 +423,7 @@ check_virt(){
 # 获取系统信息
 get_sysinfo(){
     # 函数: 获取IPv4和IPv6地址
+    local is2checkip=$1
     
     clear
     txby "\n Welcome to QiQTools "
@@ -517,7 +518,8 @@ get_sysinfo(){
     runtime=$(cat /proc/uptime | awk -F. '{run_days=int($1 / 86400);run_hours=int(($1 % 86400) / 3600);run_minutes=int(($1 % 3600) / 60); if (run_days > 0) printf("%d天 ", run_days); if (run_hours > 0) printf("%d时 ", run_hours); printf("%d分\n", run_minutes)}')
 
     txtn "\n >>> Check IP address ..."
-    check_IP_address
+    if [[ -n "$is2checkip" | $is2checkip!=0 ]]; then
+      check_IP_address
     # country=$(curl -s ipinfo.io/country)
     # city=$(curl -s ipinfo.io/city)
     # isp_info=$(curl -s ipinfo.io/org)
@@ -1288,8 +1290,8 @@ txtn "  bash reinstall.sh windows --image-name 'Windows 10 Enterprise LTSC 2021'
 txtn "                            --lang zh-cn ${plain}\n"
 txtn "      reinstall.bat windows --image--name='windows server 2022 serverdatacenter' ${plain}"
 txtn "                            --lang zh-cn ${plain}\n"
-txtn "—————————————————————————————————————"
 }
+txtn "—————————————————————————————————————"
 
 dd_system_run() {
   # https://github.com/leitbogioro/Tools 
@@ -6491,5 +6493,5 @@ done
 
 # check_IP_address
 clear
-get_sysinfo
+get_sysinfo 0
 main_loop
