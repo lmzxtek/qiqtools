@@ -852,7 +852,7 @@ docker_install() {
   if ! command -v docker &>/dev/null; then
       echo -e "\n >>> Docker未安装 ..."
       
-    read -p "使用LinuxMirror安装吗，否则使用官方脚本安装？(Y|y): " choice
+    read -p "使用LinuxMirror安装吗,否则使用官方脚本安装？(Y|y): " choice
     case "$choice" in
       [Yy])
         bash <(curl -sSL https://linuxmirrors.cn/docker.sh)
@@ -5211,7 +5211,7 @@ txtn $(txtn " 4.Warp(@p3terx)")$(txtg "✔")"                 "$(txtn "14.Hyster
 txtn $(txtn " 5.Warp-go(@fscarmen)")$(txtg "✔")"            "$(txtn "15.TUIC5(@Misaka)")$(txtg "✔")
 txtn $(txtn " 6.SingBox-Argox(@fscarmen)")$(txtg "✔")"      "$(txtn "16.mianyang()")$(txtg "✔")
 txtn $(txby " 7.SingBox全家桶(@fscarmen)")$(txtr "✔")"      "$(txtn "17.ArgoX")$(txtb "✔")
-txtn $(txby " 8.SingBox四合一(yg)")$(txtp "✔")"             "$(txtr "18.Check IP")$(txtb "➵")
+txtn $(txby " 8.SingBox四合一(yg)")$(txtp "✔")"             "$(txtr "18.Check-IP")$(txtb "➵")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "51.XRayR(@XrayR-project)")$(txtg "✔")"         "$(txtn "61.V2bX(Vless&Trojan to V2board)")$(txtg "")
@@ -5234,7 +5234,13 @@ warp_tools_run() {
         recheck_ip_address
         ;;
       2) 
-        clear && bash <(curl -sSL https://raw.githubusercontent.com/hamid-gh98/x-ui-scripts/main/install_warp_proxy.sh) 
+        clear 
+        country=$(curl -s --max-time 3 ipinfo.io/country)
+        if [ "$country" = "CN" ]; then
+          bash <(curl -sSL https://mirror.ghproxy.com/https://raw.githubusercontent.com/hamid-gh98/x-ui-scripts/main/install_warp_proxy.sh) 
+        else
+          bash <(curl -sSL https://raw.githubusercontent.com/hamid-gh98/x-ui-scripts/main/install_warp_proxy.sh) 
+        fi
         recheck_ip_address
         ;;
       3) 
@@ -5242,10 +5248,26 @@ warp_tools_run() {
         recheck_ip_address
         ;;
       4) clear && bash <(curl -fsSL git.io/warp.sh) menu  ;;
-      5) clear && wget -N https://raw.githubusercontent.com/fscarmen/warp/main/warp-go.sh && bash warp-go.sh ;;
+      5) clear 
+        country=$(curl -s --max-time 3 ipinfo.io/country)
+        if [ "$country" = "CN" ]; then
+          wget -N https://mirror.ghproxy.com/https://raw.githubusercontent.com/fscarmen/warp/main/warp-go.sh && bash warp-go.sh 
+        else
+          wget -N https://raw.githubusercontent.com/fscarmen/warp/main/warp-go.sh && bash warp-go.sh 
+        fi
+        recheck_ip_address
+          ;;
       6) clear && bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/sba/main/sba.sh) ;;
-      7) clear && bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/sing-box/main/sing-box.sh) ;;
-      8) clear && bash <(curl -Ls https://gitlab.com/rwkgyg/sing-box-yg/raw/main/sb.sh)  ;;
+      7) clear 
+        country=$(curl -s --max-time 3 ipinfo.io/country)
+        if [ "$country" = "CN" ]; then
+          bash <(wget -qO-  https://mirror.ghproxy.com/https://raw.githubusercontent.com/fscarmen/sing-box/main/sing-box.sh)
+        else
+          bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/sing-box/main/sing-box.sh)
+        fi
+        ;;
+
+      8) clear && bash <(curl -Ls https://gitlab.com/rwkgyg/sing-box-yg/raw/main/sb.sh) ;;
 
      11) clear && bash <(wget -qO- -o- https://github.com/233boy/Xray/raw/main/install.sh) ;;
      12) clear && bash <(wget -qO- -o- https://git.io/v2ray.sh) ;;
