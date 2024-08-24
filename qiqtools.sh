@@ -6232,7 +6232,7 @@ txtn $(txty "11.查看状态")$(txtg "✔")"           "$(txtn "21.安装PHP8.3"
 txtn $(txtn "12.安装Caddy")$(txtg "✔")"          "$(txtn "22.安装PHP8.2")$(txtg "✘")
 txtn $(txtn "13.安装Nginx")$(txtg "✔")"          "$(txtn "23.安装PHP8.1")$(txtb "✘")
 txtn $(txtn "14.安装OpenLiteSpeed")$(txtg "✔")"  "$(txtn "24.安装PHP7.4")$(txtb "✔")
-txtn $(txtn "15.卸载Nginx")$(txtr "✔")"          "$(txtn "")$(txtb "")
+txtn $(txtn "15.卸载Nginx")$(txtr "✔")"          "$(txtn "25.检测IP")$(txtb "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.站点列表")$(txtg "✔")"           "$(txty "41.重启服务")$(txtp "✔")
 txtn $(txtn "32.站点管理")$(txtg "✔")"           "$(txtn "42.停止服务")$(txtg "✔")
@@ -6256,7 +6256,7 @@ WebSites_manager_run(){
     cd /etc/caddy
   fi
 
-  check_IP_address
+  # check_IP_address
 
   while true; do
     clear && WebSites_manager_menu
@@ -6296,6 +6296,7 @@ WebSites_manager_run(){
 
      21) clear && install_php83 ;;
      22) clear && install_php74 ;;
+     25) check_IP_address ;;
 
      31) caddy_web_list ;;
      32) caddy_web_manager ;;
@@ -6449,7 +6450,7 @@ txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "21.系统工具")$(txtp "❁")"       "$(txtn "31.性能测试")$(txtb "☯")
 txtn $(txtn "22.常用工具")$(txtn "❃")"       "$(txtp "32.节点搭建")$(txty "✈")
 txtn $(txtn "23.管理工具")$(txtb "の")"      "$(txtc "33.节点面板")$(txty "⊕")
-txtn $(txtn "24.IP检测优选")$(txtb "㊥")"     "$(txtc "")$(txty "")
+txtn $(txtn "24.IP检测优选")$(txtb "㊥")"     "$(txtc "34.检测IP")$(txty "➵")
 txtn "====================================="
 txtn $(txtb "00.脚本更新")$(txtb "☋")"       "$(txty "99")$(txtc ".重启系统☢")
 txtn "—————————————————————————————————————"
@@ -6483,6 +6484,7 @@ while true; do
     31) clear && server_test_run  ;;
     32) clear && warp_tools_run   ;;
     33) clear && board_panels_run  ;;
+    34) check_IP_address  ;;
 
     00) script_update ;;
     99) echo "正在重启服务器，即将断开SSH连接" && reboot  ;;
