@@ -6405,27 +6405,6 @@ script_update(){
 
 
 show_header_qiq(){
-
-# txtn " "$(txtg "  ░███   ") $(txtc "░████") $(txtg "  ░███   ")
-# txtn " "$(txtg " ░██ ░██ ") $(txtc " ░██ ") $(txtg " ░██ ░██ ")
-# txtn " "$(txtg "░██   ░██") $(txtc " ░██ ") $(txtg "░██   ░██")
-# txtn " "$(txtg " ░██ ░██ ") $(txtc " ░██ ") $(txtg " ░██ ░██ ")
-# txtn " "$(txtg "   ░██ ██") $(txtc "░████") $(txtg "   ░██ ██")
-# txtn $(txtb "─┬─╭─╮╭─╮┬ ╭─╮")
-# txtn $(txtb " │ │ ││ ││ ╰─╮")
-# txtn $(txtb " │ ╰─╯╰─╯╰─╰─╯")$(txtc "  ✟  ")$(txtn "快捷命令")$(txtc "☞")$(txty " qiq ")$(txtc "☜")
-
-# echo -e "
-#  ${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}
-#  ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
-#  ${green}░██   ░██  ${cyan} ░██   ${green}░██   ░██${plain}
-#  ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
-#  ${green}   ░██ ██  ${cyan}░████  ${green}   ░██ ██${plain}
-
-# ${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}  
-# ${blue} │ │ ││ ││ ╰─╮${plain}  
-# ${blue} │ ╰─╯╰─╯╰─╰─╯${plain}   ${cyan}✟${plain} 快捷命令 ${cyan}☞ ${yellow}qiq${cyan} ☜${plain}"
-
 echo -e "
  ${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}
  ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
