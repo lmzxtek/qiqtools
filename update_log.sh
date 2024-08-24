@@ -113,4 +113,5 @@ echoY "   1.修改DD成Windows的语言为中文(有问题，切换回了英文)
 echoY "   2.增加下载DD脚本的下载菜单。"
 echoY "   3.主菜单增加IP检测选项。"
 echoY "   4.常用工具中添加KijiLion脚本。"
+echoY "   5.增加ClamAV安装。"
 echoT "--------------------------------"
