@@ -518,7 +518,7 @@ get_sysinfo(){
     runtime=$(cat /proc/uptime | awk -F. '{run_days=int($1 / 86400);run_hours=int(($1 % 86400) / 3600);run_minutes=int(($1 % 3600) / 60); if (run_days > 0) printf("%d天 ", run_days); if (run_hours > 0) printf("%d时 ", run_hours); printf("%d分\n", run_minutes)}')
 
     # if [[ -n "$is2checkip"]] || [[ $is2checkip -eq 1 ]]; then
-    if [[ $is2checkip -eq 1 ]]; then
+    if [[ $is2checkip -ne 1 ]]; then
       txtn "\n >>> Check IP address ..."
       check_IP_address
     fi
