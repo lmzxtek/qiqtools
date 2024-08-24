@@ -1261,11 +1261,33 @@ txtn $(txtn "53.Windows 2016")$(txtb "▣")"     "$(txtn "63.Windows 10(EN)")$(t
 txtn $(txtn "54.Windows 2012")$(txtb "▣")"     "$(txtn "64.Windows 10(CN)")$(txtg "◕")
 txtn $(txtn "55.Windows 7")$(txtb "◕")"        "$(txtn "")$(txtg "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "71.41合一脚本")$(txtn "❉")"       "$(txtn "")$(txtg "")
+txtn $(txtn "71.41合一脚本")$(txtn "❉")"       "$(txtn "72.脚本使用说明")$(txtg "♡")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")"        "$(txtp "")$(txtc "")$(txty "")
 txtn " "
+}
+
+dd_usage(){
+txtn " "
+txtn $(txby "▼ DD脚本使用说明")$(txtp " ❃❃❃ ")
+txtn "—————————————————————————————————————"
+txtn "\t${pink} Linux   : ${blue}root${red}@${yellow}LeitboGi0ro${plain}"
+txtn "\t${pink} Windows : ${blue}Administrator${red}@${yellow}Teddysun.com"
+txtn "\t${pink} @bin456789 : ${blue}root|Administrator${red}@${yellow}123@@@"
+txtn "\t${pink}           ${white}(Windows need mininumn 15G Storage)${plain}\n"
+txtn "\t${pink} ${white}注: 当administrator无法登录时，可尝试.\administrator${plain}\n"
+txtn '\t${pink} ${white}     bash InstallNET.sh -windows 11 -lang "en""'
+txtn "\t${pink} ${white}win: reinstall.sh alma 8|9"
+txtn "\t${pink} ${white}win: reinstall.sh rocky 8|9"
+txtn "\t${pink} ${white}win: reinstall.sh debian 9|10|11|12"
+txtn "\t${pink} ${white}win: reinstall.sh ubuntu 24.04 [--minimal]"
+txtn "\t${pink} ${white}win: reinstall.sh alpine 3.17|3.18|3.19|3.20"
+txtn "\t${pink} ${white}win: reinstall.sh windows --image--name='windows server 2022 serverdatacenter' ${plain}"
+txtn "\t${pink} ${white}                          --lang zh-cn ${plain}\n"
+txtn "\t${pink} ${white}win: bash reinstall.sh windows --image-name 'Windows 10 Enterprise LTSC 2021'"
+txtn "\t${pink} ${white}                               --lang zh-cn ${plain}\n"
+txtn "—————————————————————————————————————"
 }
 
 dd_system_run() {
@@ -1465,6 +1487,12 @@ dd_system_run() {
       71) 
         apt update -y #&& apt dist-upgrade -y
         wget --no-check-certificate -O NewReinstall.sh https://raw.githubusercontent.com/fcurrk/reinstall/master/NewReinstall.sh && chmod a+x NewReinstall.sh && bash NewReinstall.sh
+        ;;
+
+      72) 
+        # dd_xitong_2 
+        # dd_xitong_bin456789
+        dd_usage
         ;;
       #============================== 
       0) system_setting_run && exit ;;
