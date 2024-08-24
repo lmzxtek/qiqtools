@@ -5209,7 +5209,7 @@ txtn $(txtn " 4.Warp(@p3terx)")$(txtg "✔")"                 "$(txtn "14.Hyster
 txtn $(txtn " 5.Warp-go(@fscarmen)")$(txtg "✔")"            "$(txtn "15.TUIC5(@Misaka)")$(txtg "✔")
 txtn $(txtn " 6.SingBox-Argox(@fscarmen)")$(txtg "✔")"      "$(txtn "16.mianyang()")$(txtg "✔")
 txtn $(txby " 7.SingBox全家桶(@fscarmen)")$(txtr "✔")"      "$(txtn "17.ArgoX")$(txtb "✔")
-txtn $(txby " 8.SingBox四合一(yg)")$(txtp "✔")"             "$(txtn "")$(txtb "")
+txtn $(txby " 8.SingBox四合一(yg)")$(txtp "✔")"             "$(txtr "18.Check IP")$(txtb "➵")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "51.XRayR(@XrayR-project)")$(txtg "✔")"         "$(txtn "61.V2bX(Vless&Trojan to V2board)")$(txtg "")
@@ -5252,6 +5252,7 @@ warp_tools_run() {
      15) clear && wget -N --no-check-certificate https://gitlab.com/Misaka-blog/tuic-script/-/raw/main/tuic.sh && bash tuic.sh ;;
      16) clear && bash <(curl -fsSL https://github.com/vveg26/sing-box-reality-hysteria2/raw/main/beta.sh) ;;
      17) clear && bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/argox/main/argox.sh)  ;;
+     18) check_IP_address ;;
 
      51) clear && wget -N https://raw.githubusercontent.com/XrayR-project/XrayR-release/master/install.sh && bash install.sh && cd /etc/XrayR ;;
      52) clear && wget -N https://raw.githubusercontent.com/wyx2685/XrayR-release/master/install.sh && bash install.sh ;;
