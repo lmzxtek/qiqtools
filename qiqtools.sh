@@ -5215,7 +5215,7 @@ txtn "====================================="
 txtn $(txty " 1.Warp(@fscarmen)")$(txtr "✔")"               "$(txtn "11.XRay(@233boy)")$(txtg "✔")
 txtn $(txtn " 2.Warp(@hamid-gh98)")$(txtg "✔")"             "$(txtn "12.V2Ray(@233boy)")$(txtg "✔")
 txtn $(txtn " 3.Warp(@Misaka-blog)")$(txtg "✔")"            "$(txtn "13.V2Ray-Agent(@mack-a)")$(txtg "✔")
-txtn $(txtn " 4.Warp(@p3terx)")$(txtg "✔")"                 "$(txtn "14.Hysteria2(@Misaka)")$(txtg "✔")
+txtn $(txtr " 4.Warp(@p3terx)")$(txtb "✔")"                 "$(txtn "14.Hysteria2(@Misaka)")$(txtg "✔")
 txtn $(txtn " 5.Warp-go(@fscarmen)")$(txtg "✔")"            "$(txtn "15.TUIC5(@Misaka)")$(txtg "✔")
 txtn $(txtn " 6.SingBox-Argox(@fscarmen)")$(txtg "✔")"      "$(txtn "16.mianyang()")$(txtg "✔")
 txtn $(txby " 7.SingBox全家桶(@fscarmen)")$(txtr "✔")"      "$(txtn "17.ArgoX")$(txtb "✔")
@@ -6461,7 +6461,7 @@ txtn $(txtn " 2.系统更新")$(txtb "☣")"       "$(txty "12.容器部署")$(t
 txtn $(txtn " 3.系统清理")$(txtb "☒")"       "$(txtp "13.站点管理")$(txtb "❈")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "21.系统工具")$(txtp "❁")"       "$(txtn "31.性能测试")$(txtb "☯")
-txtn $(txtn "22.常用工具")$(txtn "❃")"       "$(txtp "32.节点搭建")$(txty "✈")
+txtn $(txtn "22.常用工具")$(txtn "❃")"       "$(txtr "32.节点搭建")$(txty "✈")
 txtn $(txtn "23.管理工具")$(txtb "の")"      "$(txtc "33.节点面板")$(txty "⊕")
 txtn $(txtn "24.IP检测优选")$(txtb "㊥")"    "$(txtr "34.检测出站IP")$(txtb "➵")
 txtn "====================================="
