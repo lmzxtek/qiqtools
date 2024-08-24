@@ -6233,13 +6233,13 @@ txtn $(txty "11.查看状态")$(txtg "✔")"           "$(txtn "21.安装PHP8.3"
 txtn $(txtn "12.安装Caddy")$(txtg "✔")"          "$(txtn "22.安装PHP8.2")$(txtg "✘")
 txtn $(txtn "13.安装Nginx")$(txtg "✔")"          "$(txtn "23.安装PHP8.1")$(txtb "✘")
 txtn $(txtn "14.安装OpenLiteSpeed")$(txtg "✔")"  "$(txtn "24.安装PHP7.4")$(txtb "✔")
-txtn $(txtn "15.卸载Nginx")$(txtr "✔")"          "$(txtr "25.检测IP")$(txtb "➵")
+txtn $(txtn "15.卸载Nginx")$(txtr "✔")"          "$(txtr "")$(txtb "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.站点列表")$(txtg "✔")"           "$(txty "41.重启服务")$(txtp "✔")
 txtn $(txtn "32.站点管理")$(txtg "✔")"           "$(txtn "42.停止服务")$(txtg "✔")
 txtn $(txtn "33.添加重定向")$(txtg "✔")"         "$(txtn "43.更新服务")$(txtg "✔")
 txtn $(txty "34.添加反向代理")$(txtg "✔")"       "$(txtn "44.删除服务")$(txtb "✘")
-txtn $(txtn "35.添加静态站点")$(txtg "✔")"       "$(txtn "") $(txtb "")
+txtn $(txtn "35.添加静态站点")$(txtg "✔")"       "$(txty "45.检测IP") $(txtb "➵")
 txtn "====================================="
 txtn $(txtn "61.安装Redis")$(txtg "✔")"          "$(txtn "63.安装MariaDB")$(txtb "✔")
 txtn $(txtn "62.安装MySQL")$(txtb "✘")"          "$(txtn "64.安装PostgreSQL")$(txtb "✔")
@@ -6297,7 +6297,6 @@ WebSites_manager_run(){
 
      21) clear && install_php83 ;;
      22) clear && install_php74 ;;
-     25) check_IP_address ;;
 
      31) caddy_web_list ;;
      32) caddy_web_manager ;;
@@ -6367,6 +6366,7 @@ WebSites_manager_run(){
      42) caddy_start ;;
      43) caddy_stop ;;
      44) caddy_uninstall ;;
+     45) check_IP_address ;;
 
      61) clear && install_redis ;;
      62) clear && mysql_install ;;
