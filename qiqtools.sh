@@ -1276,7 +1276,7 @@ txtn "       Linux : ${blue}root${red}@${yellow}LeitboGi0ro${plain}"
 txtn "     Windows : ${blue}Administrator${red}@${yellow}Teddysun.com"
 txtn "  @bin456789 : ${blue}root|Administrator${red}@${yellow}123@@@"
 txtn "   ${white}(Windows need mininumn 15G Storage)${plain}"
-txtn '   ${white}(当administrator无法登录时, 可尝试.\\administrator)${plain}\n'
+txtn '   (当administrator无法登录时, 可尝试.\\administrator)\n'
 txtn "  bash InstallNET.sh -windows 10 -lang 'en'"
 txtn "  bash InstallNET.sh -windows 11 -lang 'cn'\n"
 txtn "  reinstall.sh alma 8|9"
