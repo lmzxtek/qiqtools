@@ -1305,8 +1305,12 @@ txtn "  reinstall.sh rocky 8|9"
 txtn "  reinstall.sh debian 9|10|11|12"
 txtn "  reinstall.sh ubuntu 24.04 [--minimal]"
 txtn "  reinstall.sh alpine 3.17|3.18|3.19|3.20\n"
+txtn "  bash reinstall.sh windows --image-name 'Windows 11 Business 23H2'"
+txtn "                            --lang en-us ${plain}\n"
 txtn "  bash reinstall.sh windows --image-name 'Windows 10 Enterprise LTSC 2021'"
 txtn "                            --lang zh-cn ${plain}\n"
+txtn "      reinstall.bat windows --image--name='windows server 2025 serverdatacenter' ${plain}"
+txtn "                            --lang en-us ${plain}\n"
 txtn "      reinstall.bat windows --image--name='windows server 2022 serverdatacenter' ${plain}"
 txtn "                            --lang zh-cn ${plain}\n"
 }
@@ -1485,7 +1489,6 @@ dd_system_run() {
         reboot 
         exit ;;
       61) 
-        # bash InstallNET.sh -windows 11
         bash InstallNET.sh -windows 11 -lang "en"
         # bash InstallNET.sh -windows 11 -lang "cn"
         # bash InstallNET.sh -windows 11 -lang "jp" -port "22[1~65535]" -pwd "PssWord" -hostname "win11"
@@ -1493,8 +1496,7 @@ dd_system_run() {
         reboot 
         exit ;;
       62) 
-        # bash InstallNET.sh -windows 10
-        bash InstallNET.sh -windows 11 -lang "en"
+        bash InstallNET.sh -windows 11 -lang "cn"
         reboot 
         exit ;;
       63) 
