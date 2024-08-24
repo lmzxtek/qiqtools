@@ -1489,7 +1489,7 @@ dd_system_run() {
         wget --no-check-certificate -O NewReinstall.sh https://raw.githubusercontent.com/fcurrk/reinstall/master/NewReinstall.sh && chmod a+x NewReinstall.sh && bash NewReinstall.sh
         ;;
 
-      72) 
+      72) clear
         # dd_xitong_2 
         # dd_xitong_bin456789
         dd_usage
