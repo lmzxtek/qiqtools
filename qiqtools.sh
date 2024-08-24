@@ -1493,6 +1493,7 @@ dd_system_run() {
         # dd_xitong_2 
         # dd_xitong_bin456789
         dd_usage
+        break_end
         ;;
       #============================== 
       0) system_setting_run && exit ;;
