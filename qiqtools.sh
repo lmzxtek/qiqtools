@@ -5219,7 +5219,7 @@ txtn $(txtn " 4.Warp(@p3terx)")$(txtg "✔")"                 "$(txtn "14.Hyster
 txtn $(txtn " 5.Warp-go(@fscarmen)")$(txtg "✔")"            "$(txtn "15.TUIC5(@Misaka)")$(txtg "✔")
 txtn $(txtn " 6.SingBox-Argox(@fscarmen)")$(txtg "✔")"      "$(txtn "16.mianyang()")$(txtg "✔")
 txtn $(txby " 7.SingBox全家桶(@fscarmen)")$(txtr "✔")"      "$(txtn "17.ArgoX")$(txtb "✔")
-txtn $(txby " 8.SingBox四合一(yg)")$(txtp "✔")"             "$(txtr "18.Check-IP")$(txtb "➵")
+txtn $(txbb " 8.SingBox四合一(yg)")$(txtp "✔")"             "$(txtr "18.Check-IP")$(txtb "➵")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "51.XRayR(@XrayR-project)")$(txtg "✔")"         "$(txtn "61.V2bX(Vless&Trojan to V2board)")$(txtg "")
