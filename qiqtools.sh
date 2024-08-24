@@ -1220,15 +1220,15 @@ dd_xitong_1() {
 
 dd_xitong_2() {
   install wget
-  wget --no-check-certificate -qO InstallNET.sh 'https://raw.githubusercontent.com/leitbogioro/Tools/master/Linux_reinstall/InstallNET.sh' && chmod a+x InstallNET.sh
+  wget --no-check-certificate -qOs InstallNET.sh 'https://raw.githubusercontent.com/leitbogioro/Tools/master/Linux_reinstall/InstallNET.sh' && chmod a+x InstallNET.sh
 }
 
 dd_xitong_bin456789() {
   country=$(curl -s --max-time 3 ipinfo.io/country)
   if [ "$country" = "CN" ]; then
-      curl -O https://mirror.ghproxy.com/https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh
+      curl -sO https://mirror.ghproxy.com/https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh
   else
-      curl -O https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh
+      curl -sO https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh
   fi
 }
 
