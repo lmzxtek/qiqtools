@@ -5316,7 +5316,7 @@ txtn $(txtn " 1.Show IP(ip.sb)")$(txtg "✔")"      "$(txtn "11.Set GitHUB(IPv6)
 txtn $(txtn " 2.Show IPv4(local)")$(txtg "✔")"    "$(txtb "12.Cloudflare Select IP")$(txtg "✔")
 txtn $(txtn " 3.Show IPv6(local)")$(txtg "✔")"    "$(txtn "13.Cloudflare Select CDN")$(txtg "✔")
 txtn $(txtp " 4.Cloudflare(IPv4)")$(txtg "✔")"    "$(txtr "14.Check DNS")$(txtg "✔")
-txtn $(txtp " 5.Cloudflare(IPv6)")$(txtg "✔")"    "$(txtr "")$(txtg "")
+txtn $(txtp " 5.Cloudflare(IPv6)")$(txtg "✔")"    "$(txty "15.检测出站IP")$(txtg "➵")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
 txtn " "
@@ -5338,6 +5338,7 @@ IP_check_select_run() {
      12) clear && cd ~ && mkdir -p cfip && cd cfip && curl -sSL https://gitlab.com/rwkgyg/CFwarp/raw/main/point/cfip.sh -o cfip.sh && chmod +x cfip.sh && bash cfip.sh ;;
      13) clear && cd ~ && mkdir -p cfip && cd cfip && curl -sSL https://gitlab.com/rwkgyg/CFwarp/raw/main/point/CFcdnym.sh -o CFcdnym.sh && chmod +x CFcdnym.sh && bash CFcdnym.sh ;;
      14) clear && install nslookup && nslookup google.com ;;
+     15) check_IP_address ;;
 
       0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
