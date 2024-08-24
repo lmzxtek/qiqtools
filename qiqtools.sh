@@ -1277,7 +1277,7 @@ txtn "\t${pink} Windows : ${blue}Administrator${red}@${yellow}Teddysun.com"
 txtn "\t${pink} @bin456789 : ${blue}root|Administrator${red}@${yellow}123@@@"
 txtn "\t${pink}           ${white}(Windows need mininumn 15G Storage)${plain}\n"
 txtn "\t${pink} ${white}注: 当administrator无法登录时, 可尝试.\\administrator${plain}\n"
-txtn '\t${pink} ${white} bash InstallNET.sh -windows 11 -lang "en"'
+txtn '\t${pink} ${white} bash InstallNET.sh -windows 11 -lang \"en\"'
 txtn "\t${pink} ${white} reinstall.sh alma 8|9"
 txtn "\t${pink} ${white} reinstall.sh rocky 8|9"
 txtn "\t${pink} ${white} reinstall.sh debian 9|10|11|12"
