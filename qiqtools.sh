@@ -937,13 +937,13 @@ txtn "————————————————————————�
 # WANIP_show
 # txtn "====================================="
 txtn $(txty " 1.curl(下载工具)")$(txtc "↓")"      "$(txtn "11.htop(系统监控)")$(txtg "❉")
-txtn $(txtn " 2.wget(下载工具)")$(txtg "↓")"      "$(txtp "12.btop(现代化监控)")$(txtg "❀")
+txtn $(txtn " 2.wget(下载工具)")$(txtg "↓")"      "$(txtr "12.btop(现代化监控)")$(txtb "❀")
 txtn $(txtn " 3.sudo(超级管理权限)")$(txtg "✔")"  "$(txtn "13.iftop(网络流量监控)")$(txtg "❈")
-txtn $(txtn " 4.gdu(磁盘占用查看)")$(txtg "✔")"   "$(txtn "14.tar(GZ压缩解压)")$(txtg "๑")
+txtn $(txtr " 4.gdu(磁盘占用查看)")$(txtg "✔")"   "$(txtn "14.tar(GZ压缩解压)")$(txtg "๑")
 txtn $(txtn " 5.fzf(文件管理)")$(txtg "✔")"       "$(txtn "15.unzip(ZIP压缩解压)")$(txtg "ღ")
 txtn $(txtn " 6.ranger(全局搜索)")$(txtg "✔")"    "$(txtn "16.ffmpeg(视频编码直播推流)")$(txtg "▣")
 txtn $(txtn " 7.tmux(多路后台运行)")$(txtg "✔")"  "$(txtn "17.socat(通信连接(申请域名证书必备))")$(txtg "☎")
-txtn $(txtn " 8.SuperVisor")$(txtg "☣")"          "$(txtn "18.Fail2Ban")$(txtg "☢")
+txtn $(txty " 8.SuperVisor")$(txtb "☣")"          "$(txty "18.Fail2Ban")$(txtb "☢")
 txtn $(txtn " 9.pure-ftp")$(txtg "✔")"           "$(txtn "")$(txtg "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.全部安装")$(txtg "✔")"            "$(txtn "41.安装指定工具")$(txtg "☂")
@@ -954,7 +954,7 @@ txtn $(txtn "62.俄罗斯方块")$(txtg "▣")"          "$(txtn "72.cmatrix(黑
 txtn $(txtn "63.太空入侵者")$(txtg "➹")"          "$(txtn "")$(txtg "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
-txtn $(txtn " 0.返回主菜单")$(txtr "✖")"           "$(txtp "")$(txtc "")$(txty "")
+txtn $(txtn " 0.返回主菜单")$(txtr "✖")"           "$(txty "99.KejiLion脚本")$(txtc "")$(txty "")
 txtn " "
 
 }
@@ -1003,6 +1003,15 @@ common_apps_run() {
 
      71) clear && install sl        && clear && /usr/games/sl ;;
      72) clear && install cmatrix   && clear && cmatrix ;;
+
+     99) clear 
+        country=$(curl -s --max-time 3 ipinfo.io/country)
+        if [ "$country" = "CN" ]; then
+          curl -sS -O https://kejilion.pro/kejilion.sh && chmod +x kejilion.sh && ./kejilion.sh
+        else
+            curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/kejilion.sh && chmod +x kejilion.sh && ./kejilion.sh
+        fi
+        ;;
      
       0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
@@ -2464,14 +2473,7 @@ system_setting_run() {
       4) clear && change_ssh_port ;;
       5) clear && change_dns ;;
       6) clear && dd_system_run ;;
-        # clear && echo -e "请备份数据，将为你重装系统，预计花费15分钟。\n${white}感谢MollyLau和MoeClub的脚本支持！${plain}"
-        # reading "确定继续吗？(Y/N): " choice
-        # case "$choice" in
-        #   [Yy]) dd_system_run ;;
-        #   [Nn]) echo "已取消" ;;
-        #      *) echo "无效的选择，请输入 Y 或 N。" ;;
-        # esac
-        # ;;
+      
       7) clear && banroot_with_new_user ;;
       8) clear && alter_ipv4_ipv6 ;;
       9) clear && ss -tulnape ;;
