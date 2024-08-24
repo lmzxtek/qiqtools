@@ -944,7 +944,7 @@ txtn $(txtn " 5.fzf(文件管理)")$(txtg "✔")"       "$(txtn "15.unzip(ZIP压
 txtn $(txtn " 6.ranger(全局搜索)")$(txtg "✔")"    "$(txtn "16.ffmpeg(视频编码直播推流)")$(txtg "▣")
 txtn $(txtn " 7.tmux(多路后台运行)")$(txtg "✔")"  "$(txtn "17.socat(通信连接(申请域名证书必备))")$(txtg "☎")
 txtn $(txty " 8.SuperVisor")$(txtb "☣")"          "$(txtn "18.pure-ftp")$(txtb "✔")
-txtn $(txty " 9.Fail2Ban")$(txtg "☢")"           "$(txtn "19.ClamAV(病毒扫描)")$(txtg "✔")
+txtn $(txty " 9.Fail2Ban")$(txtg "☢")"            "$(txtn "19.ClamAV(病毒扫描)")$(txtg "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.全部安装")$(txtg "✔")"            "$(txtn "41.安装指定工具")$(txtg "☂")
 txtn $(txtn "32.全部卸载")$(txtg "✔")"            "$(txtn "42.卸载指定工具")$(txtg "☂")
@@ -954,7 +954,7 @@ txtn $(txtn "62.俄罗斯方块")$(txtg "▣")"          "$(txtn "72.cmatrix(黑
 txtn $(txtn "63.太空入侵者")$(txtg "➹")"          "$(txtn "")$(txtg "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
-txtn $(txtn " 0.返回主菜单")$(txtr "✖")"           "$(txty "99.KejiLion脚本")$(txtc "")$(txty "")
+txtn $(txtn " 0.返回主菜单")$(txtr "✖")"          "$(txty "99.KejiLion脚本")$(txtc "")$(txty "")
 txtn " "
 
 }
