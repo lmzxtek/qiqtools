@@ -6232,7 +6232,7 @@ txtn $(txty "11.查看状态")$(txtg "✔")"           "$(txtn "21.安装PHP8.3"
 txtn $(txtn "12.安装Caddy")$(txtg "✔")"          "$(txtn "22.安装PHP8.2")$(txtg "✘")
 txtn $(txtn "13.安装Nginx")$(txtg "✔")"          "$(txtn "23.安装PHP8.1")$(txtb "✘")
 txtn $(txtn "14.安装OpenLiteSpeed")$(txtg "✔")"  "$(txtn "24.安装PHP7.4")$(txtb "✔")
-txtn $(txtn "15.卸载Nginx")$(txtr "✔")"          "$(txtn "25.检测IP")$(txtb "")
+txtn $(txtn "15.卸载Nginx")$(txtr "✔")"          "$(txtr "25.检测IP")$(txtb "➵")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.站点列表")$(txtg "✔")"           "$(txty "41.重启服务")$(txtp "✔")
 txtn $(txtn "32.站点管理")$(txtg "✔")"           "$(txtn "42.停止服务")$(txtg "✔")
