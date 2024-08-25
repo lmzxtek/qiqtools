@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.6.0
+script_version=v0.6.1
 #==========================
 
 # Language
@@ -5365,6 +5365,7 @@ txtn $(txtb " 2.X-UI(@alireza0)")$(txtg "✔")"        "$(txty "12.V2RayA")$(txt
 txtn $(txtn " 3.X-UI(@FranzKafkaYu)")$(txtg "✔")"    "$(txtn "13.Daed")$(txtg "✔")
 txtn $(txtn " 4.X-UI(@rwkgyg)")$(txtg "✔")"          "$(txtn "14.Daed-Docker")$(txtg "✔")
 txtn $(txtc " 5.X-UI(alpine)")$(txtg "✔")"           "$(txtn "15.S-UI(@alireza0)")$(txtg "✔")
+txtn $(txtn " 6.H-UI(only HY2)")$(txtg "✔")"         "$(txtn "")$(txtg "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "21.XBoard")$(txtb "✘")"                 "$(txtn "41.LotusBoard")$(txtb "✔")
 txtn $(txtn "22.V2Board")$(txtb "✘")"                "$(txtn "42.SSPanel")$(txtb "✘")
@@ -5387,6 +5388,7 @@ board_panels_run() {
       3) clear && bash <(curl -Ls https://raw.githubusercontent.com/FranzKafkaYu/x-ui/master/install.sh) ;;
       4) clear && bash <(curl -Ls https://gitlab.com/rwkgyg/x-ui-yg/raw/main/install.sh)  ;;
       5) clear && apk add curl && apk add bash && bash <(curl -Ls https://raw.githubusercontent.com/Lynn-Becky/Alpine-x-ui/main/alpine-xui.sh)  ;;
+      6) clear && bash <(curl -fsSL https://raw.githubusercontent.com/jonssonyan/h-ui/main/install.sh)  ;;
 
      11) clear && bash -c "$(curl -Lfo- https://raw.githubusercontent.com/hiddify/hiddify-config/main/common/download_install.sh)" ;;
      12) clear && echo -e "\n Todo: ... \n" ;;
