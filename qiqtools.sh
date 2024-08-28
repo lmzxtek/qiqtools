@@ -5880,13 +5880,13 @@ elif ! command -v docker-compose &>/dev/null; then
   echo -e " >>> docker-compose${yellow}未安装${plain} ..."
 fi
 txtn "====================================="
-txtn $(txtn " 1.Docker环境安装")$(txtg "✔")"       "$(txty "11.Docker状态")$(txtn "✔")
-txtn $(txtn " 2.Docker环境卸载")$(txtg "✔")"       "$(txtn "12.Docker清理")$(txtn "✔")
+txtn $(txtn " 1.Docker环境安装")$(txtg " ")"       "$(txty "11.Docker状态")$(txtn " ☆")
+txtn $(txtn " 2.Docker环境卸载")$(txtg " ")"       "$(txtn "12.Docker清理")$(txtn " ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txty "21.Docker容器管理")$(txtp "✔")"       "$(txtn "31.Docker网络管理")$(txtn "✔")
-txtn $(txtn "22.Docker镜像管理")$(txtp "✔")"       "$(txtn "32.Docker卷管理")$(txtn "✔")
+txtn $(txty "21.Docker容器管理")$(txtp " ")"       "$(txtn "31.Docker网络管理")$(txtn " ")
+txtn $(txtn "22.Docker镜像管理")$(txtp " ★")"      "$(txtn "32.Docker卷管理")$(txtn " ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "66.设置快捷键[dcc]")$(txtg "✔")"      "$(txtp "88.站点部署")$(txty "☞☞")
+txtn $(txtn "66.设置快捷键[dcc]")$(txtg " ")"      "$(txtp "88.站点部署")$(txty " ▷")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"      "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")"           "$(txtr "")$(txtb "")$(txtc "")
