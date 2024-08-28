@@ -6314,23 +6314,23 @@ txtn $(txbr "▼ 站点管理")$(txtp " ❦❦❦ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
-txtn $(txtn " 1.安装LDNMP环境")$(txtb "✘")"      "$(txtn "11.更新LDNMP环境")$(txtb "✘")
-txtn $(txtn " 2.卸载LDNMP环境")$(txtb "✘")"      "$(txtn "12.优化LDNMP环境")$(txtb "✘")
+txtn $(txtn " 1.安装LDNMP环境")$(txtn "✘")"      "$(txtn "11.更新LDNMP环境")$(txtn "✘")
+txtn $(txtn " 2.卸载LDNMP环境")$(txtn "✘")"      "$(txtn "12.优化LDNMP环境")$(txtn "✘")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "11.查看状态")$(txtg " ☆")"          "$(txtn "21.安装PHP8.3")$(txtg " ")
-txtn $(txtn "12.安装Caddy")$(txtg " ")"          "$(txtn "22.安装PHP8.2")$(txtg "✘")
-txtn $(txtn "13.安装Nginx")$(txtg " ")"          "$(txtn "23.安装PHP8.1")$(txtb "✘")
+txtn $(txtn "12.安装Caddy")$(txtg " ")"          "$(txtn "22.安装PHP8.2")$(txtn " ✘")
+txtn $(txtn "13.安装Nginx")$(txtg " ")"          "$(txtn "23.安装PHP8.1")$(txtn " ✘")
 txtn $(txtn "14.安装OpenLiteSpeed")$(txtg " ")"  "$(txtn "24.安装PHP7.4")$(txtb " ")
 txtn $(txtn "15.卸载Nginx")$(txtr " ")"          "$(txtr "")$(txtb "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.站点列表")$(txtg " ")"           "$(txty "41.重启服务")$(txtp " ☢")
-txtn $(txtn "32.站点管理")$(txtg " ")"           "$(txtn "42.停止服务")$(txtg " ")
+txtn $(txtn "32.站点管理")$(txtg " ☆")"          "$(txtn "42.停止服务")$(txtg " ")
 txtn $(txtn "33.添加重定向")$(txtg " ")"         "$(txtn "43.更新服务")$(txtg " ")
-txtn $(txty "34.添加反向代理")$(txtg " ★")"      "$(txtn "44.删除服务")$(txtb " ✘")
+txtn $(txty "34.添加反向代理")$(txtg " ★")"      "$(txtn "44.删除服务")$(txtg " ✘")
 txtn $(txtn "35.添加静态站点")$(txtg " ")"       "$(txty "45.检测IP") $(txtb " ☭")
 txtn "====================================="
 txtn $(txtn "61.安装Redis")$(txtg " ")"          "$(txtn "63.安装MariaDB")$(txtb " ")
-txtn $(txtn "62.安装MySQL")$(txtb "✘")"          "$(txtn "64.安装PostgreSQL")$(txtb " ")
+txtn $(txtn "62.安装MySQL")$(txtn "✘")"          "$(txtn "64.安装PostgreSQL")$(txtb " ")
 # txtn $(txtn "")$(txtb "✘")"        "$(txtn "")$(txtb "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "77.站点防御程序")$(txtb "✘")"       "$(txtp "88.站点部署")$(txty "✔")
