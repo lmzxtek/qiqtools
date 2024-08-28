@@ -4325,6 +4325,7 @@ EOF
   echo -e   " Password   : $PASS" >> $FCONF
 }
 
+# https://github.com/babaohuang/GeminiProChat
 docker_deploy_geminiprochat(){
 
   local BFLD="/home/dcc.d"
@@ -4370,6 +4371,50 @@ EOF
   echo -e ""
 }
 
+# https://github.com/Amery2010/TalkWithGemini
+docker_deploy_talkwithgemini(){
+  local BFLD="/home/dcc.d"
+
+  local dc_port=35481
+  local dc_name=talkwithgemini
+  local dc_imag=xiangfa/talk-with-gemini
+  local dc_desc="Talk With Gemini"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/downloads"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  echoR "\n >>>" " 现在开始部署 Takl with Gemini ... \n"
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  read -p "请输入GEMINI_API_KEY: " GEMINI_API_KEY
+  read -p "请输入登录密码       : " SITE_PASSWORD
+  
+  cat > "$FYML" << EOF
+version: '3'
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    environment:
+      - GEMINI_API_KEY=$GEMINI_API_KEY
+      - ACCESS_PASSWORD=$SITE_PASSWORD
+    ports:
+        - '$dc_port:3000'
+    restart: unless-stopped
+EOF
+
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echo -e   "Site password: $SITE_PASSWORD"
+  echo -e   "Site password: $SITE_PASSWORD" >> $FCONF
+  echo -e ""
+}
 docker_deploy_aktools(){
 
   local BFLD="/home/dcc.d"
@@ -5025,7 +5070,7 @@ txtn $(txty "26.MyIP(IPChecking)")$(txtg "✔")"     "$(txtn "46.GPT_Academic")$
 txtn $(txtn "27.QBittorrent")$(txtg "✔")"          "$(txtn "47.GeminiProChat")$(txtn "✔")
 txtn $(txtn "28.Portainer")$(txtg "✔")"            "$(txtn "48.ChunhuChat")$(txtn "✔")
 txtn $(txtn "29.Next-Terminal")$(txtg "✔")"        "$(txtn "49.ChatGPT-Next-Web")$(txtn "✔")
-txtn $(txtn "30.NginxProxyManager")$(txtg "✔")"    "$(txtn "50.Aktools")$(txtn "✔")
+txtn $(txtn "30.NginxProxyManager")$(txtg "✔")"    "$(txtc "50.Aktools")$(txtn "✔")
 txtn $(txtn "31.Dash.")$(txtg "✔")"                "$(txtn "51.AKJupyter-Lab")$(txtn "✔")
 txtn $(txtn "32.WatchTower")$(txtg "✔")"           "$(txty "52.Jupyter-Lab")$(txtn "✔")
 txtn $(txtn "33.DeepLX")$(txtg "✔")"               "$(txtn "53.Neko")$(txtn "✔")
@@ -5033,6 +5078,7 @@ txtn $(txtn "34.TorBrowser")$(txtn "✔")"           "$(txtn "54.Neko-Rooms")$(t
 txtn $(txtc "35.OnlineBrowser")$(txtg "✔")"        "$(txty "55.linuxserver(firefox)")$(txtp "✔")
 txtn $(txtb "36.KasmWorkspaces")$(txtg "✔")"       "$(txty "56.linuxserver(chromium)")$(txtp "✔")
 txtn $(txtb "37.Puter")$(txtg "✔")"                "$(txty "57.linuxserver(rdesktop)")$(txtp "✔")
+txtn $(txtb "38.TalkWithGemini")$(txtg "✔")"       "$(txty "")$(txtp "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtp "66.重启Caddy")$(txty "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
@@ -5061,10 +5107,11 @@ website_deploy_run(){
      32) clear && docker_deploy_watchtower ;;
      33) clear && docker_deploy_deeplx ;;
      34) clear && docker_deploy_torbrowser ;;
-     36) clear && docker_deploy_kasmworkspaces ;;
-     37) clear && docker_deploy_puter ;;
      35) clear && install curl && curl -sLkO hammou.ch/online-browser && bash online-browser ;;
       # https://github.com/hhammouch/online-browser
+     36) clear && docker_deploy_kasmworkspaces ;;
+     37) clear && docker_deploy_puter ;;
+     37) clear && docker_deploy_talkwithgemini ;;
 
      41) clear && docker_deploy_maccms_tweek ;;
      42) clear && docker_deploy_memos ;;
@@ -5110,13 +5157,13 @@ txtn $(txtn " 2.aaPanel")$(txtg "✔")"         "$(txtn "12.MacCMS")$(txtb "✘"
 txtn $(txtn " 3.宝塔面板")$(txtg "✔")"        "$(txtc "13.WebOS")$(txtr "✔")
 txtn $(txtn " 4.哪吒探针")$(txtg "✔")"        "$(txty "14.Code-Server")$(txtg "✔")
 txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"   "$(txtn "15.ChatGPT-Next-Web")$(txtr "✘")
-txtn $(txtn " 6.Puter")$(txtg "✔")"           "$(txtn "16.爱影CMS")$(txtr "✔")
+txtn $(txtn " 6.Puter")$(txtg "✔")"           "$(txtc "16.爱影CMS")$(txtr "✔")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.Docker")$(txtg "✔")"          "$(txtn "51.Gnome-Desktop")$(txtg "✔")
 txtn $(txtn "32.Python")$(txtg "✔")"          "$(txtn "52.RustDesk Server")$(txtg "✔")
 txtn $(txtn "33.pip")$(txtg "✔")"             "$(txtn "53.DeepLX Server")$(txtg "✔")
 txtn $(txtn "34.miniConda")$(txtr "✔")"       "$(txtn "54.Chrome")$(txtg "✔")
-txtn $(txtn "35.Conda-forge")$(txtr "✔")"     "$(txtn "55.Jupyter-lab")$(txtg "✔")
+txtn $(txty "35.Conda-forge")$(txtr "✔")"     "$(txtc "55.Jupyter-lab")$(txtg "✔")
 txtn $(txtn "36.TA-Lib")$(txtg "✔")"          "$(txtn "")$(txtb "")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
@@ -6463,20 +6510,20 @@ main_menu() {
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
-txtn $(txty " 1.系统信息")$(txty "☄")"       "$(txtn "11.容器管理")$(txtp "☪")
-txtn $(txtn " 2.系统更新")$(txtb "☣")"       "$(txty "12.容器部署")$(txtc "◎")
-txtn $(txtn " 3.系统清理")$(txtb "☒")"       "$(txtp "13.站点管理")$(txtb "❈")
+txtn $(txty " 1.系统信息")$(txty " ")"       "$(txtn "11.容器管理")$(txtp " ")
+txtn $(txtn " 2.系统更新")$(txtb " ")"       "$(txty "12.容器部署")$(txtc " ")
+txtn $(txtn " 3.系统清理")$(txtb " ")"       "$(txtp "13.站点管理")$(txtb " ★")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txty "21.系统工具")$(txtp "❁")"       "$(txtn "31.性能测试")$(txtb "☯")
-txtn $(txtn "22.常用工具")$(txtn "❃")"       "$(txtr "32.节点搭建")$(txty "✈")
-txtn $(txtn "23.管理工具")$(txtb "の")"      "$(txtc "33.节点面板")$(txty "⊕")
-txtn $(txtn "24.IP检测优选")$(txtb "㊥")"    "$(txtr "34.检测出站IP")$(txtb "➵")
+txtn $(txty "21.系统工具")$(txtp " ")"       "$(txtn "31.性能测试")$(txtb " ")
+txtn $(txtn "22.常用工具")$(txtn " ")"       "$(txtr "32.节点搭建")$(txty " ✈")
+txtn $(txtn "23.管理工具")$(txtb " ☆")"     "$(txtc "33.节点面板")$(txty " ")
+txtn $(txtn "24.IP检测优选")$(txtb " ")"    "$(txtr "34.检测出站IP")$(txtb "➵")
 txtn "====================================="
-txtn $(txtb "00.脚本更新")$(txtb "☋")"       "$(txty "99")$(txtc ".重启系统☢")
+txtn $(txtb "00.脚本更新")$(txtb " ☋")"       "$(txty "99")$(txtc ".重启系统 ☢")
 txtn "—————————————————————————————————————"
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 # txtn $(txtn " 0.退出脚本")$(txtr "✖")"       "$(txtb "♧♧ ")$(txtc "QiQTools") $(txtb "$script_version")
-txtn $(txtn " 0.退出脚本")$(txtr "✖")"       "$(txtp "✟✟ ")$(txtc "快捷命令")$(txtb ">") $(txty "qiq") $(txtb "<")
+txtn $(txtn " 0.退出脚本")$(txtr " ✖")"       "$(txtp "✟✟ ")$(txtc "快捷命令")$(txtb ">") $(txty "qiq") $(txtb "<")
 txtn " "
 }
 
