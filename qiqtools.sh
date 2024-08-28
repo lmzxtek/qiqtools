@@ -532,7 +532,7 @@ get_sysinfo(){
 }
 
 # 显示系统信息
-system_info() {
+show_system_info() {
   get_sysinfo
   clear
 
@@ -747,7 +747,7 @@ function ip_info() {
 
 
 # 更新系统
-update_and_upgrade() {
+sys_update_and_upgrade() {
     
     # Update system on Debian-based systems
     if [ -f "/etc/debian_version" ]; then
@@ -1523,7 +1523,7 @@ dd_system_run() {
         break_end
         ;;
       #============================== 
-      0) system_setting_run && exit ;;
+      0) system_tools_run && exit ;;
       *) echo "无效的选择，请重新输入。" && break_end ;;
     esac    
   done
@@ -2440,25 +2440,25 @@ txtn "————————————————————————�
 txtn "     主机名: "$(txtp "$hostname")
 txtn "   系统版本: "$(txtp "$os_info")
 txtn "====================================="
-txtn $(txtn " 1.修改ROOT密码")$(txtg "✔")"           "$(txby "11.修改虚拟内存")$(txtn "✔")
-txtn $(txtn " 2.开启ROOT密码登录")$(txtg "✔")"       "$(txtn "12.修改主机名")$(txtn "✔")
-txtn $(txtn " 3.开放所有端口")$(txtg "✔")"           "$(txtn "13.切换系统更新源")$(txtn "✔")
-txtn $(txtn " 4.修改SSH端口")$(txtg "✔")"            "$(txtb "14.系统时区调整")$(txty "✔")
-txtn $(txtc " 5.优化DNS")$(txtg "✔")"                "$(txtp "15.开启BBR3加速")$(txtn "✔")
-txtn $(txty " 6.一键DD系统")$(txtr "✔")"             "$(txtn "16.防火墙管理器")$(txtn "✔")
-txtn $(txtn " 7.禁用ROOT账户")$(txtg "✔")"           "$(txtn "17.用户管理")$(txtn "✔")
-txtn $(txtp " 8.切换优先ipv4/ipv6")$(txtg "✔")"      "$(txtn "18.用户/密码生成器")$(txtn "✔")
-txtn $(txtn " 9.查看端口占用状态")$(txtg "✔")"       "$(txtn "19.定时任务管理")$(txtn "✔")
+txtn $(txtn " 1.修改ROOT密码")$(txtg " ")"           "$(txby "11.修改虚拟内存")$(txty " ☆")
+txtn $(txtn " 2.开启ROOT密码登录")$(txtg " ")"       "$(txtn "12.修改主机名")$(txtn " ")
+txtn $(txtn " 3.开放所有端口")$(txtg " ")"           "$(txtn "13.切换系统更新源")$(txtn " ")
+txtn $(txtn " 4.修改SSH端口")$(txtg " ")"            "$(txtb "14.系统时区调整")$(txty " ")
+txtn $(txtc " 5.优化DNS")$(txtg " ")"                "$(txtp "15.开启BBR3加速")$(txtn " ")
+txtn $(txty " 6.一键DD系统")$(txty " ☣")"            "$(txtn "16.防火墙管理器")$(txtn " ")
+txtn $(txtn " 7.禁用ROOT账户")$(txtg " ")"           "$(txtn "17.用户管理")$(txtn " ")
+txtn $(txtp " 8.切换优先ipv4/ipv6")$(txtg " ")"      "$(txtn "18.用户/密码生成器")$(txtn " ")
+txtn $(txtn " 9.查看端口占用状态")$(txtg " ")"       "$(txtn "19.定时任务管理")$(txtn " ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "66.性能测试")$(txty "▷")"               "$(txtn "77.系统信息")$(txtn "✔")
+txtn $(txtn "66.性能测试")$(txty " ▷")"               "$(txtn "77.系统信息")$(txtn " ☼")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
-txtn $(txtn " 0.返回主菜单")$(txtr "✖")"             "$(txtr "99")$(txtb ".重启服务器")$(txtc "☢")
+txtn $(txtn " 0.返回主菜单")$(txtr " ✖")"             "$(txtr "99")$(txtb ".重启服务器")$(txtc " ☢")
 txtn " "
 
 }
 
-system_setting_run() {
+system_tools_run() {
   while true; do 
     clear && system_tools_menu
     reading "请输入你的选择: " sub_choice
@@ -2503,7 +2503,7 @@ system_setting_run() {
      19) clear && cron_manage ;;
 
      66) clear && server_test_run ;;
-     77) clear && system_info ;;
+     77) clear && show_system_info ;;
      99) clear && echo -e "\n正在重启服务器，即将断开SSH连接..." && reboot ;;
       0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
@@ -5134,7 +5134,7 @@ website_deploy_run(){
 
      66) clear && caddy_reload ;;
      77) clear && WebSites_manager_run ;;
-     88) clear && docker_run ;;
+     88) clear && docker_manage_run ;;
 
       0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
@@ -5152,19 +5152,19 @@ WANIP_show
 txtn "====================================="
 # txtn "—————————————————————————————————————"
 # txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txty " 1.1Panel")$(txtc "☂")"          "$(txtn "11.AList")$(txtg "✔")
-txtn $(txtn " 2.aaPanel")$(txtg "✔")"         "$(txtn "12.MacCMS")$(txtb "✘")
-txtn $(txtn " 3.宝塔面板")$(txtg "✔")"        "$(txtc "13.WebOS")$(txtr "✔")
-txtn $(txtn " 4.哪吒探针")$(txtg "✔")"        "$(txty "14.Code-Server")$(txtg "✔")
-txtn $(txtn " 5.OpenLiteSpeed")$(txtg "✔")"   "$(txtn "15.ChatGPT-Next-Web")$(txtr "✘")
-txtn $(txtn " 6.Puter")$(txtg "✔")"           "$(txtc "16.爱影CMS")$(txtr "✔")
+txtn $(txty " 1.1Panel")$(txtc " ☂")"         "$(txtn "11.AList")$(txtg " ")
+txtn $(txtn " 2.aaPanel")$(txtg " ")"         "$(txtn "12.MacCMS")$(txtb " ✘")
+txtn $(txtn " 3.宝塔面板")$(txtg " ")"        "$(txtc "13.WebOS")$(txtr " ")
+txtn $(txtn " 4.哪吒探针")$(txtg " ")"        "$(txty "14.Code-Server")$(txtg " ")
+txtn $(txtn " 5.OpenLiteSpeed")$(txtg " ")"   "$(txtn "15.ChatGPT-Next-Web")$(txtr " ✘")
+txtn $(txtn " 6.Puter")$(txtg " ")"           "$(txtc "16.爱影CMS")$(txtr " ♡")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "31.Docker")$(txtg "✔")"          "$(txtn "51.Gnome-Desktop")$(txtg "✔")
-txtn $(txtn "32.Python")$(txtg "✔")"          "$(txtn "52.RustDesk Server")$(txtg "✔")
-txtn $(txtn "33.pip")$(txtg "✔")"             "$(txtn "53.DeepLX Server")$(txtg "✔")
-txtn $(txtn "34.miniConda")$(txtr "✔")"       "$(txtn "54.Chrome")$(txtg "✔")
-txtn $(txty "35.Conda-forge")$(txtr "✔")"     "$(txtc "55.Jupyter-lab")$(txtg "✔")
-txtn $(txtn "36.TA-Lib")$(txtg "✔")"          "$(txtn "")$(txtb "")
+txtn $(txtn "31.Docker")$(txtg " ☆")"         "$(txtn "51.Gnome-Desktop")$(txtg " ")
+txtn $(txtn "32.Python")$(txtg " ")"          "$(txtn "52.RustDesk Server")$(txtg " ")
+txtn $(txtn "33.pip")$(txtg " ")"             "$(txtn "53.DeepLX Server")$(txtg " ")
+txtn $(txtn "34.miniConda")$(txtr " ")"       "$(txtn "54.Chrome")$(txtg " ")
+txtn $(txty "35.Conda-forge")$(txtr " ★")"    "$(txtc "55.Jupyter-lab")$(txtg " ")
+txtn $(txtn "36.TA-Lib")$(txtg " ")"          "$(txtn "")$(txtb "")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
 txtn " "
@@ -5264,22 +5264,22 @@ txtn $(txbr "▼ 节点管理")$(txbb " ✈✈✈ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
-txtn $(txty " 1.Warp(@fscarmen)")$(txtr "✔")"               "$(txtn "11.XRay(@233boy)")$(txtg "✔")
-txtn $(txtn " 2.Warp(@hamid-gh98)")$(txtg "✔")"             "$(txtn "12.V2Ray(@233boy)")$(txtg "✔")
-txtn $(txtn " 3.Warp(@Misaka-blog)")$(txtg "✔")"            "$(txtn "13.V2Ray-Agent(@mack-a)")$(txtg "✔")
-txtn $(txtr " 4.Warp(@p3terx)")$(txtb "✔")"                 "$(txtn "14.Hysteria2(@Misaka)")$(txtg "✔")
-txtn $(txtn " 5.Warp-go(@fscarmen)")$(txtg "✔")"            "$(txtn "15.TUIC5(@Misaka)")$(txtg "✔")
-txtn $(txtn " 6.SingBox-Argox(@fscarmen)")$(txtg "✔")"      "$(txtn "16.mianyang()")$(txtg "✔")
-txtn $(txby " 7.SingBox全家桶(@fscarmen)")$(txtr "✔")"      "$(txtn "17.ArgoX")$(txtb "✔")
-txtn $(txbb " 8.SingBox四合一(yg)")$(txtp "✔")"             "$(txtr "18.Check-IP")$(txtb "➵")
+txtn $(txty " 1.Warp(@fscarmen)")$(txtr " ★")"              "$(txtn "11.XRay(@233boy)")$(txtg " ")
+txtn $(txtn " 2.Warp(@hamid-gh98)")$(txtg " ")"             "$(txtn "12.V2Ray(@233boy)")$(txtg " ")
+txtn $(txtn " 3.Warp(@Misaka-blog)")$(txtg " ")"            "$(txtn "13.V2Ray-Agent(@mack-a)")$(txtg " ")
+txtn $(txtr " 4.Warp(@p3terx)")$(txtb " ")"                 "$(txtn "14.Hysteria2(@Misaka)")$(txtg " ")
+txtn $(txtn " 5.Warp-go(@fscarmen)")$(txtg " ")"            "$(txtn "15.TUIC5(@Misaka)")$(txtg " ")
+txtn $(txtn " 6.SingBox-Argox(@fscarmen)")$(txtg " ")"      "$(txtn "16.mianyang()")$(txtg " ")
+txtn $(txby " 7.SingBox全家桶(@fscarmen)")$(txty " ♡")"     "$(txtn "17.ArgoX")$(txtb " ")
+txtn $(txbb " 8.SingBox四合一(yg)")$(txtb " ○")"            "$(txtr "18.Check-IP")$(txtb "➵")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txty "51.XRayR(@XrayR-project)")$(txtg "✔")"         "$(txtn "61.V2bX(Vless&Trojan to V2board)")$(txtg "")
-txtn $(txtn "52.XRayR(@wyx2685)")$(txtg "✔")"               "$(txtn "62.Bodhi(Hysteria2 to V2board)")$(txtg "")
-txtn $(txtc "53.XRayR(Alpine)")$(txtg "✔")"                 "$(txtn "63.XRayR-Docker(@XrayR-project)")$(txtg "✔")
-txtn $(txtc "54.XRayR(AirGo)")$(txtg "✔")"                  "$(txtn "")$(txtg "")
+txtn $(txty "51.XRayR(@XrayR-project)")$(txtg " ")"         "$(txtn "61.V2bX(Vless&Trojan to V2board)")$(txtg "")
+txtn $(txtn "52.XRayR(@wyx2685)")$(txtg " ")"               "$(txtn "62.Bodhi(Hysteria2 to V2board)")$(txtg "")
+txtn $(txtc "53.XRayR(Alpine)")$(txtg " ")"                 "$(txtn "63.XRayR-Docker(@XrayR-project)")$(txtg " ")
+txtn $(txtc "54.XRayR(AirGo)")$(txtg " ")"                  "$(txtn "")$(txtg "")
 txtn "—————————————————————————————————————"
-txtn $(txtn " 0.返回主菜单")$(txtr "✖")
+txtn $(txtn " 0.返回主菜单")$(txtr " ✖")
 txtn " "
 }
 
@@ -5667,7 +5667,7 @@ docker_container_list_run() {
      31) docker_clean ;;
      32) clear && docker_info_list ;;
 
-      0) clear && docker_run ;;
+      0) clear && docker_manage_run ;;
       *) echo "无效的输入!" ;;
     esac  
     break_end    
@@ -5714,7 +5714,7 @@ docker_images_list_run() {
         esac
         ;;
      
-      0) clear && docker_run ;;
+      0) clear && docker_manage_run ;;
       *) echo "无效的输入!" ;;
     esac  
     break_end    
@@ -5786,7 +5786,7 @@ docker_network_list_run() {
         docker network rm $dockernetwork
         ;;
      
-      0) clear && docker_run ;;
+      0) clear && docker_manage_run ;;
       *) echo "无效的输入!" ;;
     esac  
     break_end    
@@ -5831,7 +5831,7 @@ docker_volume_list_run() {
         docker volume rm $dockerjuan
         ;;
      
-      0) clear && docker_run ;;
+      0) clear && docker_manage_run ;;
       *) echo "无效的输入!" ;;
     esac  
     break_end    
@@ -5892,7 +5892,7 @@ txtn $(txtn " 0.返回主菜单")$(txtr "✖")"           "$(txtr "")$(txtb "")$
 txtn " "
 }
 
-docker_run() {
+docker_manage_run() {
   while true; do
     clear && docker_menu
     reading "请选择: " choice
@@ -6516,14 +6516,14 @@ txtn $(txtn " 3.系统清理")$(txtb " ")"       "$(txtp "13.站点管理")$(txt
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "21.系统工具")$(txtp " ")"       "$(txtn "31.性能测试")$(txtb " ")
 txtn $(txtn "22.常用工具")$(txtn " ")"       "$(txtr "32.节点搭建")$(txty " ✈")
-txtn $(txtn "23.管理工具")$(txtb " ☆")"     "$(txtc "33.节点面板")$(txty " ")
-txtn $(txtn "24.IP检测优选")$(txtb " ")"    "$(txtr "34.检测出站IP")$(txtb "➵")
+txtn $(txtn "23.管理工具")$(txtb " ☆")"      "$(txtc "33.节点面板")$(txty " ")
+txtn $(txtn "24.IP检测优选")$(txtb " ")"     "$(txtr "34.检测出站IP")$(txtb "➵")
 txtn "====================================="
-txtn $(txtb "00.脚本更新")$(txtb " ☋")"       "$(txty "99")$(txtc ".重启系统 ☢")
+txtn $(txtb "00.脚本更新")$(txtb " ☋")"      "$(txty "99")$(txtc ".重启系统 ☢")
 txtn "—————————————————————————————————————"
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 # txtn $(txtn " 0.退出脚本")$(txtr "✖")"       "$(txtb "♧♧ ")$(txtc "QiQTools") $(txtb "$script_version")
-txtn $(txtn " 0.退出脚本")$(txtr " ✖")"       "$(txtp "✟✟ ")$(txtc "快捷命令")$(txtb ">") $(txty "qiq") $(txtb "<")
+txtn $(txtn " 0.退出脚本")$(txtr " ✖")"      "$(txtp "✟✟ ")$(txtc "快捷命令")$(txtb ">") $(txty "qiq") $(txtb "<")
 txtn " "
 }
 
@@ -6535,15 +6535,15 @@ while true; do
   reading "请输入你的选择: " choice
 
   case $choice in
-     1) clear && system_info ;;
-     2) clear && update_and_upgrade ;;
+     1) clear && show_system_info ;;
+     2) clear && sys_update_and_upgrade ;;
      3) clear && clean_sys ;;
 
-    11) clear && docker_run ;;
+    11) clear && docker_manage_run ;;
     12) clear && website_deploy_run ;;
     13) clear && WebSites_manager_run ;;
 
-    21) clear && system_setting_run ;;
+    21) clear && system_tools_run ;;
     22) clear && common_apps_run  ;;
     23) clear && other_tools_run  ;;
     24) clear && IP_check_select_run  ;;
