@@ -936,18 +936,18 @@ txtn $(txby "▼ 常用工具")$(txtp " ❃❃❃ ")
 txtn "—————————————————————————————————————"
 # WANIP_show
 # txtn "====================================="
-txtn $(txty " 1.curl(下载工具)")$(txtc "↓")"      "$(txtn "11.htop(系统监控)")$(txtg "❉")
-txtn $(txtn " 2.wget(下载工具)")$(txtg "↓")"      "$(txtr "12.btop(现代化监控)")$(txtb "❀")
-txtn $(txtn " 3.sudo(超级管理权限)")$(txtg "✔")"  "$(txtn "13.iftop(网络流量监控)")$(txtg "❈")
-txtn $(txtr " 4.gdu(磁盘占用查看)")$(txtg "✔")"   "$(txtn "14.tar(GZ压缩解压)")$(txtg "๑")
-txtn $(txtn " 5.fzf(文件管理)")$(txtg "✔")"       "$(txtn "15.unzip(ZIP压缩解压)")$(txtg "ღ")
-txtn $(txtn " 6.ranger(全局搜索)")$(txtg "✔")"    "$(txtn "16.ffmpeg(视频编码直播推流)")$(txtg "▣")
-txtn $(txtn " 7.tmux(多路后台运行)")$(txtg "✔")"  "$(txtn "17.socat(通信连接(申请域名证书必备))")$(txtg "☎")
-txtn $(txty " 8.SuperVisor")$(txtb "☣")"          "$(txtn "18.pure-ftp")$(txtb "✔")
-txtn $(txty " 9.Fail2Ban")$(txtg "☢")"            "$(txtn "19.ClamAV(病毒扫描)")$(txtg "✔")
+txtn $(txty " 1.curl(下载工具)")$(txtc " ")"      "$(txtn "11.htop(系统监控)")$(txtg " ")
+txtn $(txtn " 2.wget(下载工具)")$(txtg " ")"      "$(txtr "12.btop(现代化监控)")$(txtb " ❀")
+txtn $(txtn " 3.sudo(超级管理权限)")$(txtg " ")"  "$(txtn "13.iftop(网络流量监控)")$(txtg " ")
+txtn $(txty " 4.gdu(磁盘占用查看)")$(txtg " ")"   "$(txtn "14.tar(GZ压缩解压)")$(txtg " ")
+txtn $(txtn " 5.fzf(文件管理)")$(txtg " ")"       "$(txtn "15.unzip(ZIP压缩解压)")$(txtg " ")
+txtn $(txtn " 6.ranger(全局搜索)")$(txtg " ")"    "$(txtn "16.ffmpeg(视频编码直播推流)")$(txtg " ")
+txtn $(txtn " 7.tmux(多路后台运行)")$(txtg " ")"  "$(txtn "17.socat(通信连接(申请域名证书必备))")$(txtg " ")
+txtn $(txty " 8.SuperVisor")$(txtb " ★")"          "$(txtn "18.pure-ftp")$(txtb " ")
+txtn $(txty " 9.Fail2Ban")$(txtg " ★")"            "$(txtn "19.ClamAV(病毒扫描)")$(txtg " ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "31.全部安装")$(txtg "✔")"            "$(txtn "41.安装指定工具")$(txtg "☂")
-txtn $(txtn "32.全部卸载")$(txtg "✔")"            "$(txtn "42.卸载指定工具")$(txtg "☂")
+txtn $(txtn "31.全部安装")$(txtg " ")"            "$(txtn "41.安装指定工具")$(txtg " ")
+txtn $(txtn "32.全部卸载")$(txtg " ")"            "$(txtn "42.卸载指定工具")$(txtg " ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "61.贪吃蛇")$(txtg "£")"              "$(txtn "71.sl(跑火车屏保)")$(txtg "→")
 txtn $(txtn "62.俄罗斯方块")$(txtg "▣")"          "$(txtn "72.cmatrix(黑客帝国屏保)")$(txtg "┇┊")
@@ -5270,8 +5270,8 @@ txtn $(txtn " 3.Warp(@Misaka-blog)")$(txtg " ")"            "$(txtn "13.V2Ray-Ag
 txtn $(txtr " 4.Warp(@p3terx)")$(txtb " ")"                 "$(txtn "14.Hysteria2(@Misaka)")$(txtg " ")
 txtn $(txtn " 5.Warp-go(@fscarmen)")$(txtg " ")"            "$(txtn "15.TUIC5(@Misaka)")$(txtg " ")
 txtn $(txtn " 6.SingBox-Argox(@fscarmen)")$(txtg " ")"      "$(txtn "16.mianyang()")$(txtg " ")
-txtn $(txby " 7.SingBox全家桶(@fscarmen)")$(txty " ♡")"     "$(txtn "17.ArgoX")$(txtb " ")
-txtn $(txbb " 8.SingBox四合一(yg)")$(txtb " ○")"            "$(txtr "18.Check-IP")$(txtb "➵")
+txtn $(txby " 7.SingBox(@fscarmen)")$(txty " ♡")"          "$(txtn "17.ArgoX")$(txtb " ")
+txtn $(txbb " 8.SingBox(@ygkkk)")$(txtb " ○")"             "$(txtr "18.Check-IP")$(txtb " ☭")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "51.XRayR(@XrayR-project)")$(txtg " ")"         "$(txtn "61.V2bX(Vless&Trojan to V2board)")$(txtg "")
@@ -5364,11 +5364,11 @@ txtn $(txbr "▼ IP检测与优选")$(txbb " ㊥㊥㊥ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
-txtn $(txtn " 1.Show IP(ip.sb)")$(txtg "✔")"      "$(txtn "11.Set GitHUB(IPv6)")$(txtg "✔")
-txtn $(txtn " 2.Show IPv4(local)")$(txtg "✔")"    "$(txtb "12.Cloudflare Select IP")$(txtg "✔")
-txtn $(txtn " 3.Show IPv6(local)")$(txtg "✔")"    "$(txtn "13.Cloudflare Select CDN")$(txtg "✔")
-txtn $(txtp " 4.Cloudflare(IPv4)")$(txtg "✔")"    "$(txtr "14.Check DNS")$(txtg "✔")
-txtn $(txtp " 5.Cloudflare(IPv6)")$(txtg "✔")"    "$(txty "15.检测出站IP")$(txtg "➵")
+txtn $(txtn " 1.Show IP(ip.sb)")$(txtg " ")"      "$(txtn "11.Set GitHUB(IPv6)")$(txtg " ")
+txtn $(txtn " 2.Show IPv4(local)")$(txtb " ☆")"   "$(txtb "12.Cloudflare Select IP")$(txtg " ")
+txtn $(txtn " 3.Show IPv6(local)")$(txtb " ☆")"   "$(txtn "13.Cloudflare Select CDN")$(txtg " ")
+txtn $(txtp " 4.Cloudflare(IPv4)")$(txtg " ")"    "$(txtr "14.Check DNS")$(txtg " ")
+txtn $(txtp " 5.Cloudflare(IPv6)")$(txtg " ")"    "$(txty "15.检测出站IP")$(txtg " ☭")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
 txtn " "
