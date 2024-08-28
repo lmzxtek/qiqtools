@@ -4508,6 +4508,7 @@ EOF
   echo -e ""
 }
 
+# https://www.cnblogs.com/jruing/p/15943834.html
 docker_deploy_jupyterlab(){
 
   local BFLD="/home/dcc.d"
@@ -6513,12 +6514,12 @@ WANIP_show
 txtn "====================================="
 txtn $(txty " 1.系统信息")$(txty " ")"       "$(txtn "11.容器管理")$(txtp " ")
 txtn $(txtn " 2.系统更新")$(txtb " ")"       "$(txty "12.容器部署")$(txtc " ")
-txtn $(txtn " 3.系统清理")$(txtb " ")"       "$(txtp "13.站点管理")$(txtb " ★")
+txtn $(txtn " 3.系统清理")$(txtb " ")"       "$(txtr "13.站点管理")$(txtb " ★")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "21.系统工具")$(txtp " ")"       "$(txtn "31.性能测试")$(txtb " ")
-txtn $(txtn "22.常用工具")$(txtn " ")"       "$(txtr "32.节点搭建")$(txty " ✈")
-txtn $(txtn "23.管理工具")$(txtb " ☆")"      "$(txtc "33.节点面板")$(txty " ")
-txtn $(txtn "24.IP检测优选")$(txtb " ")"     "$(txtr "34.检测出站IP")$(txtb " ☭")
+txtn $(txty "22.管理工具")$(txtn " ☆")"      "$(txtp "32.节点搭建")$(txty " ✈")
+txtn $(txtn "23.常用工具")$(txtb " ")"       "$(txtc "33.节点面板")$(txty " ")
+txtn $(txtn "24.IP检测优选")$(txtb " ")"     "$(txty "34.检测出站IP")$(txtb " ☭")
 txtn "====================================="
 txtn $(txtb "00.脚本更新")$(txtb " ☋")"      "$(txty "99")$(txtc ".重启系统 ☢")
 txtn "—————————————————————————————————————"
