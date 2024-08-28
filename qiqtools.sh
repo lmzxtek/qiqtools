@@ -936,15 +936,15 @@ txtn $(txby "▼ 常用工具")$(txtp " ❃❃❃ ")
 txtn "—————————————————————————————————————"
 # WANIP_show
 # txtn "====================================="
-txtn $(txty " 1.curl(下载工具)")$(txtc " ")"      "$(txtn "11.htop(系统监控)")$(txtg " ")
+txtn $(txtn " 1.curl(下载工具)")$(txtc " ")"      "$(txtn "11.htop(系统监控)")$(txtg " ")
 txtn $(txtn " 2.wget(下载工具)")$(txtg " ")"      "$(txtr "12.btop(现代化监控)")$(txtb " ❀")
 txtn $(txtn " 3.sudo(超级管理权限)")$(txtg " ")"  "$(txtn "13.iftop(网络流量监控)")$(txtg " ")
 txtn $(txty " 4.gdu(磁盘占用查看)")$(txtg " ")"   "$(txtn "14.tar(GZ压缩解压)")$(txtg " ")
 txtn $(txtn " 5.fzf(文件管理)")$(txtg " ")"       "$(txtn "15.unzip(ZIP压缩解压)")$(txtg " ")
 txtn $(txtn " 6.ranger(全局搜索)")$(txtg " ")"    "$(txtn "16.ffmpeg(视频编码直播推流)")$(txtg " ")
 txtn $(txtn " 7.tmux(多路后台运行)")$(txtg " ")"  "$(txtn "17.socat(通信连接(申请域名证书必备))")$(txtg " ")
-txtn $(txty " 8.SuperVisor")$(txtb " ★")"          "$(txtn "18.pure-ftp")$(txtb " ")
-txtn $(txty " 9.Fail2Ban")$(txtg " ★")"            "$(txtn "19.ClamAV(病毒扫描)")$(txtg " ")
+txtn $(txty " 8.SuperVisor")$(txtb " ★")"         "$(txtn "18.pure-ftp")$(txtb " ")
+txtn $(txty " 9.Fail2Ban")$(txtg " ★")"           "$(txtn "19.ClamAV(病毒扫描)")$(txtg " ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.全部安装")$(txtg " ")"            "$(txtn "41.安装指定工具")$(txtg " ")
 txtn $(txtn "32.全部卸载")$(txtg " ")"            "$(txtn "42.卸载指定工具")$(txtg " ")
@@ -5061,33 +5061,34 @@ txtn $(txby "▼ 容器站点部署")$(txtp " ♨♨♨ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
-txtn $(txtn "21.AuroraPanel")$(txtg "✔")"          "$(txtn "41.MacCMS")$(txtn "✔")
-txtn $(txtn "22.Ubuntu20-noVNC")$(txtg "✔")"       "$(txtn "42.Memos")$(txtn "✔")
-txtn $(txtn "23.IT-Tools")$(txtg "✔")"             "$(txtc "43.YACD")$(txtn "✔")
-txtn $(txtc "24.SearXNG")$(txtg "✔")"              "$(txtn "44.ClashDashBoard")$(txtn "✔")
-txtn $(txtn "25.StirlingPDF")$(txtg "✔")"          "$(txtb "45.RocketChat")$(txtr "✘")
-txtn $(txty "26.MyIP(IPChecking)")$(txtg "✔")"     "$(txtn "46.GPT_Academic")$(txtn "✔")
-txtn $(txtn "27.QBittorrent")$(txtg "✔")"          "$(txtn "47.GeminiProChat")$(txtn "✔")
-txtn $(txtn "28.Portainer")$(txtg "✔")"            "$(txtn "48.ChunhuChat")$(txtn "✔")
-txtn $(txtn "29.Next-Terminal")$(txtg "✔")"        "$(txtn "49.ChatGPT-Next-Web")$(txtn "✔")
-txtn $(txtn "30.NginxProxyManager")$(txtg "✔")"    "$(txtc "50.Aktools")$(txtn "✔")
-txtn $(txtn "31.Dash.")$(txtg "✔")"                "$(txtn "51.AKJupyter-Lab")$(txtn "✔")
-txtn $(txtn "32.WatchTower")$(txtg "✔")"           "$(txty "52.Jupyter-Lab")$(txtn "✔")
-txtn $(txtn "33.DeepLX")$(txtg "✔")"               "$(txtn "53.Neko")$(txtn "✔")
-txtn $(txtn "34.TorBrowser")$(txtn "✔")"           "$(txtn "54.Neko-Rooms")$(txtn "✔")
-txtn $(txtc "35.OnlineBrowser")$(txtg "✔")"        "$(txty "55.linuxserver(firefox)")$(txtp "✔")
-txtn $(txtb "36.KasmWorkspaces")$(txtg "✔")"       "$(txty "56.linuxserver(chromium)")$(txtp "✔")
-txtn $(txtb "37.Puter")$(txtg "✔")"                "$(txty "57.linuxserver(rdesktop)")$(txtp "✔")
-txtn $(txtb "38.TalkWithGemini")$(txtg "✔")"       "$(txty "")$(txtp "")
+txtn $(txtn "21.AuroraPanel")$(txtg " ")"          "$(txtn "41.MacCMS")$(txtn " ")
+txtn $(txtn "22.Ubuntu20-noVNC")$(txtg " ")"       "$(txtn "42.Memos")$(txtn " ")
+txtn $(txtn "23.IT-Tools")$(txtg " ")"             "$(txtc "43.YACD")$(txtn " ")
+txtn $(txtc "24.SearXNG")$(txtg " ")"              "$(txtn "44.ClashDashBoard")$(txtn " ")
+txtn $(txtn "25.StirlingPDF")$(txtg " ")"          "$(txtb "45.RocketChat")$(txtr " ✘")
+txtn $(txty "26.MyIP(IPChecking)")$(txtg " ")"     "$(txtn "46.GPT_Academic")$(txtn " ")
+txtn $(txtn "27.QBittorrent")$(txtg " ")"          "$(txtn "47.GeminiProChat")$(txtn " ")
+txtn $(txtn "28.Portainer")$(txtg " ")"            "$(txtn "48.ChunhuChat")$(txtn " ")
+txtn $(txtn "29.Next-Terminal")$(txtg " ")"        "$(txtn "49.ChatGPT-Next-Web")$(txtn " ")
+txtn $(txtn "30.NginxProxyManager")$(txtg " ")"    "$(txtc "50.Aktools")$(txtn " ")
+txtn "--------------------------------------"
+txtn $(txtn "31.Dash.")$(txtg " ")"                "$(txtn "51.AKJupyter-Lab")$(txtn " ")
+txtn $(txtn "32.WatchTower")$(txtg " ")"           "$(txty "52.Jupyter-Lab")$(txtn " ★")
+txtn $(txtn "33.DeepLX")$(txtg " ☆")"              "$(txtn "53.Neko")$(txtn " ")
+txtn $(txtn "34.TorBrowser")$(txtn " ")"           "$(txtn "54.Neko-Rooms")$(txtn " ")
+txtn $(txtc "35.OnlineBrowser")$(txtg " ")"        "$(txty "55.linuxserver(firefox)")$(txtp " ")
+txtn $(txtb "36.KasmWorkspaces")$(txtg " ")"       "$(txty "56.linuxserver(chromium)")$(txtp " ")
+txtn $(txtb "37.Puter")$(txtg " ")"                "$(txty "57.linuxserver(rdesktop)")$(txtp " ")
+txtn $(txty "38.TalkWithGemini")$(txtg " ★")"      "$(txty "")$(txtp "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
-txtn "—————————————————————————————————————"
+txtn "====================================="
 txtn $(txtp "66.重启Caddy")$(txty "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")"           "$(txtp "88.")$(txtc "容器管理")$(txty "☪")
 txtn " "
 }
 
 # 面板工具
-website_deploy_run(){
+docker_deploy_run(){
   while true; do
     clear && website_deploy_menu
     read -p "请输入你的选择: " sub_choice
@@ -5911,7 +5912,7 @@ docker_manage_run() {
      32) clear && docker_volume_list_run ;;
 
      66) docker_set_1ckl "dcc" ;;
-     88) clear && website_deploy_run ;;
+     88) clear && docker_deploy_run ;;
       # 9) clear && chmod a+x /usr/local/bin/docker-compose && rm -rf `which dcc` && ln -s /usr/local/bin/docker-compose /usr/bin/dcc ;;
       
       0) clear && qiqtools ;;
@@ -6465,7 +6466,7 @@ WebSites_manager_run(){
     #  63) clear && install mariadb-server ;;
 
     #  77) clear &&  ;;
-     88) clear && website_deploy_run ;;
+     88) clear && docker_deploy_run ;;
 
       0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
@@ -6517,7 +6518,7 @@ txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "21.系统工具")$(txtp " ")"       "$(txtn "31.性能测试")$(txtb " ")
 txtn $(txtn "22.常用工具")$(txtn " ")"       "$(txtr "32.节点搭建")$(txty " ✈")
 txtn $(txtn "23.管理工具")$(txtb " ☆")"      "$(txtc "33.节点面板")$(txty " ")
-txtn $(txtn "24.IP检测优选")$(txtb " ")"     "$(txtr "34.检测出站IP")$(txtb "➵")
+txtn $(txtn "24.IP检测优选")$(txtb " ")"     "$(txtr "34.检测出站IP")$(txtb " ☭")
 txtn "====================================="
 txtn $(txtb "00.脚本更新")$(txtb " ☋")"      "$(txty "99")$(txtc ".重启系统 ☢")
 txtn "—————————————————————————————————————"
@@ -6540,7 +6541,7 @@ while true; do
      3) clear && clean_sys ;;
 
     11) clear && docker_manage_run ;;
-    12) clear && website_deploy_run ;;
+    12) clear && docker_deploy_run ;;
     13) clear && WebSites_manager_run ;;
 
     21) clear && system_tools_run ;;
