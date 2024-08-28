@@ -5271,8 +5271,8 @@ txtn $(txtn " 3.Warp(@Misaka-blog)")$(txtg " ")"            "$(txtn "13.V2Ray-Ag
 txtn $(txtr " 4.Warp(@p3terx)")$(txtb " ")"                 "$(txtn "14.Hysteria2(@Misaka)")$(txtg " ")
 txtn $(txtn " 5.Warp-go(@fscarmen)")$(txtg " ")"            "$(txtn "15.TUIC5(@Misaka)")$(txtg " ")
 txtn $(txtn " 6.SingBox-Argox(@fscarmen)")$(txtg " ")"      "$(txtn "16.mianyang()")$(txtg " ")
-txtn $(txby " 7.SingBox(@fscarmen)")$(txty " ♡")"          "$(txtn "17.ArgoX")$(txtb " ")
-txtn $(txbb " 8.SingBox(@ygkkk)")$(txtb " ○")"             "$(txtr "18.Check-IP")$(txtb " ☭")
+txtn $(txby " 7.SingBox(@fscarmen)")$(txty " ♡")"           "$(txtn "17.ArgoX")$(txtb " ")
+txtn $(txbb " 8.SingBox(@ygkkk)")$(txtb " ○")"              "$(txtr "18.Check-IP")$(txtb " ☭")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "51.XRayR(@XrayR-project)")$(txtg " ")"         "$(txtn "61.V2bX(Vless&Trojan to V2board)")$(txtg "")
@@ -5408,17 +5408,17 @@ txtn $(txbr "▼ 节点面板")$(txbg " ⊕⊕⊕ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
-txtn $(txtn " 1.3X-UI(@mhsanaei)")$(txtg "✔")"       "$(txtn "11.Hiddify")$(txtg "✔")
-txtn $(txtb " 2.X-UI(@alireza0)")$(txtg "✔")"        "$(txty "12.V2RayA")$(txtg "✔")
-txtn $(txtn " 3.X-UI(@FranzKafkaYu)")$(txtg "✔")"    "$(txtn "13.Daed")$(txtg "✔")
-txtn $(txtn " 4.X-UI(@rwkgyg)")$(txtg "✔")"          "$(txtn "14.Daed-Docker")$(txtg "✔")
-txtn $(txtc " 5.X-UI(alpine)")$(txtg "✔")"           "$(txtn "15.S-UI(@alireza0)")$(txtg "✔")
-txtn $(txtn " 6.H-UI(only HY2)")$(txtg "✔")"         "$(txtn "")$(txtg "")
+txtn $(txtn " 1.3X-UI(@mhsanaei)")$(txtg " ")"       "$(txtn "11.Hiddify")$(txtg " ")
+txtn $(txtb " 2.X-UI(@alireza0)")$(txtg " ")"        "$(txty "12.V2RayA")$(txtg " ")
+txtn $(txtn " 3.X-UI(@FranzKafkaYu)")$(txtg " ")"    "$(txtn "13.Daed")$(txtg " ")
+txtn $(txtn " 4.X-UI(@rwkgyg)")$(txtg " ")"          "$(txtn "14.Daed-Docker")$(txtg " ")
+txtn $(txtc " 5.X-UI(alpine)")$(txtg " ")"           "$(txtn "15.S-UI(@alireza0)")$(txtg " ")
+txtn $(txtn " 6.H-UI(only HY2)")$(txtg " ")"         "$(txtn "")$(txtg "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txty "21.XBoard")$(txtb "✘")"                 "$(txtn "41.LotusBoard")$(txtb "✔")
+txtn $(txty "21.XBoard")$(txtb "✘")"                 "$(txtn "41.LotusBoard")$(txtb " ")
 txtn $(txtn "22.V2Board")$(txtb "✘")"                "$(txtn "42.SSPanel")$(txtb "✘")
 txtn $(txtn "23.V2Board(wyx2685)")$(txtb "✘")"       "$(txtn "43.Proxypanel")$(txtb "✘")
-txtn $(txtn "24.AirGo")$(txtg "✔")"                  "$(txtn "44.WireGuard-WebUI")$(txtb "✔")
+txtn $(txtn "24.AirGo")$(txtg " ")"                  "$(txtn "44.WireGuard-WebUI")$(txtb " ")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
