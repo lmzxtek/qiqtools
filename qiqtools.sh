@@ -2535,15 +2535,15 @@ txtn "   系统版本: "$(txtp "$os_info")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 WANIP_show 
 txtn "====================================="
-txtn $(txtn " 1.服务器基本信息")$(txtg "✔")"         "$(txtn "11.ChatGPT解锁状态检测")$(txtn "✔")
-txtn $(txty " 2.NodeBench性能测试")$(txtp "✔")"      "$(txtn "12.Region流媒体解锁测试")$(txtn "✔")
-txtn $(txtn " 3.bench性能测试")$(txtg "✔")"          "$(txtn "13.yeahwu流媒体解锁测试")$(txtn "✔")
+txtn $(txty " 1.GB5测试")$(txtg " ☯")"              "$(txtn "11.ChatGPT解锁状态检测")$(txtn " ")
+txtn $(txtn " 2.NodeBench性能测试")$(txtp " ")"      "$(txtn "12.Region流媒体解锁测试")$(txtn " ")
+txtn $(txtn " 3.bench性能测试")$(txtg " ")"          "$(txtn "13.yeahwu流媒体解锁测试")$(txtn " ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "21.三网测速(Superspeed)")$(txtp "✔")"   "$(txtn "24.单线程测速")$(txtn "✔")
-txtn $(txty "22.三网回程(bestrace)")$(txtp "✔")"     "$(txtb "25.带宽性能(yabs)")$(txtn "✔")
-txtn $(txtn "23.回程线路(mtr_trace)")$(txtg "✔")"    "$(txtn "")$(txtn "")
+txtn $(txtn "21.三网测速(Superspeed)")$(txtp " ")"   "$(txtn "24.单线程测速")$(txtn " ")
+txtn $(txty "22.三网回程(bestrace)")$(txtp " ")"     "$(txtb "25.带宽性能(yabs)")$(txtn " ")
+txtn $(txtn "23.回程线路(mtr_trace)")$(txtg " ")"    "$(txtn "")$(txtn "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "41.融合怪测评(spiritysdx)")$(txtg "✔")" "$(txtn "")$(txtn "")
+txtn $(txtn "41.融合怪测评(spiritysdx)")$(txtg " ")" "$(txty "00.服务器基本信息")$(txtn " ✔")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")"             "$(txtr "99")$(txtb ".重启服务器")$(txtc "☢")
@@ -2557,8 +2557,8 @@ server_test_run() {
 
     case $sub_choice in
       # 1) clear && reading "请输入你的快捷按键: " kuaijiejian && echo "alias $kuaijiejian='~/kejilion.sh'" >> ~/.bashrc && source ~/.bashrc && echo "快捷键已设置" ;;
-      1) clear && gather_sysinfo && ip_info ;;
 
+      1) clear && bash <(curl -sL bash.icu/gb5) ;;
       2) clear && install curl && curl -Lso- bench.sh | bash ;;
       3) clear && fetch bench.sh | bash ;;
      
@@ -2575,6 +2575,7 @@ server_test_run() {
      41) clear && install curl && curl -L https://gitlab.com/spiritysdx/za/-/raw/main/ecs.sh -o ecs.sh && chmod +x ecs.sh && bash ecs.sh ;;
 
      99) clear && echo -e "\n正在重启服务器，即将断开SSH连接..." && reboot ;;
+     00) clear && gather_sysinfo && ip_info ;;
       0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
     esac
