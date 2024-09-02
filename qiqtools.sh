@@ -1265,22 +1265,22 @@ txtn "\t${pink} Windows : ${blue}Administrator${red}@${yellow}Teddysun.com"
 txtn "\t${pink} @bin456789 : ${blue}root|Administrator${red}@${yellow}123@@@"
 txtn "\t${pink}           ${white}(Windows need mininumn 15G Storage)${plain}\n"
 txtn "====================================="
-txtn $(txtp " 1.Debian 12")$(txtb "๑")"        "$(txtn "11.Ubuntu 24.04")$(txtb "☋")
-txtn $(txtn " 2.Debian 11")$(txtb "๑")"        "$(txtn "12.Ubuntu 22.04")$(txtb "☋")
-txtn $(txty " 3.Debian 10")$(txtr "๑")"        "$(txty "13.Ubuntu 20.04")$(txtp "☋")
-txtn $(txtn " 4.AlmaLinux 9")$(txtb "๑")"      "$(txtn "14.RockyLinux 9")$(txtb "❀")
-txtn $(txtn " 5.AlmaLinux 8")$(txtb "๑")"      "$(txtn "15.RockyLinux 8")$(txtb "❀")
+txtn $(txtp " 1.Debian 12")$(txtb " ")"        "$(txtn "11.Ubuntu 24.04")$(txtb "☋")
+txtn $(txtn " 2.Debian 11")$(txtb " ")"        "$(txtn "12.Ubuntu 22.04")$(txtb "☋")
+txtn $(txty " 3.Debian 10")$(txtr " ")"        "$(txty "13.Ubuntu 20.04")$(txtp "☋")
+txtn $(txtn " 4.AlmaLinux 9")$(txtb " ")"      "$(txtn "14.RockyLinux 9")$(txtb "❀")
+txtn $(txtn " 5.AlmaLinux 8")$(txtb " ")"      "$(txtn "15.RockyLinux 8")$(txtb "❀")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txty "31.Alpine 3.20")$(txtb "A")"      "$(txtn "41.CentOS 9")$(txtb "☾")
-txtn $(txtn "32.Alpine 3.19")$(txtb "A")"      "$(txtn "42.CentOS 8")$(txtb "☾")
-txtn $(txtn "33.Alpine 3.18")$(txtb "A")"      "$(txtn "43.Kali Rolling")$(txtb "❀")
-txtn $(txtn "34.Arch Linux")$(txtb "A")"       "$(txtn "44.Fedora")$(txtb "❀")
+txtn $(txty "31.Alpine 3.20")$(txtb " ")"      "$(txtn "41.CentOS 9")$(txtb " ")
+txtn $(txtn "32.Alpine 3.19")$(txtb " ")"      "$(txtn "42.CentOS 8")$(txtb " ")
+txtn $(txtn "33.Alpine 3.18")$(txtb " ")"      "$(txtn "43.Kali Rolling")$(txtb " ")
+txtn $(txtn "34.Arch Linux")$(txtb " ")"       "$(txtn "44.Fedora")$(txtb "❀")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "51.Windows 2022")$(txtb "▣")"     "$(txtn "61.Windows 11(EN)")$(txtc "◕")
-txtn $(txtn "52.Windows 2019")$(txtb "▣")"     "$(txtn "62.Windows 11(CN)")$(txtc "◕")
-txtn $(txtn "53.Windows 2016")$(txtb "▣")"     "$(txtn "63.Windows 10(EN)")$(txtg "◕")
-txtn $(txtn "54.Windows 2012")$(txtb "▣")"     "$(txtn "64.Windows 10(CN)")$(txtg "◕")
-txtn $(txtn "55.Windows 7")$(txtb "◕")"        "$(txtn "")$(txtg "")
+txtn $(txtn "51.Windows 2022")$(txtb " ")"     "$(txtn "61.Windows 11(EN)")$(txtc " ")
+txtn $(txtn "52.Windows 2019")$(txtb " ")"     "$(txtn "62.Windows 11(CN)")$(txtc " ")
+txtn $(txtn "53.Windows 2016")$(txtb " ")"     "$(txtn "63.Windows 10(EN)")$(txtg " ")
+txtn $(txtn "54.Windows 2012")$(txtb " ")"     "$(txtn "64.Windows 10(CN)")$(txtg " ")
+txtn $(txtn "55.Windows 7")$(txtb " ")"        "$(txtn "")$(txtg "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "71.41合一脚本")$(txtn "❉")"       "$(txtn "72.脚本使用说明")$(txtg "♡")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
