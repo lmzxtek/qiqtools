@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.6.1
+script_version=v0.6.2
 #==========================
 
 # Language
@@ -1013,12 +1013,13 @@ common_apps_run() {
      72) clear && install cmatrix   && clear && cmatrix ;;
 
      99) clear 
-        country=$(curl -s --max-time 3 ipinfo.io/country)
-        if [ "$country" = "CN" ]; then
-          curl -sS -O https://kejilion.pro/kejilion.sh && chmod +x kejilion.sh && ./kejilion.sh
-        else
-            curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/kejilion.sh && chmod +x kejilion.sh && ./kejilion.sh
-        fi
+        bash <(curl -sL kejilion.sh)
+        # country=$(curl -s --max-time 3 ipinfo.io/country)
+        # if [ "$country" = "CN" ]; then
+        #   curl -sS -O https://kejilion.pro/kejilion.sh && chmod +x kejilion.sh && ./kejilion.sh
+        # else
+        #     curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/kejilion.sh && chmod +x kejilion.sh && ./kejilion.sh
+        # fi
         ;;
      
       0) clear && qiqtools ;;
