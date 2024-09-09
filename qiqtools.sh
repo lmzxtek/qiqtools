@@ -4958,7 +4958,7 @@ services:
     image: $dc_imag
     container_name: $dc_name
     ports:
-      - $dc_port:3389
+      - $dc_port:2887
     restart: unless-stopped
 EOF
 
