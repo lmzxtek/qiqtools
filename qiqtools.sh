@@ -4928,6 +4928,48 @@ EOF
   echo -e ""
 }
 
+# https://blog.csdn.net/BBQ__ZXB/article/details/138978608
+docker_deploy_photopea(){
+
+  local BFLD="/home/dcc.d"
+
+  local dc_port=2887
+  local dc_name=photopea
+  local dc_imag=registry.cn-guangzhou.aliyuncs.com/os_cmty/os_cmty:Photopea
+  
+  local dc_desc="Photepea Online Editor"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/data"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  echoR "\n >>>" " 现在开始部署 Photopea Online Editor... \n"
+  read -p "请输入监听端口(默认:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  cat > "$FYML" << EOF
+services:
+  $dc_name:
+    image: $dc_imag
+    container_name: $dc_name
+    ports:
+      - $dc_port:3389
+    restart: unless-stopped
+EOF
+
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echoR "\n >>> " "部署 Photepea Online Editor 完成 \n"
+  # echo -e   "Web URL: http://$WAN4:$dc_port" >> $FCONF
+  # echo -e   "Web URL: http://$WAN4:$dc_port"
+  echo -e ""
+}
+
+
 docker_deploy_chunhuchat(){
 
   local BFLD="/home/dcc.d"
@@ -5082,7 +5124,7 @@ txtn $(txtn "34.TorBrowser")$(txtn " ")"           "$(txtn "54.Neko-Rooms")$(txt
 txtn $(txtc "35.OnlineBrowser")$(txtg " ")"        "$(txty "55.linuxserver(firefox)")$(txtp " ")
 txtn $(txtb "36.KasmWorkspaces")$(txtg " ")"       "$(txty "56.linuxserver(chromium)")$(txtp " ")
 txtn $(txtb "37.Puter")$(txtg " ")"                "$(txty "57.linuxserver(rdesktop)")$(txtp " ")
-txtn $(txty "38.TalkWithGemini")$(txtg " ★")"      "$(txty "")$(txtp "")
+txtn $(txty "38.TalkWithGemini")$(txtg " ★")"      "$(txty "58.Photepea")$(txtp " ★")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "====================================="
 txtn $(txtp "66.重启Caddy")$(txty "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
@@ -5135,6 +5177,7 @@ docker_deploy_run(){
      55) clear && docker_deploy_linuxserverfirefox ;;
      56) clear && docker_deploy_linuxserverchromium ;;
      57) clear && docker_deploy_linuxserverrdesktop ;;
+     58) clear && docker_deploy_photopea ;;
 
      66) clear && caddy_reload ;;
      77) clear && WebSites_manager_run ;;
