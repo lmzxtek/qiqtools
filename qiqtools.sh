@@ -4952,6 +4952,7 @@ docker_deploy_photopea(){
   [[ -z "$ptmp" ]] || dc_port=$ptmp
 
   cat > "$FYML" << EOF
+version: '3.9'
 services:
   $dc_name:
     image: $dc_imag
