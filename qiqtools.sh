@@ -1469,7 +1469,8 @@ dd_system_run() {
       
       #============================== 
       51) 
-        bash InstallNET.sh -windows 2022
+        # bash InstallNET.sh -windows 2022
+        bash reinstall.sh windows --image-name='windows server 2022 serverdatacenter' --lang=zh-cn
         reboot 
         exit ;;
       52) 
