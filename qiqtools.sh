@@ -766,6 +766,25 @@ sys_update_and_upgrade() {
 }
 
 
+# 更新系统
+sys_update() {
+    
+    # Update system on Debian-based systems
+    if [ -f "/etc/debian_version" ]; then
+        apt update -y
+    fi
+
+    # Update system on Red Hat-based systems
+    if [ -f "/etc/redhat-release" ]; then
+        yum -y update
+    fi
+
+    # Update system on Alpine Linux
+    if [ -f "/etc/alpine-release" ]; then
+        apk update 
+    fi
+}
+
 clean_debian() {
     apt autoremove --purge -y
     apt clean -y
@@ -5419,6 +5438,8 @@ txtn $(txtn " 3.Show IPv6(local)")$(txtb " ☆")"   "$(txtn "13.Cloudflare Selec
 txtn $(txtp " 4.Cloudflare(IPv4)")$(txtg " ")"    "$(txtr "14.Check DNS")$(txtg " ")
 txtn $(txtp " 5.Cloudflare(IPv6)")$(txtg " ")"    "$(txty "15.检测出站IP")$(txtg " ☭")
 txtn "—————————————————————————————————————"
+txtn $(txtp "21.安装网络管理工具(ip,ping...)")$(txtg " ")"    "$(txty "")$(txtg " ")
+txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
 txtn " "
 }
@@ -5440,6 +5461,20 @@ IP_check_select_run() {
      13) clear && cd ~ && mkdir -p cfip && cd cfip && curl -sSL https://gitlab.com/rwkgyg/CFwarp/raw/main/point/CFcdnym.sh -o CFcdnym.sh && chmod +x CFcdnym.sh && bash CFcdnym.sh ;;
      14) clear && install nslookup && nslookup google.com ;;
      15) check_IP_address ;;
+     21) clear
+        # 对于Docker里面的环境，有可能需要进行这个操作 
+         sys_update && install net-tools iputils-ping iproute2
+
+         echo ""
+         echo "IP 管理工具已安装，使用方法如下："
+         echo "   1. 查看端口    : ss -tuln"
+         echo "   2. 查看绑定端口: lsof -i :port"
+         echo "   3. 查看系统IP  : ip addr show"
+         echo "   4. 查看系统IPv4: ip addr show | grep 'inet '"
+         echo "   5. 查看系统IPv6: ip addr show | grep inet6  "
+         echo "   6. Ping: ping -4 www.google.com  "
+         echo "   7. Ping: ping -6 ipv6.google.com "
+         ;;
 
       0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
