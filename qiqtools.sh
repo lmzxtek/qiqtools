@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.6.2
+script_version=v0.6.3
 #==========================
 
 # Language
@@ -4410,7 +4410,7 @@ docker_deploy_talkwithgemini(){
   ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
   [[ -f "$FYML"  ]] || touch $FYML
 
-  echoR "\n >>>" " 现在开始部署 Takl with Gemini ... \n"
+  echoR "\n >>>" " 现在开始部署 Talk with Gemini ... \n"
   read -p "请输入监听端口(默认为:${dc_port}): " ptmp
   [[ -z "$ptmp" ]] || dc_port=$ptmp
 
@@ -4437,6 +4437,52 @@ EOF
   echo -e   "Site password: $SITE_PASSWORD" >> $FCONF
   echo -e ""
 }
+
+# https://github.com/gooaclok819/sublinkX
+docker_deploy_sublinkx(){
+  local BFLD="/home/dcc.d"
+
+  local dc_port=40088
+  local dc_name=sublinkx
+  local dc_imag=jaaksi/sublinkx
+  local dc_desc="SubLinkX"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/db"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  mkdir -p "$BFLD/$dc_name/template"
+  mkdir -p "$BFLD/$dc_name/logs"
+  mkdir -p "$BFLD/$dc_name/db"
+
+  echoR "\n >>>" " 现在开始部署 SublinkX ... \n"
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+  
+  cat > "$FYML" << EOF
+version: '3'
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    volumes:
+        - $LFLD/db:/app/db
+        - $LFLD/template:/app/template
+        - $LFLD/logs:/app/logs
+    ports:
+        - '$dc_port:8000'
+    restart: unless-stopped
+EOF
+
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echo -e ""
+}
+
 docker_deploy_aktools(){
 
   local BFLD="/home/dcc.d"
@@ -5146,6 +5192,7 @@ txtn $(txtc "35.OnlineBrowser")$(txtg " ")"        "$(txty "55.linuxserver(firef
 txtn $(txtb "36.KasmWorkspaces")$(txtg " ")"       "$(txty "56.linuxserver(chromium)")$(txtp " ")
 txtn $(txtb "37.Puter")$(txtg " ")"                "$(txty "57.linuxserver(rdesktop)")$(txtp " ")
 txtn $(txty "38.TalkWithGemini")$(txtg " ★")"      "$(txty "58.Photepea")$(txtp " ★")
+txtn $(txty "39.SubLinkX")$(txtg " ")"             "$(txty "")$(txtp " ")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "====================================="
 txtn $(txtp "66.重启Caddy")$(txty "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
@@ -5178,7 +5225,8 @@ docker_deploy_run(){
       # https://github.com/hhammouch/online-browser
      36) clear && docker_deploy_kasmworkspaces ;;
      37) clear && docker_deploy_puter ;;
-     37) clear && docker_deploy_talkwithgemini ;;
+     38) clear && docker_deploy_talkwithgemini ;;
+     39) clear && docker_deploy_sublinkx ;;
 
      41) clear && docker_deploy_maccms_tweek ;;
      42) clear && docker_deploy_memos ;;
@@ -5232,7 +5280,7 @@ txtn $(txtn "32.Python")$(txtg " ")"          "$(txtn "52.RustDesk Server")$(txt
 txtn $(txtn "33.pip")$(txtg " ")"             "$(txtn "53.DeepLX Server")$(txtg " ")
 txtn $(txtn "34.miniConda")$(txtr " ")"       "$(txtn "54.Chrome")$(txtg " ")
 txtn $(txty "35.Conda-forge")$(txtr " ★")"    "$(txtc "55.Jupyter-lab")$(txtg " ")
-txtn $(txtn "36.TA-Lib")$(txtg " ")"          "$(txtn "")$(txtb "")
+txtn $(txtn "36.TA-Lib")$(txtg " ")"          "$(txtn "56.SubLinkX")$(txtb " ")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
 txtn " "
@@ -5317,6 +5365,7 @@ other_tools_run() {
         sudo apt-get install -f && wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && sudo dpkg -i google-chrome-stable_current_amd64.deb
         ;;
       55)  clear && pip install jupyter_server ;;
+      56)  clear && curl -s https://raw.githubusercontent.com/gooaclok819/sublinkX/main/install.sh | sudo bash ;;
         
       0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
