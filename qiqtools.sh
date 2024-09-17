@@ -5318,6 +5318,7 @@ txtn $(txtn " 3.宝塔面板")$(txtg " ")"        "$(txtc "13.WebOS")$(txtr " ")
 txtn $(txtn " 4.哪吒探针")$(txtg " ")"        "$(txty "14.Code-Server")$(txtg " ")
 txtn $(txtn " 5.OpenLiteSpeed")$(txtg " ")"   "$(txtn "15.ChatGPT-Next-Web")$(txtr " ✘")
 txtn $(txtn " 6.Puter")$(txtg " ")"           "$(txtc "16.爱影CMS")$(txtr " ♡")
+txtn $(txtn " 7.Lucky")$(txtg " ")"           "$(txtc "")$(txtr " ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.Docker")$(txtg " ☆")"         "$(txtn "51.Gnome-Desktop")$(txtg " ")
 txtn $(txtn "32.Python")$(txtg " ")"          "$(txtn "52.RustDesk Server")$(txtg " ")
@@ -5352,6 +5353,7 @@ other_tools_run() {
         [[ -n "$WAN4" ]] && txtn " >>> URL: http://$WAN4:4000 "
         [[ -n "$WAN6" ]] && txtn " >>> URL: http://[$WAN6]:4000 "
         ;;
+      7) clear && install curl && curl -o /tmp/install.sh  https://fastly.jsdelivr.net/gh/gdy666/lucky-files@main/golucky.sh  && sh /tmp/install.sh https://fastly.jsdelivr.net/gh/gdy666/lucky-files@main 2.11.2  ;;
 
      11) clear && install curl && curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s install  ;;
      12) clear && install_maccms ;;
