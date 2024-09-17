@@ -176,9 +176,9 @@ install() {
   for package in "$@"; do
     if ! command -v "$package" &>/dev/null; then
       if command -v apt &>/dev/null; then
-        apt update -y && apt install -y "$package"
+        sudo apt update -y && sudo apt install -y "$package"
       elif command -v dnf &>/dev/null; then
-        dnf -y update && dnf -y install "$package"
+        sudo dnf -y update && sudo dnf -y install "$package"
       elif command -v yum &>/dev/null; then
         yum -y update && yum -y install "$package"
       elif command -v apk &>/dev/null; then
