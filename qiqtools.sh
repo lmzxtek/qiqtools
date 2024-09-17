@@ -4483,6 +4483,49 @@ EOF
   echo -e ""
 }
 
+# https://lucky666.cn/
+# https://github.com/gdy666/lucky
+docker_deploy_lucky(){
+  local BFLD="/home/dcc.d"
+
+  local dc_port=16601
+  local dc_name=lucky
+  local dc_imag=gdy666/lucky
+  local dc_desc="Lucky"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/goodluck"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  # mkdir -p "$BFLD/$dc_name/template"
+  # mkdir -p "$BFLD/$dc_name/logs"
+  # mkdir -p "$BFLD/$dc_name/db"
+
+  echoR "\n >>>" " 现在开始部署 Lucky ... \n"
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+  
+  cat > "$FYML" << EOF
+version: '3'
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    volumes:
+        - $LPTH:/goodluck
+    network_mode: host
+    restart: unless-stopped
+EOF
+
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echo -e ""
+}
+
 docker_deploy_aktools(){
 
   local BFLD="/home/dcc.d"
@@ -5188,11 +5231,11 @@ txtn $(txtn "31.Dash.")$(txtg " ")"                "$(txtn "51.AKJupyter-Lab")$(
 txtn $(txtn "32.WatchTower")$(txtg " ")"           "$(txty "52.Jupyter-Lab")$(txtn " ★")
 txtn $(txtn "33.DeepLX")$(txtg " ☆")"              "$(txtn "53.Neko")$(txtn " ")
 txtn $(txtn "34.TorBrowser")$(txtn " ")"           "$(txtn "54.Neko-Rooms")$(txtn " ")
-txtn $(txtc "35.OnlineBrowser")$(txtg " ")"        "$(txty "55.linuxserver(firefox)")$(txtp " ")
-txtn $(txtb "36.KasmWorkspaces")$(txtg " ")"       "$(txty "56.linuxserver(chromium)")$(txtp " ")
-txtn $(txtb "37.Puter")$(txtg " ")"                "$(txty "57.linuxserver(rdesktop)")$(txtp " ")
-txtn $(txty "38.TalkWithGemini")$(txtg " ★")"      "$(txty "58.Photepea")$(txtp " ★")
-txtn $(txty "39.SubLinkX")$(txtg " ")"             "$(txty "")$(txtp " ")
+txtn $(txtc "35.OnlineBrowser")$(txtg " ")"        "$(txtn "55.linuxserver(firefox)")$(txtp " ")
+txtn $(txtb "36.KasmWorkspaces")$(txtg " ")"       "$(txtn "56.linuxserver(chromium)")$(txtp " ")
+txtn $(txtb "37.Puter")$(txtg " ")"                "$(txtn "57.linuxserver(rdesktop)")$(txtp " ")
+txtn $(txty "38.TalkWithGemini")$(txtg " ★")"      "$(txtn "58.Photepea")$(txtp " ★")
+txtn $(txtn "39.SubLinkX")$(txtg " ")"             "$(txty "59.Lucky")$(txtp " ")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "====================================="
 txtn $(txtp "66.重启Caddy")$(txty "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
@@ -5247,6 +5290,7 @@ docker_deploy_run(){
      56) clear && docker_deploy_linuxserverchromium ;;
      57) clear && docker_deploy_linuxserverrdesktop ;;
      58) clear && docker_deploy_photopea ;;
+     59) clear && docker_deploy_lucky ;;
 
      66) clear && caddy_reload ;;
      77) clear && WebSites_manager_run ;;
