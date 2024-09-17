@@ -994,7 +994,7 @@ common_apps_run() {
       8) clear && install supervisor ;;
       9)clear 
         install fail2ban
-        sudo apt-get install rsyslog
+        sudo apt-get install rsyslog -y
         sudo systemctl start fail2ban
         sudo systemctl enable fail2ban
         sudo systemctl status fail2ban
