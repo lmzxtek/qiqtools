@@ -5353,7 +5353,15 @@ other_tools_run() {
         [[ -n "$WAN4" ]] && txtn " >>> URL: http://$WAN4:4000 "
         [[ -n "$WAN6" ]] && txtn " >>> URL: http://[$WAN6]:4000 "
         ;;
-      7) clear && install curl && curl -o /tmp/install.sh  https://fastly.jsdelivr.net/gh/gdy666/lucky-files@main/golucky.sh  && sh /tmp/install.sh https://fastly.jsdelivr.net/gh/gdy666/lucky-files@main 2.11.2  ;;
+      7) clear && install curl 
+        # curl -o /tmp/install.sh  https://fastly.jsdelivr.net/gh/gdy666/lucky-files@main/golucky.sh  && sh /tmp/install.sh https://fastly.jsdelivr.net/gh/gdy666/lucky-files@main 2.11.2  
+        curl -o /tmp/install.sh   https://6.666666.host:66/files/golucky.sh  && sh /tmp/install.sh https://6.666666.host:66/files 2.11.2
+         txtn ""
+         txtn " >>> 部署Lucky转发服务完成"
+         txtn " >>> 访问地址: http://localhost:16601"
+         txtn " >>> 注意: 若安装失败, 可考虑选择第2项:/usr/share目录下"
+         txtn ""
+        ;;
 
      11) clear && install curl && curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s install  ;;
      12) clear && install_maccms ;;
