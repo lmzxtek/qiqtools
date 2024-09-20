@@ -5530,8 +5530,8 @@ txtn $(txtb "37.Puter")$(txtg " ")"                "$(txtn "57.linuxserver(rdesk
 txtn $(txty "38.TalkWithGemini")$(txtg " ★")"      "$(txtn "58.Photepea")$(txtp " ★")
 txtn $(txtn "39.SubLinkX")$(txtg " ")"             "$(txty "59.Lucky")$(txtp " ")
 txtn "====================================="
-txtn $(txtn "61.Docker-win")$(txtg " ")"           "$(txty "63.Docker-mac")$(txtp " ")
-txtn $(txtn "62.Docker-win(ARM)")$(txtg " ")"      "$(txty "")$(txtp " ")
+txtn $(txty "61.Docker-win")$(txtg " ")"           "$(txtn "63.Docker-mac")$(txtp " ")
+txtn $(txtn "62.Docker-win(ARM)")$(txtg " ")"      "$(txtn "")$(txtp " ")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "====================================="
 txtn $(txtp "66.重启Caddy")$(txty "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
