@@ -5527,7 +5527,7 @@ txtn $(txtn "34.TorBrowser")$(txtn " ")"           "$(txtn "54.Neko-Rooms")$(txt
 txtn $(txtc "35.OnlineBrowser")$(txtg " ")"        "$(txtn "55.linuxserver(firefox)")$(txtp " ")
 txtn $(txtb "36.KasmWorkspaces")$(txtg " ")"       "$(txtn "56.linuxserver(chromium)")$(txtp " ")
 txtn $(txtb "37.Puter")$(txtg " ")"                "$(txtn "57.linuxserver(rdesktop)")$(txtp " ")
-txtn $(txty "38.TalkWithGemini")$(txtg " ★")"      "$(txtn "58.Photepea")$(txtp " ★")
+txtn $(txty "38.TalkWithGemini")$(txtg " ★")"      "$(txtn "58.Photopea")$(txtp " ★")
 txtn $(txtn "39.SubLinkX")$(txtg " ")"             "$(txty "59.Lucky")$(txtp " ")
 txtn "====================================="
 txtn $(txty "61.Docker-win")$(txtg " ")"           "$(txtn "63.Docker-mac")$(txtp " ")
