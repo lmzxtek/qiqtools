@@ -4526,6 +4526,299 @@ EOF
   echo -e ""
 }
 
+docker_deploy_dockerwin_amd64(){
+  local BFLD="/home/dcc.d"
+
+  local dc_port=18006
+  local dc_name=dockerwin
+  local dc_imag=dockurr/windows
+  local dc_desc="Docker windows"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/disk"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  mkdir -p "$BFLD/$dc_name/dockerwinshare"
+  # mkdir -p "$BFLD/$dc_name/logs"
+  # mkdir -p "$BFLD/$dc_name/db"
+
+  echoR "\n >>>" " 现在开始部署 Docker-win ... \n"
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  local winver="win11"
+  echoR "\n" " 可选择的系统列表 "
+  echoR "\n" " win11  \t Windows 11 Pro "
+  echoR "\n" " win11e \t Windows 11 Enterprise "
+  echoR "\n" " win10  \t Windows 10 Pro "
+  echoR "\n" " win10e \t Windows 10 Enterprise "
+  echoR "\n" " ltsc10 \t Windows 10 LTSC "
+  echoR "\n" " win8   \t Windows 8.1 Pro "
+  echoR "\n" " win8e  \t Windows 8.1 Enterprise "
+  echoR "\n" " win7   \t Windows 7 Enterprise "
+  echoR "\n" " winxp  \t Windows xp Professional "
+  echoR "\n" " 2025   \t Windows Server 2025 "
+  echoR "\n" " 2022   \t Windows Server 2022 "
+  echoR "\n" " 2019   \t Windows Server 2019 "
+  echoR "\n" " 2016   \t Windows Server 2016 "
+  echoR "\n" " 2012   \t Windows Server 2012 "
+  echoR "\n" " core11 \t Tiny 11 Core "
+  echoR "\n" " tiny11 \t Tiny 11  "
+  echoR "\n" " tiny10 \t Tiny 10  "
+  read -p "请输入要安装的系统版本: win11(default)" ptmp
+  [[ -z "$ptmp" ]] || winver=$ptmp
+  
+  local lang="English"
+  echoR "\n" " 可选择的语言 "
+  echoR "\n" " Chinese  \t 中文 "
+  echoR "\n" " English  \t 英文 "
+  read -p "请输入系统语言: English(default)" ptmp
+  [[ -z "$ptmp" ]] || lang=$ptmp
+
+  local cpucores="4"
+  read -p "请输入CPU核心数: 4(default)" ptmp
+  [[ -z "$ptmp" ]] || cpucores=$ptmp
+
+  local ramsize="8G"
+  read -p "请输入内存大小: 8G(default)" ptmp
+  [[ -z "$ptmp" ]] || ramsize=$ptmp
+
+  local disksize="64G"
+  read -p "请输入磁盘大小: 64G(default)" ptmp
+  [[ -z "$ptmp" ]] || disksize=$ptmp
+
+  local username="docker"
+  read -p "请输入账户名称: docker(default)" ptmp
+  [[ -z "$ptmp" ]] || username=$ptmp
+
+  local userpswd="docker54321"
+  read -p "请输入账户密码: docker54321(default)" ptmp
+  [[ -z "$ptmp" ]] || userpswd=$ptmp
+
+  cat > "$FYML" << EOF
+version: '3'
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    restart: unless-stopped
+    environment:
+      VERSION: "${winver}"
+      LANGUAGE: "${lang}"
+      CPU_CORES: "${cpucores}"
+      RAM_SIZE: "${ramsize}"
+      DISK_SIZE: "${disksize}"
+      USERNAME: "${username}"
+      PASSWORD: "${userpswd}"
+    devices:
+      - /dev/kvm
+    volumes:
+      - $BFLD/$dc_name/disk:/storage
+      - $BFLD/$dc_name/dockerwinshare:/shared
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 8006:8006
+      - 3389:3389/tcp
+      - 3389:3389/udp
+    stop_grace_period: 2m
+EOF
+
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echo -e ""
+}
+
+docker_deploy_dockerwin_arm64(){
+  local BFLD="/home/dcc.d"
+
+  local dc_port=28006
+  local dc_name=dockerwinarm
+  local dc_imag=dockurr/windows-arm
+  local dc_desc="Docker windows(ARM)"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/disk"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  mkdir -p "$BFLD/$dc_name/dockerwinshare"
+  # mkdir -p "$BFLD/$dc_name/logs"
+  # mkdir -p "$BFLD/$dc_name/db"
+
+  echoR "\n >>>" " 现在开始部署 Docker-win(ARM) ... \n"
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  local winver="win11"
+  echoR "\n" " 可选择的系统列表 "
+  echoR "\n" " win11  \t Windows 11 Pro "
+  echoR "\n" " win11e \t Windows 11 Enterprise "
+  echoR "\n" " win10  \t Windows 10 Pro "
+  echoR "\n" " win10e \t Windows 10 Enterprise "
+  echoR "\n" " ltsc10 \t Windows 10 LTSC "
+  read -p "请输入要安装的系统版本: win11(default)" ptmp
+  [[ -z "$ptmp" ]] || winver=$ptmp
+  
+  local lang="English"
+  echoR "\n" " 可选择的语言 "
+  echoR "\n" " Chinese  \t 中文 "
+  echoR "\n" " English  \t 英文 "
+  read -p "请输入系统语言: English(default)" ptmp
+  [[ -z "$ptmp" ]] || lang=$ptmp
+
+  local cpucores="4"
+  read -p "请输入CPU核心数: 4(default)" ptmp
+  [[ -z "$ptmp" ]] || cpucores=$ptmp
+
+  local ramsize="8G"
+  read -p "请输入内存大小: 8G(default)" ptmp
+  [[ -z "$ptmp" ]] || ramsize=$ptmp
+
+  local disksize="64G"
+  read -p "请输入磁盘大小: 64G(default)" ptmp
+  [[ -z "$ptmp" ]] || disksize=$ptmp
+
+  local username="docker"
+  read -p "请输入账户名称: docker(default)" ptmp
+  [[ -z "$ptmp" ]] || username=$ptmp
+
+  local userpswd="docker54321"
+  read -p "请输入账户密码: docker54321(default)" ptmp
+  [[ -z "$ptmp" ]] || userpswd=$ptmp
+
+  cat > "$FYML" << EOF
+version: '3'
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    restart: unless-stopped
+    environment:
+      VERSION: "${winver}"
+      LANGUAGE: "${lang}"
+      CPU_CORES: "${cpucores}"
+      RAM_SIZE: "${ramsize}"
+      DISK_SIZE: "${disksize}"
+      USERNAME: "${username}"
+      PASSWORD: "${userpswd}"
+    devices:
+      - /dev/kvm
+    volumes:
+      - $BFLD/$dc_name/disk:/storage
+      - $BFLD/$dc_name/dockerwinshare:/shared
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 8006:8006
+      - 3389:3389/tcp
+      - 3389:3389/udp
+    stop_grace_period: 2m
+EOF
+
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echo -e ""
+}
+
+docker_deploy_dockermac(){
+  local BFLD="/home/dcc.d"
+
+  local dc_port=38006
+  local dc_name=dockermac
+  local dc_imag=dockurr/macos
+  local dc_desc="Docker MacOS"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/disk"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  mkdir -p "$BFLD/$dc_name/dockerwinshare"
+  # mkdir -p "$BFLD/$dc_name/logs"
+  # mkdir -p "$BFLD/$dc_name/db"
+
+  echoR "\n >>>" " 现在开始部署 Docker-MacOS ... \n"
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+
+  local winver="win11"
+  echoR "\n" " 可选择的系统列表 "
+  echoR "\n" " sonoma   \t macOS Sonoma "
+  echoR "\n" " ventura  \t macOS Ventura "
+  echoR "\n" " monterey \t macOS Monterey "
+  echoR "\n" " big-sur  \t macOS Big Sur "
+  read -p "请输入要安装的系统版本: sonoma(default)" ptmp
+  [[ -z "$ptmp" ]] || winver=$ptmp
+  
+  # local lang="English"
+  # echoR "\n" " 可选择的语言 "
+  # echoR "\n" " Chinese  \t 中文 "
+  # echoR "\n" " English  \t 英文 "
+  # read -p "请输入系统语言: English(default)" ptmp
+  # [[ -z "$ptmp" ]] || lang=$ptmp
+
+  local cpucores="4"
+  read -p "请输入CPU核心数: 4(default)" ptmp
+  [[ -z "$ptmp" ]] || cpucores=$ptmp
+
+  local ramsize="8G"
+  read -p "请输入内存大小: 8G(default)" ptmp
+  [[ -z "$ptmp" ]] || ramsize=$ptmp
+
+  local disksize="64G"
+  read -p "请输入磁盘大小: 64G(default)" ptmp
+  [[ -z "$ptmp" ]] || disksize=$ptmp
+
+  # local username="docker"
+  # read -p "请输入账户名称: docker(default)" ptmp
+  # [[ -z "$ptmp" ]] || username=$ptmp
+
+  # local userpswd="docker54321"
+  # read -p "请输入账户密码: docker54321(default)" ptmp
+  # [[ -z "$ptmp" ]] || userpswd=$ptmp
+
+  cat > "$FYML" << EOF
+version: '3'
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    restart: unless-stopped
+    environment:
+      VERSION: "${winver}"
+      CPU_CORES: "${cpucores}"
+      RAM_SIZE: "${ramsize}"
+      DISK_SIZE: "${disksize}"
+    devices:
+      - /dev/kvm
+    volumes:
+      - $BFLD/$dc_name/disk:/storage
+      - $BFLD/$dc_name/dockerwinshare:/shared
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 8006:8006
+      - 5900:5900/tcp
+      - 5900:5900/udp
+    stop_grace_period: 2m
+EOF
+
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echo -e ""
+}
+
 docker_deploy_aktools(){
 
   local BFLD="/home/dcc.d"
@@ -5212,7 +5505,7 @@ EOF
 website_deploy_menu() {
 
 txtn " "
-txtn $(txby "▼ 容器站点部署")$(txtp " ♨♨♨ ")
+txtn $(txby "▼ 容器部署")$(txtp " ♨♨♨ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
@@ -5236,6 +5529,9 @@ txtn $(txtb "36.KasmWorkspaces")$(txtg " ")"       "$(txtn "56.linuxserver(chrom
 txtn $(txtb "37.Puter")$(txtg " ")"                "$(txtn "57.linuxserver(rdesktop)")$(txtp " ")
 txtn $(txty "38.TalkWithGemini")$(txtg " ★")"      "$(txtn "58.Photepea")$(txtp " ★")
 txtn $(txtn "39.SubLinkX")$(txtg " ")"             "$(txty "59.Lucky")$(txtp " ")
+txtn "====================================="
+txtn $(txtn "61.Docker-win")$(txtg " ")"           "$(txty "63.Docker-mac")$(txtp " ")
+txtn $(txtn "62.Docker-win(ARM)")$(txtg " ")"      "$(txty "")$(txtp " ")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "====================================="
 txtn $(txtp "66.重启Caddy")$(txty "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
@@ -5291,6 +5587,10 @@ docker_deploy_run(){
      57) clear && docker_deploy_linuxserverrdesktop ;;
      58) clear && docker_deploy_photopea ;;
      59) clear && docker_deploy_lucky ;;
+
+     61) clear && docker_deploy_dockerwin_amd64 ;;
+     61) clear && docker_deploy_dockerwin_arm64 ;;
+     63) clear && docker_deploy_dockermac ;;
 
      66) clear && caddy_reload ;;
      77) clear && WebSites_manager_run ;;
