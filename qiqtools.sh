@@ -4552,30 +4552,30 @@ docker_deploy_dockerwin_amd64(){
 
   local winver="win11"
   echoR "\n" " 可选择的系统列表 "
-  echoR "\n" " win11  \t Windows 11 Pro "
-  echoR "\n" " win11e \t Windows 11 Enterprise "
-  echoR "\n" " win10  \t Windows 10 Pro "
-  echoR "\n" " win10e \t Windows 10 Enterprise "
-  echoR "\n" " ltsc10 \t Windows 10 LTSC "
-  echoR "\n" " win8   \t Windows 8.1 Pro "
-  echoR "\n" " win8e  \t Windows 8.1 Enterprise "
-  echoR "\n" " win7   \t Windows 7 Enterprise "
-  echoR "\n" " winxp  \t Windows xp Professional "
-  echoR "\n" " 2025   \t Windows Server 2025 "
-  echoR "\n" " 2022   \t Windows Server 2022 "
-  echoR "\n" " 2019   \t Windows Server 2019 "
-  echoR "\n" " 2016   \t Windows Server 2016 "
-  echoR "\n" " 2012   \t Windows Server 2012 "
-  echoR "\n" " core11 \t Tiny 11 Core "
-  echoR "\n" " tiny11 \t Tiny 11  "
-  echoR "\n" " tiny10 \t Tiny 10  "
+  echoR "  " " win11  \t Windows 11 Pro "
+  echoR "  " " win11e \t Windows 11 Enterprise "
+  echoR "  " " win10  \t Windows 10 Pro "
+  echoR "  " " win10e \t Windows 10 Enterprise "
+  echoR "  " " ltsc10 \t Windows 10 LTSC "
+  echoR "  " " win8   \t Windows 8.1 Pro "
+  echoR "  " " win8e  \t Windows 8.1 Enterprise "
+  echoR "  " " win7   \t Windows 7 Enterprise "
+  echoR "  " " winxp  \t Windows xp Professional "
+  echoR "  " " 2025   \t Windows Server 2025 "
+  echoR "  " " 2022   \t Windows Server 2022 "
+  echoR "  " " 2019   \t Windows Server 2019 "
+  echoR "  " " 2016   \t Windows Server 2016 "
+  echoR "  " " 2012   \t Windows Server 2012 "
+  echoR "  " " core11 \t Tiny 11 Core "
+  echoR "  " " tiny11 \t Tiny 11  "
+  echoR "  " " tiny10 \t Tiny 10  "
   read -p "请输入要安装的系统版本: win11(default)" ptmp
   [[ -z "$ptmp" ]] || winver=$ptmp
   
   local lang="English"
   echoR "\n" " 可选择的语言 "
-  echoR "\n" " Chinese  \t 中文 "
-  echoR "\n" " English  \t 英文 "
+  echoR "  " " Chinese  \t 中文 "
+  echoR "  " " English  \t 英文 "
   read -p "请输入系统语言: English(default)" ptmp
   [[ -z "$ptmp" ]] || lang=$ptmp
 
@@ -4659,18 +4659,18 @@ docker_deploy_dockerwin_arm64(){
 
   local winver="win11"
   echoR "\n" " 可选择的系统列表 "
-  echoR "\n" " win11  \t Windows 11 Pro "
-  echoR "\n" " win11e \t Windows 11 Enterprise "
-  echoR "\n" " win10  \t Windows 10 Pro "
-  echoR "\n" " win10e \t Windows 10 Enterprise "
-  echoR "\n" " ltsc10 \t Windows 10 LTSC "
+  echoR "  " " win11  \t Windows 11 Pro "
+  echoR "  " " win11e \t Windows 11 Enterprise "
+  echoR "  " " win10  \t Windows 10 Pro "
+  echoR "  " " win10e \t Windows 10 Enterprise "
+  echoR "  " " ltsc10 \t Windows 10 LTSC "
   read -p "请输入要安装的系统版本: win11(default)" ptmp
   [[ -z "$ptmp" ]] || winver=$ptmp
   
   local lang="English"
   echoR "\n" " 可选择的语言 "
-  echoR "\n" " Chinese  \t 中文 "
-  echoR "\n" " English  \t 英文 "
+  echoR "  " " Chinese  \t 中文 "
+  echoR "  " " English  \t 英文 "
   read -p "请输入系统语言: English(default)" ptmp
   [[ -z "$ptmp" ]] || lang=$ptmp
 
@@ -4754,10 +4754,10 @@ docker_deploy_dockermac(){
 
   local winver="win11"
   echoR "\n" " 可选择的系统列表 "
-  echoR "\n" " sonoma   \t macOS Sonoma "
-  echoR "\n" " ventura  \t macOS Ventura "
-  echoR "\n" " monterey \t macOS Monterey "
-  echoR "\n" " big-sur  \t macOS Big Sur "
+  echoR "  " " sonoma   \t macOS Sonoma "
+  echoR "  " " ventura  \t macOS Ventura "
+  echoR "  " " monterey \t macOS Monterey "
+  echoR "  " " big-sur  \t macOS Big Sur "
   read -p "请输入要安装的系统版本: sonoma(default)" ptmp
   [[ -z "$ptmp" ]] || winver=$ptmp
   
