@@ -5589,7 +5589,7 @@ docker_deploy_run(){
      59) clear && docker_deploy_lucky ;;
 
      61) clear && docker_deploy_dockerwin_amd64 ;;
-     61) clear && docker_deploy_dockerwin_arm64 ;;
+     62) clear && docker_deploy_dockerwin_arm64 ;;
      63) clear && docker_deploy_dockermac ;;
 
      66) clear && caddy_reload ;;
