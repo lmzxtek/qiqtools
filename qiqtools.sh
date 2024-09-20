@@ -5338,6 +5338,7 @@ docker_deploy_photopea(){
   local dc_port=2887
   local dc_name=photopea
   local dc_imag=registry.cn-guangzhou.aliyuncs.com/os_cmty/os_cmty:Photopea
+  # local dc_imag=kovaszab/photopea:latest
   
   local dc_desc="Photepea Online Editor"
 
@@ -5618,7 +5619,7 @@ txtn $(txtn " 3.宝塔面板")$(txtg " ")"        "$(txtc "13.WebOS")$(txtr " ")
 txtn $(txtn " 4.哪吒探针")$(txtg " ")"        "$(txty "14.Code-Server")$(txtg " ")
 txtn $(txtn " 5.OpenLiteSpeed")$(txtg " ")"   "$(txtn "15.ChatGPT-Next-Web")$(txtr " ✘")
 txtn $(txtn " 6.Puter")$(txtg " ")"           "$(txtc "16.爱影CMS")$(txtr " ♡")
-txtn $(txtn " 7.Lucky")$(txtg " ")"           "$(txtc "")$(txtr " ")
+txtn $(txtn " 7.Lucky")$(txtg " ")"           "$(txtc "17.DataEase")$(txtr " ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.Docker")$(txtg " ☆")"         "$(txtn "51.Gnome-Desktop")$(txtg " ")
 txtn $(txtn "32.Python")$(txtg " ")"          "$(txtn "52.RustDesk Server")$(txtg " ")
@@ -5686,6 +5687,8 @@ other_tools_run() {
         [[ -n "$WAN4" ]] && txtn " >>> URL: http://$WAN4:21007 "
         [[ -n "$WAN6" ]] && txtn " >>> URL: http://[$WAN6]:21007 "
          ;;
+
+      17) clear && curl -sSL https://dataease.oss-cn-hangzhou.aliyuncs.com/quick_start_v2.sh | bash ;;
 
       31) clear && docker_install ;;
       32) clear && install_python ;;
