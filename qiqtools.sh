@@ -2512,7 +2512,12 @@ system_tools_run() {
       7) clear && banroot_with_new_user ;;
       8) clear && alter_ipv4_ipv6 ;;
       9) clear && ss -tulnape ;;
-     10) clear && echo"GatewayPorts yes">>/etc/ssh/sshd config && systemctl restart sshd ;;
+     10) clear 
+         sed -i 's/^#\?AllowTcpForwarding.*/AllowTcpForwarding yes/g' /etc/ssh/sshd_config;
+         sed -i 's/^#\?GatewayPorts.*/GatewayPorts yes/g' /etc/ssh/sshd_config;
+         service sshd restart
+         # systemctl restart sshd 
+        ;;
 
      11) clear && set_swap ;;
      12) clear && change_sys_name  ;;
