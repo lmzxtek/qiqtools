@@ -1,21 +1,20 @@
-# irm https://massgrave.dev/get | iex 
-# irm https://get.activated.win | iex 
-
 services:
-  win:
+  win2025:
     image: dockurr/windows
-    container_name: win
+    container_name: win2025
     # restart: unless-stopped
     environment:
-      VERSION: "core11"
-      RAM_SIZE: "2G"
-      CPU_CORES: "2"
-      DISK_SIZE: "12G"
+      VERSION: "2025"
+      RAM_SIZE: "8G"
+      CPU_CORES: "4"
+      DISK_SIZE: "64G"
+      DISK2_SIZE: "256G"
       USERNAME: "dd"
       PASSWORD: "7654321234567"
-      # LANGUAGE: "Chinese"   
+      LANGUAGE: "Chinese"   
     volumes:
-      - /home/win_volume:/storage
+      - /home/win_disk:/storage
+      - /mnt/ext0/win_2025:/storage2
       - /home/win_share:/shared
     devices:
       - /dev/kvm
@@ -23,7 +22,9 @@ services:
       - NET_ADMIN
     ports:
       - 8006:8006
+      - 5000:5000
       - 3389:3389/tcp
       - 3389:3389/udp
-      - 5000:5000/tcp
+      - 2080:2080/tcp
+      - 2080:2080/udp
     stop_grace_period: 2m

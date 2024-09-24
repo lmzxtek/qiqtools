@@ -1,8 +1,8 @@
 services:
-  windows:
+  winarm:
     image: dockurr/windows
-    container_name: windows-arm
-    restart: unless-stopped
+    container_name: win_arm
+    # restart: unless-stopped
     environment:
       # VERSION: "https://example.com/win.iso"
       # VERSION: "win7"
@@ -15,17 +15,19 @@ services:
       LANGUAGE: "Chinese"   
     volumes:
       # - /home/tiny11corex64beta1.iso:/custom.iso
-      - /home/winarmdisk:/storage
-      - /home/winarmshare:/shared
+      - /home/win_arm_disk:/storage
+      - /home/win_arm_share:/shared
     devices:
       - /dev/kvm
     cap_add:
       - NET_ADMIN
     ports:
       - 8006:8006
+      - 5000:5000
+      - 2080:2080/tcp
+      - 2080:2080/udp
       - 3389:3389/tcp
       - 3389:3389/udp
-      - 5000:5000/tcp
     stop_grace_period: 2m
     networks:
       - 1panel-v4v6
