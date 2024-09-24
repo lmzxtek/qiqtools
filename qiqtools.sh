@@ -5619,7 +5619,7 @@ WANIP_show
 txtn "====================================="
 # txtn "—————————————————————————————————————"
 # txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txty " 1.1Panel")$(txtc " ☂")"         "$(txtn "11.AList")$(txtg " ")
+txtn $(txty " 1.1Panel")$(txty " ☂")"         "$(txtn "11.AList")$(txtg " ")
 txtn $(txtn " 2.aaPanel")$(txtg " ")"         "$(txtn "12.MacCMS")$(txtb " ✘")
 txtn $(txtn " 3.宝塔面板")$(txtg " ")"        "$(txtc "13.WebOS")$(txtr " ")
 txtn $(txtn " 4.哪吒探针")$(txtg " ")"        "$(txty "14.Code-Server")$(txtg " ")
@@ -5633,6 +5633,8 @@ txtn $(txtn "33.pip")$(txtg " ")"             "$(txtn "53.DeepLX Server")$(txtg 
 txtn $(txtn "34.miniConda")$(txtr " ")"       "$(txtn "54.Chrome")$(txtg " ")
 txtn $(txty "35.Conda-forge")$(txtr " ★")"    "$(txtc "55.Jupyter-lab")$(txtg " ")
 txtn $(txtn "36.TA-Lib")$(txtg " ")"          "$(txtn "56.SubLinkX")$(txtb " ")
+txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+txtn $(txtn "41.Add 1panel-v4v6")$(txtg " ")" "$(txtn "")$(txtb " ")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
 txtn " "
@@ -5717,6 +5719,21 @@ other_tools_run() {
           fi
           ;;
       36) clear && curl -O https://netcologne.dl.sourceforge.net/project/ta-lib/ta-lib/0.4.0/ta-lib-0.4.0-src.tar.gz && tar -xzf ta-lib-0.4.0-src.tar.gz && cd ta-lib/ && ./configure --prefix=/usr && make && make install && cd .. ;;
+
+      41) 
+          # clear 
+          echo -e "\n >>> 添加1panel-v4v6之前，请先确保1Panel面板中开启了bridge网络的IPv6."
+          docker network create --driver=bridge \
+              --subnet=172.16.10.0/24 \
+              --gateway=172.16.10.1 \
+              --ip-range=172.16.10.0/16 \
+              --subnet=2408:400e::/48 \
+              --gateway=2408:400e::1 \
+              --ip-range=2408:400e::/64 \
+            1panel-v4v6
+          echo -e "\n >>> 添加1panel-v4v6完成.\n"
+
+          ;;
 
       51) clear && install_ub_desktop ;;
       52) clear && install wget && wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
