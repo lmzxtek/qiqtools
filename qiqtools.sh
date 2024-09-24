@@ -1032,7 +1032,7 @@ common_apps_run() {
      72) clear && install cmatrix   && clear && cmatrix ;;
 
      99) clear 
-        # country=$(curl -s --max-time 3 ipinfo.io/country)
+        country=$(curl -s --max-time 3 ipinfo.io/country)
         if [ "$country" = "CN" ]; then
           curl -sS -O https://kejilion.pro/kejilion.sh && chmod +x kejilion.sh && ./kejilion.sh
         else
