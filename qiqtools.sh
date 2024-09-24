@@ -1032,13 +1032,13 @@ common_apps_run() {
      72) clear && install cmatrix   && clear && cmatrix ;;
 
      99) clear 
-        bash <(curl -sL kejilion.sh)
         # country=$(curl -s --max-time 3 ipinfo.io/country)
-        # if [ "$country" = "CN" ]; then
-        #   curl -sS -O https://kejilion.pro/kejilion.sh && chmod +x kejilion.sh && ./kejilion.sh
-        # else
-        #     curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/kejilion.sh && chmod +x kejilion.sh && ./kejilion.sh
-        # fi
+        if [ "$country" = "CN" ]; then
+          curl -sS -O https://kejilion.pro/kejilion.sh && chmod +x kejilion.sh && ./kejilion.sh
+        else
+          bash <(curl -sL kejilion.sh)
+          # curl -sS -O https://raw.githubusercontent.com/kejilion/sh/main/kejilion.sh && chmod +x kejilion.sh && ./kejilion.sh
+        fi
         ;;
      
       0) clear && qiqtools ;;
