@@ -13,9 +13,9 @@ services:
       PASSWORD: "7654321234567"
       LANGUAGE: "Chinese"   
     volumes:
+      - /home/win_share:/shared
       - /home/win_disk:/storage
       - /mnt/ext0/win_2025:/storage2
-      - /home/win_share:/shared
     devices:
       - /dev/kvm
     cap_add:
@@ -25,6 +25,6 @@ services:
       - 5000:5000
       - 3389:3389/tcp
       - 3389:3389/udp
-      - 2080:2080/tcp
-      - 2080:2080/udp
+      # - 2080:2080/tcp
+      # - 2080:2080/udp
     stop_grace_period: 2m
