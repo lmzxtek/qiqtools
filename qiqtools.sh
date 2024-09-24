@@ -5736,11 +5736,14 @@ other_tools_run() {
 
           ;;
 
-      42) clear 
+      42) 
+          echo ' >>> 开始设置python源...'
           pip config set global.index-url  http://mirrors.aliyun.com/pypi/simple 
           pip config set global.trusted-host mirrors.aliyun.com
           pip config set global.disable-pip-version-check true
           pip config set global.timeout 30
+          echo ' >>> 设置python源完成。'
+          echo ''
            ;;
 
       51) clear && install_ub_desktop ;;
@@ -7036,8 +7039,8 @@ txtn $(txtn " 2.系统更新")$(txtb " ")"       "$(txty "12.容器部署")$(txt
 txtn $(txtn " 3.系统清理")$(txtb " ")"       "$(txtr "13.站点管理")$(txtb " ★")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txty "21.系统工具")$(txtp " ")"       "$(txtn "31.性能测试")$(txtb " ")
-txtn $(txty "22.管理工具")$(txtn " ☆")"      "$(txtp "32.节点搭建")$(txty " ✈")
-txtn $(txtn "23.常用工具")$(txtb " ")"       "$(txtc "33.节点面板")$(txty " ")
+txtn $(txtn "22.管理工具")$(txtn " ")"       "$(txtp "32.节点搭建")$(txty " ✈")
+txtn $(txty "23.常用工具")$(txtb " ☆")"      "$(txtc "33.节点面板")$(txty " ")
 txtn $(txtn "24.IP检测优选")$(txtb " ")"     "$(txty "34.检测出站IP")$(txtb " ☭")
 txtn "====================================="
 txtn $(txtb "00.脚本更新")$(txtb " ☋")"      "$(txty "99")$(txtc ".重启系统 ☢")
