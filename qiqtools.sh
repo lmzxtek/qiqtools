@@ -5635,6 +5635,7 @@ txtn $(txty "35.Conda-forge")$(txtr " ★")"    "$(txtc "55.Jupyter-lab")$(txtg 
 txtn $(txtn "36.TA-Lib")$(txtg " ")"          "$(txtn "56.SubLinkX")$(txtb " ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "41.Add 1panel-v4v6")$(txtg " ")" "$(txtn "")$(txtb " ")
+txtn $(txtn "42.set AliYun(pip)")$(txtg " ")" "$(txtn "")$(txtb " ")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
 txtn " "
@@ -5734,6 +5735,13 @@ other_tools_run() {
           echo -e "\n >>> 添加1panel-v4v6完成.\n"
 
           ;;
+
+      42) clear 
+          pip config set global.index-url  http://mirrors.aliyun.com/pypi/simple 
+          pip config set global.trusted-host mirrors.aliyun.com
+          pip config set global.disable-pip-version-check true
+          pip config set global.timeout 30
+           ;;
 
       51) clear && install_ub_desktop ;;
       52) clear && install wget && wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
