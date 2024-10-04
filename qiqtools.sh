@@ -5626,6 +5626,7 @@ txtn $(txtn " 4.哪吒探针")$(txtg " ")"        "$(txty "14.Code-Server")$(txt
 txtn $(txtn " 5.OpenLiteSpeed")$(txtg " ")"   "$(txtn "15.ChatGPT-Next-Web")$(txtr " ✘")
 txtn $(txtn " 6.Puter")$(txtg " ")"           "$(txtc "16.爱影CMS")$(txtr " ♡")
 txtn $(txtn " 7.Lucky")$(txtg " ")"           "$(txtc "17.DataEase")$(txtr " ")
+txtn $(txtn " 8.JumpServer")$(txtg " ")"      "$(txtc "")$(txtr " ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.Docker")$(txtg " ☆")"         "$(txtn "51.Gnome-Desktop")$(txtg " ")
 txtn $(txtn "32.Python")$(txtg " ")"          "$(txtn "52.RustDesk Server")$(txtg " ")
@@ -5670,6 +5671,21 @@ other_tools_run() {
          txtn " >>> 部署Lucky转发服务完成"
          txtn " >>> 访问地址: http://localhost:16601"
          txtn " >>> 注意: 若安装失败, 可考虑选择第2项:/usr/share目录下"
+         txtn ""
+        ;;
+
+      8) clear && install curl       
+        country=$(curl -s --max-time 3 ipinfo.io/country)
+        if [ "$country" = "CN" ]; then
+          curl -sSL https://resource.fit2cloud.com/jumpserver/jumpserver/releases/latest/download/quick_start.sh | bash
+        else
+          curl -sSL https://github.com/jumpserver/jumpserver/releases/latest/download/quick_start.sh | bash
+        fi
+
+         txtn ""
+         txtn " >>> 安装JumpServer堡垒机完成"
+         txtn " >>> 访问地址: http://localhost:16601"
+         txtn " >>> 账号密码: admin@ChangeMe"
          txtn ""
         ;;
 
