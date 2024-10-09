@@ -1895,7 +1895,7 @@ alter_sourcelist(){
           9) restore_initial_source ;;
 
           # https://linuxmirrors.cn/
-         11) clear &&  bash <(curl -sSL https://linuxmirrors.cn/main.sh);;
+         11) clear &&  bash <(curl -sSL https://gitee.com/SuperManito/LinuxMirrors/raw/main/ChangeMirrors.sh) ;;
          12) clear &&  bash <(curl -sSL https://linuxmirrors.cn/main.sh) --edu ;;
          13) clear &&  bash <(curl -sSL https://linuxmirrors.cn/main.sh) --abroard ;;
 
