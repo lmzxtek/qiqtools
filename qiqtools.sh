@@ -973,7 +973,7 @@ txtn $(txtn "62.俄罗斯方块")$(txtg "▣")"          "$(txtn "72.cmatrix(黑
 txtn $(txtn "63.太空入侵者")$(txtg "➹")"          "$(txtn "")$(txtg "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
-txtn $(txtc "88.Sky-Box工具箱")$(txtr "")"         "$(txty "99.KejiLion脚本")$(txtc "")$(txty "")
+txtn $(txtc "88.Sky-Box工具箱")$(txtr "")"        "$(txty "99.KejiLion脚本")$(txtc "")$(txty "")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")"          "$(txty "")$(txtc "")$(txty "")
 txtn " "
