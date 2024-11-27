@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.6.3
+script_version=v0.6.4
 #==========================
 
 # Language
@@ -973,7 +973,9 @@ txtn $(txtn "62.俄罗斯方块")$(txtg "▣")"          "$(txtn "72.cmatrix(黑
 txtn $(txtn "63.太空入侵者")$(txtg "➹")"          "$(txtn "")$(txtg "")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
-txtn $(txtn " 0.返回主菜单")$(txtr "✖")"          "$(txty "99.KejiLion脚本")$(txtc "")$(txty "")
+txtn $(txtc "88.Sky-Box工具箱")$(txtr "")"         "$(txty "99.KejiLion脚本")$(txtc "")$(txty "")
+txtn "—————————————————————————————————————"
+txtn $(txtn " 0.返回主菜单")$(txtr "✖")"          "$(txty "")$(txtc "")$(txty "")
 txtn " "
 
 }
@@ -1030,6 +1032,15 @@ common_apps_run() {
 
      71) clear && install sl        && clear && /usr/games/sl ;;
      72) clear && install cmatrix   && clear && cmatrix ;;
+
+     88) clear && 
+        country=$(curl -s --max-time 3 ipinfo.io/country)
+        if [ "$country" = "CN" ]; then
+          wget -O box.sh https://proxy.063643.xyz/proxy/https://raw.githubusercontent.com/BlueSkyXN/SKY-BOX/main/box.sh && chmod +x box.sh && clear && ./box.sh
+        else
+          wget -O box.sh https://raw.githubusercontent.com/BlueSkyXN/SKY-BOX/main/box.sh && chmod +x box.sh && clear && ./box.sh
+        fi
+      ;;
 
      99) clear 
         country=$(curl -s --max-time 3 ipinfo.io/country)
