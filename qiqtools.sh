@@ -5668,7 +5668,7 @@ docker_deploy_run(){
      61) clear && docker_deploy_dockerwin_amd64 ;;
      62) clear && docker_deploy_dockerwin_arm64 ;;
      63) clear && docker_deploy_dockermac ;;
-     63) clear && docker_deploy_dockerwechat ;;
+     64) clear && docker_deploy_dockerwechat ;;
 
      66) clear && caddy_reload ;;
      77) clear && WebSites_manager_run ;;
