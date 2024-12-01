@@ -4836,6 +4836,65 @@ EOF
   echo -e ""
 }
 
+docker_deploy_dockerwechat(){
+
+  local BFLD="/home/dcc.d"
+
+  local dc_port=5800
+  local dc_vnc=5900
+  local dc_name=wechat
+  local dc_imag=ricwang/docker-wechat:latest
+  local dc_desc="WeChat"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/downloads"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  echoR "\n >>>" " 现在开始部署 WeChat ... \n"
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+  
+  read -p "请输入VNC端口(默认为:${dc_vnc}): " ptmp
+  [[ -z "$ptmp" ]] || dc_vnc=$ptmp
+  
+  
+  cat > "$FYML" << EOF
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    restart: unless-stopped
+    volumes:
+      - ./.xwechat:/root/.xwechat
+      - ./xwechat_files:/root/xwechat_files
+      - ./downloads:/root/downloads
+      - /dev/snd:/dev/snd
+    ports:
+      - "$dc_port:5800"
+      - "$dc_vnc:5900"
+    environment:
+      - LANG=zh_CN.UTF-8
+      - USER_ID=0
+      - GROUP_ID=0
+      - WEB_AUDIO=1
+      - TZ=Asia/Shanghai
+    privileged: true
+EOF
+
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echo -e   "URL: http://$WAN4:$dc_port" >> $FCONF
+  echo -e   "URL: http://$WAN4:$dc_port"
+  echo -e   "VNC: http://$WAN4:$dc_vnc" >> $FCONF
+  echo -e   "VNC: http://$WAN4:$dc_vnc"
+  echo -e ""
+}
+
+
 docker_deploy_aktools(){
 
   local BFLD="/home/dcc.d"
@@ -5549,7 +5608,7 @@ txtn $(txty "38.TalkWithGemini")$(txtg " ★")"      "$(txtn "58.Photopea")$(txt
 txtn $(txtn "39.SubLinkX")$(txtg " ")"             "$(txty "59.Lucky")$(txtp " ")
 txtn "====================================="
 txtn $(txty "61.Docker-win")$(txtg " ")"           "$(txtn "63.Docker-mac")$(txtp " ")
-txtn $(txtn "62.Docker-win(ARM)")$(txtg " ")"      "$(txtn "")$(txtp " ")
+txtn $(txtn "62.Docker-win(ARM)")$(txtg " ")"      "$(txtn "64.Docker-wechat")$(txtp " ")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "====================================="
 txtn $(txtp "66.重启Caddy")$(txty "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
@@ -5609,6 +5668,7 @@ docker_deploy_run(){
      61) clear && docker_deploy_dockerwin_amd64 ;;
      62) clear && docker_deploy_dockerwin_arm64 ;;
      63) clear && docker_deploy_dockermac ;;
+     63) clear && docker_deploy_dockerwechat ;;
 
      66) clear && caddy_reload ;;
      77) clear && WebSites_manager_run ;;
