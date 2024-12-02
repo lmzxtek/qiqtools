@@ -4894,6 +4894,44 @@ EOF
   echo -e ""
 }
 
+docker_deploy_iptv(){
+
+  local BFLD="/home/dcc.d"
+
+  local dc_port=35455
+  local dc_name=iptv
+  local dc_imag=youshandefeiyang/allinone
+  local dc_desc="IP-TV"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name/downloads"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  echoR "\n >>>" " 现在开始部署 IP-tv ... \n"
+  # read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  # [[ -z "$ptmp" ]] || dc_port=$ptmp  
+  
+  cat > "$FYML" << EOF
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    restart: unless-stopped
+    privileged: true
+    net: host
+EOF
+
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echo -e   "URL: http://$WAN4:$dc_port" >> $FCONF
+  echo -e   "URL: http://$WAN4:$dc_port"
+  echo -e ""
+}
+
 
 docker_deploy_aktools(){
 
@@ -5669,6 +5707,7 @@ docker_deploy_run(){
      62) clear && docker_deploy_dockerwin_arm64 ;;
      63) clear && docker_deploy_dockermac ;;
      64) clear && docker_deploy_dockerwechat ;;
+     65) clear && docker_deploy_iptv ;;
 
      66) clear && caddy_reload ;;
      77) clear && WebSites_manager_run ;;
