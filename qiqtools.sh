@@ -4922,7 +4922,8 @@ services:
     image: $dc_imag
     restart: unless-stopped
     privileged: true
-    net: host
+    ports:
+        - '$dc_port:35455'
 EOF
 
   docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
@@ -5644,12 +5645,14 @@ txtn $(txtb "36.KasmWorkspaces")$(txtg " ")"       "$(txtn "56.linuxserver(chrom
 txtn $(txtb "37.Puter")$(txtg " ")"                "$(txtn "57.linuxserver(rdesktop)")$(txtp " ")
 txtn $(txty "38.TalkWithGemini")$(txtg " ★")"      "$(txtn "58.Photopea")$(txtp " ★")
 txtn $(txtn "39.SubLinkX")$(txtg " ")"             "$(txty "59.Lucky")$(txtp " ")
+txtn $(txtn "40.IP-tv")$(txtg " ")"                "$(txty "")$(txtp " ")
 txtn "====================================="
 txtn $(txty "61.Docker-win")$(txtg " ")"           "$(txtn "63.Docker-mac")$(txtp " ")
 txtn $(txtn "62.Docker-win(ARM)")$(txtg " ")"      "$(txtn "64.Docker-wechat")$(txtp " ")
+# txtn $(txtn "")$(txtg " ")"           "$(txtn "")$(txtp " ")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "====================================="
-txtn $(txtp "66.重启Caddy")$(txty "☣")"            "$(txtp "77.")$(txtc "站点管理")$(txty "❦")
+txtn $(txtp "86.重启Caddy")$(txty "☣")"            "$(txtp "87.")$(txtc "站点管理")$(txty "❦")
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")"           "$(txtp "88.")$(txtc "容器管理")$(txty "☪")
 txtn " "
 }
@@ -5681,6 +5684,7 @@ docker_deploy_run(){
      37) clear && docker_deploy_puter ;;
      38) clear && docker_deploy_talkwithgemini ;;
      39) clear && docker_deploy_sublinkx ;;
+     40) clear && docker_deploy_iptv ;;
 
      41) clear && docker_deploy_maccms_tweek ;;
      42) clear && docker_deploy_memos ;;
@@ -5707,7 +5711,6 @@ docker_deploy_run(){
      62) clear && docker_deploy_dockerwin_arm64 ;;
      63) clear && docker_deploy_dockermac ;;
      64) clear && docker_deploy_dockerwechat ;;
-     65) clear && docker_deploy_iptv ;;
 
      66) clear && caddy_reload ;;
      77) clear && WebSites_manager_run ;;
