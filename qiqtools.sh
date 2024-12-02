@@ -5652,8 +5652,8 @@ txtn $(txtn "62.Docker-win(ARM)")$(txtg " ")"      "$(txtn "64.Docker-wechat")$(
 # txtn $(txtn "")$(txtg " ")"           "$(txtn "")$(txtp " ")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "====================================="
-txtn $(txtp "86.重启Caddy")$(txty "☣")"            "$(txtp "87.")$(txtc "站点管理")$(txty "❦")
-txtn $(txtn " 0.返回主菜单")$(txtr "✖")"           "$(txtp "88.")$(txtc "容器管理")$(txty "☪")
+txtn $(txtp "96.重启Caddy")$(txty "☣")"            "$(txtp "97.")$(txtc "站点管理")$(txty "❦")
+txtn $(txtn " 0.返回主菜单")$(txtr "✖")"           "$(txtp "98.")$(txtc "容器管理")$(txty "☪")
 txtn " "
 }
 
@@ -5712,9 +5712,9 @@ docker_deploy_run(){
      63) clear && docker_deploy_dockermac ;;
      64) clear && docker_deploy_dockerwechat ;;
 
-     66) clear && caddy_reload ;;
-     77) clear && WebSites_manager_run ;;
-     88) clear && docker_manage_run ;;
+     96) clear && caddy_reload ;;
+     97) clear && WebSites_manager_run ;;
+     98) clear && docker_manage_run ;;
 
       0) clear && qiqtools ;;
       *) echo "无效的输入!" ;;
