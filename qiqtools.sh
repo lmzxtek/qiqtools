@@ -1307,10 +1307,10 @@ txtn $(txtn "32.Alpine 3.19")$(txtb " ")"      "$(txtn "42.CentOS 8")$(txtb " ")
 txtn $(txtn "33.Alpine 3.18")$(txtb " ")"      "$(txtn "43.Kali Rolling")$(txtb " ")
 txtn $(txtn "34.Arch Linux")$(txtb " ")"       "$(txtn "44.Fedora")$(txtb "❀")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "51.Windows 2022")$(txtb " ")"     "$(txtn "61.Windows 11(EN)")$(txtc " ")
-txtn $(txtn "52.Windows 2019")$(txtb " ")"     "$(txtn "62.Windows 11(CN)")$(txtc " ")
-txtn $(txtn "53.Windows 2016")$(txtb " ")"     "$(txtn "63.Windows 10(EN)")$(txtg " ")
-txtn $(txtn "54.Windows 2012")$(txtb " ")"     "$(txtn "64.Windows 10(CN)")$(txtg " ")
+txtn $(txtn "51.Windows 2025")$(txtb " ")"     "$(txtn "61.Windows 11(EN)")$(txtc " ")
+txtn $(txtn "52.Windows 2022")$(txtb " ")"     "$(txtn "62.Windows 11(CN)")$(txtc " ")
+txtn $(txtn "53.Windows 2019")$(txtb " ")"     "$(txtn "63.Windows 10(EN)")$(txtg " ")
+txtn $(txtn "54.Windows 2016")$(txtb " ")"     "$(txtn "64.Windows 10(CN)")$(txtg " ")
 txtn $(txtn "55.Windows 7")$(txtb " ")"        "$(txtn "")$(txtg "")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "71.41合一脚本")$(txtn "❉")"       "$(txtn "72.脚本使用说明")$(txtg "♡")
@@ -1499,20 +1499,24 @@ dd_system_run() {
       
       #============================== 
       51) 
+        bash reinstall.sh windows --image-name='windows server 2025 serverdatacenter' --lang=zh-cn
+        # reboot 
+        # exit ;;
+        break_end
+        ;;
+      52) 
         # bash InstallNET.sh -windows 2022
         bash reinstall.sh windows --image-name='windows server 2022 serverdatacenter' --lang=zh-cn
-        reboot 
-        exit ;;
-      52) 
+        # reboot 
+        # exit ;;
+        break_end
+        ;;
+      53) 
         bash InstallNET.sh -windows 2019
         reboot 
         exit ;;
-      53) 
-        bash InstallNET.sh -windows 2016
-        reboot 
-        exit ;;
       54) 
-        bash InstallNET.sh -windows 2012
+        bash InstallNET.sh -windows 2016
         reboot 
         exit ;;
       55) 
@@ -1523,6 +1527,7 @@ dd_system_run() {
         bash reinstall.sh windows --iso="$iso_link" --image-name='Windows 7 PROFESSIONAL'
         reboot 
         exit ;;
+
       61) 
         bash InstallNET.sh -windows 11 -lang "en"
         # bash InstallNET.sh -windows 11 -lang "cn"
