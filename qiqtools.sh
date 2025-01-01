@@ -965,7 +965,7 @@ txtn $(txtn " 7.tmux(多路后台运行)")$(txtg " ")"  "$(txtn "17.socat(通信
 txtn $(txty " 8.SuperVisor")$(txtb " ★")"         "$(txtn "18.pure-ftp")$(txtb " ")
 txtn $(txty " 9.Fail2Ban")$(txtg " ★")"           "$(txtn "19.ClamAV(病毒扫描)")$(txtg " ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-txtn $(txtn "31.全部安装")$(txtg " ")"            "$(txtn "41.安装指定工具")$(txtg " ")
+txtn $(txtn "31.全部安装")$(txtg " ★")"           "$(txtn "41.安装指定工具")$(txtg " ")
 txtn $(txtn "32.全部卸载")$(txtg " ")"            "$(txtn "42.卸载指定工具")$(txtg " ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "61.贪吃蛇")$(txtg "£")"              "$(txtn "71.sl(跑火车屏保)")$(txtg "→")
@@ -1003,7 +1003,7 @@ common_apps_run() {
         ;;
 
      11) clear && install htop   && clear && htop  ;;
-     12) clear && install btop   && clear && btop  ;;
+     12) clear && install btop    ;;
      13) clear && install iftop  && clear && iftop ;;
      14) clear && install tar    && clear && echo "工具已安装，使用方法如下：" && tar    --help ;;
      15) clear && install unzip  && clear && echo "工具已安装，使用方法如下：" && unzip  ;;
@@ -1020,8 +1020,15 @@ common_apps_run() {
          sudo systemctl status clamav-freshclam.service
          ;;
      
-     31) clear && install curl wget sudo socat htop iftop unzip tar tmux ffmpeg btop ranger gdu fzf ;;
-     32) clear && remove htop iftop unzip tmux ffmpeg btop ranger gdu fzf cmatrix sl bastet nsnake ninvaders ;;
+     31) clear && install sudo curl wget btop gdu supervisor
+        install fail2ban
+        sudo apt-get install rsyslog -y
+        sudo systemctl start fail2ban
+        sudo systemctl enable fail2ban
+        sudo systemctl status fail2ban
+      ;;
+
+     32) clear && remove btop gdu ;;
  
      41) clear && reading "请输入安装的工具名(wget curl): " installname && install $installname ;;
      42) clear && reading "请输入卸载的工具名(htop ufw): "  removename  && remove  $removename  ;;
