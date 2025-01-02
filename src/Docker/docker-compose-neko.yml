@@ -5,7 +5,7 @@ networks:
 services:
   neko:
     # image: "m1k1o/neko:chromium"
-    image: "neko:microsoft-edge"
+    image: "m1k1o/neko:microsoft-edge"
     restart: "unless-stopped"
     shm_size: "4gb"
     networks:
