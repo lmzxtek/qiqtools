@@ -17,7 +17,7 @@ services:
       - SYS_ADMIN
     environment:
       NEKO_SCREEN: '1920x1080@30'
-      NEKO_PASSWORD: neko
+      NEKO_PASSWORD: neko7777777
       NEKO_PASSWORD_ADMIN: admin543212345
       NEKO_EPR: 52000-52100
       NEKO_NAT1TO1: 23.146.40.191
