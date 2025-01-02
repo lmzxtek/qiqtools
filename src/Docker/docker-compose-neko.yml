@@ -22,7 +22,9 @@ services:
       NEKO_EPR: 52000-52100
       NEKO_NAT1TO1: 23.146.40.191
       NEKO_FILE_TRANSFER_ENABLED: true
-      NEKO_FILE_TRANSFER_PATH: /mnt/db4/neko_data/Downloads
-
+      NEKO_FILE_TRANSFER_PATH: /home/neko/Downloads
+      # NEKO_FILE_TRANSFER_PATH: /mnt/db4/neko_data/Downloads
+    volumes:
+      - /mnt/db4/neko_data/Downloads:/home/neko/Downloads
     # volumes:
     #     - ${DOWNLOAD_PATH}:${NEKO_FILE_TRANSFER_PATH}
