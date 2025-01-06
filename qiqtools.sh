@@ -247,7 +247,7 @@ check_IPV4(){
 	else
     txtn " >>> Check IPv4 info ..."
 		# local_ipv4=$(curl -4 -s --max-time 10 api64.ipify.org)
-    local res_ipv4=$(curl -4 -sS --retry 1 --max-time 1 https://www.cloudflare.com/cdn-cgi/trace)
+    local res_ipv4=$(curl -4 -sS --retry 2 --max-time 1 https://www.cloudflare.com/cdn-cgi/trace)
 		local local_ipv4=$( echo -e "$res_ipv4" | grep "ip="   | awk -F= '{print $2}')
 		local iso2_code4=$( echo -e "$res_ipv4" | grep "loc="  | awk -F= '{print $2}')
 		local warp_ipv4=$( echo -e "$res_ipv4"  | grep "warp=" | awk -F= '{print $2}')
@@ -293,14 +293,94 @@ check_IPV6(){
 
 # 获取当前服务器的IP地址
 check_IP_address() {
-  if [[ $(curl -sS --retry 1 --max-time 1 https://www.cloudflare.com/ -I | grep "text/plain") != "" ]]; then 
-    echo "Your IP is BLOCKED!"
-    txtn " >>> Check IP failed ..."
-    return 1
-  else  
-    check_IPV4
-    check_IPV6
-  fi
+  get_asn_org4
+  get_asn_org6
+
+  # if [[ $(curl -sS --retry 2 --max-time 1 https://www.cloudflare.com/ -I | grep "text/plain") != "" ]]; then 
+  #   echo "Your IP is BLOCKED!"
+  #   txtn " >>> Check IP failed ..."
+  #   return 1
+  # else  
+  #   check_IPV4
+  #   check_IPV6
+  # fi
+}
+
+get_asn_org4(){
+  [[ -n "$WAN4" ]] && return 1;
+  txtn " >>> Check IPv4 info ..."
+
+  # curl -sS --retry 2 --max-time 1 : 静默+错误消息，重试2次，每次最长1s
+  local response=$(curl -4 -sS --retry 2 --max-time 1 https://ifconfig.co/json)
+  # local loc_ip=$(echo "$response" | jq -r '.ip')
+  # local loc_city=$(echo "$response" | jq -r '.city')
+  # local loc_country=$(echo "$response" | jq -r '.country')
+  # local loc_country_iso=$(echo "$response" | jq -r '.country_iso')
+  # local loc_region_name=$(echo "$response" | jq -r '.region_name')
+  # local loc_time_zone=$(echo "$response" | jq -r '.time_zone')
+
+  # local loc_asn=$(echo "$response" | jq -r '.asn')
+  # local loc_asn_org=$(echo "$response" | jq -r '.asn_org')
+  local loc_asn4=$(echo "$response" | grep -o '"asn": *"[^"]*"' | awk -F': ' '{print $2}' | tr -d '"')
+  local loc_asn4_org=$(echo "$response" | grep -o '"asn": *"[^"]*"' | awk -F': ' '{print $2}' | tr -d '"')
+
+  local res_ipv4=$(curl -4 -sS --retry 2 --max-time 1 https://www.cloudflare.com/cdn-cgi/trace)
+  local loc_ip4=$( echo -e "$res_ipv4" | grep "loc="  | awk -F= '{print $2}')
+  local warp_ipv4=$( echo -e "$res_ipv4"  | grep "warp=" | awk -F= '{print $2}')
+  local local_ipv4=$( echo -e "$res_ipv4" | grep "ip="   | awk -F= '{print $2}')
+  # local local_isp4=$loc_asn4
+
+  WAN4=$local_ipv4
+  COUNTRY4=$loc_ip4
+  ASNORG4=$loc_asn4
+  [[ "$warp_ipv4" =~ ^on$ ]] && WARPSTATUS4="${red}${bold}warp${plain}"
+  # [[ "$warp_ipv4" =~ ^off$ ]] && [[ -n "$local_isp4" ]] && isp_info=$local_isp4
+  [[ -n "$WAN4" ]] && IP4_INFO="($WARPSTATUS4 $loc_ip4 -> $loc_asn4, $loc_asn4_org)"
+
+}
+
+get_asn_org6(){
+  [[ -n "$WAN6" ]] && return 1;
+  txtn " >>> Check IPv6 info ..."
+
+  # curl -sS --retry 2 --max-time 1 : 静默+错误消息，重试2次，每次最长1s
+  local response=$(curl -4 -sS --retry 2 --max-time 1 https://ifconfig.co/json)
+  # local loc_asn=$(echo "$response" | jq -r '.asn')
+  # local loc_asn_org=$(echo "$response" | jq -r '.asn_org')
+  local loc_asn6=$(echo "$response" | grep -o '"asn": *"[^"]*"' | awk -F': ' '{print $2}' | tr -d '"')
+  local loc_asn6_org=$(echo "$response" | grep -o '"asn": *"[^"]*"' | awk -F': ' '{print $2}' | tr -d '"')
+
+  local res_ipv6=$(curl -6 -sS --retry 2 --max-time 1 https://www.cloudflare.com/cdn-cgi/trace)
+  local loc_ip6=$( echo -e "$res_ipv6" | grep "loc="  | awk -F= '{print $2}')
+  local warp_ipv6=$( echo -e "$res_ipv6"  | grep "warp=" | awk -F= '{print $2}')
+  local local_ipv6=$( echo -e "$res_ipv6" | grep "ip="   | awk -F= '{print $2}')
+
+  WAN6=$local_ipv6
+  COUNTRY6=$loc_ip6
+  ASNORG6=$loc_asn6
+  [[ "$warp_ipv6" =~ ^on$ ]] && WARPSTATUS6="${red}${bold}warp${plain}"
+  # [[ "$warp_ipv6" =~ ^off$ ]] && [[ -n "$local_isp4" ]] && isp_info=$local_isp4
+  [[ -n "$WAN6" ]] && IP4_INFO="($WARPSTATUS6 $loc_ip6 -> $loc_asn6, $loc_asn6_org)"
+
+}
+
+get_asn_org42(){
+  local response=$(curl -4 -s --retry 2 --max-time 1 https://api.myip.la/en?json)
+  local ip=$(echo "$response" | jq -r '.ip')
+  local city=$(echo "$response" | jq -r '.location.city')
+  local province=$(echo "$response" | jq -r '.location.province')
+  local country_code=$(echo "$response" | jq -r '.location.country_code')
+  local country_name=$(echo "$response" | jq -r '..location.country_name')
+
+
+}
+get_asn_org62(){
+  local response=$(curl -6 -s --retry 2 --max-time 1 https://api.myip.la/en?json)
+  local ip=$(echo "$response" | jq -r '.ip')
+  local city=$(echo "$response" | jq -r '.location.city')
+  local province=$(echo "$response" | jq -r '.location.province')
+  local country_code=$(echo "$response" | jq -r '.location.country_code')
+  local country_name=$(echo "$response" | jq -r '..location.country_name')
 }
 
 get_IPV4_IPV6(){
@@ -310,6 +390,8 @@ get_IPV4_IPV6(){
 
 # 重新检测服务器IP
 recheck_ip_address(){
+  WAN4=""
+  WAN6=""
   IP4_INFO=""
   IP6_INFO=""
   check_IP_address
@@ -1046,7 +1128,7 @@ common_apps_run() {
 
      71) clear && install sl        && clear && /usr/games/sl ;;
      72) clear && install cmatrix   && clear && cmatrix ;;
-     73) curl wttr.in ;; 
+     73) clear && curl wttr.in ;; 
 
      88) clear && 
         country=$(curl -s --connect-timeout 1 --max-time 3 ipinfo.io/country)
@@ -7235,8 +7317,8 @@ while true; do
 done
 }
 
-# check_IP_address
-get_IPV4_IPV6
+check_IP_address
+# get_IPV4_IPV6
 
 clear
 get_sysinfo 1
