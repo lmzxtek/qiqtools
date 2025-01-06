@@ -302,8 +302,8 @@ check_IP_address() {
 }
 
 get_IPV4_IPV6(){
-  WARN4=$(curl -sS --retry 2 --max-time 1 4.ipw.cn)
-  WARN6=$(curl -sS --retry 2 --max-time 1 6.ipw.cn)
+  WAN4=$(curl -sS --retry 2 --max-time 1 4.ipw.cn)
+  WAN6=$(curl -sS --retry 2 --max-time 1 6.ipw.cn)
 }
 
 # 重新检测服务器IP
