@@ -360,7 +360,7 @@ get_asn_org6(){
   ASNORG6=$loc_asn6
   [[ "$warp_ipv6" =~ ^on$ ]] && WARPSTATUS6="${red}${bold}warp${plain}"
   # [[ "$warp_ipv6" =~ ^off$ ]] && [[ -n "$local_isp4" ]] && isp_info=$local_isp4
-  [[ -n "$WAN6" ]] && IP4_INFO="($WARPSTATUS6 $loc_ip6 -> $loc_asn6, $loc_asn6_org)"
+  [[ -n "$WAN6" ]] && IP6_INFO="($WARPSTATUS6 $loc_ip6 -> $loc_asn6, $loc_asn6_org)"
 
 }
 
