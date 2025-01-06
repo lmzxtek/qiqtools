@@ -247,7 +247,7 @@ check_IPV4(){
 	else
     txtn " >>> Check IPv4 info ..."
 		# local_ipv4=$(curl -4 -s --max-time 10 api64.ipify.org)
-    local res_ipv4=$(curl -4 -sS --retry 2 --max-time 1 https://www.cloudflare.com/cdn-cgi/trace)
+    local res_ipv4=$(curl -4 -sS --retry 1 --max-time 1 https://www.cloudflare.com/cdn-cgi/trace)
 		local local_ipv4=$( echo -e "$res_ipv4" | grep "ip="   | awk -F= '{print $2}')
 		local iso2_code4=$( echo -e "$res_ipv4" | grep "loc="  | awk -F= '{print $2}')
 		local warp_ipv4=$( echo -e "$res_ipv4"  | grep "warp=" | awk -F= '{print $2}')
@@ -274,7 +274,7 @@ check_IPV6(){
 	else
     txtn " >>> Check IPv6 info ..."
 		# local_ipv6=$(curl -6 -s --max-time 20 api64.ipify.org)
-    local res_ipv6=$(curl -6 -sS --retry 2 --max-time 1 https://www.cloudflare.com/cdn-cgi/trace)
+    local res_ipv6=$(curl -6 -sS --retry 1 --max-time 1 https://www.cloudflare.com/cdn-cgi/trace)
 		local local_ipv6=$( echo -e "$res_ipv6" | grep "ip="   | awk -F= '{print $2}')
 		local iso2_code6=$( echo -e "$res_ipv6" | grep "loc="  | awk -F= '{print $2}')
 		local warp_ipv6=$( echo -e "$res_ipv6"  | grep "warp=" | awk -F= '{print $2}')
@@ -291,7 +291,7 @@ check_IPV6(){
 
 # 获取当前服务器的IP地址
 check_IP_address() {
-  if [[ $(curl -sS --retry 3 --max-time 1 https://www.cloudflare.com/ -I | grep "text/plain") != "" ]]; then 
+  if [[ $(curl -sS --retry 1 --max-time 1 https://www.cloudflare.com/ -I | grep "text/plain") != "" ]]; then 
     echo "Your IP is BLOCKED!"
     txtn " >>> Check IP failed ..."
     return 1
@@ -302,8 +302,8 @@ check_IP_address() {
 }
 
 get_IPV4_IPV6(){
-  WAN4=$(curl -sS --retry 1 --max-time 1 4.ipw.cn)
-  WAN6=$(curl -sS --retry 1 --max-time 1 6.ipw.cn)
+  WAN4=$(curl -sS --max-time 1 4.ipw.cn)
+  WAN6=$(curl -sS --max-time 1 6.ipw.cn)
   }
 
 # 重新检测服务器IP
