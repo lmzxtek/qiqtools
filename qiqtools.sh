@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.6.4
+script_version=v0.6.5
 #==========================
 
 # Language
@@ -299,6 +299,11 @@ check_IP_address() {
     check_IPV4
     check_IPV6
   fi
+}
+
+get_IPV4_IPV6(){
+  WARN4=$(curl -sS --retry 2 --max-time 1 4.ipw.cn)
+  WARN6=$(curl -sS --retry 2 --max-time 1 6.ipw.cn)
 }
 
 # 重新检测服务器IP
@@ -970,7 +975,7 @@ txtn $(txtn "32.全部卸载")$(txtg " ")"            "$(txtn "42.卸载指定�
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "61.贪吃蛇")$(txtg "£")"              "$(txtn "71.sl(跑火车屏保)")$(txtg "→")
 txtn $(txtn "62.俄罗斯方块")$(txtg "▣")"          "$(txtn "72.cmatrix(黑客帝国屏保)")$(txtg "┇┊")
-txtn $(txtn "63.太空入侵者")$(txtg "➹")"          "$(txtn "")$(txtg "")
+txtn $(txtn "63.太空入侵者")$(txtg "➹")"          "$(txtn "73.最新天气")$(txty "☀")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "—————————————————————————————————————"
 txtn $(txtc "88.Sky-Box工具箱")$(txtr "")"        "$(txty "99.KejiLion脚本")$(txtc "")$(txty "")
@@ -1039,9 +1044,10 @@ common_apps_run() {
 
      71) clear && install sl        && clear && /usr/games/sl ;;
      72) clear && install cmatrix   && clear && cmatrix ;;
+     73) curl wttr.in ;; 
 
      88) clear && 
-        country=$(curl -s --max-time 3 ipinfo.io/country)
+        country=$(curl -s --connect-timeout 1 --max-time 3 ipinfo.io/country)
         if [ "$country" = "CN" ]; then
           wget -O box.sh https://proxy.063643.xyz/proxy/https://raw.githubusercontent.com/BlueSkyXN/SKY-BOX/main/box.sh && chmod +x box.sh && clear && ./box.sh
         else
@@ -1050,7 +1056,7 @@ common_apps_run() {
       ;;
 
      99) clear 
-        country=$(curl -s --max-time 3 ipinfo.io/country)
+        country=$(curl -s --connect-timeout 1 --max-time 3 ipinfo.io/country)
         if [ "$country" = "CN" ]; then
           curl -sS -O https://kejilion.pro/kejilion.sh && chmod +x kejilion.sh && ./kejilion.sh
         else
@@ -7228,6 +7234,8 @@ done
 }
 
 # check_IP_address
+get_IPV4_IPV6
+
 clear
 get_sysinfo 1
 main_loop
