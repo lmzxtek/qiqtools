@@ -334,7 +334,7 @@ get_asn_org4(){
   COUNTRY4=$loc_ip4
   ASNORG4=$loc_asn4
   [[ "$warp_ipv4" =~ ^on$ ]] && WARPSTATUS4="${red}${bold}warp${plain}"
-  # [[ "$warp_ipv4" =~ ^off$ ]] && [[ -n "$local_isp4" ]] && isp_info=$local_isp4
+  [[ "$warp_ipv4" =~ ^off$ ]] && [[ -n "$loc_asn4" ]] && isp_info=$loc_asn4
   [[ -n "$WAN4" ]] && IP4_INFO="($WARPSTATUS4 $loc_ip4 -> $loc_asn4, $loc_asn4_org)"
 
 }
@@ -359,6 +359,7 @@ get_asn_org6(){
   COUNTRY6=$loc_ip6
   ASNORG6=$loc_asn6
   [[ "$warp_ipv6" =~ ^on$ ]] && WARPSTATUS6="${red}${bold}warp${plain}"
+  [[ "$warp_ipv6" =~ ^off$ ]] && [[ -n "$loc_asn6" ]] && isp_info=$loc_asn6
   # [[ "$warp_ipv6" =~ ^off$ ]] && [[ -n "$local_isp4" ]] && isp_info=$local_isp4
   [[ -n "$WAN6" ]] && IP6_INFO="($WARPSTATUS6 $loc_ip6 -> $loc_asn6, $loc_asn6_org)"
 
