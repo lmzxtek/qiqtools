@@ -322,7 +322,7 @@ get_asn_org4(){
   # local loc_asn=$(echo "$response" | jq -r '.asn')
   # local loc_asn_org=$(echo "$response" | jq -r '.asn_org')
   local loc_asn4=$(echo "$response" | grep -o '"asn": *"[^"]*"' | awk -F': ' '{print $2}' | tr -d '"')
-  local loc_asn4_org=$(echo "$response" | grep -o '"asn": *"[^"]*"' | awk -F': ' '{print $2}' | tr -d '"')
+  local loc_asn4_org=$(echo "$response" | grep -o '"asn_org": *"[^"]*"' | awk -F': ' '{print $2}' | tr -d '"')
 
   local res_ipv4=$(curl -4 -sS --retry 2 --max-time 1 https://www.cloudflare.com/cdn-cgi/trace)
   local loc_ip4=$( echo -e "$res_ipv4" | grep "loc="  | awk -F= '{print $2}')
@@ -348,7 +348,7 @@ get_asn_org6(){
   # local loc_asn=$(echo "$response" | jq -r '.asn')
   # local loc_asn_org=$(echo "$response" | jq -r '.asn_org')
   local loc_asn6=$(echo "$response" | grep -o '"asn": *"[^"]*"' | awk -F': ' '{print $2}' | tr -d '"')
-  local loc_asn6_org=$(echo "$response" | grep -o '"asn": *"[^"]*"' | awk -F': ' '{print $2}' | tr -d '"')
+  local loc_asn6_org=$(echo "$response" | grep -o '"asn_org": *"[^"]*"' | awk -F': ' '{print $2}' | tr -d '"')
 
   local res_ipv6=$(curl -6 -sS --retry 2 --max-time 1 https://www.cloudflare.com/cdn-cgi/trace)
   local loc_ip6=$( echo -e "$res_ipv6" | grep "loc="  | awk -F= '{print $2}')
