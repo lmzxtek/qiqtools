@@ -3184,7 +3184,6 @@ docker_deploy_maccms_tweek(){
   [[ -z "$ptmp" ]] || dc_port=$ptmp
   
   cat > $LFLD/docker-compose.yml << EOF
-version: '3'
 services:
   maccms10:
     container_name: ${dc_name}
@@ -3272,7 +3271,6 @@ docker_deploy_ubuntu2004novnc(){
   [[ -z "$hstmp" && -z "$wstmp" ]] || resolution='$wstmpx$hstmp'
 
   cat > "$FYML" << EOF
-version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -3319,7 +3317,6 @@ docker_deploy_portainer(){
   [[ -z "$ptmp" ]] || dc_port=$ptmp
 
   cat > "$FYML" << EOF
-version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -3358,7 +3355,6 @@ docker_deploy_memos(){
   [[ -z "$ptmp" ]] || dc_port=$ptmp
 
   cat > "$FYML" << EOF
-version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -3400,7 +3396,6 @@ docker_deploy_qbittorrent(){
   [[ -z "$ptmp" ]] || dc_port=$ptmp
   
   cat > "$FYML" << EOF
-version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -3559,7 +3554,6 @@ docker_deploy_searxng(){
   [[ -z "$ptmp" ]] || dc_port=$ptmp
 
   cat > "$FYML" << EOF
-version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -3599,7 +3593,6 @@ docker_deploy_spdf(){
   [[ -z "$ptmp" ]] || dc_port=$ptmp
   
   cat > "$FYML" << EOF
-version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -3641,7 +3634,6 @@ docker_deploy_ittools(){
   [[ -z "$ptmp" ]] || dc_port=$ptmp
   
   cat > "$FYML" << EOF
-version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -3679,7 +3671,6 @@ docker_deploy_nextterminal(){
   # curl -sSL https://f.typesafe.cn/next-terminal/docker-compose.yml > docker-compose.yml
 
   cat > "$FYML" << EOF
-version: '3.3'
 services:
   guacd:
     image: dushixiang/guacd:latest
@@ -3728,8 +3719,6 @@ docker_deploy_dashdot(){
   [[ -z "$ptmp" ]] || dc_port=$ptmp
 
   cat > "$FYML" << EOF
-version: '3.5'
-
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -3770,8 +3759,6 @@ docker_deploy_watchtower(){
   # [[ -z "$ptmp" ]] || dc_port=$ptmp
 
   cat > "$FYML" << EOF
-version: '3'
-
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -3809,7 +3796,6 @@ docker_deploy_deeplx(){
   [[ -z "$ptmp" ]] || dc_port=$ptmp
 
   cat > "$FYML" << EOF
-version: '3.8'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -3863,7 +3849,6 @@ docker_deploy_neko(){
   # sudo docker-compose up -d
 
   cat > "$FYML" << EOF
-version: "3.4"
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -3923,8 +3908,6 @@ docker_deploy_neko_rooms(){
   # sudo bash neko-rooms.sh
 
   cat > "$FYML" << EOF
-version: "3.5"
-
 networks:
   default:
     attachable: true
@@ -4031,7 +4014,6 @@ docker_deploy_lotusboard(){
   git submodule update --remote
 
   cat > "$FYML" << EOF
-version: '3'
 services:
   www:
     image: ${dc_name}
@@ -4107,7 +4089,6 @@ docker_deploy_wireguardpanel(){
   [[ -z "$ppass" ]] || dc_pass=$ppass
 
   cat > "$FYML" << EOF
-version: "3.8"
 volumes:
   etc_wireguard:
 
@@ -4186,7 +4167,6 @@ docker_deploy_yacd(){
   
   echoR "\nConfiguration: " "$FYML"
   cat > "$FYML" << EOF
-version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -4227,7 +4207,6 @@ docker_deploy_clashdashboard(){
   [[ -z "$ptmp" ]] || dc_port=$ptmp
 
   cat > "$FYML" << EOF
-version: '3'
 services:
   clash:
     container_name: clash
@@ -4282,7 +4261,6 @@ docker_deploy_npm(){
   [[ -z "$ptmp" ]] || dc_port=$ptmp
 
   cat > "$FYML" << EOF
-version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -4325,7 +4303,6 @@ docker_deploy_myip(){
   [[ -z "$ptmp" ]] || dc_port=$ptmp
 
   cat > "$FYML" << EOF
-version: "3.9"
 services:
   myip:
     container_name: ${dc_name}
@@ -4373,7 +4350,6 @@ docker_deploy_chatgptnextweb(){
   CUSTOM_MODELS="-all,+gemini-pro"
 
   cat > "$FYML" << EOF
-version: "3.9"
 services:
   ${dc_name}:
     # profiles: [ "no-proxy" ]
@@ -4432,7 +4408,6 @@ docker_deploy_gptacademic(){
   read -p "请输入登录密码       : " PASS
   
   cat > "$FYML" << EOF
-version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -4493,7 +4468,6 @@ docker_deploy_geminiprochat(){
   read -p "请输入登录密码       : " SITE_PASSWORD
   
   cat > "$FYML" << EOF
-version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -4538,7 +4512,6 @@ docker_deploy_talkwithgemini(){
   read -p "请输入登录密码       : " SITE_PASSWORD
   
   cat > "$FYML" << EOF
-version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -4584,7 +4557,6 @@ docker_deploy_sublinkx(){
   [[ -z "$ptmp" ]] || dc_port=$ptmp
   
   cat > "$FYML" << EOF
-version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -4630,7 +4602,6 @@ docker_deploy_lucky(){
   [[ -z "$ptmp" ]] || dc_port=$ptmp
   
   cat > "$FYML" << EOF
-version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -4669,7 +4640,6 @@ docker_deploy_pdf2zh(){
   [[ -z "$ptmp" ]] || dc_port=$ptmp
   
   cat > "$FYML" << EOF
-version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -4758,7 +4728,6 @@ docker_deploy_dockerwin_amd64(){
   [[ -z "$ptmp" ]] || userpswd=$ptmp
 
   cat > "$FYML" << EOF
-version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -4853,7 +4822,6 @@ docker_deploy_dockerwin_arm64(){
   [[ -z "$ptmp" ]] || userpswd=$ptmp
 
   cat > "$FYML" << EOF
-version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -4947,7 +4915,6 @@ docker_deploy_dockermac(){
   # [[ -z "$ptmp" ]] || userpswd=$ptmp
 
   cat > "$FYML" << EOF
-version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -5099,7 +5066,6 @@ docker_deploy_aktools(){
   # curl -sS -O https://github.com/akfamily/aktools/blob/main/Dockerfile
   
   cat > "$FYML" << EOF
-version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -5149,7 +5115,6 @@ docker_deploy_akjupyterlab(){
   #         --ip=0.0.0.0
   
   cat > "$FYML" << EOF
-version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -5204,7 +5169,6 @@ docker_deploy_jupyterlab(){
   # docker logs Jupyterlab
 
   cat > "$FYML" << EOF
-version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -5290,7 +5254,6 @@ docker_deploy_puter(){
   # docker compose up
 
   cat > "$FYML" << EOF
-version: "3.8"
 services:
    ${dc_name}:
     container_name:  ${dc_name}
@@ -5346,7 +5309,6 @@ docker_deploy_torbrowser(){
   [[ -z "$ptmp" ]] || dc_port=$ptmp
 
   cat > "$FYML" << EOF
-version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -5386,7 +5348,6 @@ docker_deploy_browserless(){
   [[ -z "$ptmp" ]] || dc_port=$ptmp
 
   cat > "$FYML" << EOF
-version: '3'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -5439,7 +5400,6 @@ docker_deploy_linuxserverfirefox(){
   #           ghcr.io/linuxserver/firefox:latest
 
   cat > "$FYML" << EOF
-version: '3.9'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -5505,7 +5465,6 @@ docker_deploy_linuxserverchromium(){
   #             ghcr.io/linuxserver/chromium:latest
 
   cat > "$FYML" << EOF
-version: '3.9'
 services:
   ${dc_name}:
     container_name: ${dc_name}
@@ -5611,7 +5570,6 @@ docker_deploy_photopea(){
   [[ -z "$ptmp" ]] || dc_port=$ptmp
 
   cat > "$FYML" << EOF
-version: '3.9'
 services:
   $dc_name:
     image: $dc_imag
@@ -5665,7 +5623,6 @@ docker_deploy_chunhuchat(){
   # curl -os "${LFLD}/config.json" https://raw.githubusercontent.com/GaiZhenbiao/ChuanhuChatGPT/main/config_example.json
 
   cat > $LFLD/docker-compose.yml << EOF
-version: '3.9'
 services:
   ${dc_name}:
     container_name: ${dc_name}
