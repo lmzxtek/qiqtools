@@ -4646,6 +4646,44 @@ EOF
   echo -e ""
 }
 
+# https://pdf2zh.com/
+# https://github.com/Byaidu/PDFMathTranslate
+docker_deploy_pdf2zh(){
+  local BFLD="/home/dcc.d"
+
+  local dc_port=37860
+  local dc_name=pdf2zh
+  local dc_imag=byaidu/pdf2zh
+  local dc_desc="pdf2zh, PDFMathTranslate"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  echoR "\n >>>" " Start to deploy: pdf2zh ... \n"
+  read -p " Input port to listen(Default:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp
+  
+  cat > "$FYML" << EOF
+version: '3'
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    restart: unless-stopped
+    ports:
+        - '$dc_port:7860'
+EOF
+
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echo -e ""
+}
+
 docker_deploy_dockerwin_amd64(){
   local BFLD="/home/dcc.d"
 
@@ -5748,7 +5786,7 @@ txtn $(txtb "36.KasmWorkspaces")$(txtg " ")"       "$(txtn "56.linuxserver(chrom
 txtn $(txtb "37.Puter")$(txtg " ")"                "$(txtn "57.linuxserver(rdesktop)")$(txtp " ")
 txtn $(txty "38.TalkWithGemini")$(txtg " ★")"      "$(txtn "58.Photopea")$(txtp " ★")
 txtn $(txtn "39.SubLinkX")$(txtg " ")"             "$(txty "59.Lucky")$(txtp " ")
-txtn $(txtn "40.IP-tv")$(txtg " ")"                "$(txty "")$(txtp " ")
+txtn $(txtn "40.IP-tv")$(txtg " ")"                "$(txty "60.pdf2zh")$(txtp " ")
 txtn "====================================="
 txtn $(txty "61.Docker-win")$(txtg " ")"           "$(txtn "63.Docker-mac")$(txtp " ")
 txtn $(txtn "62.Docker-win(ARM)")$(txtg " ")"      "$(txtn "64.Docker-wechat")$(txtp " ")
@@ -5809,6 +5847,7 @@ docker_deploy_run(){
      57) clear && docker_deploy_linuxserverrdesktop ;;
      58) clear && docker_deploy_photopea ;;
      59) clear && docker_deploy_lucky ;;
+     60) clear && docker_deploy_pdf2zh ;;
 
      61) clear && docker_deploy_dockerwin_amd64 ;;
      62) clear && docker_deploy_dockerwin_arm64 ;;
