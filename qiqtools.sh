@@ -7303,7 +7303,8 @@ while true; do
     31) clear && server_test_run  ;;
     32) clear && warp_tools_run   ;;
     33) clear && board_panels_run  ;;
-    34) check_IP_address  ;;
+    34) recheck_ip_address  ;;
+    # 34) check_IP_address  ;;
 
     00) script_update ;;
     99) echo "正在重启服务器，即将断开SSH连接" && reboot  ;;
