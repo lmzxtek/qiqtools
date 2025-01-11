@@ -5838,7 +5838,7 @@ txtn $(txtn " 4.哪吒探针")$(txtg " ")"        "$(txty "14.Code-Server")$(txt
 txtn $(txtn " 5.OpenLiteSpeed")$(txtg " ")"   "$(txtn "15.ChatGPT-Next-Web")$(txtr " ✘")
 txtn $(txtn " 6.Puter")$(txtg " ")"           "$(txtn "16.爱影CMS")$(txtn " ♡")
 txtn $(txtn " 7.Lucky")$(txtg " ")"           "$(txtn "17.DataEase")$(txtn " ")
-txtn $(txtn " 8.JumpServer")$(txtg " ")"      "$(txtn "")$(txtn " ")
+txtn $(txtn " 8.JumpServer")$(txtg " ")"      "$(txtn "18.Akile Monitor")$(txtn " ✲")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.Docker")$(txtg " ☆")"         "$(txtn "51.Gnome-Desktop")$(txtg " ")
 txtn $(txtn "32.Python")$(txtg " ")"          "$(txtn "52.RustDesk Server")$(txtg " ")
@@ -5926,6 +5926,7 @@ other_tools_run() {
          ;;
 
       17) clear && curl -sSL https://dataease.oss-cn-hangzhou.aliyuncs.com/quick_start_v2.sh | bash ;;
+      18) clear && wget -O ak-setup.sh "https://raw.githubusercontent.com/akile-network/akile_monitor/refs/heads/main/ak-setup.sh" && chmod +x ak-setup.sh && sudo ./ak-setup.sh ;;
 
       31) clear && docker_install ;;
       32) clear && install_python ;;
