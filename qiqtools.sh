@@ -5002,14 +5002,14 @@ EOF
   echo -e ""
 }
 
-docker_deploy_iptv(){
+docker_deploy_iptv_allinone(){
 
   local BFLD="/home/dcc.d"
 
   local dc_port=35455
-  local dc_name=iptv
+  local dc_name=iptva
   local dc_imag=youshandefeiyang/allinone
-  local dc_desc="IP-TV"
+  local dc_desc="IP-TV(allinone)"
 
   local LFLD="$BFLD/$dc_name"
   local LPTH="$BFLD/$dc_name/downloads"
@@ -5019,9 +5019,9 @@ docker_deploy_iptv(){
   ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
   [[ -f "$FYML"  ]] || touch $FYML
 
-  echoR "\n >>>" " 现在开始部署 IP-tv ... \n"
-  # read -p "请输入监听端口(默认为:${dc_port}): " ptmp
-  # [[ -z "$ptmp" ]] || dc_port=$ptmp  
+  echoR "\n >>>" " 现在开始部署 IP-tv(allinone) ... \n"
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp  
   
   cat > "$FYML" << EOF
 services:
@@ -5041,6 +5041,45 @@ EOF
   echo -e ""
 }
 
+
+docker_deploy_iptv_doube(){
+
+  local BFLD="/home/dcc.d"
+
+  local dc_port=35027
+  local dc_name=iptvb
+  local dc_imag=doubebly/doube-itv:latest
+  local dc_desc="IP-TV(doubebly)"
+
+  local LFLD="$BFLD/$dc_name"
+  local LPTH="$BFLD/$dc_name"
+  local FYML="$LFLD/docker-compose.yml"
+  local FCONF="$LFLD/${dc_name}.conf"
+
+  ([[ -d "$LPTH" ]] || mkdir -p $LPTH) && cd $LFLD
+  [[ -f "$FYML"  ]] || touch $FYML
+
+  echoR "\n >>>" " 现在开始部署 IP-tv(doubebly) ... \n"
+  read -p "请输入监听端口(默认为:${dc_port}): " ptmp
+  [[ -z "$ptmp" ]] || dc_port=$ptmp  
+  
+  cat > "$FYML" << EOF
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    restart: unless-stopped
+    privileged: true
+    ports:
+        - '$dc_port:5000'
+EOF
+
+  docker_deploy_start $BFLD $dc_name $dc_port $dc_desc
+
+  echo -e   "URL: http://$WAN4:$dc_port" >> $FCONF
+  echo -e   "URL: http://$WAN4:$dc_port"
+  echo -e ""
+}
 
 docker_deploy_aktools(){
 
@@ -5723,30 +5762,32 @@ txtn $(txby "▼ 容器部署")$(txtp " ♨♨♨ ")
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
-txtn $(txtn "21.AuroraPanel")$(txtg " ")"          "$(txtn "41.MacCMS")$(txtn " ")
-txtn $(txtn "22.Ubuntu20-noVNC")$(txtg " ")"       "$(txtn "42.Memos")$(txtn " ")
-txtn $(txtn "23.IT-Tools")$(txtg " ")"             "$(txtc "43.YACD")$(txtn " ")
-txtn $(txtc "24.SearXNG")$(txtg " ")"              "$(txtn "44.ClashDashBoard")$(txtn " ")
-txtn $(txtn "25.StirlingPDF")$(txtg " ")"          "$(txtb "45.RocketChat")$(txtr " ✘")
-txtn $(txty "26.MyIP(IPChecking)")$(txtg " ")"     "$(txtn "46.GPT_Academic")$(txtn " ")
-txtn $(txtn "27.QBittorrent")$(txtg " ")"          "$(txtn "47.GeminiProChat")$(txtn " ")
-txtn $(txtn "28.Portainer")$(txtg " ")"            "$(txtn "48.ChunhuChat")$(txtn " ")
-txtn $(txtn "29.Next-Terminal")$(txtg " ")"        "$(txtn "49.ChatGPT-Next-Web")$(txtn " ")
-txtn $(txtn "30.NginxProxyManager")$(txtg " ")"    "$(txtc "50.Aktools")$(txtn " ")
+txtn $(txtn " 1.AuroraPanel")$(txtg " ")"          "$(txtn "11.MacCMS")$(txtn " ")
+txtn $(txtn " 2.Ubuntu20-noVNC")$(txtg " ")"       "$(txtn "12.Memos")$(txtn " ")
+txtn $(txtn " 3.IT-Tools")$(txtg " ")"             "$(txtc "13.YACD")$(txtn " ")
+txtn $(txtc " 4.SearXNG")$(txtg " ")"              "$(txtn "14.ClashDashBoard")$(txtn " ")
+txtn $(txtn " 5.StirlingPDF")$(txtg " ")"          "$(txtb "15.RocketChat")$(txtr " ✘")
+txtn $(txty " 6.MyIP(IPChecking)")$(txtg " ")"     "$(txtn "16.GPT_Academic")$(txtn " ")
+txtn $(txtn " 7.QBittorrent")$(txtg " ")"          "$(txtn "17.GeminiProChat")$(txtn " ")
+txtn $(txtn " 8.Portainer")$(txtg " ")"            "$(txtn "18.ChunhuChat")$(txtn " ")
+txtn $(txtn " 9.Next-Terminal")$(txtg " ")"        "$(txtn "19.ChatGPT-Next-Web")$(txtn " ")
+txtn $(txtn "10.NginxProxyManager")$(txtg " ")"    "$(txtc "20.Aktools")$(txtn " ")
 txtn "--------------------------------------"
-txtn $(txtn "31.Dash.")$(txtg " ")"                "$(txtn "51.AKJupyter-Lab")$(txtn " ")
-txtn $(txtn "32.WatchTower")$(txtg " ")"           "$(txty "52.Jupyter-Lab")$(txtn " ★")
-txtn $(txtn "33.DeepLX")$(txtg " ☆")"              "$(txtn "53.Neko")$(txtn " ")
-txtn $(txtn "34.TorBrowser")$(txtn " ")"           "$(txtn "54.Neko-Rooms")$(txtn " ")
-txtn $(txtc "35.OnlineBrowser")$(txtg " ")"        "$(txtn "55.linuxserver(firefox)")$(txtp " ")
-txtn $(txtb "36.KasmWorkspaces")$(txtg " ")"       "$(txtn "56.linuxserver(chromium)")$(txtp " ")
-txtn $(txtb "37.Puter")$(txtg " ")"                "$(txtn "57.linuxserver(rdesktop)")$(txtp " ")
-txtn $(txty "38.TalkWithGemini")$(txtg " ★")"      "$(txtn "58.Photopea")$(txtp " ★")
-txtn $(txtn "39.SubLinkX")$(txtg " ")"             "$(txty "59.Lucky")$(txtp " ")
-txtn $(txtn "40.IP-tv")$(txtg " ")"                "$(txty "60.pdf2zh")$(txtp " ")
+txtn $(txtn "21.Dash.")$(txtg " ")"                "$(txtn "31.AKJupyter-Lab")$(txtn " ")
+txtn $(txtn "22.WatchTower")$(txtg " ")"           "$(txty "32.Jupyter-Lab")$(txtn " ★")
+txtn $(txtn "23.DeepLX")$(txtg " ☆")"              "$(txtn "33.Photopea")$(txtn " ")
+txtn $(txtn "24.Puter")$(txtn " ")"                "$(txtn "34.Lucky")$(txtn " ")
+txtn $(txtc "25.SubLinkX")$(txtg " ")"             "$(txtn "35.pdf2zh")$(txtp " ")
+txtn $(txtb "26.TalkWithGemini")$(txtg " ")"       "$(txtn "36.")$(txtp " ")
+txtn $(txtb "27.IP-tv(allinone)")$(txtg " ")"      "$(txtn "37.")$(txtp " ")
+txtn $(txtb "28.IP-tv(doubebly)")$(txtg " ")"      "$(txtn "38.")$(txtp " ")
 txtn "====================================="
-txtn $(txty "61.Docker-win")$(txtg " ")"           "$(txtn "63.Docker-mac")$(txtp " ")
-txtn $(txtn "62.Docker-win(ARM)")$(txtg " ")"      "$(txtn "64.Docker-wechat")$(txtp " ")
+txtn $(txty "61.Docker-win")$(txtg " ")"           "$(txtn "71.linuxserver(firefox)")$(txtp " ")
+txtn $(txtn "62.Docker-win(ARM)")$(txtg " ")"      "$(txtn "72.linuxserver(chromium)")$(txtp " ")
+txtn $(txtn "63.Docker-mac")$(txtg " ")"           "$(txtn "73.linuxserver(rdesktop)")$(txtp " ")
+txtn $(txtn "64.Docker-wechat")$(txtg " ")"        "$(txtn "74.TorBrowser")$(txtp " ")
+txtn $(txtn "65.Neko")$(txtg " ")"                 "$(txtn "75.OnlineBrowser")$(txtp " ")
+txtn $(txtn "66.Neko-Rooms")$(txtg " ")"           "$(txtn "76.KasmWorkspaces")$(txtp " ")
 # txtn $(txtn "")$(txtg " ")"           "$(txtn "")$(txtp " ")
 # txtn $(txtn " 1.Docker")$(txtg "✔")"        "$(txtn "11.Test")$(txtb "✘")
 txtn "====================================="
@@ -5762,54 +5803,58 @@ docker_deploy_run(){
     read -p "请输入你的选择: " sub_choice
 
     case $sub_choice in
-     21) clear && install curl && bash <(curl -fsSL https://raw.githubusercontent.com/Aurora-Admin-Panel/deploy/main/install.sh)  ;;
-     22) clear && docker_deploy_ubuntu2004novnc ;;
-     23) clear && docker_deploy_ittools ;;
-     24) clear && docker_deploy_searxng ;;
-     25) clear && docker_deploy_spdf ;;
-     26) clear && docker_deploy_myip ;;
-     27) clear && docker_deploy_qbittorrent ;;
-     28) clear && docker_deploy_portainer ;;
-     29) clear && docker_deploy_nextterminal ;;
-     30) clear && docker_deploy_npm ;;
-     31) clear && docker_deploy_dashdot ;;
-     32) clear && docker_deploy_watchtower ;;
-     33) clear && docker_deploy_deeplx ;;
-     34) clear && docker_deploy_torbrowser ;;
-     35) clear && install curl && curl -sLkO hammou.ch/online-browser && bash online-browser ;;
-      # https://github.com/hhammouch/online-browser
-     36) clear && docker_deploy_kasmworkspaces ;;
-     37) clear && docker_deploy_puter ;;
-     38) clear && docker_deploy_talkwithgemini ;;
-     39) clear && docker_deploy_sublinkx ;;
-     40) clear && docker_deploy_iptv ;;
+      1) clear && install curl && bash <(curl -fsSL https://raw.githubusercontent.com/Aurora-Admin-Panel/deploy/main/install.sh)  ;;
+      2) clear && docker_deploy_ubuntu2004novnc ;;
+      3) clear && docker_deploy_ittools ;;
+      4) clear && docker_deploy_searxng ;;
+      5) clear && docker_deploy_spdf ;;
+      6) clear && docker_deploy_myip ;;
+      7) clear && docker_deploy_qbittorrent ;;
+      8) clear && docker_deploy_portainer ;;
+      9) clear && docker_deploy_nextterminal ;;
+     10) clear && docker_deploy_npm ;;
+     
+     11) clear && docker_deploy_maccms_tweek ;;
+     12) clear && docker_deploy_memos ;;
+     13) clear && docker_deploy_yacd ;;
+     14) clear && docker_deploy_clashdashboard;;
+     15) clear && docker_deploy_rocketchat ;;
+     16) clear && docker_deploy_gptacademic ;;
+     17) clear && docker_deploy_geminiprochat ;;
+     18) clear && docker_deploy_chunhuchat ;;
+     19) clear && docker_deploy_chatgptnextweb ;;
+     20) clear && docker_deploy_aktools ;;
 
-     41) clear && docker_deploy_maccms_tweek ;;
-     42) clear && docker_deploy_memos ;;
-     43) clear && docker_deploy_yacd ;;
-     44) clear && docker_deploy_clashdashboard;;
-     45) clear && docker_deploy_rocketchat ;;
-     46) clear && docker_deploy_gptacademic ;;
-     47) clear && docker_deploy_geminiprochat ;;
-     48) clear && docker_deploy_chunhuchat ;;
-     49) clear && docker_deploy_chatgptnextweb ;;
-     50) clear && docker_deploy_aktools ;;
-     51) clear && docker_deploy_akjupyterlab ;;
-     52) clear && docker_deploy_jupyterlab ;;
-     53) clear && docker_deploy_neko ;;
-     54) clear && docker_deploy_neko_rooms ;;
-    #  55) clear && docker_deploy_browserless ;;
-     55) clear && docker_deploy_linuxserverfirefox ;;
-     56) clear && docker_deploy_linuxserverchromium ;;
-     57) clear && docker_deploy_linuxserverrdesktop ;;
-     58) clear && docker_deploy_photopea ;;
-     59) clear && docker_deploy_lucky ;;
-     60) clear && docker_deploy_pdf2zh ;;
+     21) clear && docker_deploy_dashdot ;;
+     22) clear && docker_deploy_watchtower ;;
+     23) clear && docker_deploy_deeplx ;;
+     24) clear && docker_deploy_puter ;;
+     25) clear && docker_deploy_sublinkx ;;
+     26) clear && docker_deploy_talkwithgemini ;;
+     27) clear && docker_deploy_iptv_allinone ;;
+     28) clear && docker_deploy_iptv_doube ;;
 
+     31) clear && docker_deploy_akjupyterlab ;;
+     32) clear && docker_deploy_jupyterlab ;;
+    #  35) clear && docker_deploy_browserless ;;
+     33) clear && docker_deploy_photopea ;;
+     34) clear && docker_deploy_lucky ;;
+     35) clear && docker_deploy_pdf2zh ;;
+    
      61) clear && docker_deploy_dockerwin_amd64 ;;
      62) clear && docker_deploy_dockerwin_arm64 ;;
      63) clear && docker_deploy_dockermac ;;
      64) clear && docker_deploy_dockerwechat ;;
+     65) clear && docker_deploy_neko ;;
+     66) clear && docker_deploy_neko_rooms ;;
+
+     71) clear && docker_deploy_linuxserverfirefox ;;
+     72) clear && docker_deploy_linuxserverchromium ;;
+     73) clear && docker_deploy_linuxserverrdesktop ;;
+     74) clear && docker_deploy_torbrowser ;;
+     75) clear && install curl && curl -sLkO hammou.ch/online-browser && bash online-browser ;;
+      # https://github.com/hhammouch/online-browser
+     76) clear && docker_deploy_kasmworkspaces ;;
 
      96) clear && caddy_reload ;;
      97) clear && WebSites_manager_run ;;
