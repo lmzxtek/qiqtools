@@ -14,7 +14,7 @@
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 #==== 脚本版本号 ===========
-script_version=v0.6.5
+script_version=v0.6.6
 #==========================
 
 # Language
@@ -5891,6 +5891,7 @@ txtn $(txtn "33.pip")$(txtg " ")"             "$(txtn "53.DeepLX Server")$(txtg 
 txtn $(txtn "34.miniConda")$(txtr " ")"       "$(txtn "54.Chrome")$(txtg " ")
 txtn $(txty "35.Conda-forge")$(txtr " ★")"    "$(txtc "55.Jupyter-lab")$(txtg " ")
 txtn $(txtn "36.TA-Lib")$(txtg " ")"          "$(txtn "56.SubLinkX")$(txtn " ")
+txtn $(txtn "37.Julia")$(txtg " ")"           "$(txtn "57.")$(txtn " ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "41.Add 1panel-v4v6")$(txtg " ")" "$(txtn "")$(txtb " ")
 txtn $(txtn "42.set AliYun(pip)")$(txtg " ")" "$(txtn "")$(txtb " ")
@@ -5994,6 +5995,7 @@ other_tools_run() {
           fi
           ;;
       36) clear && curl -O https://netcologne.dl.sourceforge.net/project/ta-lib/ta-lib/0.4.0/ta-lib-0.4.0-src.tar.gz && tar -xzf ta-lib-0.4.0-src.tar.gz && cd ta-lib/ && ./configure --prefix=/usr && make && make install && cd .. ;;
+      37) clear && curl -fsSL https://install.julialang.org | sh ;;
 
       41) 
           # clear 
