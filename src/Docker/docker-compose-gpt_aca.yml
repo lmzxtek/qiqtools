@@ -1,7 +1,6 @@
 ## ===================================================
 ## 「方案一」 如果不需要运行本地模型（仅 chatgpt, azure, 星火, 千帆, claude 等在线大模型服务）
 ## ===================================================
-version: '3'
 services:
   gpt_academic_nolocalllms:
     image: ghcr.io/binary-husky/gpt_academic_nolocal:master # (Auto Built by Dockerfile: docs/GithubAction+NoLocal)
