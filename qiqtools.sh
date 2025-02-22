@@ -5879,11 +5879,12 @@ txtn "====================================="
 txtn $(txty " 1.1Panel")$(txty " ☂")"         "$(txtn "11.AList")$(txtg " ")
 txtn $(txtn " 2.aaPanel")$(txtg " ")"         "$(txtn "12.MacCMS")$(txtb " ✘")
 txtn $(txtn " 3.宝塔面板")$(txtg " ")"        "$(txtc "13.WebOS")$(txtr " ")
-txtn $(txtn " 4.哪吒探针")$(txtg " ")"        "$(txty "14.Code-Server")$(txtg " ")
+txtn $(txtr " 4.NeZha(v0)")$(txtg " ")"        "$(txty "14.Code-Server")$(txtg " ")
 txtn $(txtn " 5.OpenLiteSpeed")$(txtg " ")"   "$(txtn "15.ChatGPT-Next-Web")$(txtr " ✘")
 txtn $(txtn " 6.Puter")$(txtg " ")"           "$(txtn "16.爱影CMS")$(txtn " ♡")
 txtn $(txtn " 7.Lucky")$(txtg " ")"           "$(txtn "17.DataEase")$(txtn " ")
 txtn $(txtn " 8.JumpServer")$(txtg " ")"      "$(txtn "18.Akile Monitor")$(txtn " ✲")
+txtn $(txtr " 9.NeZha(v1)")$(txtg " ")"      "$(txtn "")$(txtn " ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "31.Docker")$(txtg " ☆")"         "$(txtn "51.Gnome-Desktop")$(txtg " ")
 txtn $(txtn "32.Python")$(txtg " ")"          "$(txtn "52.RustDesk Server")$(txtg " ")
@@ -5895,6 +5896,9 @@ txtn $(txtn "37.Julia")$(txtg " ")"           "$(txtn "57.")$(txtn " ")
 txtn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 txtn $(txtn "41.Add 1panel-v4v6")$(txtg " ")" "$(txtn "")$(txtb " ")
 txtn $(txtn "42.set AliYun(pip)")$(txtg " ")" "$(txtn "")$(txtb " ")
+txtn $(txtn "43.Docker(一点科技)")$(txtg " ")" "$(txtn "")$(txtb " ")
+txtn $(txtn "44.Nginx(一点科技)")$(txtg " ")" "$(txtn "")$(txtb " ")
+txtn $(txtn "45.Serv00(一点科技)")$(txtg " ")" "$(txtn "")$(txtb " ")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
 txtn " "
@@ -5946,6 +5950,7 @@ other_tools_run() {
          txtn " >>> 账号密码: admin@ChangeMe"
          txtn ""
         ;;
+      9) clear && curl -L https://raw.githubusercontent.com/nezhahq/scripts/refs/heads/main/install.sh -o nezha.sh && chmod +x nezha.sh && sudo ./nezha.sh ;;
 
      11) clear && install curl && curl -fsSL "https://alist.nn.ci/v3.sh" | bash -s install  ;;
      12) clear && install_maccms ;;
@@ -6021,6 +6026,9 @@ other_tools_run() {
           echo ' >>> 设置python源完成。'
           echo ''
            ;;
+      43) clear && wget -O 1keji_nznginx.sh "https://pan.1keji.net/f/YJTA/1keji_nznginx.sh" && chmod +x 1keji_nznginx.sh && ./1keji_nznginx.sh ;;
+      44) clear && wget -O 1keji_docker.sh "https://pan.1keji.net/f/rRi2/1keji_docker.sh" && chmod +x 1keji_docker.sh && ./1keji_docker.sh ;;
+      45) clear && wget -O 1kejiV01.sh "https://pan.1keji.net/f/ERGcp/1kejiV01.sh" && chmod +x 1kejiV01.sh && ./1kejiV01.sh ;;
 
       51) clear && install_ub_desktop ;;
       52) clear && install wget && wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
