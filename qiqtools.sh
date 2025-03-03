@@ -25,6 +25,7 @@ script_version=v0.7.0
 if ! command -v qiq &>/dev/null; then
   echo -e "\n >>> qiq 快捷命令未设置 ... "
   ln -sf ~/qiqtools.sh /usr/local/bin/qiq
+fi
 
 # Language
 L=E
