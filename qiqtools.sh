@@ -6,15 +6,12 @@
 #   GitCode: https://gitcode.com/lmzxtek/qiqtools
 #   
 #   一键安装命令如下：
-#   $> wget -qN https://sub.zwdk.org/qiq && chmod +x qiqtools.sh && ./qiqtools.sh 
-#   $> curl -sS -O https://sub.zwdk.org/qiq && chmod +x qiqtools.sh && ./qiqtools.sh
+#   $> wget -qO qiqtools.sh https://sub.zwdk.org/qiq && chmod +x qiqtools.sh && ./qiqtools.sh 
+#   $> curl -sSL -o qiqtools.sh https://sub.zwdk.org/qiq && chmod +x qiqtools.sh && ./qiqtools.sh
 
 #   $> wget -qN https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiqtools.sh && chmod +x qiqtools.sh && ./qiqtools.sh 
 #   $> curl -sS -O https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiqtools.sh && chmod +x qiqtools.sh && ./qiqtools.sh
 #========================================================
-
-# 设置脚本的快捷命令为 `qiq`
-ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 url_redir='https://sub.zwdk.org/qiq'
 url_script='https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiqtools.sh'
@@ -24,6 +21,10 @@ url_proxy='https://proxy.zwdk.org/proxy/'
 #==== 脚本版本号 ===========
 script_version=v0.7.0
 #==========================
+# 设置脚本的快捷命令为 `qiq`
+if ! command -v qiq &>/dev/null; then
+  echo -e "\n >>> qiq 快捷命令未设置 ... "
+  ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
 # Language
 L=E

@@ -165,6 +165,7 @@ echoT "--------------------------------"
 echoR " >>> 2025-03-03   v0.7.0" " $VLATEST"
 echoY "   1.脚本链接url使用变量"
 echoY "   2.脚本更新添加链接地址"
+echoY "   3.检测qiq命令是否设置"
 echoT "--------------------------------"
 echoR "" $(echoY "脚本链接") $(echoR ": $url_script") 
 echoR "" $(echoY "重定向  ") $(echoR ": $url_redir") 
