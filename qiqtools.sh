@@ -6,10 +6,10 @@
 #   GitCode: https://gitcode.com/lmzxtek/qiqtools
 #   
 #   一键安装命令如下：
-#   $> wget -N https://sub.zwdk.org/qiq && chmod +x qiqtools.sh && ./qiqtools.sh 
+#   $> wget -qN https://sub.zwdk.org/qiq && chmod +x qiqtools.sh && ./qiqtools.sh 
 #   $> curl -sS -O https://sub.zwdk.org/qiq && chmod +x qiqtools.sh && ./qiqtools.sh
 
-#   $> wget -N https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiqtools.sh && chmod +x qiqtools.sh && ./qiqtools.sh 
+#   $> wget -qN https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiqtools.sh && chmod +x qiqtools.sh && ./qiqtools.sh 
 #   $> curl -sS -O https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiqtools.sh && chmod +x qiqtools.sh && ./qiqtools.sh
 #========================================================
 
