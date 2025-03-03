@@ -1,13 +1,16 @@
 #!/bin/bash
 
 #========================================================
-#   System Required: CentOS 7+ / Debian 8+ / Ubuntu 16+ / Alpine 3+ /
+#   System Required: CentOS 7+ | Debian 8+ | Ubuntu 16+ | Alpine 3+ |
 #   Description: QiQ一键安装脚本
-#   Gitlab: https://gitlab.com/lmzxtek/qiqtools
+#   GitCode: https://gitcode.com/lmzxtek/qiqtools
 #   
 #   一键安装命令如下：
-#   $> curl -sS -O https://sub.lmzxtek.top/qiqtools.sh && chmod +x qiqtools.sh && ./qiqtools.sh
-#   $> curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && chmod +x qiqtools.sh && ./qiqtools.sh
+#   $> wget -N https://sub.zhwdk.com/qiq && chmod +x qiqtools.sh && ./qiqtools.sh 
+#   $> curl -sS -O https://sub.zhwdk.com/qiq && chmod +x qiqtools.sh && ./qiqtools.sh
+
+#   $> wget -N https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiqtools.sh && chmod +x qiqtools.sh && ./qiqtools.sh 
+#   $> curl -sS -O https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiqtools.sh && chmod +x qiqtools.sh && ./qiqtools.sh
 #========================================================
 
 # 设置脚本的快捷命令为 `qiq`
@@ -6930,8 +6933,8 @@ caddy_install(){
   cd "/home/web/caddy"
   # touch /home/web/caddy/Caddyfile
   # touch /home/web/html/index.html
-  [[ -f "/home/web/html/index.html"    ]] || wget -qO /home/web/html/index.html https://gitlab.com/lmzxtek/qiqtools/-/raw/main/src/caddy/index.html
-  [[ -f "/home/web/caddy/default.conf" ]] || wget -qO /home/web/caddy/default.conf https://gitlab.com/lmzxtek/qiqtools/-/raw/main/src/caddy/default.conf
+  [[ -f "/home/web/html/index.html"    ]] || wget -qO /home/web/html/index.html https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/src/caddy/index.html
+  [[ -f "/home/web/caddy/default.conf" ]] || wget -qO /home/web/caddy/default.conf https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/src/caddy/default.conf
 
   if ! command -v caddy &>/dev/null; then
     echo -e "\n >>> Caddy未安装 ... "
@@ -7285,13 +7288,13 @@ WebSites_manager_run(){
 # 脚本更新
 script_update(){
   cd ~
-  bash <(wget --no-check-certificate -qO- 'https://gitlab.com/lmzxtek/qiqtools/-/raw/main/update_log.sh')
+  bash <(wget --no-check-certificate -qO- 'https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/update_log.sh')
   # curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/update_log.sh && \
   # chmod +x update_log.sh && ./update_log.sh && \
   # rm update_log.sh
 
   # echo -e "脚本链接:\n" " >>> ${cyan}https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh${plain}"
-  curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh && \
+  curl -sS -O https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiqtools.sh && \
   chmod +x qiqtools.sh && \
   echo -e "\n脚本已更新至最新版本！\n按任意键重新加载脚本...\n"
   break_end #&& exit && qiq
