@@ -16,6 +16,7 @@
 # 设置脚本的快捷命令为 `qiq`
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
+url_redir='https://sub.zwdk.org/qiq'
 url_script='https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiqtools.sh'
 url_update='https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/update_log.sh'
 url_proxy='https://proxy.zwdk.org/proxy/'

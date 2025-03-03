@@ -10,10 +10,13 @@ FTCZ='\033[0m'         # 字体：重置所有
 FTSS='\033[5m'         # 字体：闪烁
 
 VLATEST="${FCLS}${FTSS}NEW${FTCZ}" # 蓝色闪烁字体
+url_redir='https://sub.zwdk.org/qiq'
+url_script='https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiqtools.sh'
+url_update='https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/update_log.sh'
 
 clear
 echoR " >>> " $(echoY "脚本更新日志") $(echoR "<<<") 
-echoB " - " $(echoT "https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh")
+echoB " - " $(echoT $url_update)
 echoT "--------------------------------"
 echoT " >>> 2024-3-12   v0.4.4" ""
 echoT "   1.完成了站点部署菜单的各项功能。"
@@ -161,4 +164,7 @@ echoT "   4.将托管平台更换为GitCode"
 echoT "--------------------------------"
 echoR " >>> 2025-03-03   v0.7.0" " $VLATEST"
 echoY "   1.脚本链接url使用变量"
+echoY "   2.脚本更新添加链接地址"
 echoT "--------------------------------"
+echoR "" $(echoY "脚本链接") $(echoR ": $url_script") 
+echoR "" $(echoY "重定向  ") $(echoR ": $url_redir") 
