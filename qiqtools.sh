@@ -21,7 +21,7 @@ url_update='https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/update_log.sh'
 url_proxy='https://proxy.zwdk.org/proxy/'
 
 #==== 脚本版本号 ===========
-script_version=v0.7.6
+script_version=v0.7.0
 #==========================
 
 # Language
