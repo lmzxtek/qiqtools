@@ -6,8 +6,8 @@
 #   GitCode: https://gitcode.com/lmzxtek/qiqtools
 #   
 #   一键安装命令如下：
-#   $> wget -N https://sub.zhwdk.com/qiq && chmod +x qiqtools.sh && ./qiqtools.sh 
-#   $> curl -sS -O https://sub.zhwdk.com/qiq && chmod +x qiqtools.sh && ./qiqtools.sh
+#   $> wget -N https://sub.zwdk.org/qiq && chmod +x qiqtools.sh && ./qiqtools.sh 
+#   $> curl -sS -O https://sub.zwdk.org/qiq && chmod +x qiqtools.sh && ./qiqtools.sh
 
 #   $> wget -N https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiqtools.sh && chmod +x qiqtools.sh && ./qiqtools.sh 
 #   $> curl -sS -O https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiqtools.sh && chmod +x qiqtools.sh && ./qiqtools.sh
@@ -16,8 +16,12 @@
 # 设置脚本的快捷命令为 `qiq`
 ln -sf ~/qiqtools.sh /usr/local/bin/qiq
 
+url_script='https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiqtools.sh'
+url_update='https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/update_log.sh'
+url_proxy='https://proxy.zwdk.org/proxy/'
+
 #==== 脚本版本号 ===========
-script_version=v0.6.6
+script_version=v0.7.6
 #==========================
 
 # Language
@@ -7288,13 +7292,10 @@ WebSites_manager_run(){
 # 脚本更新
 script_update(){
   cd ~
-  bash <(wget --no-check-certificate -qO- 'https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/update_log.sh')
-  # curl -sS -O https://gitlab.com/lmzxtek/qiqtools/-/raw/main/update_log.sh && \
-  # chmod +x update_log.sh && ./update_log.sh && \
-  # rm update_log.sh
+  bash <(wget --no-check-certificate -qO- $url_update)
 
   # echo -e "脚本链接:\n" " >>> ${cyan}https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh${plain}"
-  curl -sS -O https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiqtools.sh && \
+  curl -sS -O $url_script && \
   chmod +x qiqtools.sh && \
   echo -e "\n脚本已更新至最新版本！\n按任意键重新加载脚本...\n"
   break_end #&& exit && qiq
