@@ -167,6 +167,7 @@ echoY "   1.脚本链接url使用变量"
 echoY "   2.脚本更新添加链接地址"
 echoY "   3.检测qiq命令是否设置"
 echoY "   4.增加 pip install gunicorn ..."
+echoY "   5.更换仓库为github平台."
 echoT "--------------------------------"
 echoR "" $(echoY "url") $(echoR ": $url_redir") 
 echoR "" $(echoY "url") $(echoR ": $url_script") 
