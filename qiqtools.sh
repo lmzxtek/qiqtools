@@ -3,8 +3,8 @@
 #========================================================
 #   System Required: CentOS 7+ | Debian 8+ | Ubuntu 16+ | Alpine 3+ |
 #   Description: QiQ一键安装脚本
+#   GitHub : https://github.com/lmzxtek/qiqtools
 #   GitCode: https://gitcode.com/lmzxtek/qiqtools
-#   GitHub: https://github.com/lmzxtek/qiqtools
 #   
 #   一键安装命令如下：
 #   $> wget -qO qiqtools.sh https://sub.zwdk.org/qiq && chmod +x qiqtools.sh && ./qiqtools.sh 
@@ -15,8 +15,10 @@
 #========================================================
 
 url_redir='https://sub.zwdk.org/qiq'
-url_script='https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiqtools.sh'
-url_update='https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/update_log.sh'
+# url_script='https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiqtools.sh'
+# url_update='https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/update_log.sh'
+url_script='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/qiqtools.sh'
+url_update='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/update_log.sh'
 url_proxy='https://proxy.zwdk.org/proxy/'
 
 #==== 脚本版本号 ===========
