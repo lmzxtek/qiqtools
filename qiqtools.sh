@@ -5909,6 +5909,7 @@ txtn $(txtn "42.set AliYun(pip)")$(txtg " ")" "$(txtn "")$(txtb " ")
 txtn $(txtn "43.Docker(一点科技)")$(txtg " ")" "$(txtn "")$(txtb " ")
 txtn $(txtn "44.Nginx(一点科技)")$(txtg " ")" "$(txtn "")$(txtb " ")
 txtn $(txtn "45.Serv00(一点科技)")$(txtg " ")" "$(txtn "")$(txtb " ")
+txtn $(txtn "46.pip(gunicorn)")$(txtg " ")" "$(txtn "")$(txtb " ")
 txtn "—————————————————————————————————————"
 txtn $(txtn " 0.返回主菜单")$(txtr "✖")
 txtn " "
@@ -6039,6 +6040,7 @@ other_tools_run() {
       43) clear && wget -O 1keji_nznginx.sh "https://pan.1keji.net/f/YJTA/1keji_nznginx.sh" && chmod +x 1keji_nznginx.sh && ./1keji_nznginx.sh ;;
       44) clear && wget -O 1keji_docker.sh "https://pan.1keji.net/f/rRi2/1keji_docker.sh" && chmod +x 1keji_docker.sh && ./1keji_docker.sh ;;
       45) clear && wget -O 1kejiV01.sh "https://pan.1keji.net/f/ERGcp/1kejiV01.sh" && chmod +x 1kejiV01.sh && ./1kejiV01.sh ;;
+      46) clear && pip install gunicorn greenlet eventlet gevent ;;
 
       51) clear && install_ub_desktop ;;
       52) clear && install wget && wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
