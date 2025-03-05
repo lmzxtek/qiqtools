@@ -4,6 +4,7 @@
 #   System Required: CentOS 7+ | Debian 8+ | Ubuntu 16+ | Alpine 3+ |
 #   Description: QiQ一键安装脚本
 #   GitCode: https://gitcode.com/lmzxtek/qiqtools
+#   GitHub: https://github.com/lmzxtek/qiqtools
 #   
 #   一键安装命令如下：
 #   $> wget -qO qiqtools.sh https://sub.zwdk.org/qiq && chmod +x qiqtools.sh && ./qiqtools.sh 
