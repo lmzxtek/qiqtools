@@ -14,15 +14,15 @@
 #   $> curl -sS -O https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiqtools.sh && chmod +x qiqtools.sh && ./qiqtools.sh
 #========================================================
 
-url_redir='https://sub.zwdk.org/qiq'
+URL_REDIRECT='https://sub.zwdk.org/qiq'
 # url_script='https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiqtools.sh'
 # url_update='https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/update_log.sh'
-url_script='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/qiqtools.sh'
-url_update='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/update_log.sh'
-url_proxy='https://proxy.zwdk.org/proxy/'
+URL_SCRIPT='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/qiqtools.sh'
+URL_UPDATE='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/update_log.sh'
+URL_PROXY='https://proxy.zwdk.org/proxy/'
 
 #==== 脚本版本号 ===========
-script_version=v0.7.0
+SRC_VER=v0.7.0
 #==========================
 # 设置脚本的快捷命令为 `qiq`
 if ! command -v qiq &>/dev/null; then
@@ -39,11 +39,11 @@ L=C
 # https://blog.csdn.net/u010632165/article/details/92811856
  black='\033[0;30m'      # 黑色
    red='\033[0;31m'      # 红色
- green='\033[0;32m'      # 绿色
+ GREEN='\033[0;32m'      # 绿色
 yellow='\033[0;33m'      # 黄色
-  blue='\033[0;34m'      # 蓝色
+  BLUE='\033[0;34m'      # 蓝色
   pink='\033[0;35m'      # 紫色
-  cyan='\033[0;36m'      # 天蓝
+  CYAN='\033[0;36m'      # 天蓝
  white='\033[0;37m'      # 白色|浅灰
  default='\033[0;39m'    # 默认前景色
 
@@ -109,18 +109,18 @@ FDHD='\033[29m'        # 字体：取消划掉
 
   bold='\033[1m'         # 字体常用显示：1-粗体高亮；2-淡化；3-斜体；4-下划线；5-闪烁；7-反显；8-隐藏(对密码隐藏比较好)；9-划掉；21-取消加粗；其他的类似
  blink='\033[2m'         # 字体常用显示：1-粗体高亮；2-淡化；3-斜体；4-下划线；5-闪烁；7-反显；8-隐藏(对密码隐藏比较好)；9-划掉；21-取消加粗；其他的类似
- plain='\033[0m'         # 重置所有
+ PLAIN='\033[0m'         # 重置所有
 
 # 自定义字体彩色，read 函数
 #  txtn(){ echo -e "${plain}$*"; }                        # 常规字符
- txtn(){ echo -e "${plain}$*${plain}"; }                # 常规字符
- txtr(){ echo -e "${red}$*${plain}"; }                  # 红色字符
- txtb(){ echo -e "${blue}$*${plain}"; }                 # 蓝色字符
- txtc(){ echo -e "${cyan}$*${plain}"; }                 # 
- txtp(){ echo -e "${pink}$*${plain}"; }                 # 
- txtg(){ echo -e "${green}$*${plain}"; }                # 绿色字符
- txtw(){ echo -e "${white}$*${plain}"; }                # 
- txty(){ echo -e "${yellow}$*${plain}"; }               # 黄色字符
+ txtn(){ echo -e "${PLAIN}$*${PLAIN}"; }                # 常规字符
+ txtr(){ echo -e "${red}$*${PLAIN}"; }                  # 红色字符
+ txtb(){ echo -e "${BLUE}$*${PLAIN}"; }                 # 蓝色字符
+ txtc(){ echo -e "${CYAN}$*${PLAIN}"; }                 # 
+ txtp(){ echo -e "${pink}$*${PLAIN}"; }                 # 
+ txtg(){ echo -e "${GREEN}$*${PLAIN}"; }                # 绿色字符
+ txtw(){ echo -e "${white}$*${PLAIN}"; }                # 
+ txty(){ echo -e "${yellow}$*${PLAIN}"; }               # 黄色字符
 
 echoT(){ FLAG=$1 && shift && echo -e "\033[39m$FLAG\033[39m$@";}
 echoY(){ FLAG=$1 && shift && echo -e "\033[38;5;148m$FLAG\033[39m$@";}
@@ -131,29 +131,29 @@ echoW(){ FLAG=${1} && shift && echo -e "\033[1m${EPACE}${FLAG}\033[0m${@}"; }
 echoNW(){ FLAG=${1} && shift && echo -e "\033[1m${FLAG}\033[0m${@}"; }
 echoCYAN(){ FLAG=$1 && shift && echo -e "\033[1;36m$FLAG\033[0m$@"; }
 
-txbr(){ echo -e "${red}${bold}$*${plain}"; }           # 红色粗体
-txbp(){ echo -e "${pink}${bold}$*${plain}"; }          # 粗体
-txbb(){ echo -e "${blue}${bold}$*${plain}"; }          # 粗体
-txbc(){ echo -e "${cyan}${bold}$*${plain}"; }          # 粗体
-txbw(){ echo -e "${white}${bold}$*${plain}"; }         # 粗体
-txbn(){ echo -e "${plain}${bold}$*${plain}"; }         # 粗体
-txbg(){ echo -e "${green}${bold}$*${plain}"; }         # 粗体
-txby(){ echo -e "${yellow}${bold}$*${plain}"; }        # 粗体
+txbr(){ echo -e "${red}${bold}$*${PLAIN}"; }           # 红色粗体
+txbp(){ echo -e "${pink}${bold}$*${PLAIN}"; }          # 粗体
+txbb(){ echo -e "${BLUE}${bold}$*${PLAIN}"; }          # 粗体
+txbc(){ echo -e "${CYAN}${bold}$*${PLAIN}"; }          # 粗体
+txbw(){ echo -e "${white}${bold}$*${PLAIN}"; }         # 粗体
+txbn(){ echo -e "${PLAIN}${bold}$*${PLAIN}"; }         # 粗体
+txbg(){ echo -e "${GREEN}${bold}$*${PLAIN}"; }         # 粗体
+txby(){ echo -e "${yellow}${bold}$*${PLAIN}"; }        # 粗体
 
-error(){ echo -e "${red}${bold}$*${plain}" && exit 1; } # 红色粗体并退出
-  warning(){ echo -e "${red}$*${plain}"; }              # 红色
-highlight(){ echo -e "${yellow}$*${plain}"; }           # 黄色
+error(){ echo -e "${red}${bold}$*${PLAIN}" && exit 1; } # 红色粗体并退出
+  warning(){ echo -e "${red}$*${PLAIN}"; }              # 红色
+highlight(){ echo -e "${yellow}$*${PLAIN}"; }           # 黄色
 
-note(){ echo -e "${pink}${bold}$*${plain}"; }          # 品色粗体
-info(){ echo -e "${green}${bold}$*${plain}"; }         # 绿色粗体
-hint(){ echo -e "${yellow}${bold}$*${plain}"; }        # 黄色粗体
+note(){ echo -e "${pink}${bold}$*${PLAIN}"; }          # 品色粗体
+info(){ echo -e "${GREEN}${bold}$*${PLAIN}"; }         # 绿色粗体
+hint(){ echo -e "${yellow}${bold}$*${PLAIN}"; }        # 黄色粗体
 
 # 键值对输出
-txtkvn() { local key="$1" && shift && local value=$(echo "$*" | tr -d '\n') && echo -e "${plain}$key${plain}$value${plain}"; }
-txtkvr() { local key="$1" && shift && local value=$(echo "$*" | tr -d '\n') && echo -e "${plain}$key${red}$value${plain}";   }
-txtkvb() { local key="$1" && shift && local value=$(echo "$*" | tr -d '\n') && echo -e "${plain}$key${blue}$value${plain}";  }
-txtkvg() { local key="$1" && shift && local value=$(echo "$*" | tr -d '\n') && echo -e "${plain}$key${green}$value${plain}"; }
-txtkvy() { local key="$1" && shift && local value=$(echo "$*" | tr -d '\n') && echo -e "${plain}$key${yellow}$value${plain}";}
+txtkvn() { local key="$1" && shift && local value=$(echo "$*" | tr -d '\n') && echo -e "${PLAIN}$key${PLAIN}$value${PLAIN}"; }
+txtkvr() { local key="$1" && shift && local value=$(echo "$*" | tr -d '\n') && echo -e "${PLAIN}$key${red}$value${PLAIN}";   }
+txtkvb() { local key="$1" && shift && local value=$(echo "$*" | tr -d '\n') && echo -e "${PLAIN}$key${BLUE}$value${PLAIN}";  }
+txtkvg() { local key="$1" && shift && local value=$(echo "$*" | tr -d '\n') && echo -e "${PLAIN}$key${GREEN}$value${PLAIN}"; }
+txtkvy() { local key="$1" && shift && local value=$(echo "$*" | tr -d '\n') && echo -e "${PLAIN}$key${yellow}$value${PLAIN}";}
 
 reading() { read -rp "$(info "$1")" "$2"; }
 
@@ -165,7 +165,7 @@ qiq_reload() { cd ~ && qiq && exit; }
 
 # 操作完成，等待输入...
 break_end() {
-      echo -e "${green} 操作完成 ${red}>> ${yellow} 按任意键继续${green}..."
+      echo -e "${GREEN} 操作完成 ${red}>> ${yellow} 按任意键继续${GREEN}..."
       read -n 1 -s -r -p ""
       echo ""
 }
@@ -256,7 +256,7 @@ check_IPV4(){
 
 	local check4=`ping 1.1.1.1 -c 1 2>&1`;
 	if [[ "$check4" != *"received"* ]] && [[ "$check4" != *"transmitted"* ]];then
-    IP4_INFO="${red}Not Supported${plain}"
+    IP4_INFO="${red}Not Supported${PLAIN}"
 	else
     txtn " >>> Check IPv4 info ..."
 		# local_ipv4=$(curl -4 -s --max-time 10 api64.ipify.org)
@@ -272,7 +272,7 @@ check_IPV4(){
     WAN4=$local_ipv4
     COUNTRY4=$iso2_code4
     ASNORG4=$local_isp4
-    [[ "$warp_ipv4" =~ ^on$ ]] && WARPSTATUS4="${red}${bold}warp${plain}"
+    [[ "$warp_ipv4" =~ ^on$ ]] && WARPSTATUS4="${red}${bold}warp${PLAIN}"
     [[ "$warp_ipv4" =~ ^off$ ]] && [[ -n "$local_isp4" ]] && isp_info=$local_isp4
     [[ -n "$WAN4" ]] && IP4_INFO="($WARPSTATUS4 $iso2_code4 -> $local_isp4)"
 	fi
@@ -284,7 +284,7 @@ check_IPV6(){
 
 	local check6=`ping6 240c::6666 -c 1 2>&1`;
 	if [[ "$check6" != *"received"* ]] && [[ "$check4" != *"transmitted"* ]];then
-    IP6_INFO="${red}Not Supported${plain}"
+    IP6_INFO="${red}Not Supported${PLAIN}"
 	else
     txtn " >>> Check IPv6 info ..."
 		# local_ipv6=$(curl -6 -s --max-time 20 api64.ipify.org)
@@ -298,7 +298,7 @@ check_IPV6(){
     WAN6=$local_ipv6
     COUNTRY6=$iso2_code6
     ASNORG6=$local_isp6
-    [[ "$warp_ipv6" =~ ^on$ ]] && WARPSTATUS6="${red}${bold}warp${plain}"
+    [[ "$warp_ipv6" =~ ^on$ ]] && WARPSTATUS6="${red}${bold}warp${PLAIN}"
     [[ "$warp_ipv6" =~ ^off$ ]] && [[ -n "$local_isp6" ]] && isp_info=$local_isp6
     [[ -n "$WAN6" ]] && IP6_INFO="($WARPSTATUS6 $iso2_code6 -> $local_isp6)"
 	fi
@@ -346,7 +346,7 @@ get_asn_org4(){
   WAN4=$local_ipv4
   COUNTRY4=$loc_ip4
   ASNORG4=$loc_asn4
-  [[ "$warp_ipv4" =~ ^on$ ]] && WARPSTATUS4="${red}${bold}warp${plain}"
+  [[ "$warp_ipv4" =~ ^on$ ]] && WARPSTATUS4="${red}${bold}warp${PLAIN}"
   [[ "$warp_ipv4" =~ ^off$ ]] && [[ -n "$loc_asn4" ]] && isp_info=$loc_asn4
   [[ -n "$WAN4" ]] && IP4_INFO="($WARPSTATUS4 $loc_ip4 -> $loc_asn4, $loc_asn4_org)"
 
@@ -371,7 +371,7 @@ get_asn_org6(){
   WAN6=$local_ipv6
   COUNTRY6=$loc_ip6
   ASNORG6=$loc_asn6
-  [[ "$warp_ipv6" =~ ^on$ ]] && WARPSTATUS6="${red}${bold}warp${plain}"
+  [[ "$warp_ipv6" =~ ^on$ ]] && WARPSTATUS6="${red}${bold}warp${PLAIN}"
   [[ "$warp_ipv6" =~ ^off$ ]] && [[ -n "$loc_asn6" ]] && isp_info=$loc_asn6
   # [[ "$warp_ipv6" =~ ^off$ ]] && [[ -n "$local_isp4" ]] && isp_info=$local_isp4
   [[ -n "$WAN6" ]] && IP6_INFO="($WARPSTATUS6 $loc_ip6 -> $loc_asn6, $loc_asn6_org)"
@@ -440,7 +440,7 @@ WANIP_show(){
   txtn $(txty " IPv6:") $(txtb $WAN6)"\t"$(txtn $COUNTRY6) $(txtp $WARPSTATUS6)
 }
 
-check_root() { [[ $EUID -ne 0 ]] && echo -e "${red}错误：${plain} 必须使用root用户运行此脚本！\n" && exit 1; }
+check_root() { [[ $EUID -ne 0 ]] && echo -e "${red}错误：${PLAIN} 必须使用root用户运行此脚本！\n" && exit 1; }
 
 check_os() {
     # check os
@@ -459,7 +459,7 @@ check_os() {
     elif cat /proc/version | grep -Eqi "centos|red hat|redhat"; then
         release="centos"
     else
-        echo -e "${red}未检测到系统版本，请联系脚本作者！${plain}\n" && exit 1
+        echo -e "${red}未检测到系统版本，请联系脚本作者！${PLAIN}\n" && exit 1
     fi
 }
 
@@ -474,7 +474,7 @@ get_arch(){
         arch="s390x"
     else
         arch="64"
-        echo -e "${red}检测架构失败，使用默认架构: ${arch}${plain}"
+        echo -e "${red}检测架构失败，使用默认架构: ${arch}${PLAIN}"
     fi
 
     # echo "架构: ${arch}"
@@ -498,15 +498,15 @@ get_os_version() {
 
     if [[ x"${release}" == x"centos" ]]; then
         if [[ ${os_version} -le 6 ]]; then
-            echo -e "${red}请使用 CentOS 7 或更高版本的系统！${plain}\n" && exit 1
+            echo -e "${red}请使用 CentOS 7 或更高版本的系统！${PLAIN}\n" && exit 1
         fi
     elif [[ x"${release}" == x"ubuntu" ]]; then
         if [[ ${os_version} -lt 16 ]]; then
-            echo -e "${red}请使用 Ubuntu 16 或更高版本的系统！${plain}\n" && exit 1
+            echo -e "${red}请使用 Ubuntu 16 或更高版本的系统！${PLAIN}\n" && exit 1
         fi
     elif [[ x"${release}" == x"debian" ]]; then
         if [[ ${os_version} -lt 8 ]]; then
-            echo -e "${red}请使用 Debian 8 或更高版本的系统！${plain}\n" && exit 1
+            echo -e "${red}请使用 Debian 8 或更高版本的系统！${PLAIN}\n" && exit 1
         fi
     fi
 }
@@ -642,14 +642,14 @@ show_system_info() {
   txtn " "
     info "系统信息查询"
   txtkvn "↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓"
-  txtkvy "    ${blue}虚拟化: " "${yellow}${bold}$VIRT${plain}"
+  txtkvy "    ${BLUE}虚拟化: " "${yellow}${bold}$VIRT${PLAIN}"
   txtkvn "    主机名: " "$hostname"
   txtkvn "    运营商: " "$isp_info"
   txtkvn "  系统版本: " "$os_info"
   txtkvy "  内核版本: " "$kernel_version"
   txtkvn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
   txtkvn "  CPU占用: " "$cpu_usage_percent"
-  txtkvn "  CPU架构: " "${yellow}$cpu_arch${plain}   核心数: ${yellow}$cpu_cores${plain}"
+  txtkvn "  CPU架构: " "${yellow}$cpu_arch${PLAIN}   核心数: ${yellow}$cpu_cores${PLAIN}"
   txtkvn "  CPU型号: " "$cpu_info"
   txtkvn "——————————————————————————————————————"
   txtkvy " 物理内存: " "$mem_info"
@@ -663,7 +663,7 @@ show_system_info() {
   txtkvy " IPv6地址: " "$WAN6\t$IP6_INFO"
   # WANIP_show
   txtkvn "——————————————————————————————————————"
-  txtkvn " 拥堵算法: " "${yellow}$congestion_algorithm" "${plain}$queue_algorithm"
+  txtkvn " 拥堵算法: " "${yellow}$congestion_algorithm" "${PLAIN}$queue_algorithm"
   txtkvn "$txt_data_transfer"
   txtkvn "↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑"
   # txtn " "
@@ -763,7 +763,7 @@ gather_sysinfo(){
   # [[ -z "$IPV6_CHECK" ]] && ONLINE+="❌ Offline" || ONLINE+="✔ Online"
 
   echo -e 
-  echo -e "${yellow}Basic System Information:${plain}"
+  echo -e "${yellow}Basic System Information:${PLAIN}"
   echo -e "---------------------------------"
 
   echo -e "Uptime     : $UPTIME"
@@ -776,7 +776,7 @@ gather_sysinfo(){
   echo -e "Disk       : $TOTAL_DISK"
   echo -e "Distro     : $DISTRO"
   echo -e "Kernel     : $KERNEL"
-  echo -e "VM Type    : ${red}$VIRT${plain}"
+  echo -e "VM Type    : ${red}$VIRT${PLAIN}"
   echo -e "IPv4|IPv6  : $ONLINE"
 
   # echoT "VM Type    :" ${red}$VIRT${plain}
@@ -810,7 +810,7 @@ function ip_info() {
 	local as=$(echo "$response" | sed -e 's/[{}]/''/g' | awk -v RS=',"' -F: '/^as/ {print $2}' | sed 's/^"\(.*\)"$/\1/')
 	
 	echo -e ""
-	echo -e "${yellow}$net_type Network Information:${plain}"
+	echo -e "${yellow}$net_type Network Information:${PLAIN}"
 	echo -e "---------------------------------"
 
 	if [[ -n "$isp" ]]; then
@@ -947,7 +947,7 @@ docker_set_1ckl(){
 install_add_docker() {
   
   if [[ "$VIRT" =~ "LXC" ]]; then
-    echo -e "\n >>> 检测到${red}LXC${plain}服务器，不建议安装Docker。\n"
+    echo -e "\n >>> 检测到${red}LXC${PLAIN}服务器，不建议安装Docker。\n"
     read -p " 安装docker环境吗？(输入Y[y]继续): " choice
     case "$choice" in
       [Yy]) clear ;;
@@ -1401,11 +1401,11 @@ txtn " "
 txtn $(txby "▼ 可选系统菜单")$(txtp " ❃❃❃ ")
 txtn "—————————————————————————————————————"
 # WANIP_show
-txtn $(txby "> 系统虚拟化: ")$(txtp "${red}$VIRT${plain}\n")
-txtn "\t${pink} Linux   : ${blue}root${red}@${yellow}LeitboGi0ro${plain}"
-txtn "\t${pink} Windows : ${blue}Administrator${red}@${yellow}Teddysun.com"
-txtn "\t${pink} @bin456789 : ${blue}root|Administrator${red}@${yellow}123@@@"
-txtn "\t${pink}           ${white}(Windows need mininumn 15G Storage)${plain}\n"
+txtn $(txby "> 系统虚拟化: ")$(txtp "${red}$VIRT${PLAIN}\n")
+txtn "\t${pink} Linux   : ${BLUE}root${red}@${yellow}LeitboGi0ro${PLAIN}"
+txtn "\t${pink} Windows : ${BLUE}Administrator${red}@${yellow}Teddysun.com"
+txtn "\t${pink} @bin456789 : ${BLUE}root|Administrator${red}@${yellow}123@@@"
+txtn "\t${pink}           ${white}(Windows need mininumn 15G Storage)${PLAIN}\n"
 txtn "====================================="
 txtn $(txtp " 1.Debian 12")$(txtb " ")"        "$(txtn "11.Ubuntu 24.04")$(txtb "☋")
 txtn $(txtn " 2.Debian 11")$(txtb " ")"        "$(txtn "12.Ubuntu 22.04")$(txtb "☋")
@@ -1435,10 +1435,10 @@ dd_usage(){
 txtn " "
 txtn $(txby "▼ DD脚本使用说明")$(txtp " ❃❃❃ ")
 txtn "—————————————————————————————————————"
-txtn "       Linux : ${blue}root${red}@${yellow}LeitboGi0ro${plain}"
-txtn "     Windows : ${blue}Administrator${red}@${yellow}Teddysun.com"
-txtn "  @bin456789 : ${blue}root|Administrator${red}@${yellow}123@@@"
-txtn "   ${white}(Windows need mininumn 15G Storage)${plain}"
+txtn "       Linux : ${BLUE}root${red}@${yellow}LeitboGi0ro${PLAIN}"
+txtn "     Windows : ${BLUE}Administrator${red}@${yellow}Teddysun.com"
+txtn "  @bin456789 : ${BLUE}root|Administrator${red}@${yellow}123@@@"
+txtn "   ${white}(Windows need mininumn 15G Storage)${PLAIN}"
 txtn '   (当administrator无法登录时, 可尝试.\\administrator)\n'
 txtn "  bash InstallNET.sh -windows 10 -lang 'en'"
 txtn "  bash InstallNET.sh -windows 11 -lang 'cn'\n"
@@ -1470,11 +1470,11 @@ dd_system_run() {
 
   clear
   txty "\n请备份数据，将为你重装系统，预计花费15分钟。\n"
-  txtn "\t虚拟化类型: ${red}$VIRT${plain} \n"
+  txtn "\t虚拟化类型: ${red}$VIRT${PLAIN} \n"
   txtn "\t${pink} =>> Password For KVM <<="
-  txtn "\t${pink} Linux   : ${blue}root${red}@${yellow}LeitboGi0ro${plain}"
-  txtn "\t${pink} Windows : ${blue}Administrator${red}@${yellow}Teddysun.com"
-  txtn "\t${pink}           ${white}(Windows need mininumn 15G Storage)${plain}\n"
+  txtn "\t${pink} Linux   : ${BLUE}root${red}@${yellow}LeitboGi0ro${PLAIN}"
+  txtn "\t${pink} Windows : ${BLUE}Administrator${red}@${yellow}Teddysun.com"
+  txtn "\t${pink}           ${white}(Windows need mininumn 15G Storage)${PLAIN}\n"
   read -p "确定继续吗？[Y|n]: " choice
   
   case "$choice" in
@@ -1732,7 +1732,7 @@ set_swap() {
   # 当机器为虚拟化为非KVM化，则不进行设置
 
   if [[ "$VIRT" != *"KVM"* ]]; then 
-    WARPSTATUS6="${red}${bold}warp${plain}"
+    WARPSTATUS6="${red}${bold}warp${PLAIN}"
     txtn "\nThe server type is: $(txbr $VIRT)"
     txtn "(Only KVM server can set swap)\n"
     return 1
@@ -2036,24 +2036,24 @@ alter_sourcelist(){
 timezone_menu(){
 echo -e "
 ▶ 时区切换
-${plain}-->> 亚洲 <<-----------------------------
-${green} 1.${plain} 中国上海时间              ${green} 2.${plain} 中国香港时间
-${green} 3.${plain} 日本东京时间              ${green} 4.${plain} 韩国首尔时间
-${green} 5.${plain} 新加坡时间                ${green} 6.${plain} 中国香港时间
-${green} 7.${plain} 阿联酋迪拜时间            ${green} 8.${plain} 澳大利亚悉尼时间
+${PLAIN}-->> 亚洲 <<-----------------------------
+${GREEN} 1.${PLAIN} 中国上海时间              ${GREEN} 2.${PLAIN} 中国香港时间
+${GREEN} 3.${PLAIN} 日本东京时间              ${GREEN} 4.${PLAIN} 韩国首尔时间
+${GREEN} 5.${PLAIN} 新加坡时间                ${GREEN} 6.${PLAIN} 中国香港时间
+${GREEN} 7.${PLAIN} 阿联酋迪拜时间            ${GREEN} 8.${PLAIN} 澳大利亚悉尼时间
 
-${plain}-->> 欧洲 <<-----------------------------
-${green}11.${plain} 英国伦敦时间              ${green}12.${plain} 法国巴黎时间
-${green}13.${plain} 德国柏林时间              ${green}14.${plain} 俄罗斯莫斯科时间
-${green}15.${plain} 荷兰尤特赖赫特时间        ${green}16.${plain} 西班牙马德里时间
+${PLAIN}-->> 欧洲 <<-----------------------------
+${GREEN}11.${PLAIN} 英国伦敦时间              ${GREEN}12.${PLAIN} 法国巴黎时间
+${GREEN}13.${PLAIN} 德国柏林时间              ${GREEN}14.${PLAIN} 俄罗斯莫斯科时间
+${GREEN}15.${PLAIN} 荷兰尤特赖赫特时间        ${GREEN}16.${PLAIN} 西班牙马德里时间
 
-${plain}-->> 美洲 <<-----------------------------
-${green}21.${plain} 美国西部时间              ${green}22.${plain} 美国东部时间
-${green}23.${plain} 加拿大时间               ${green}24.${plain} 墨西哥时间
-${green}25.${plain} 巴西时间                 ${green}26.${plain} 阿根廷时间
-${plain}-------------------------------
-${green} 0.${plain} 返回上级菜单
-${plain}-------------------------------
+${PLAIN}-->> 美洲 <<-----------------------------
+${GREEN}21.${PLAIN} 美国西部时间              ${GREEN}22.${PLAIN} 美国东部时间
+${GREEN}23.${PLAIN} 加拿大时间               ${GREEN}24.${PLAIN} 墨西哥时间
+${GREEN}25.${PLAIN} 巴西时间                 ${GREEN}26.${PLAIN} 阿根廷时间
+${PLAIN}-------------------------------
+${GREEN} 0.${PLAIN} 返回上级菜单
+${PLAIN}-------------------------------
 "
 }
 
@@ -6401,7 +6401,7 @@ txtn " "
 txtn $(txbr "▼ Docker容器")$(txbg " ☪☪☪ ")
 txtn "—————————————————————————————————————"
 if ! command -v docker &>/dev/null; then
-    echo -e " >>> Docker${red}未安装${plain} ..."
+    echo -e " >>> Docker${red}未安装${PLAIN} ..."
 else
   # echo -e "\n >>> Docker已安装 ..."
   docker ps -a
@@ -6502,7 +6502,7 @@ txtn " "
 txtn $(txbr "▼ Docker镜像列表")$(txbg " ☪☪☪ ")
 txtn "—————————————————————————————————————"
 if ! command -v docker &>/dev/null; then
-    echo -e " >>> Docker${red}未安装${plain} ..."
+    echo -e " >>> Docker${red}未安装${PLAIN} ..."
 else
   # echo -e "\n >>> Docker已安装 ..."
   # docker ps -a
@@ -6549,7 +6549,7 @@ txtn " "
 txtn $(txbr "▼ Docker网络列表")$(txbg " ☪☪☪ ")
 txtn "—————————————————————————————————————"
 if ! command -v docker &>/dev/null; then
-    echo -e " >>> Docker${red}未安装${plain} ..."
+    echo -e " >>> Docker${red}未安装${PLAIN} ..."
 else
   # echo -e "\n >>> Docker已安装 ..."
   # docker ps -a
@@ -6621,7 +6621,7 @@ txtn " "
 txtn $(txbr "▼ Docker卷列表")$(txbg " ☪☪☪ ")
 txtn "—————————————————————————————————————"
 if ! command -v docker &>/dev/null; then
-    echo -e " >>> Docker${red}未安装${plain} ..."
+    echo -e " >>> Docker${red}未安装${PLAIN} ..."
 else
   # echo -e "\n >>> Docker已安装 ..."
   # docker ps -a
@@ -6696,10 +6696,10 @@ txtn "————————————————————————�
 WANIP_show
 if ! command -v docker &>/dev/null; then
   txtn "====================================="
-    echo -e " >>> Docker${yellow}未安装${plain} ..."
+    echo -e " >>> Docker${yellow}未安装${PLAIN} ..."
 elif ! command -v docker-compose &>/dev/null; then
   txtn "====================================="
-  echo -e " >>> docker-compose${yellow}未安装${plain} ..."
+  echo -e " >>> docker-compose${yellow}未安装${PLAIN} ..."
 fi
 txtn "====================================="
 txtn $(txtn " 1.Docker环境安装")$(txtg " ")"       "$(txty "11.Docker状态")$(txtn " ☆")
@@ -6774,7 +6774,7 @@ check_port() {
 add_yuming() {
   # check_IP_address
   unset yuming
-  echo -e "先将域名解析到本机IP: ${red}$WAN4  ${blue}$WAN6${plain}"
+  echo -e "先将域名解析到本机IP: ${red}$WAN4  ${BLUE}$WAN6${PLAIN}"
   read -p "请输入你解析的域名: " yuming
   echo "$yuming"
 }
@@ -7032,11 +7032,11 @@ caddy_web_list(){
   # ls -t /home/web/caddy | grep -v "default.conf" | sed 's/\.[^.]*$//'
   dm_list=$(ls -t /home/web/caddy | grep -v "default.conf" | sed 's/\.[^.]*$//')
   # clear
-  echo -e "\n >> ${red}站点列表\n${plain}-------------------------------\n"
+  echo -e "\n >> ${red}站点列表\n${PLAIN}-------------------------------\n"
   for dm_file in $dm_list; do
       printf "%-30s\n" "$dm_file"
   done
-  echo -e "\n${plain}-------------------------------\n"
+  echo -e "\n${PLAIN}-------------------------------\n"
 }
 
 # 修改域名
@@ -7298,12 +7298,12 @@ WebSites_manager_run(){
 }
 
 # 脚本更新
-script_update(){
+function script_update(){
   cd ~
-  bash <(wget --no-check-certificate -qO- $url_update)
+  bash <(wget --no-check-certificate -qO- $URL_UPDATE)
 
   # echo -e "脚本链接:\n" " >>> ${cyan}https://gitlab.com/lmzxtek/qiqtools/-/raw/main/qiqtools.sh${plain}"
-  curl -sS -O $url_script && \
+  curl -sS -O $URL_SCRIPT && \
   chmod +x qiqtools.sh && \
   echo -e "\n脚本已更新至最新版本！\n按任意键重新加载脚本...\n"
   break_end #&& exit && qiq
@@ -7313,20 +7313,20 @@ script_update(){
 
 show_header_qiq(){
 echo -e "
- ${green}  ░███     ${cyan}░████  ${green}  ░███   ${plain}
- ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
- ${green}░██   ░██  ${cyan} ░██   ${green}░██   ░██${plain}
- ${green} ░██ ░██   ${cyan} ░██   ${green} ░██ ░██ ${plain}
- ${green}   ░██ ██  ${cyan}░████  ${green}   ░██ ██${plain}
+ ${GREEN}  ░███     ${CYAN}░████  ${GREEN}  ░███   ${PLAIN}
+ ${GREEN} ░██ ░██   ${CYAN} ░██   ${GREEN} ░██ ░██ ${PLAIN}
+ ${GREEN}░██   ░██  ${CYAN} ░██   ${GREEN}░██   ░██${PLAIN}
+ ${GREEN} ░██ ░██   ${CYAN} ░██   ${GREEN} ░██ ░██ ${PLAIN}
+ ${GREEN}   ░██ ██  ${CYAN}░████  ${GREEN}   ░██ ██${PLAIN}
 
-${blue}─┬─╭─╮╭─╮┬ ╭─╮${plain}  
-${blue} │ │ ││ ││ ╰─╮${plain}  
-${blue} │ ╰─╯╰─╯╰─╰─╯${plain}   ${cyan}♧♧${plain} QiQTools ${blue}$script_version${plain}"
+${BLUE}─┬─╭─╮╭─╮┬ ╭─╮${PLAIN}  
+${BLUE} │ │ ││ ││ ╰─╮${PLAIN}  
+${BLUE} │ ╰─╯╰─╯╰─╰─╯${PLAIN}   ${CYAN}♧♧${PLAIN} QiQTools ${BLUE}$SRC_VER${PLAIN}"
 
 }
 
 # 显示主菜单
-main_menu() {
+function main_menu() {
 txtn "—————————————————————————————————————"
 WANIP_show
 txtn "====================================="
