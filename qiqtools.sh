@@ -22,7 +22,7 @@ URL_UPDATE='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/u
 URL_PROXY='https://proxy.zwdk.org/proxy/'
 
 #==== 脚本版本号 ===========
-SRC_VER=v0.7.0
+SRC_VER=v0.7.1
 #==========================
 # 设置脚本的快捷命令为 `qiq`
 if ! command -v qiq &>/dev/null; then
@@ -7311,18 +7311,23 @@ function script_update(){
 }
 
 
+# show_header_qiq(){
+# echo -e "
+#  ${GREEN}  ░███     ${CYAN}░████  ${GREEN}  ░███   ${PLAIN}
+#  ${GREEN} ░██ ░██   ${CYAN} ░██   ${GREEN} ░██ ░██ ${PLAIN}
+#  ${GREEN}░██   ░██  ${CYAN} ░██   ${GREEN}░██   ░██${PLAIN}
+#  ${GREEN} ░██ ░██   ${CYAN} ░██   ${GREEN} ░██ ░██ ${PLAIN}
+#  ${GREEN}   ░██ ██  ${CYAN}░████  ${GREEN}   ░██ ██${PLAIN}
+
+# ${BLUE}─┬─╭─╮╭─╮┬ ╭─╮${PLAIN}  
+# ${BLUE} │ │ ││ ││ ╰─╮${PLAIN}  
+# ${BLUE} │ ╰─╯╰─╯╰─╰─╯${PLAIN}   ${CYAN}♧♧${PLAIN} QiQTools ${BLUE}$SRC_VER${PLAIN}"
+
+# }
+
 show_header_qiq(){
 echo -e "
- ${GREEN}  ░███     ${CYAN}░████  ${GREEN}  ░███   ${PLAIN}
- ${GREEN} ░██ ░██   ${CYAN} ░██   ${GREEN} ░██ ░██ ${PLAIN}
- ${GREEN}░██   ░██  ${CYAN} ░██   ${GREEN}░██   ░██${PLAIN}
- ${GREEN} ░██ ░██   ${CYAN} ░██   ${GREEN} ░██ ░██ ${PLAIN}
- ${GREEN}   ░██ ██  ${CYAN}░████  ${GREEN}   ░██ ██${PLAIN}
-
-${BLUE}─┬─╭─╮╭─╮┬ ╭─╮${PLAIN}  
-${BLUE} │ │ ││ ││ ╰─╮${PLAIN}  
-${BLUE} │ ╰─╯╰─╯╰─╰─╯${PLAIN}   ${CYAN}♧♧${PLAIN} QiQTools ${BLUE}$SRC_VER${PLAIN}"
-
+  ${CYAN}♧♧♧${PLAIN}  QiQ Tools ${BLUE}$SRC_VER${PLAIN}  ${CYAN}♧♧♧${PLAIN}"
 }
 
 # 显示主菜单
