@@ -570,7 +570,7 @@ function get_split_list() {
 # 生成重复字符的分割行，并应用颜色
 function generate_separator() {
     local separator_info="$1"
-    local count="$2"
+    local count=${2:-35}
     
     # 解析分割符和颜色
     IFS='|' read -r separator color <<< "$separator_info"
@@ -631,7 +631,7 @@ function print_sub_menu_items() {
 function print_items_list(){
     local items=("${!1}")  # 传入数组
     local head="$2"
-    clear 
+    # clear 
     echo -e "\n${BOLD} ⚓ ${head}: \n${PLAIN}"
     for option in "${items[@]}"; do
         echo -e "$POINTING $option"
@@ -1274,6 +1274,7 @@ function break_tacle() {
     fi
     _IS_BREAK="false"
     _BREAK_INFO="操作完成"
+    echo -e "${RESET}"
 }
 
 ## 重启系统，需要用户确认
@@ -1580,6 +1581,95 @@ function system_test_menu(){
 }
 
 
+function check_crontab_installed() {
+	if ! command -v crontab >/dev/null 2>&1; then
+		install_crontab
+	fi
+}
+
+
+function install_crontab() {
+
+	if [ -f /etc/os-release ]; then
+		. /etc/os-release
+		case "$ID" in
+			ubuntu|debian|kali)
+				apt update
+				apt install -y cron
+				systemctl enable cron
+				systemctl start cron
+				;;
+			centos|rhel|almalinux|rocky|fedora)
+				yum install -y cronie
+				systemctl enable crond
+				systemctl start crond
+				;;
+			alpine)
+				apk add --no-cache cronie
+				rc-update add crond
+				rc-service crond start
+				;;
+			arch|manjaro)
+				pacman -S --noconfirm cronie
+				systemctl enable cronie
+				systemctl start cronie
+				;;
+			opensuse|suse|opensuse-tumbleweed)
+				zypper install -y cron
+				systemctl enable cron
+				systemctl start cron
+				;;
+			iStoreOS|openwrt|ImmortalWrt|lede)
+				opkg update
+				opkg install cron
+				/etc/init.d/cron enable
+				/etc/init.d/cron start
+				;;
+			FreeBSD)
+				pkg install -y cronie
+				sysrc cron_enable="YES"
+				service cron start
+				;;
+			*)
+				echo "不支持的发行版: $ID"
+				return
+				;;
+		esac
+	else
+		echo "无法确定操作系统。"
+		return
+	fi
+
+	echo -e "${gl_lv}crontab 已安装且 cron 服务正在运行。${gl_bai}"
+}
+
+
+
+function iptables_rules_save() {
+	mkdir -p /etc/iptables
+	touch /etc/iptables/rules.v4
+	iptables-save > /etc/iptables/rules.v4
+	check_crontab_installed
+	crontab -l | grep -v 'iptables-restore' | crontab - > /dev/null 2>&1
+	(crontab -l ; echo '@reboot iptables-restore < /etc/iptables/rules.v4') | crontab - > /dev/null 2>&1
+}
+
+
+function iptables_open() {
+	app_install iptables
+	iptables_rules_save
+	iptables -P INPUT ACCEPT
+	iptables -P FORWARD ACCEPT
+	iptables -P OUTPUT ACCEPT
+	iptables -F
+
+	ip6tables -P INPUT ACCEPT
+	ip6tables -P FORWARD ACCEPT
+	ip6tables -P OUTPUT ACCEPT
+	ip6tables -F
+
+}
+
 # 定义系统工具数组
 MENU_SYSTEM_TOOLS_ITEMS=(
     "1|修改ROOT密码|$WHITE"
@@ -1612,14 +1702,452 @@ function system_tools_menu(){
     while true; do
         print_sub_item_menu_headinfo
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
-
         read -rp "${CHOICE}" INPUT
         case "${INPUT}" in
+        1) 
+            # local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
+            # read -rp "${CHOICE}" INPUT
+            echo "设置ROOT密码" && passwd 
+            ;;
+        2) 
+            sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin yes/g' /etc/ssh/sshd_config;
+            sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/g' /etc/ssh/sshd_config;
+            service sshd restart
+
+            _BREAK_INFO=" ROOT登录设置完毕"
+            _IS_BREAK="true"
+            ;;
         3) 
-            sys_update
+            app_install sudo 
+
+            # 提示用户输入新用户名
+            echo -e "$TIP 禁用Root用户，需要创建新的用户 ..."
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入新用户名: ${PLAIN}")
+            read -rp "${CHOICE}" new_username
+
+            # 创建新用户并设置密码
+            echo -e "$TIP 设置新用户的密码 ..."
+            sudo useradd -m -s /bin/bash "$new_username"
+            sudo passwd "$new_username"
+
+            # 赋予新用户sudo权限
+            echo -e "$TIP 设置新用户sudo权限 ..."
+            echo "$new_username ALL=(ALL:ALL) ALL" | sudo tee -a /etc/sudoers
+
+            # 禁用ROOT用户登录
+            echo -e "$TIP 禁用Root用户 ..."
+            sudo passwd -l root
+            
+            _BREAK_INFO=" 禁用ROOT用户完毕"
+            _IS_BREAK="true"
             ;;
         4) 
-            sys_clean
+            local cur_hostname=$(hostname)
+
+            # 询问用户是否要更改主机名
+            echo "当前主机名: $cur_hostname"
+            read -p "是否要更改主机名？(y/n): " answer
+
+            if [ "$answer" == "y" ]; then
+                # 获取新的主机名
+                read -p "请输入新的主机名: " new_hostname
+                if [ -n "$new_hostname" && [ "$new_hostname" != "0" ]]; then
+                    if [ -f /etc/alpine-release ]; then
+                        # Alpine
+                        echo "$new_hostname" > /etc/hostname
+                        hostname "$new_hostname"
+                    else
+                        # 其他系统，如 Debian, Ubuntu, CentOS 等
+                        hostnamectl set-hostname "$new_hostname"
+                        sed -i "s/$cur_hostname/$new_hostname/g" /etc/hostname
+                        systemctl restart systemd-hostnamed
+                    fi
+                    
+                    if grep -q "127.0.0.1" /etc/hosts; then
+                        sed -i "s/127.0.0.1 .*/127.0.0.1       $new_hostname localhost localhost.localdomain/g" /etc/hosts
+                    else
+                        echo "127.0.0.1       $new_hostname localhost localhost.localdomain" >> /etc/hosts
+                    fi
+
+                    if grep -q "^::1" /etc/hosts; then
+                        sed -i "s/^::1 .*/::1             $new_hostname localhost localhost.localdomain ipv6-localhost ipv6-loopback/g" /etc/hosts
+                    else
+                        echo "::1             $new_hostname localhost localhost.localdomain ipv6-localhost ipv6-loopback" >> /etc/hosts
+                    fi
+
+                    echo "主机名更改为: $new_hostname"
+                else
+                    echo "无效主机名。未更改主机名。"
+                    continue 
+                fi
+            else
+                echo "未更改主机名。"
+            fi
+            ;;
+        5) 
+            local timezone=$(current_timezone)
+            local current_time=$(date +"%Y-%m-%d %H:%M:%S")
+            local tz_items_regions=(
+                "1|亚洲|$WHITE"
+                "2|欧洲|$WHITE"
+                "3|美洲|$WHITE"
+                "4|UTC|$WHITE"
+            )
+            local tz_items_asian=(
+                "1|中国上海|$WHITE"
+                "2|中国香港|$WHITE"
+                "3|日本东京|$WHITE"
+                "4|韩国首尔|$WHITE"
+                "5|新加坡|$WHITE"
+                "6|印度加尔各答|$WHITE"
+                "7|阿联酋迪拜|$WHITE"
+                "8|澳大利亚悉尼|$WHITE"
+                "9|泰国曼谷|$WHITE"
+            )
+            local tz_items_eu=(
+                "1|英国伦敦|$WHITE"
+                "2|法国巴黎|$WHITE"
+                "3|德国柏林|$WHITE"
+                "4|俄罗斯莫斯科|$WHITE"
+                "5|荷兰尤特赖赫特|$WHITE"
+                "6|西班牙马德里|$WHITE"
+            )
+            local tz_items_us=(
+                "1|美国西部|$WHITE"
+                "2|美国东部|$WHITE"
+                "3|加拿大|$WHITE"
+                "4|墨西哥|$WHITE"
+                "5|巴西|$WHITE"
+                "6|阿根廷|$WHITE"
+            )
+
+            ;;
+        6) 
+            local source_list_options=(
+                "1.大陆地区"
+                "2.教育网"
+                "3.海外地区"
+                "0.退出"
+            )
+
+            _IS_BREAK="true"
+            _BREAK_INFO=" 已修改系统源！"
+            print_items_list source_list_options[@] "系统源地区选择:"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            case "${INPUT}" in
+            1) 
+                bash <(curl -sSL https://linuxmirrors.cn/main.sh)
+                _BREAK_INFO=" 已修改系统源为大陆地区！"
+                ;;
+            2) 
+                bash <(curl -sSL https://linuxmirrors.cn/main.sh) --edu
+                _BREAK_INFO=" 已修改系统源为教育网！"
+                ;;
+            3) 
+                bash <(curl -sSL https://linuxmirrors.cn/main.sh) --abroad
+                _BREAK_INFO=" 已修改系统源为海外地区！"
+                ;;
+            0) 
+                echo -e "\n$TIP 返回主菜单 ..."
+                _IS_BREAK="false"
+                ;;
+            *)
+                _BREAK_INFO=" 请输入正确选项！"
+                ;;
+            esac 
+            ;;
+        8) 
+            local ports_management_options=(
+                "1.查看端口状态"
+                "2.开放所有端口"
+                "3.关闭所有端口"
+                "4.开放指定端口"
+                "5.关闭指定端口"
+                "0.退出"
+            )
+
+            _IS_BREAK="true"
+            _BREAK_INFO=" 由端口管理子菜单返回！"
+            print_items_list ports_management_options[@] "选择:"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            case "${INPUT}" in
+            1) 
+                clear 
+                ss -tulnape
+                ;;
+            2) 
+                # permission_judgment 
+                if [ "$EUID" -ne 0 ] ; then 
+                    # echo -e "$WARN 该操作需要root权限！"
+                    _BREAK_INFO=" 开放所有端口需要root权限"
+                    break_tacle 
+                    continue 
+                fi 
+                iptables_open 
+                app_remove iptables-persistent ufw firewalld iptables-services > /dev/null 2>&1
+                _BREAK_INFO=" 已开放全部端口"
+                ;;
+            3) 
+            
+                current_port=$(grep -E '^ *Port [0-9]+' /etc/ssh/sshd_config | awk '{print $2}')
+
+                cat > /etc/iptables/rules.v4 << EOF
+*filter
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A FORWARD -i lo -j ACCEPT
+-A INPUT -p tcp --dport $current_port -j ACCEPT
+COMMIT
+EOF
+                iptables-restore < /etc/iptables/rules.v4
+
+                _BREAK_INFO=" 已关闭所有端口！"
+                ;;
+            4) 
+            
+                local CHOICE=$(echo -e "\n${BOLD}└─ 请输入要开放的端口号: ${PLAIN}")
+                read -rp "${CHOICE}" INPUT
+
+                sed -i "/COMMIT/i -A INPUT -p tcp --dport $INPUT -j ACCEPT" /etc/iptables/rules.v4
+                sed -i "/COMMIT/i -A INPUT -p udp --dport $INPUT -j ACCEPT" /etc/iptables/rules.v4
+                iptables-restore < /etc/iptables/rules.v4
+                _BREAK_INFO=" 已开放端口: $INPUT！"
+
+                ;;
+            5) 
+                local CHOICE=$(echo -e "\n${BOLD}└─ 请输入要关闭的端口号: ${PLAIN}")
+                read -rp "${CHOICE}" INPUT
+
+                sed -i "/--dport $INPUT/d" /etc/iptables/rules.v4
+                iptables-restore < /etc/iptables/rules.v4
+                _BREAK_INFO=" 已关闭端口: $INPUT！"
+
+                ;;
+            0) 
+                echo -e "\n$TIP 返回主菜单 ..."
+                _IS_BREAK="false"
+                ;;
+            *)
+                _BREAK_INFO=" 请输入正确选项！"
+                ;;
+            esac 
+            ;;
+        9) 
+            local dns_list_options=(
+                "1.国外DNS"
+                "2.国内DNS"
+                "3.自定义DNS"
+                "0.退出"
+            )
+            
+            function set_dns() {
+                local dns1_ipv4="$1"
+                local dns2_ipv4="$2"
+                local dns1_ipv6="$3"
+                local dns2_ipv6="$4"
+
+                cp /etc/resolv.conf /etc/resolv.conf.bak
+                rm /etc/resolv.conf
+                touch /etc/resolv.conf
+                if [ $IPV6_SUPPORTED -eq 1 ]; then
+                    echo "nameserver $dns1_ipv6" >> /etc/resolv.conf
+                    echo "nameserver $dns2_ipv6" >> /etc/resolv.conf
+                fi
+                if [ $IPV4_SUPPORTED -eq 1 ]; then
+                    echo "nameserver $dns1_ipv4" >> /etc/resolv.conf
+                    echo "nameserver $dns2_ipv4" >> /etc/resolv.conf
+                fi
+            }
+
+            _IS_BREAK="true"
+            _BREAK_INFO=" 已修改DNS！"
+            
+            clear 
+            echo -e "\n\n$TIP 当前DNS地址: \n"
+            cat /etc/resolv.conf
+            generate_separator "=|$WHITE" 
+
+            print_items_list dns_list_options[@] "DNS切换:"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            case "${INPUT}" in
+            1) 
+                local dns1_ipv4="1.1.1.1"
+                local dns2_ipv4="8.8.8.8"
+                local dns1_ipv6="2606:4700:4700::1111"
+                local dns2_ipv6="2001:4860:4860::8888"
+                set_dns ${dns1_ipv4} ${dns2_ipv4} ${dns1_ipv6} ${dns2_ipv6}
+                _BREAK_INFO=" DNS 已切换为海外DNS！"
+                ;;
+            2) 
+                local dns1_ipv4="223.5.5.5"
+                local dns2_ipv4="183.60.83.19"
+                local dns1_ipv6="2400:3200::1"
+                local dns2_ipv6="2400:da00::6666"
+                set_dns ${dns1_ipv4} ${dns2_ipv4} ${dns1_ipv6} ${dns2_ipv6}
+                _BREAK_INFO=" DNS 已切换为国内DNS！"
+                ;;
+            3) 
+                app_install nano
+                nano /etc/resolv.conf
+                _BREAK_INFO=" 已手动修改DNS！"
+                ;;
+            0) 
+                echo -e "\n$TIP 返回主菜单 ..."
+                _IS_BREAK="false"
+                ;;
+            *)
+                _BREAK_INFO=" 请输入正确选项！"
+                ;;
+            esac 
+            ;;
+        22) 
+            local swap_used=$(free -m | awk 'NR==3{print $3}')
+            local swap_total=$(free -m | awk 'NR==3{print $2}')
+            local swap_info=$(free -m | awk 'NR==3{used=$3; total=$2; if (total == 0) {percentage=0} else {percentage=used*100/total}; printf "%dM/%dM (%d%%)", used, total, percentage}')
+
+            local swap_size_options=(
+                "1. 1024M"
+                "2. 2048M"
+                "3. 4096M"
+                "4. 8192M"
+                "5. 自定义"
+                "0. 退出"
+            )
+            
+            function add_swap() {
+                local new_swap=$1  # 获取传入的参数
+
+                # 获取当前系统中所有的 swap 分区
+                local swap_partitions=$(grep -E '^/dev/' /proc/swaps | awk '{print $1}')
+
+                # 遍历并删除所有的 swap 分区
+                for partition in $swap_partitions; do
+                    swapoff "$partition"
+                    wipefs -a "$partition"
+                    mkswap -f "$partition"
+                done
+
+                # 确保 /swapfile 不再被使用
+                swapoff /swapfile
+
+                # 删除旧的 /swapfile
+                rm -f /swapfile
+
+                # 创建新的 swap 分区
+                fallocate -l ${new_swap}M /swapfile
+                chmod 600 /swapfile
+                mkswap /swapfile
+                swapon /swapfile
+
+                sed -i '/\/swapfile/d' /etc/fstab
+                echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
+
+                if [ -f /etc/alpine-release ]; then
+                    echo "nohup swapon /swapfile" > /etc/local.d/swap.start
+                    chmod +x /etc/local.d/swap.start
+                    rc-update add local
+                fi
+
+                echo -e "虚拟内存大小已调整为${gl_huang}${new_swap}${gl_bai}M"
+            }
+
+            
+            _IS_BREAK="true"
+            print_items_list swap_size_options[@] "虚拟内存容量菜单:"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            case "${INPUT}" in
+            1) 
+                add_swap 1024
+                _BREAK_INFO=" 已设置1G虚拟内存！"
+                ;;
+            2) 
+                add_swap 2048
+                _BREAK_INFO=" 已设置2G虚拟内存！"
+                ;;
+            3) 
+                add_swap 4096
+                _BREAK_INFO=" 已设置4G虚拟内存！"
+                ;;
+            4) 
+                add_swap 8192
+                _BREAK_INFO=" 已设置8G虚拟内存！"
+                ;;
+            5) 
+                local CHOICE=$(echo -e "\n${BOLD}└─ 请输入要设置的虚拟内存大小(M): ${PLAIN}")
+                read -rp "${CHOICE}" INPUT
+                if [[ $INPUT =~ ^[0-9]+$ ]]; then
+                    add_swap $INPUT 
+                    _BREAK_INFO=" 已设置${INPUT}M虚拟内存！"
+                else
+                    _BREAK_INFO=" 虚拟内存大小输入错误，格式有误，应为数字！"
+                fi
+                ;;
+            0) 
+                echo -e "\n$TIP 返回主菜单 ..."
+                _IS_BREAK="false"
+                ;;
+            *)
+                _BREAK_INFO=" 请输入正确选项！"
+                ;;
+            esac 
+            ;;
+        23) 
+            sed -i 's/^#\?AllowTcpForwarding.*/AllowTcpForwarding yes/g' /etc/ssh/sshd_config;
+            sed -i 's/^#\?GatewayPorts.*/GatewayPorts yes/g' /etc/ssh/sshd_config;
+            service sshd restart
+            _BREAK_INFO=" 已开启SSH转发功能"
+            _IS_BREAK="true"
+            ;;
+        24) 
+            local ipv6_disabled=$(sysctl -n net.ipv6.conf.all.disable_ipv6)
+            if [ "$ipv6_disabled" -eq 1 ]; then
+                echo -e "\n${POINTING} 当前网络: IPv4 优先\n"
+            else
+                echo -e "\n${POINTING} 当前网络: IPv6 优先\n"
+            fi
+            local net_1st_options=(
+                "1.IPv4优先"
+                "2.IPv6优先"
+                "3.IPv6修复"
+                "0.退出"
+            )
+            
+            _IS_BREAK="true"
+            print_items_list net_1st_options[@] "功能菜单:"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            case "${INPUT}" in
+            1) 
+                sysctl -w net.ipv6.conf.all.disable_ipv6=1 > /dev/null 2>&1
+                echo "已切换为 IPv4 优先"
+                _BREAK_INFO=" 已切换为 IPv4 优先！"
+                ;;
+            2) 
+                sysctl -w net.ipv6.conf.all.disable_ipv6=0 > /dev/null 2>&1
+                echo "已切换为 IPv6 优先"
+                _BREAK_INFO=" 已切换为 IPv6 优先！"
+                ;;
+            3) 
+                bash <(curl -L -s jhb.ovh/jb/v6.sh)
+                # echo "该功能由jhb大神提供，感谢他！"
+                _BREAK_INFO=" IPv6 修复成功！(jhb脚本)"
+                ;;
+            0) 
+                echo -e "\n$TIP 返回主菜单 ..."
+                _IS_BREAK="false"
+                ;;
+            *)
+                _BREAK_INFO=" 请输入正确选项！"
+                ;;
+            esac 
             ;;
         xx) 
             sys_reboot
@@ -3126,12 +3654,18 @@ function python_management_menu(){
                 _BREAK_INFO=" julia已安装！"
             else
                 if ! command -v jill &>/dev/null; then
-                    echo -e "\n$TIP 先安装jill ..."
-                    pip install jill
+                    # echo -e "\n$TIP 先安装jill ..."
+                    if command -v pip &>/dev/null; then
+                        pip install jill
+                    else 
+                        echo -e "$ERROR  jill未安装, 请先安装pip！"
+                    fi
                 fi 
                 if command -v jill &>/dev/null; then
                     echo -e "\n$TIP 安装Julia ..."
                     jill install 
+                else 
+                    _BREAK_INFO=" jill未安装, Julia安装失败！"
                 fi
             fi
             ;;
@@ -3333,8 +3867,8 @@ function main_menu(){
 
         xx) sys_reboot ;;
         x)  
-            echo -e "\n$WARN 退出脚本！" 
-            exit
+            echo -e "\n$WARN 退出脚本！${RESET}" 
+            exit 1 
             ;;
         *)
             # echo -e "\n$WARN 请输入数字序号以选择你想使用的功能！"
