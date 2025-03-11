@@ -167,7 +167,7 @@ function Show-Menu {
     Write-Host "1. Python Management"
     Write-Host "2. Common Software Installation"
     Write-Host "3. System Settings"
-    Write-Host "4. Exit"
+    Write-Host "0. Exit"
 }
 
 # 菜单循环
@@ -178,7 +178,7 @@ while ($true) {
         "1" { Install-Python }
         "2" { Install-Common-Software }
         "3" { System-Settings }
-        "4" { exit }
+        "0" { exit }
         default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
     }
 }
