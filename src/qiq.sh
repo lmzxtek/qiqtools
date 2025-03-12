@@ -19,7 +19,6 @@
 SRC_VER=v0.7.1
 #==========================
 
-
 URL_PROXY='https://proxy.zwdk.org/proxy/'
 URL_REDIRECT='https://sub.zwdk.org/qiq'
 URL_SCRIPT='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/qiqtools.sh'
@@ -33,14 +32,18 @@ URL_UPDATE='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/u
 #        👌👍✌️👋👉👈👆👇👎✊👊🤛🤝👐👀👁️🦶🩸💊🩹
 #        ⚠️🚸⛔🚫🚳📵☣️☢️🔅🔆✖️➕➖➗🟰♾️⁉️❓❔💲♻️🔱⚜️📛⭕❌✔️☑️✅❎✳️❇️✴️
 
+BOLD='\033[1m'
+PLAIN='\033[0m'
+RESET='\033[0m'
+
+WORKING="\033[1;36m✨️${PLAIN}"
+POINTING="\033[1;36m👉${PLAIN}"
 SUCCESS="\033[1;32m✅${PLAIN}"
 COMPLETE="\033[1;32m✔${PLAIN}"
 WARN="\033[1;36m⚠️${PLAIN}"
 ERROR="\033[1;31m✘${PLAIN}"
 FAIL="\033[1;31m✘${PLAIN}"
 TIP="\033[1;36m💡${PLAIN}"
-WORKING="\033[1;36m✨️ ${PLAIN}"
-POINTING="\033[1;36m👉 ${PLAIN}"
 
 
 # 颜色定义：\033比\e的兼容性更好 
@@ -55,10 +58,6 @@ CYAN='\033[36m'
 AZURE='\033[36m'
 WHITE='\033[37m'
 DEFAULT='\033[39m'
-
-PLAIN='\033[0m'
-RESET='\033[0m'
-BOLD='\033[1m'
 
 FCMR='\033[39m'        # 前景色：默认
 FCBL='\033[30m'        # 前景色：黑色
@@ -938,10 +937,10 @@ function print_main_menu_tail() {
     # adj_width=$((MAX_COL_NUM + chinese_width + emoji_count + chinese_width + emoji_count))
     adj_width=$((MAX_COL_NUM + chinese_width + emoji_count))
 
-    s_update=${CYAN}'脚本更新'${PURPLE}"ღ"${RESET}
+    s_exit=${BLUE}'退出脚本'${RED}"✘"${RESET}
     s_restart=${BLUE}'重启系统'${RED}"☋"${RESET}
     printf "%${NUM_WIDTH}s.%-${adj_width}b%${NUM_SPLIT}s%${NUM_WIDTH}s.%-${MAX_COL_NUM}b\n${RESET}" \
-            '0' $s_update "" 'xx' $s_restart
+            '0' $s_exit "" 'xx' $s_restart
 
     generate_separator "…" "$n"
     emoji_count=1
@@ -949,10 +948,10 @@ function print_main_menu_tail() {
     # adj_width=$((MAX_COL_NUM + chinese_width + emoji_count + chinese_width + emoji_count))
     adj_width=$((MAX_COL_NUM + chinese_width + emoji_count ))
 
-    s_exit=${BLUE}'退出脚本'${RED}"✘"${RESET}
+    s_update=${CYAN}'脚本更新'${PURPLE}"ღ"${RESET}
     s_qiq=${BLUE}'✟✟'${ITEM_CAT_CHAR}${RESET}'快捷命令☽_'${YELLOW}"qiq"${BLUE}${RESET}"_☾"
     printf "%${NUM_WIDTH}s${ITEM_CAT_CHAR}%-${adj_width}b%${NUM_SPLIT}s%-${MAX_COL_NUM}b\n\n${RESET}" \
-        'x' $s_exit "" $s_qiq
+        '00' $s_update "" $s_qiq
 }
 
 ## 输出子菜单尾项 
@@ -972,13 +971,7 @@ function print_sub_menu_tail() {
 
 }
 
-
-## 显示系统基本信息 
-function print_system_info() {    
-    # collect_system_info 
-
-    DEVICE_ARCH=$(uname -m)
-    # 判断虚拟化
+function check_sys_virt() {
     if [ $(type -p systemd-detect-virt) ]; then
         VIRT=$(systemd-detect-virt)
     elif [ $(type -p hostnamectl) ]; then
@@ -987,6 +980,16 @@ function print_system_info() {
         VIRT=$(virt-what)
     fi
     VIRT=${VIRT^^} || VIRT="UNKNOWN"
+}
+
+
+## 显示系统基本信息 
+function print_system_info() {    
+    # collect_system_info 
+
+    DEVICE_ARCH=$(uname -m)
+    # 判断虚拟化
+    check_sys_virt
 
     local hostname=$(hostname)
     local kernel_version=$(uname -r)
@@ -1267,14 +1270,14 @@ function break_tacle() {
     _IS_BREAK=${_IS_BREAK:-"false"}
     _BREAK_INFO=${_BREAK_INFO:-"操作完成"}
 
+    echo -e "\n${TIP}${_BREAK_INFO}${RESET}"
     if ${_IS_BREAK} == "true"; then
-        echo -e "\n${TIP}${_BREAK_INFO}${RESET}"
         echo "└─ 按任意键继续 ..."
         read -n 1 -s -r -p ""
     fi
     _IS_BREAK="false"
     _BREAK_INFO="操作完成"
-    echo -e "${RESET}"
+    # echo -e "${RESET}"
 }
 
 ## 重启系统，需要用户确认
@@ -1558,17 +1561,15 @@ function system_test_menu(){
         read -rp "${CHOICE}" INPUT
         case "${INPUT}" in
         3) 
-            sys_update
             ;;
         4) 
-            sys_clean
             ;;
         xx) 
             sys_reboot
             ;;
         0) 
             echo -e "\n$TIP 返回主菜单 ..."
-            break 
+            return  0 
             ;;
         *)
             _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！"
@@ -1670,24 +1671,107 @@ function iptables_open() {
 
 }
 
+
+function add_swap() {
+    local new_swap=$1  # 获取传入的参数
+
+    # 获取当前系统中所有的 swap 分区
+    local swap_partitions=$(grep -E '^/dev/' /proc/swaps | awk '{print $1}')
+
+    # 遍历并删除所有的 swap 分区
+    for partition in $swap_partitions; do
+        swapoff "$partition"
+        wipefs -a "$partition"
+        mkswap -f "$partition"
+    done
+
+    # 确保 /swapfile 不再被使用
+    swapoff /swapfile
+
+    # 删除旧的 /swapfile
+    rm -f /swapfile
+
+    # 创建新的 swap 分区
+    fallocate -l ${new_swap}M /swapfile
+    chmod 600 /swapfile
+    mkswap /swapfile
+    swapon /swapfile
+
+    sed -i '/\/swapfile/d' /etc/fstab
+    echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
+
+    if [ -f /etc/alpine-release ]; then
+        echo "nohup swapon /swapfile" > /etc/local.d/swap.start
+        chmod +x /etc/local.d/swap.start
+        rc-update add local
+    fi
+
+    echo -e "虚拟内存大小已调整为${gl_huang}${new_swap}${gl_bai}M"
+}
+
+function check_swap() {
+    local swap_total=$(free -m | awk 'NR==3{print $2}')
+    # 判断是否需要创建虚拟内存
+    [ "$swap_total" -gt 0 ] || add_swap 1024 
+}
+
+
+function bbr_on() {
+    cat > /etc/sysctl.conf << EOF
+net.ipv4.tcp_congestion_control=bbr
+EOF
+    sysctl -p
+}
+
+
+function system_dd_usage(){
+echo -e " "
+echo -e "$POINTING DD脚本使用说明 "
+echo -e "—————————————————————————————————————"
+echo -e "       Linux : ${BLUE}root${red}@${yellow}LeitboGi0ro${PLAIN}"
+echo -e "     Windows : ${BLUE}Administrator${red}@${yellow}Teddysun.com"
+echo -e "  @bin456789 : ${BLUE}root|Administrator${red}@${yellow}123@@@"
+echo -e "   ${white}(Windows need mininumn 15G Storage)${PLAIN}"
+echo -e '   (当administrator无法登录时, 可尝试.\\administrator)\n'
+echo -e "  bash InstallNET.sh -windows 10 -lang 'en'"
+echo -e "  bash InstallNET.sh -windows 11 -lang 'cn'\n"
+echo -e "  reinstall.sh alma 8|9"
+echo -e "  reinstall.sh rocky 8|9"
+echo -e "  reinstall.sh debian 9|10|11|12"
+echo -e "  reinstall.sh ubuntu 24.04 [--minimal]"
+echo -e "  reinstall.sh alpine 3.17|3.18|3.19|3.20\n"
+echo -e "      reinstall.bat windows --image-name='windows server 2022 serverdatacenter' --lang=zh-cn "
+echo -e "  bash reinstall.sh windows --image-name 'Windows 10 Enterprise LTSC 2021'--lang en-us "
+echo -e "  bash reinstall.sh windows --image-name 'windows 11 pro' --lang zh-cn \n"
+echo -e "  bash reinstall.sh windows --image-name 'windows 11 business 23h2'"
+echo -e "                            --iso 'https://drive.massgrave.dev/zh-cn_windows_11_business_editions_version_23h2_updated_aug_2024_x64_dvd_6ca91c94.iso' \n"
+echo -e "  bash reinstall.sh windows --image-name 'Windows 10 business 22h2'"
+echo -e "                            --iso 'https://drive.massgrave.dev/zh-cn_windows_10_business_editions_version_22h2_updated_aug_2024_x86_dvd_8d7e500f.iso'\n"
+echo -e "  bash reinstall.sh dd --img https://example.com/xx.xz"
+echo -e "  bash reinstall.sh alpine --hold=1"
+echo -e "  bash reinstall.sh netboot.xyz\n"
+echo -e "  注意: Windows 10 LTSC 2021 zh-cn 的wsappx进程会长期占用CPU, 需要更新系统补丁。\n"
+}
+
 # 定义系统工具数组
 MENU_SYSTEM_TOOLS_ITEMS=(
     "1|修改ROOT密码|$WHITE"
-    "2|开启ROOT登录|$MAGENTA"
+    "2|开启ROOT登录|$WHITE"
     "3|禁用ROOT用户|$WHITE"
-    "4|改主机名|$CYAN"
+    "4|改主机名|$WHITE"
     "5|时区调整|$WHITE" 
-    "6|系统源管理|$WHITE"
+    "6|系统源管理|$MAGENTA"
     "7|用户管理|$WHITE"
     "8|端口管理|$WHITE"
-    "9|DNS管理|$WHITE"
+    "9|DNS管理|$CYAN"
     "………………………|$WHITE" 
     "21|DD系统|$GREEN"
-    "22|虚拟内存|$WHITE"
+    "22|虚拟内存|$CYAN"
     "23|开启SSH转发|$WHITE"
     "24|切换IPv4/IPv6|$WHITE"
     "25|BBRv3加速|$WHITE"
     "26|定时任务|$WHITE"
+    "27|命令行美化|$CYAN"
 )
 function system_tools_menu(){
     function print_sub_item_menu_headinfo(){
@@ -1943,7 +2027,7 @@ EOF
                 "1.国外DNS"
                 "2.国内DNS"
                 "3.自定义DNS"
-                "0.退出"
+                "0.返回"
             )
             
             function set_dns() {
@@ -2007,6 +2091,166 @@ EOF
                 ;;
             esac 
             ;;
+        21) 
+            local sys_dd_options=(
+                "1.Leitbogioro"
+                "2.MoeClub"
+                "3.0oVicero0"
+                "4.mowwom"
+                "5.bin456789"
+                "0.返回"
+            )         
+            
+            local sys_lang_options=(
+                "1.中文(CN)"
+                "2.英文(EN)"
+            ) 
+            function select_system_language(){
+                local sys_lang='CN'
+                print_items_list sys_lang_options[@] " 系统语言选择:"
+                local CHOICE=$(echo -e "\n${BOLD}└─ 请选择语言(默认为中文)[CN/EN]: ${PLAIN}")
+                read -rp "${CHOICE}" INPUT
+                case "${INPUT}" in
+                # 1) 
+                #     sys_lang='CN'
+                #     _BREAK_INFO=" 已选择中文！"
+                #     ;;
+                2) 
+                    sys_lang='EN'
+                    _BREAK_INFO=" 已选择英文！"
+                esac 
+                echo ${sys_lang}
+            }
+
+            local systems_list=(
+                "1|Alpine Edge|$WHITE"
+                "2|Alpine 3.20|$WHITE"
+                "3|Alpine 3.19|$WHITE"
+                "4|Alpine 3.18|$WHITE"
+                "…………………………………|$WHITE" 
+                "11|Debian 12|$YELLOW"
+                "12|Debian 11|$WHITE"
+                "13|Debian 10|$WHITE"
+                "14|Ubuntu 24.04|$YELLOW"
+                "15|Ubuntu 22.04|$WHITE"
+                "16|Ubuntu 20.04|$WHITE"
+                "…………………………………|$WHITE" 
+                "21|AlmaLinux 9|$WHITE"
+                "22|AlmaLinux 8|$WHITE"
+                "23|RockyLinux 9|$WHITE"
+                "24|RockyLinux 8|$WHITE"
+                "…………………………………|$WHITE" 
+                "31|Windows 2025|$YELLOW"
+                "32|Windows 2022|$WHITE"
+                "33|Windows 2019|$WHITE"
+                "34|Windows 11|$WHITE"
+                "35|Windows 10|$WHITE"
+                "36|Windows 7|$WHITE"
+                "…………………………………|$WHITE" 
+                "88|41合一脚本|$WHITE"
+                "99|脚本说明|$WHITE"
+            )            
+
+            _IS_BREAK="true"
+            _BREAK_INFO=" DD系统！"
+
+            check_sys_virt 
+            if [[ "$VIRT" != *"KVM"* ]]; then
+                # 如果系统虚拟化不是KVM，则使用OsMutation进行DD系统
+                local fname='OsMutation.sh' 
+                local url=$(get_proxy_url 'https://raw.githubusercontent.com/LloydAsp/OsMutation/main/OsMutation.sh')
+                if command -v curl &>/dev/null; then 
+                    curl -sL -o ${fname} "${url}" && chmod u+x ${fname} && bash ${fname}
+                elif command -v wget &>/dev/null; then 
+                    wget -qO ${fname} $url && chmod u+x ${fname} &&  bash ${fname}
+                else
+                    _BREAK_INFO=" 请先安装curl或wget！"
+                fi
+                continue  
+            fi 
+            
+            function dd_sys_login_info(){
+                local username='$1'
+                local password='$2'
+                local port='$3'
+
+                echo -e "\n$TIP DD系统登录信息:"
+                echo -e "======================="
+                echo -e "$BOLD  用户: ${username}"
+                echo -e "$BOLD  密码: ${password}"
+                echo -e "$BOLD  端口: ${port}"
+                echo -e "======================="
+
+                _BREAK_INFO=" DD系统后登录信息:"
+                _IS_BREAK="true"
+                break_tacle 
+            }
+            function dd_sys_mollylau(){
+                local fname='InstallNET.sh' 
+                local url=$(get_proxy_url 'https://raw.githubusercontent.com/leitbogioro/Tools/master/Linux_reinstall/InstallNET.sh')
+                if command -v curl &>/dev/null; then 
+                    curl -sL -o ${fname} "${url}" && chmod a+x ${fname} && bash ${fname}
+                elif command -v wget &>/dev/null; then 
+                    wget -qO ${fname} $url && chmod a+x ${fname} &&  bash ${fname}
+                else
+                    _BREAK_INFO=" 请先安装curl或wget！"
+                    _IS_BREAK="true"
+                    continue 
+                fi 
+            }
+            
+            
+            clear 
+            local num_split=40
+            print_sub_head " DD系统 " $num_split 1 0 
+            # print_items_list sys_dd_options[@] "DD系统脚本选择:"
+            split_menu_items systems_list[@] $num_split
+            print_sub_menu_tail $num_split
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择要DD的系统: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            case "${INPUT}" in
+            1) 
+                ;;
+            2) 
+                ;;
+            3) 
+                _BREAK_INFO=" 已手动修改DNS！"
+                ;;
+            0) 
+                echo -e "\n$TIP 返回主菜单 ..."
+                _IS_BREAK="false"
+                ;;
+            88) 
+                sys_update 
+
+                _BREAK_INFO=" 从 41合一脚本DD系统 返回"
+                local fname='NewReinstall.sh' 
+                local url=$(get_proxy_url 'https://raw.githubusercontent.com/fcurrk/reinstall/master/NewReinstall.sh')
+                if command -v curl &>/dev/null; then 
+                    curl -sL -o ${fname} "${url}" && chmod a+x ${fname} && bash ${fname}
+                elif command -v wget &>/dev/null; then 
+                    wget -qO ${fname} $url && chmod a+x ${fname} &&  bash ${fname}
+                else
+                    _BREAK_INFO=" 请先安装curl或wget！"
+                fi
+                # wget --no-check-certificate -O NewReinstall.sh https://raw.githubusercontent.com/fcurrk/reinstall/master/NewReinstall.sh && chmod a+x NewReinstall.sh && bash NewReinstall.sh
+                ;;
+            99) 
+                system_dd_usage 
+                _BREAK_INFO=" DD系统说明 "
+                ;; 
+            0) 
+                echo -e "\n$TIP 返回主菜单 ..."
+                _IS_BREAK="false"
+                ;;
+            xx) 
+                sys_reboot
+                ;;
+            *)
+                _BREAK_INFO=" 请输入正确选项！"
+                ;;
+            esac 
+            ;;
         22) 
             local swap_used=$(free -m | awk 'NR==3{print $3}')
             local swap_total=$(free -m | awk 'NR==3{print $2}')
@@ -2018,46 +2262,8 @@ EOF
                 "3. 4096M"
                 "4. 8192M"
                 "5. 自定义"
-                "0. 退出"
-            )
-            
-            function add_swap() {
-                local new_swap=$1  # 获取传入的参数
-
-                # 获取当前系统中所有的 swap 分区
-                local swap_partitions=$(grep -E '^/dev/' /proc/swaps | awk '{print $1}')
-
-                # 遍历并删除所有的 swap 分区
-                for partition in $swap_partitions; do
-                    swapoff "$partition"
-                    wipefs -a "$partition"
-                    mkswap -f "$partition"
-                done
-
-                # 确保 /swapfile 不再被使用
-                swapoff /swapfile
-
-                # 删除旧的 /swapfile
-                rm -f /swapfile
-
-                # 创建新的 swap 分区
-                fallocate -l ${new_swap}M /swapfile
-                chmod 600 /swapfile
-                mkswap /swapfile
-                swapon /swapfile
-
-                sed -i '/\/swapfile/d' /etc/fstab
-                echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
-
-                if [ -f /etc/alpine-release ]; then
-                    echo "nohup swapon /swapfile" > /etc/local.d/swap.start
-                    chmod +x /etc/local.d/swap.start
-                    rc-update add local
-                fi
-
-                echo -e "虚拟内存大小已调整为${gl_huang}${new_swap}${gl_bai}M"
-            }
-
+                "0. 返回"
+            )           
             
             _IS_BREAK="true"
             print_items_list swap_size_options[@] "虚拟内存容量菜单:"
@@ -2090,10 +2296,6 @@ EOF
                     _BREAK_INFO=" 虚拟内存大小输入错误，格式有误，应为数字！"
                 fi
                 ;;
-            0) 
-                echo -e "\n$TIP 返回主菜单 ..."
-                _IS_BREAK="false"
-                ;;
             *)
                 _BREAK_INFO=" 请输入正确选项！"
                 ;;
@@ -2117,7 +2319,7 @@ EOF
                 "1.IPv4优先"
                 "2.IPv6优先"
                 "3.IPv6修复"
-                "0.退出"
+                "0.返回"
             )
             
             _IS_BREAK="true"
@@ -2148,6 +2350,229 @@ EOF
                 _BREAK_INFO=" 请输入正确选项！"
                 ;;
             esac 
+            ;;
+        25) 
+        
+            local cpu_arch=$(uname -m)
+            if [ "$cpu_arch" = "aarch64" ]; then
+                bash <(curl -sL jhb.ovh/jb/bbrv3arm.sh)
+                _BREAK_INFO=" 系统为ARM架构,已使用jhb的bbrv3arm.sh安装BBRv3内核" 
+                _IS_BREAK="true" 
+                break_tacle 
+                continue 
+            fi
+
+            if dpkg -l | grep -q 'linux-xanmod'; then
+                local bbrv3_1st_options=(
+                    "1.更新BBRv3"
+                    "2.卸载BBRv3"
+                    "0.返回"
+                )
+                
+                _IS_BREAK="true"
+                local kernel_version=$(uname -r)
+                echo -e "\n$TIP 系统已安装xanmod的BBRv3内核"
+                echo -e "\n$POINTING 当前内核版本: $kernel_version"
+                print_items_list bbrv3_1st_options[@] "BBRv3功能选项:"
+                local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
+                read -rp "${CHOICE}" INPUT
+                case "${INPUT}" in
+                1) 
+                    apt purge -y 'linux-*xanmod1*'
+                    update-grub
+
+                    # wget -qO - https://dl.xanmod.org/archive.key | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
+                    wget -qO - ${gh_proxy}raw.githubusercontent.com/kejilion/sh/main/archive.key | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
+
+                    # 步骤3：添加存储库
+                    echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' | tee /etc/apt/sources.list.d/xanmod-release.list
+
+                    # version=$(wget -q https://dl.xanmod.org/check_x86-64_psabi.sh && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
+                    local version=$(wget -q ${gh_proxy}raw.githubusercontent.com/kejilion/sh/main/check_x86-64_psabi.sh && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
+
+                    apt update -y
+                    apt install -y linux-xanmod-x64v$version
+
+                    echo "XanMod内核已更新。重启后生效"
+                    rm -f /etc/apt/sources.list.d/xanmod-release.list
+                    rm -f check_x86-64_psabi.sh*
+
+                    _BREAK_INFO=" 已更新 linux-xammod1内核 ！"
+                    _IS_BREAK="false"
+                    break_tacle 
+                    sys_reboot 
+                    continue 
+                    ;;
+                2) 
+                    apt purge -y 'linux-*xanmod1*'
+                    update-grub 
+                    echo "XanMod内核已卸载。重启后生效"
+                    _BREAK_INFO=" XanMod内核已卸载。重启后生效"
+                    _IS_BREAK="false"
+                    break_tacle 
+                    sys_reboot 
+                    continue 
+                    ;;
+                0) 
+                    echo -e "\n$TIP 返回主菜单 ..."
+                    _IS_BREAK="false"
+                    ;;
+                *)
+                    _BREAK_INFO=" 请输入正确选项！"
+                    ;; 
+                esac 
+            else
+                clear
+                echo -e "$POINTING 设置BBR3加速 "
+                echo -e "========================================================="
+                echo -e " 仅支持[Debian|Ubuntu|Alpine]"
+                echo -e " 请备份数据，将为你升级Linux内核开启BBR3"
+                echo -e " 若系统内存为${RED}512M${RESET}，请提前添加1G虚拟内存，以防机器失联！"
+                echo -e "========================================================="
+                local CHOICE=$(echo -e "\n${BOLD}└─ 确定继续安装BBRv3? [Y/n] ${PLAIN}")
+                read -rp "${CHOICE}" INPUT
+                [[ -z "${INPUT}" ]] && INPUT=Y # 回车默认为Y
+                case "$INPUT" in
+                [Yy] | [Yy][Ee][Ss])
+                    if [ -r /etc/os-release ]; then
+                        . /etc/os-release
+                        if [ "$ID" == "alpine" ]; then
+                            bbr_on
+                            _BREAK_INFO=" 当前为Alpine系统"
+                            _IS_BREAK="false"
+                            break_tacle
+                            sys_reboot
+                            continue
+                        elif [ "$ID" != "debian" ] && [ "$ID" != "ubuntu" ]; then
+                            _BREAK_INFO=" 当前环境不支持, 仅支持Alpine,Debian和Ubuntu系统"
+                            _IS_BREAK="true"
+                            break_tacle
+                            continue
+                        fi                        
+                    else
+                        echo "无法确定操作系统类型"
+                        _BREAK_INFO=" 无法确定操作系统类型"
+                        _IS_BREAK="true"
+                        break_tacle
+                        continue
+                    fi
+
+                    check_swap
+                    app_install wget gnupg
+
+                    local url=$(get_proxy_url "https://raw.githubusercontent.com/kejilion/sh/main/archive.key")
+                    wget -qO - ${url} | gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg --yes
+
+                    # 步骤3：添加存储库
+                    echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' | tee /etc/apt/sources.list.d/xanmod-release.list
+
+                    local url=$(get_proxy_url "https://raw.githubusercontent.com/kejilion/sh/main/check_x86-64_psabi.sh")
+                    local version=$(wget -q ${url} && chmod +x check_x86-64_psabi.sh && ./check_x86-64_psabi.sh | grep -oP 'x86-64-v\K\d+|x86-64-v\d+')
+
+                    apt update -y
+                    apt install -y linux-xanmod-x64v$version
+
+                    bbr_on
+
+                    rm -f /etc/apt/sources.list.d/xanmod-release.list
+                    rm -f check_x86-64_psabi.sh*
+                    _BREAK_INFO=" XanMod内核安装并BBR3启用成功。重启后生效"
+                    _IS_BREAK="false"
+                    sys_reboot
+                    continue
+                    ;;
+                [Nn] | [Nn][Oo])
+                    _BREAK_INFO=" 已取消"
+                    _IS_BREAK="false"
+                    ;;
+                *)
+                    _BREAK_INFO=" 无效的选择。"
+                    _IS_BREAK="true"
+                    ;;
+                esac
+            fi             
+            ;;
+        27) 
+            function print_better_cmd_style_options(){
+                echo -e ""
+                # echo -e "  1. \033[1;32mroot@\033[1;34mlocalhost \033[1;31m~ ${RESET}#"
+                # echo -e "  2. \033[1;35mroot@\033[1;36mlocalhost \033[1;33m~ ${RESET}#"
+                # echo -e "  3. \033[1;31mroot@\033[1;32mlocalhost \033[1;34m~ ${RESET}#"
+                # echo -e "  4. \033[1;36mroot@\033[1;33mlocalhost \033[1;37m~ ${RESET}#"
+                # echo -e "  5. \033[1;37mroot@\033[1;31mlocalhost \033[1;32m~ ${RESET}#"
+                # echo -e "  6. \033[1;33mroot@\033[1;34mlocalhost \033[1;35m~ ${RESET}#"
+                echo -e "  1. ${FCGR}root@${FCLS}localhost ${FCRE}~ ${RESET}#"  # 绿，  蓝， 红
+                echo -e "  2. ${FCZS}root@${FCTL}localhost ${FCYE}~ ${RESET}#"  # 紫，天蓝， 黄 
+                echo -e "  3. ${FCRE}root@${FCGR}localhost ${FCLS}~ ${RESET}#"  # 红，  绿， 蓝
+                echo -e "  4. ${FCTL}root@${FCYE}localhost ${FCQH}~ ${RESET}#"  # 天蓝，黄，浅灰
+                echo -e "  5. ${FCQH}root@${FCRE}localhost ${FCGR}~ ${RESET}#"  # 浅灰，红， 绿
+                echo -e "  6. ${FCYE}root@${FCLS}localhost ${FCZS}~ ${RESET}#"  # 黄，  蓝， 紫
+                echo -e "  7. root@localhost ~ #"
+                echo -e "  0. 返回"
+            }
+            
+            function shell_custom_style_profile() {
+                local ss="$1"
+                if command -v dnf &>/dev/null || command -v yum &>/dev/null; then
+                    sed -i '/^PS1=/d' ~/.bashrc
+                    echo "${ss}" >> ~/.bashrc
+                    # source ~/.bashrc
+                else
+                    sed -i '/^PS1=/d' ~/.profile
+                    echo "${ss}" >> ~/.profile
+                    # source ~/.profile
+                fi
+                hash -r
+            }
+
+            _IS_BREAK="true"
+            print_better_cmd_style_options
+            local CHOICE=$(echo -e "\n${BOLD}└─ 选择命令行样式? ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            case "${INPUT}" in
+            1) 
+                local bianse="PS1='\[\033[1;32m\]\u\[\033[0m\]@\[\033[1;34m\]\h\[\033[0m\] \[\033[1;31m\]\w\[\033[0m\] # '"
+                shell_custom_style_profile "${bianse}"
+                _BREAK_INFO=" 已美化命令行样式(绿，  蓝， 红)，重启终端后生效"
+                ;;
+            2) 
+                local bianse="PS1='\[\033[1;35m\]\u\[\033[0m\]@\[\033[1;36m\]\h\[\033[0m\] \[\033[1;33m\]\w\[\033[0m\] # '"
+                shell_custom_style_profile "${bianse}"
+                _BREAK_INFO=" 已美化命令行样式(紫，天蓝， 黄 )，重启终端后生效"
+                ;;
+            3) 
+                local bianse="PS1='\[\033[1;31m\]\u\[\033[0m\]@\[\033[1;32m\]\h\[\033[0m\] \[\033[1;34m\]\w\[\033[0m\] # '"
+                shell_custom_style_profile "${bianse}"
+                _BREAK_INFO=" 已美化命令行样式(红，绿， 蓝)，重启终端后生效"
+                ;;
+            4) 
+                local bianse="PS1='\[\033[1;36m\]\u\[\033[0m\]@\[\033[1;33m\]\h\[\033[0m\] \[\033[1;37m\]\w\[\033[0m\] # '"
+                shell_custom_style_profile "${bianse}"
+                _BREAK_INFO=" 已美化命令行样式(天蓝，黄，浅灰 )，重启终端后生效"
+                ;;
+            5) 
+                local bianse="PS1='\[\033[1;37m\]\u\[\033[0m\]@\[\033[1;31m\]\h\[\033[0m\] \[\033[1;32m\]\w\[\033[0m\] # '"
+                shell_custom_style_profile "${bianse}"
+                _BREAK_INFO=" 已美化命令行样式(浅灰，红， 绿 )，重启终端后生效"
+                ;;
+            6) 
+                local bianse="PS1='\[\033[1;33m\]\u\[\033[0m\]@\[\033[1;34m\]\h\[\033[0m\] \[\033[1;35m\]\w\[\033[0m\] # '"
+                shell_custom_style_profile "${bianse}"
+                _BREAK_INFO=" 已美化命令行样式(黄，  蓝， 紫 )，重启终端后生效"
+                ;;
+            7) 
+                shell_custom_style_profile ''
+                _BREAK_INFO=" 命令行无样式，重启终端后生效"
+                ;;
+            0) 
+                echo -e "\n$TIP 返回主菜单 ..."
+                _IS_BREAK="false"
+                ;;
+            *)
+                _BREAK_INFO=" 请输入正确选项！"
+                ;; 
+            esac 
+            
             ;;
         xx) 
             sys_reboot
@@ -3724,7 +4149,7 @@ MENU_CADDY_ITEMS=(
     "3|Caddy状态|$WHITE"
     "4|重启Caddy|$WHITE"
     "5|更新Caddy|$WHITE"
-    "………………………|$WHITE" 
+    "…………………………|$WHITE" 
     "21|站点管理|$WHITE" 
     "22|添加反代|$YELLOW" 
     "23|添重定向|$WHITE" 
@@ -3749,7 +4174,6 @@ function caddy_management_menu(){
         read -rp "${CHOICE}" INPUT
         case "${INPUT}" in
         1) 
-            bash <(curl -sL kejilion.sh)
             ;;
         xx) 
             sys_reboot
@@ -3866,13 +4290,14 @@ function main_menu(){
         23) python_management_menu ;;
 
         xx) sys_reboot ;;
-        x)  
+        00) 
+            ;;
+        0)  
             echo -e "\n$WARN 退出脚本！${RESET}" 
             exit 1 
             ;;
         *)
-            # echo -e "\n$WARN 请输入数字序号以选择你想使用的功能！"
-            _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！"
+            _BREAK_INFO=" 请输入正确的数字序号！"
             _IS_BREAK="true"
             ;;
         esac
