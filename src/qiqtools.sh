@@ -308,32 +308,20 @@ check_IPV6(){
 check_IP_address() {
   get_asn_org4
   get_asn_org6
-
-  # if [[ $(curl -sS --retry 2 --max-time 1 https://www.cloudflare.com/ -I | grep "text/plain") != "" ]]; then 
-  #   echo "Your IP is BLOCKED!"
-  #   txtn " >>> Check IP failed ..."
-  #   return 1
-  # else  
-  #   check_IPV4
-  #   check_IPV6
-  # fi
 }
 
-get_asn_org4(){
-  [[ -n "$WAN4" ]] && return 1;
+function get_asn_org4(){
+  [[ -z "$WAN4" ]] || return 0;
   txtn " >>> Check IPv4 info ..."
 
   # curl -sS --retry 2 --max-time 1 : 静默+错误消息，重试2次，每次最长1s
   local response=$(curl -4 -sS --retry 2 --max-time 1 https://ifconfig.co/json)
-  # local loc_ip=$(echo "$response" | jq -r '.ip')
-  # local loc_city=$(echo "$response" | jq -r '.city')
-  # local loc_country=$(echo "$response" | jq -r '.country')
-  # local loc_country_iso=$(echo "$response" | jq -r '.country_iso')
-  # local loc_region_name=$(echo "$response" | jq -r '.region_name')
-  # local loc_time_zone=$(echo "$response" | jq -r '.time_zone')
 
-  # local loc_asn=$(echo "$response" | jq -r '.asn')
-  # local loc_asn_org=$(echo "$response" | jq -r '.asn_org')
+  if [[ -z "$response" ]]; then
+    echo "Error: Failed to fetch IPv4 information from ifconfig.co"
+    return 1
+  fi
+
   local loc_asn4=$(echo "$response" | grep -o '"asn": *"[^"]*"' | awk -F': ' '{print $2}' | tr -d '"')
   local loc_asn4_org=$(echo "$response" | grep -o '"asn_org": *"[^"]*"' | awk -F': ' '{print $2}' | tr -d '"')
 
@@ -346,6 +334,7 @@ get_asn_org4(){
   WAN4=$local_ipv4
   COUNTRY4=$loc_ip4
   ASNORG4=$loc_asn4
+  
   [[ "$warp_ipv4" =~ ^on$ ]] && WARPSTATUS4="${red}${bold}warp${PLAIN}"
   [[ "$warp_ipv4" =~ ^off$ ]] && [[ -n "$loc_asn4" ]] && isp_info=$loc_asn4
   [[ -n "$WAN4" ]] && IP4_INFO="($WARPSTATUS4 $loc_ip4 -> $loc_asn4, $loc_asn4_org)"
@@ -357,7 +346,7 @@ get_asn_org6(){
   txtn " >>> Check IPv6 info ..."
 
   # curl -sS --retry 2 --max-time 1 : 静默+错误消息，重试2次，每次最长1s
-  local response=$(curl -4 -sS --retry 2 --max-time 1 https://ifconfig.co/json)
+  local response=$(curl -6 -sS --retry 2 --max-time 1 https://ifconfig.co/json)
   # local loc_asn=$(echo "$response" | jq -r '.asn')
   # local loc_asn_org=$(echo "$response" | jq -r '.asn_org')
   local loc_asn6=$(echo "$response" | grep -o '"asn": *"[^"]*"' | awk -F': ' '{print $2}' | tr -d '"')
@@ -5985,14 +5974,14 @@ other_tools_run() {
          txtn " systemctl restart iycms      重启iycms服务       "
 
          txtn ""
-        #  txtn " >>> 访问URL: http://{WAN4}:21007"       
+        #  txtn " >>> 访问URL: http://{WAN4}:21007" 
         [[ -n "$WAN4" ]] && txtn " >>> URL: http://$WAN4:21007 "
         [[ -n "$WAN6" ]] && txtn " >>> URL: http://[$WAN6]:21007 "
          ;;
 
       17) clear && curl -sSL https://dataease.oss-cn-hangzhou.aliyuncs.com/quick_start_v2.sh | bash ;;
       18) clear && wget -O ak-setup.sh "https://raw.githubusercontent.com/akile-network/akile_monitor/refs/heads/main/ak-setup.sh" && chmod +x ak-setup.sh && sudo ./ak-setup.sh ;;
-
+      
       31) clear && docker_install ;;
       32) clear && install_python ;;
       33) clear && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python get-pip.py ;;
