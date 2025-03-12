@@ -11,8 +11,8 @@ FTSS='\033[5m'         # 字体：闪烁
 
 VLATEST="${FCLS}${FTSS}NEW${FTCZ}" # 蓝色闪烁字体
 url_redir='https://sub.zwdk.org/qiq'
-url_script='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/qiqtools.sh'
-url_update='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/update_log.sh'
+url_script='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/src/qiqtools.sh'
+url_update='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/src/update_log.sh'
 
 clear
 echoR " >>> " $(echoY "脚本更新日志") $(echoR "<<<") 
