@@ -14,12 +14,12 @@
 #   $> curl -sS -O https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiqtools.sh && chmod +x qiqtools.sh && ./qiqtools.sh
 #========================================================
 
+URL_PROXY='https://proxy.zwdk.org/proxy/'
 URL_REDIRECT='https://sub.zwdk.org/qiq'
 # url_script='https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiqtools.sh'
 # url_update='https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/update_log.sh'
-URL_SCRIPT='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/qiqtools.sh'
-URL_UPDATE='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/update_log.sh'
-URL_PROXY='https://proxy.zwdk.org/proxy/'
+URL_SCRIPT='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/src/qiqtools.sh'
+URL_UPDATE='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/src/update_log.sh'
 
 #==== 脚本版本号 ===========
 SRC_VER=v0.7.1
