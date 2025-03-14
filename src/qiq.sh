@@ -21,9 +21,9 @@ SRC_VER=v0.7.1
 
 URL_PROXY='https://proxy.zwdk.org/proxy/'
 URL_REDIRECT='https://sub.zwdk.org/qiq'
-URL_SCRIPT='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/qiqtools.sh'
-URL_UPDATE='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/update_log.sh'
-
+URL_SCRIPT='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/src/qiqtools.sh'
+URL_UPDATE='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/src/update_log.sh'
+/src
 
 # Emoji: 💡🧹🎉⚙️🔧🛠️💣🎯🧲🌍🌎🌏🌐🏡🏚️🏠🏯🗼🧭♨️💧📡👫
 #        🐵🐒🐕🦍🫏🦒🐔🐤🐓🦅🪿🐦‍⬛🐋🐬🪼🪲🌹🥀🌿🌱☘️🍓🍉
@@ -5359,7 +5359,7 @@ function main_menu(){
         23) python_management_menu ;;
 
         xx) sys_reboot ;;
-        00) ;;
+        00) script_update ;;
         0)  echo -e "\n$WARN 退出脚本！${RESET}"  && exit 1  ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号！" && _IS_BREAK="true" ;;
         esac
@@ -5367,6 +5367,19 @@ function main_menu(){
     done
 }
 
+
+function script_update(){
+    echo -e "\n $TIP 检测更新中，请稍等..."
+    local url_update=$(get_proxy_url $URL_UPDATE)
+    local url_script=$(get_proxy_url $URL_SCRIPT)
+    bash <(wget --no-check-certificate -qO- $url_update)
+    curl -sS -O $url_script && \
+    chmod +x qiq.sh && \
+    echo -e "$TIP 脚本已更新至最新版本！\n"
+    _IS_BREAK="true"
+    case_break_tacle #&& exit && qiq
+    cd ~ && ./qiq.sh && exit; 
+}
 
 #=================
 # 设置qiq快捷命令 
