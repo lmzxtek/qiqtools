@@ -37,7 +37,7 @@ PLAIN='\033[0m'
 RESET='\033[0m'
 
 WORKING="\033[1;36m✨️${PLAIN}"
-POINTING="\033[1;36m👉${PLAIN}"
+PRIGHT="\033[1;36m👉${PLAIN}"
 SUCCESS="\033[1;32m✅${PLAIN}"
 COMPLETE="\033[1;32m✔${PLAIN}"
 WARN="\033[1;36m⚠️${PLAIN}"
@@ -199,38 +199,6 @@ File_AlpineRelease=/etc/alpine-release
 File_GentooRelease=/etc/gentoo-release
 File_openKylinVersion=/etc/kylin-version/kylin-system-version.conf
 File_ProxmoxVersion=/etc/pve/.version
-
-## 定义软件源相关文件或目录
-File_DebianSourceList=/etc/apt/sources.list
-File_DebianSourceListBackup=/etc/apt/sources.list.bak
-File_DebianSources=/etc/apt/sources.list.d/debian.sources
-File_DebianSourcesBackup=/etc/apt/sources.list.d/debian.sources.bak
-File_UbuntuSources=/etc/apt/sources.list.d/ubuntu.sources
-File_UbuntuSourcesBackup=/etc/apt/sources.list.d/ubuntu.sources.bak
-File_ArmbianSourceList=/etc/apt/sources.list.d/armbian.list
-File_ArmbianSourceListBackup=/etc/apt/sources.list.d/armbian.list.bak
-File_ProxmoxSourceList=/etc/apt/sources.list.d/pve-no-subscription.list
-File_ProxmoxSourceListBackup=/etc/apt/sources.list.d/pve-no-subscription.list.bak
-File_LinuxMintSourceList=/etc/apt/sources.list.d/official-package-repositories.list
-File_LinuxMintSourceListBackup=/etc/apt/sources.list.d/official-package-repositories.list.bak
-File_ArchLinuxMirrorList=/etc/pacman.d/mirrorlist
-File_ArchLinuxMirrorListBackup=/etc/pacman.d/mirrorlist.bak
-File_AlpineRepositories=/etc/apk/repositories
-File_AlpineRepositoriesBackup=/etc/apk/repositories.bak
-File_GentooMakeConf=/etc/portage/make.conf
-File_GentooMakeConfBackup=/etc/portage/make.conf.bak
-File_GentooReposConf=/etc/portage/repos.conf/gentoo.conf
-File_GentooReposConfBackup=/etc/portage/repos.conf/gentoo.conf.bak
-File_NixConf=/etc/nix/nix.conf
-File_NixConfBackup=/etc/nix/nix.conf.bak
-Dir_GentooReposConf=/etc/portage/repos.conf
-Dir_DebianExtendSource=/etc/apt/sources.list.d
-Dir_DebianExtendSourceBackup=/etc/apt/sources.list.d.bak
-Dir_YumRepos=/etc/yum.repos.d
-Dir_YumReposBackup=/etc/yum.repos.d.bak
-Dir_ZYppRepos=/etc/zypp/repos.d
-Dir_ZYppReposBackup=/etc/zypp/repos.d.bak
-Dir_NixConfig=/etc/nix
 
 
 function init_global_vars(){
@@ -633,7 +601,7 @@ function print_items_list(){
     # clear 
     echo -e "\n${BOLD} ⚓ ${head}: \n${PLAIN}"
     for option in "${items[@]}"; do
-        echo -e "$POINTING $option"
+        echo -e "$PRIGHT $option"
     done
 }
 
@@ -767,7 +735,7 @@ function get_proxy_url() {
     echo "$url"
 }
 
-## 下载脚本半修改可执行权限 
+## 下载脚本并修改可执行权限 
 function fetch_script_from_url() { 
     local url="$1"
     local file="$2"
@@ -876,7 +844,6 @@ function check_ip_status() {
     else
         echo -e "$WARN IPv6 is not supported on this system.\n"
     fi
-
 }
 
 function print_menu_head() {
@@ -910,7 +877,7 @@ function print_sub_head() {
     local is_ip_info_show=${4:-1} 
 
     echo "" 
-    printf "%1s%s\n${RESET}" "" "$head"
+    printf "${BOLD}%1s%s\n${RESET}" "" "$head"
     generate_separator "=|$AZURE" "$n" # 另一个分割线
     
     if [[ $is_machine_info_show -eq 1 ]]; then
@@ -1266,7 +1233,7 @@ function interactive_select_boolean() {
 
 
 ## 处理break，显示信息或直接跳过 
-function break_tacle() {
+function case_break_tacle() {
     _IS_BREAK=${_IS_BREAK:-"false"}
     _BREAK_INFO=${_BREAK_INFO:-"操作完成"}
 
@@ -1557,7 +1524,6 @@ function system_test_menu(){
     while true; do
         print_sub_item_menu_headinfo
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
-
         read -rp "${CHOICE}" INPUT
         case "${INPUT}" in
         3) 
@@ -1576,7 +1542,7 @@ function system_test_menu(){
             _IS_BREAK="true"
             ;;
         esac
-        break_tacle
+        case_break_tacle
     done
 
 }
@@ -1641,7 +1607,7 @@ function install_crontab() {
 		return
 	fi
 
-	echo -e "${gl_lv}crontab 已安装且 cron 服务正在运行。${gl_bai}"
+	echo -e "$PRIGHT crontab 已安装且 cron 服务正在运行。"
 }
 
 
@@ -1726,7 +1692,7 @@ EOF
 
 function system_dd_usage(){
 echo -e " "
-echo -e "$POINTING DD脚本使用说明 "
+echo -e "$PRIGHT DD脚本使用说明 "
 echo -e "—————————————————————————————————————"
 echo -e "       Linux : ${BLUE}root${red}@${yellow}LeitboGi0ro${PLAIN}"
 echo -e "     Windows : ${BLUE}Administrator${red}@${yellow}Teddysun.com"
@@ -1783,25 +1749,21 @@ function system_tools_menu(){
         print_sub_menu_tail $MAX_SPLIT_CHAR_NUM
     }
 
-    while true; do
-        print_sub_item_menu_headinfo
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
-        read -rp "${CHOICE}" INPUT
-        case "${INPUT}" in
-        1) 
+    function sys_setting_change_root_password(){
             # local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
             # read -rp "${CHOICE}" INPUT
-            echo "设置ROOT密码" && passwd 
-            ;;
-        2) 
+            echo "设置ROOT密码" && passwd            
+    }
+    function sys_setting_enable_root(){
             sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin yes/g' /etc/ssh/sshd_config;
             sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/g' /etc/ssh/sshd_config;
             service sshd restart
 
             _BREAK_INFO=" ROOT登录设置完毕"
             _IS_BREAK="true"
-            ;;
-        3) 
+            
+    }
+    function sys_setting_disable_root(){
             app_install sudo 
 
             # 提示用户输入新用户名
@@ -1824,8 +1786,9 @@ function system_tools_menu(){
             
             _BREAK_INFO=" 禁用ROOT用户完毕"
             _IS_BREAK="true"
-            ;;
-        4) 
+            
+    }
+    function sys_setting_change_change_hostname(){
             local cur_hostname=$(hostname)
 
             # 询问用户是否要更改主机名
@@ -1867,8 +1830,9 @@ function system_tools_menu(){
             else
                 echo "未更改主机名。"
             fi
-            ;;
-        5) 
+            
+    }
+    function sys_setting_change_alter_timezone(){
             local timezone=$(current_timezone)
             local current_time=$(date +"%Y-%m-%d %H:%M:%S")
             local tz_items_regions=(
@@ -1904,9 +1868,8 @@ function system_tools_menu(){
                 "5|巴西|$WHITE"
                 "6|阿根廷|$WHITE"
             )
-
-            ;;
-        6) 
+    }
+    function sys_setting_alter_sources(){
             local source_list_options=(
                 "1.大陆地区"
                 "2.教育网"
@@ -1940,8 +1903,9 @@ function system_tools_menu(){
                 _BREAK_INFO=" 请输入正确选项！"
                 ;;
             esac 
-            ;;
-        8) 
+            
+    }
+    function sys_setting_change_ports_manage(){
             local ports_management_options=(
                 "1.查看端口状态"
                 "2.开放所有端口"
@@ -1966,7 +1930,7 @@ function system_tools_menu(){
                 if [ "$EUID" -ne 0 ] ; then 
                     # echo -e "$WARN 该操作需要root权限！"
                     _BREAK_INFO=" 开放所有端口需要root权限"
-                    break_tacle 
+                    case_break_tacle 
                     continue 
                 fi 
                 iptables_open 
@@ -2021,8 +1985,9 @@ EOF
                 _BREAK_INFO=" 请输入正确选项！"
                 ;;
             esac 
-            ;;
-        9) 
+            
+    }
+    function sys_setting_dns_manage(){
             local dns_list_options=(
                 "1.国外DNS"
                 "2.国内DNS"
@@ -2090,8 +2055,9 @@ EOF
                 _BREAK_INFO=" 请输入正确选项！"
                 ;;
             esac 
-            ;;
-        21) 
+            
+    }
+    function sys_setting_dd_system(){
             local sys_dd_options=(
                 "1.Leitbogioro"
                 "2.MoeClub"
@@ -2170,9 +2136,9 @@ EOF
             fi 
             
             function dd_sys_login_info(){
-                local username='$1'
-                local password='$2'
-                local port='$3'
+                local username=$1
+                local password=$2
+                local port=$3
 
                 echo -e "\n$TIP DD系统登录信息:"
                 echo -e "======================="
@@ -2182,21 +2148,63 @@ EOF
                 echo -e "======================="
 
                 _BREAK_INFO=" DD系统后登录信息:"
-                _IS_BREAK="true"
-                break_tacle 
+                # _IS_BREAK="true"
+                # break_tacle 
             }
             function dd_sys_mollylau(){
+                local sys_type=$1
+                local sys_ver=$2
+                local sys_type=$3
+
+                local weburl='https://github.com/leitbogioro/Tools'
                 local fname='InstallNET.sh' 
                 local url=$(get_proxy_url 'https://raw.githubusercontent.com/leitbogioro/Tools/master/Linux_reinstall/InstallNET.sh')
                 if command -v curl &>/dev/null; then 
-                    curl -sL -o ${fname} "${url}" && chmod a+x ${fname} && bash ${fname}
+                    curl -sL -o ${fname} "${url}" && chmod a+x ${fname}
                 elif command -v wget &>/dev/null; then 
-                    wget -qO ${fname} $url && chmod a+x ${fname} &&  bash ${fname}
+                    wget -qO ${fname} $url && chmod a+x ${fname} 
                 else
                     _BREAK_INFO=" 请先安装curl或wget！"
                     _IS_BREAK="true"
-                    continue 
+                    return 
                 fi 
+
+                if [[ -n "${sys_lang}" ]] ; then 
+                    bash ${fname} "-"${sys_type} ${sys_ver} -lang $sys_lang
+                else 
+                    bash ${fname} "-"${sys_type} ${sys_ver}
+                fi 
+
+                _IS_BREAK="false"
+                sys_reboot 
+            }
+            
+            function dd_sys_bin456789(){
+                local sys_type=$1
+                local sys_ver=$2
+                local sys_type=$3
+
+                local weburl='https://github.com/bin456789/reinstall'
+                local fname='reinstall.sh' 
+                local url=$(get_proxy_url 'https://raw.githubusercontent.com/bin456789/reinstall/main/reinstall.sh')
+                if command -v curl &>/dev/null; then 
+                    curl -sL -o ${fname} "${url}" && chmod a+x ${fname}
+                elif command -v wget &>/dev/null; then 
+                    wget -qO ${fname} $url && chmod a+x ${fname} 
+                else
+                    _BREAK_INFO=" 请先安装curl或wget！"
+                    _IS_BREAK="true"
+                    return 
+                fi 
+
+                if [[ -n "${sys_lang}" ]] ; then 
+                    bash ${fname} "-"${sys_type} ${sys_ver} -lang $sys_lang
+                else 
+                    bash ${fname} ${sys_type} ${sys_ver}
+                fi 
+
+                _IS_BREAK="false"
+                sys_reboot 
             }
             
             
@@ -2210,11 +2218,91 @@ EOF
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
             1) 
+                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
+                dd_sys_mollylau 'alpine' ''
                 ;;
             2) 
+                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
+                dd_sys_mollylau 'alpine' 3.20
                 ;;
             3) 
-                _BREAK_INFO=" 已手动修改DNS！"
+                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
+                dd_sys_mollylau 'alpine' 3.19
+                ;;
+            4) 
+                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
+                dd_sys_mollylau 'alpine' 3.18
+                ;;
+            11) 
+                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
+                dd_sys_mollylau 'debian' 12
+                ;;
+            12) 
+                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
+                dd_sys_mollylau 'debian' 11
+                ;;
+            13) 
+                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
+                dd_sys_mollylau 'debian' 10
+                ;;
+            14) 
+                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
+                dd_sys_mollylau 'ubuntu' 24.04
+                ;;
+            15) 
+                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
+                dd_sys_mollylau 'ubuntu' 22.04
+                ;;
+            16) 
+                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
+                dd_sys_mollylau 'ubuntu' 20.04
+                ;;
+            21) 
+                dd_sys_login_info 'root' '123@@@' '22'
+                dd_sys_bin456789 'almalinux' 9
+                ;;
+            22) 
+                dd_sys_login_info 'root' '123@@@' '22'
+                dd_sys_bin456789 'almalinux' 8
+                ;;
+            23) 
+                dd_sys_login_info 'root' '123@@@' '22'
+                dd_sys_bin456789 'rocky' 9
+                ;;
+            24) 
+                dd_sys_login_info 'root' '123@@@' '22'
+                dd_sys_bin456789 'rocky' 8
+                ;;
+            31) 
+                local lang=$(get_sys_lang) 
+                dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
+                # dd_sys_bin456789 'windows' 2025 $lang 
+                bash reinstall.sh dd --img "https://dl.lamp.sh/vhd/zh-cn_win2025.xz"
+                ;;
+            32) 
+                local lang=$(get_sys_lang) 
+                dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
+                dd_sys_mollylau 'windows' 2022 $lang 
+                ;;
+            33) 
+                local lang=$(get_sys_lang) 
+                dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
+                dd_sys_mollylau 'windows' 2019 $lang 
+                ;;
+            34) 
+                local lang=$(get_sys_lang) 
+                dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
+                dd_sys_mollylau 'windows' 11 $lang 
+                ;;
+            35) 
+                local lang=$(get_sys_lang) 
+                dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
+                dd_sys_mollylau 'windows' 10 $lang 
+                ;;
+            36) 
+                local lang=$(get_sys_lang) 
+                dd_sys_login_info 'Administrator' '123@@@' '3389'
+                dd_sys_mollylau 'windows' 7 $lang 
                 ;;
             0) 
                 echo -e "\n$TIP 返回主菜单 ..."
@@ -2250,8 +2338,9 @@ EOF
                 _BREAK_INFO=" 请输入正确选项！"
                 ;;
             esac 
-            ;;
-        22) 
+            
+    }
+    function sys_setting_alter_swap(){
             local swap_used=$(free -m | awk 'NR==3{print $3}')
             local swap_total=$(free -m | awk 'NR==3{print $2}')
             local swap_info=$(free -m | awk 'NR==3{used=$3; total=$2; if (total == 0) {percentage=0} else {percentage=used*100/total}; printf "%dM/%dM (%d%%)", used, total, percentage}')
@@ -2300,20 +2389,23 @@ EOF
                 _BREAK_INFO=" 请输入正确选项！"
                 ;;
             esac 
-            ;;
-        23) 
-            sed -i 's/^#\?AllowTcpForwarding.*/AllowTcpForwarding yes/g' /etc/ssh/sshd_config;
-            sed -i 's/^#\?GatewayPorts.*/GatewayPorts yes/g' /etc/ssh/sshd_config;
-            service sshd restart
-            _BREAK_INFO=" 已开启SSH转发功能"
-            _IS_BREAK="true"
-            ;;
-        24) 
+            
+    }
+    function sys_setting_enable_ssh_reproxy(){
+        # 这项功能主要用于将服务器作为中转站，进行网络请求的转发 
+        sed -i 's/^#\?AllowTcpForwarding.*/AllowTcpForwarding yes/g' /etc/ssh/sshd_config;
+        sed -i 's/^#\?GatewayPorts.*/GatewayPorts yes/g' /etc/ssh/sshd_config;
+        service sshd restart
+        _BREAK_INFO=" 已开启SSH转发功能"
+        _IS_BREAK="true"
+            
+    }
+    function sys_setting_alter_priority_v4v6(){
             local ipv6_disabled=$(sysctl -n net.ipv6.conf.all.disable_ipv6)
             if [ "$ipv6_disabled" -eq 1 ]; then
-                echo -e "\n${POINTING} 当前网络: IPv4 优先\n"
+                echo -e "\n${PRIGHT} 当前网络: IPv4 优先\n"
             else
-                echo -e "\n${POINTING} 当前网络: IPv6 优先\n"
+                echo -e "\n${PRIGHT} 当前网络: IPv6 优先\n"
             fi
             local net_1st_options=(
                 "1.IPv4优先"
@@ -2350,15 +2442,15 @@ EOF
                 _BREAK_INFO=" 请输入正确选项！"
                 ;;
             esac 
-            ;;
-        25) 
-        
+            
+    }
+    function sys_setting_bbrv3_manage(){        
             local cpu_arch=$(uname -m)
             if [ "$cpu_arch" = "aarch64" ]; then
                 bash <(curl -sL jhb.ovh/jb/bbrv3arm.sh)
                 _BREAK_INFO=" 系统为ARM架构,已使用jhb的bbrv3arm.sh安装BBRv3内核" 
                 _IS_BREAK="true" 
-                break_tacle 
+                case_break_tacle 
                 continue 
             fi
 
@@ -2372,7 +2464,7 @@ EOF
                 _IS_BREAK="true"
                 local kernel_version=$(uname -r)
                 echo -e "\n$TIP 系统已安装xanmod的BBRv3内核"
-                echo -e "\n$POINTING 当前内核版本: $kernel_version"
+                echo -e "\n$PRIGHT 当前内核版本: $kernel_version"
                 print_items_list bbrv3_1st_options[@] "BBRv3功能选项:"
                 local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
                 read -rp "${CHOICE}" INPUT
@@ -2399,7 +2491,7 @@ EOF
 
                     _BREAK_INFO=" 已更新 linux-xammod1内核 ！"
                     _IS_BREAK="false"
-                    break_tacle 
+                    case_break_tacle 
                     sys_reboot 
                     continue 
                     ;;
@@ -2409,7 +2501,7 @@ EOF
                     echo "XanMod内核已卸载。重启后生效"
                     _BREAK_INFO=" XanMod内核已卸载。重启后生效"
                     _IS_BREAK="false"
-                    break_tacle 
+                    case_break_tacle 
                     sys_reboot 
                     continue 
                     ;;
@@ -2423,7 +2515,7 @@ EOF
                 esac 
             else
                 clear
-                echo -e "$POINTING 设置BBR3加速 "
+                echo -e "$PRIGHT 设置BBR3加速 "
                 echo -e "========================================================="
                 echo -e " 仅支持[Debian|Ubuntu|Alpine]"
                 echo -e " 请备份数据，将为你升级Linux内核开启BBR3"
@@ -2440,20 +2532,20 @@ EOF
                             bbr_on
                             _BREAK_INFO=" 当前为Alpine系统"
                             _IS_BREAK="false"
-                            break_tacle
+                            case_break_tacle
                             sys_reboot
                             continue
                         elif [ "$ID" != "debian" ] && [ "$ID" != "ubuntu" ]; then
                             _BREAK_INFO=" 当前环境不支持, 仅支持Alpine,Debian和Ubuntu系统"
                             _IS_BREAK="true"
-                            break_tacle
+                            case_break_tacle
                             continue
                         fi                        
                     else
                         echo "无法确定操作系统类型"
                         _BREAK_INFO=" 无法确定操作系统类型"
                         _IS_BREAK="true"
-                        break_tacle
+                        case_break_tacle
                         continue
                     fi
 
@@ -2491,8 +2583,9 @@ EOF
                     ;;
                 esac
             fi             
-            ;;
-        27) 
+            
+    }
+    function sys_setting_buteafy_cmd_style(){
             function print_better_cmd_style_options(){
                 echo -e ""
                 # echo -e "  1. \033[1;32mroot@\033[1;34mlocalhost \033[1;31m~ ${RESET}#"
@@ -2573,7 +2666,28 @@ EOF
                 ;; 
             esac 
             
-            ;;
+            
+    }
+
+    while true; do
+        print_sub_item_menu_headinfo
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        case "${INPUT}" in
+        1 ) sys_setting_change_root_password ;;
+        2 ) sys_setting_enable_root ;;
+        3 ) sys_setting_disable_root ;;
+        4 ) sys_setting_change_change_hostname ;;
+        5 ) sys_setting_change_alter_timezone ;;
+        6 ) sys_setting_alter_sources ;;
+        8 ) sys_setting_change_ports_manage ;;
+        9 ) sys_setting_dns_manage ;;
+        21) sys_setting_dd_system ;;
+        22) sys_setting_alter_swap ;;
+        23) sys_setting_enable_ssh_reproxy ;;
+        24) sys_setting_alter_priority_v4v6 ;;
+        25) sys_setting_bbrv3_manage ;;
+        27) sys_setting_buteafy_cmd_style ;;
         xx) 
             sys_reboot
             ;;
@@ -2586,7 +2700,7 @@ EOF
             _IS_BREAK="true"
             ;;
         esac
-        break_tacle
+        case_break_tacle
     done
 
 }
@@ -2639,48 +2753,48 @@ function commonly_tools_menu(){
         1) 
             local app_name='curl'
             app_install ${app_name}
-            echo -e "\n $POINTING ${app_name}已安装："
+            echo -e "\n $PRIGHT ${app_name}已安装："
             _IS_BREAK='true'
             ;;
         2) 
             local app_name='wget'
             app_install ${app_name}
-            echo -e "\n $POINTING ${app_name}已安装："
+            echo -e "\n $PRIGHT ${app_name}已安装："
             app_install wget 
             _IS_BREAK='true'
             ;;
         3) 
             local app_name='gdu'
             app_install ${app_name}
-            echo -e "\n $POINTING ${app_name}已安装："
+            echo -e "\n $PRIGHT ${app_name}已安装："
             app_install gdu 
             _IS_BREAK='true'
             ;;
         4) 
             local app_name='btop'
             app_install ${app_name}
-            echo -e "\n $POINTING ${app_name}已安装："
+            echo -e "\n $PRIGHT ${app_name}已安装："
             app_install btop 
             _IS_BREAK='true'
             ;;
         5) 
             local app_name='htop'
             app_install ${app_name}
-            echo -e "\n $POINTING ${app_name}已安装："
+            echo -e "\n $PRIGHT ${app_name}已安装："
             app_install htop 
             _IS_BREAK='true'
             ;;
         6) 
             local app_name='iftop'
             app_install ${app_name}
-            echo -e "\n $POINTING ${app_name}已安装："
+            echo -e "\n $PRIGHT ${app_name}已安装："
             app_install iftop 
             _IS_BREAK='true'
             ;;
         7) 
             local app_name='unzip'
             app_install ${app_name}
-            echo -e "\n $POINTING ${app_name}已安装："
+            echo -e "\n $PRIGHT ${app_name}已安装："
             app_install unzip 
             _IS_BREAK='true'
             ;;
@@ -2693,7 +2807,7 @@ function commonly_tools_menu(){
                 sudo systemctl enable ${app_name}
                 sudo systemctl status ${app_name}
             fi
-            echo -e "\n $POINTING ${app_name}已安装："
+            echo -e "\n $PRIGHT ${app_name}已安装："
             _IS_BREAK='true'
             ;;
         9) 
@@ -2701,7 +2815,7 @@ function commonly_tools_menu(){
             if ! systemctl status ${app_name} > /dev/null 2>&1; then
                 app_install ${app_name}
             fi
-            echo -e "\n $POINTING ${app_name}已安装："
+            echo -e "\n $PRIGHT ${app_name}已安装："
             _IS_BREAK='true'
             ;;
         21) 
@@ -2722,7 +2836,7 @@ function commonly_tools_menu(){
                 sudo systemctl status fail2ban
             fi
 
-            echo -e "\n $POINTING 已安装常用工具：(curl wget btop gdu supervisor fail2ban)"
+            echo -e "\n $PRIGHT 已安装常用工具：(curl wget btop gdu supervisor fail2ban)"
             _IS_BREAK='true'
             ;;
         24) 
@@ -2743,7 +2857,7 @@ function commonly_tools_menu(){
                 sudo systemctl status fail2ban
             fi
 
-            echo -e "\n $POINTING 已安装常用工具：(wget btop gdu supervisor fail2ban)"
+            echo -e "\n $PRIGHT 已安装常用工具：(wget btop gdu supervisor fail2ban)"
             _IS_BREAK='true'
             ;;
         25) 
@@ -2764,21 +2878,21 @@ function commonly_tools_menu(){
                 sys_clean
             fi
 
-            echo -e "\n $POINTING 已卸载常用工具：(wget btop gdu supervisor fail2ban)"
+            echo -e "\n $PRIGHT 已卸载常用工具：(wget btop gdu supervisor fail2ban)"
             _IS_BREAK='true'
             ;;
         22) 
             local CHOICE=$(echo -e "\n${BOLD}└─ 输入要安装的名称: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             [[ -n $INPUT ]] && app_install $INPUT
-            echo -e "\n $POINTING ${INPUT}已安装："
+            echo -e "\n $PRIGHT ${INPUT}已安装："
             _IS_BREAK='true'
             ;;
         23) 
             local CHOICE=$(echo -e "\n${BOLD}└─ 输入要卸载的名称: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             [[ -n $INPUT ]] && app_remove $INPUT
-            echo -e "\n $POINTING ${INPUT}已卸载："
+            echo -e "\n $PRIGHT ${INPUT}已卸载："
             _IS_BREAK='true'
             ;;
         31) 
@@ -2824,7 +2938,7 @@ function commonly_tools_menu(){
             _IS_BREAK="true"
             ;;
         esac
-        break_tacle
+        case_break_tacle
     done
 
 }
@@ -2834,30 +2948,36 @@ function commonly_tools_menu(){
 MENU_MANAGEMENT_TOOLS_ITEMS=(
     "1|1Panel|$YELLOW"
     "2|aaPanel|$WHITE"
-    "3|iyCMS|$GREEN"
-    "4|frps|$WHITE"
-    "5|frpc|$WHITE"
-    "6|Lucky|$WHITE"
-    "7|Nezha|$WHITE"
-    "8|Coder|$WHITE"
-    "9|Code Server|$YELLOW"
-    "10|Akile Monitor|$WHITE"
+    "3|Ajenti|$WHITE"
+    "4|Cockpit|$WHITE"
+    "5|VestaCP|$WHITE"
+    "6|HestiaCP|$CYAN"
+    "7|CloudPanel|$CYAN"
+    "8|Cyberpanel|$WHITE"
     "………………………|$WHITE" 
     "21|Redis|$CYAN"
     "22|MySQL|$WHITE"
     "23|MariaDB|$WHITE"
     "24|PostgreSQL|$WHITE"
+    "25|frps|$WHITE"
+    "26|frpc|$WHITE"
+    "27|Lucky|$WHITE"
+    "28|Nezha|$WHITE"
+    "29|Chrome|$WHITE"
+    "30|Coder|$WHITE"
+    "31|Code Server|$YELLOW"
+    "32|Akile Monitor|$WHITE"
     "………………………|$WHITE" 
-    "31|RustDesk|$WHITE"
-    "32|DeepLX|$WHITE"
-    "33|SubLinkX|$WHITE"
-    "34|Chrome|$WHITE"
-    "………………………|$WHITE" 
-    "41|Warp(@farsman)|$YELLOW"
-    "42|Warp(@hamid)|$WHITE"
-    "43|V2RayA|$WHITE"
-    "44|Singbox(@farsman)|$YELLOW"
-    "45|Singbox(@ygkkk)|$WHITE"
+    "41|RustDesk|$WHITE"
+    "42|SubLinkX|$WHITE"
+    "43|DeepLX|$WHITE"
+    "44|iyCMS|$GREEN"
+    "45|V2RayA|$WHITE"
+    "46|Singbox(@farsman)|$YELLOW"
+    "47|Singbox(@ygkkk)|$WHITE"
+    "48|Warp(@farsman)|$YELLOW"
+    "49|Warp(@ygkkk)|$YELLOW"
+    "50|Warp(@hamid)|$WHITE"
 )
 
 function management_tools_menu(){
@@ -2890,36 +3010,95 @@ function management_tools_menu(){
         fi
     }
 
-    while true; do
-        print_sub_item_menu_headinfo
+    function tools_install_1panel(){
+        _IS_BREAK="true"
+        local app_name='1Panel'
+        if command -v 1pctl &> /dev/null; then
+            ## 系统已安装1Panel
+            _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
+        else 
+            ## 系统未安装1Panel
+            local system_type=$(get_system_type)
+            local CHOICE=$(echo -e "\n${BOLD}└─ 确定安装${app_name}吗? (Y/n): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "${INPUT}" ]] && INPUT="Y" 
+            case "$INPUT" in
+            [Yy] | [Yy][Ee][Ss])
+                # sys_update 
+                _BREAK_INFO=" 成功安装${app_name}!"
+                if [ "$system_type" == "centos" ]; then
+                    curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && sh quick_start.sh
+                elif [ "$system_type" == "ubuntu" ]; then
+                    curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && bash quick_start.sh
+                elif [ "$system_type" == "debian" ]; then
+                    curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && bash quick_start.sh
+                else
+                    bash <(curl -sSL https://linuxmirrors.cn/docker.sh) && curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && sh quick_start.sh
+                fi
+                ;;
+            [Nn] | [Nn][Oo])
+                _BREAK_INFO=" 取消安装${app_name}!"
+                ;;
+            *) 
+                _BREAK_INFO=" 输入错误，请重新输入!"
+                ;;
+            esac
+        fi     
+    }
 
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
-        read -rp "${CHOICE}" INPUT
-        case "${INPUT}" in
-        1) 
+    function tools_install_aaPanel(){
+        _IS_BREAK="true"
+        local app_name='aaPanel'
+        if [ -f "/etc/init.d/bt" ] && [ -d "/www/server/panel" ]; then
+            _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
+        else 
+            local system_type=$(get_system_type)
+            local CHOICE=$(echo -e "\n${BOLD}└─ 确定安装${app_name}吗? (Y/n): ${PLAIN}")
+            [[ -z "${INPUT}" ]] && INPUT="Y" 
+            read -rp "${CHOICE}" INPUT
+            case "$INPUT" in
+            [Yy] | [Yy][Ee][Ss])
+                # sys_update 
+                app_install wget 
+                _BREAK_INFO=" 成功安装: ${app_name}!"
+                if [ "$system_type" == "centos" ]; then
+                    yum install -y wget && wget -O install.sh http://www.aapanel.com/script/install_6.0_en.sh && bash install.sh aapanel
+                elif [ "$system_type" == "ubuntu" ]; then
+                    wget -O install.sh http://www.aapanel.com/script/install-ubuntu_6.0_en.sh && bash install.sh aapanel
+                elif [ "$system_type" == "debian" ]; then
+                    wget -O install.sh http://www.aapanel.com/script/install-ubuntu_6.0_en.sh && bash install.sh aapanel
+                else
+                    _BREAK_INFO=" 不支持的系统类型(Debian|Ubuntu|CentOS), aaPanel安装取消!"
+                fi
+                ;;
+            [Nn] | [Nn][Oo])
+                _BREAK_INFO=" 取消安装: ${app_name}!"
+                ;;
+            *) 
+                _BREAK_INFO=" 输入错误，请重新输入!"
+                ;;
+            esac
+        fi        
+    }
+
+    function tools_install_ajenti(){
             _IS_BREAK="true"
-            local app_name='1Panel'
-            if command -v 1pctl &> /dev/null; then
-                ## 系统已安装1Panel
+            local app_name='Ajenti'
+            if systemctl status ajenti.service &> /dev/null; then
                 _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
             else 
-                ## 系统未安装1Panel
                 local system_type=$(get_system_type)
-                local CHOICE=$(echo -e "\n${BOLD}└─ 确定安装${app_name}吗? (Y/N): ${PLAIN}")
+                local CHOICE=$(echo -e "\n${BOLD}└─ 确定安装${app_name}吗? (Y/n): ${PLAIN}")
+                [[ -z "${INPUT}" ]] && INPUT="Y" 
                 read -rp "${CHOICE}" INPUT
                 case "$INPUT" in
                 [Yy] | [Yy][Ee][Ss])
-                    # sys_update 
                     _BREAK_INFO=" 成功安装${app_name}!"
-                    if [ "$system_type" == "centos" ]; then
-                        curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && sh quick_start.sh
-                    elif [ "$system_type" == "ubuntu" ]; then
-                        curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && bash quick_start.sh
-                    elif [ "$system_type" == "debian" ]; then
-                        curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && bash quick_start.sh
-                    else
-                        bash <(curl -sSL https://linuxmirrors.cn/docker.sh) && curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && sh quick_start.sh
-                    fi
+                    # https://docs.ajenti.org/en/latest/man/install.html
+                    # curl https://raw.githubusercontent.com/ajenti/ajenti/master/scripts/install-venv.sh | sudo bash -s -
+                    local url=$(get_proxy_url 'https://raw.githubusercontent.com/ajenti/ajenti/master/scripts/install.sh')
+                    curl $url | sudo bash -s -
+
                     ;;
                 [Nn] | [Nn][Oo])
                     _BREAK_INFO=" 取消安装${app_name}!"
@@ -2929,76 +3108,275 @@ function management_tools_menu(){
                     ;;
                 esac
             fi        
-            ;;
-        2) 
+
+    }
+    function tools_install_cockpit(){
             _IS_BREAK="true"
-            local app_name='aaPanel'
-            if [ -f "/etc/init.d/bt" ] && [ -d "/www/server/panel" ]; then
-                _BREAK_INFO=" 系统已安装${aaPanel}，无需重复安装!"
+            local app_name='Cockpit'
+            if systemctl status cockpit.socket &> /dev/null; then
+                _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
             else 
                 local system_type=$(get_system_type)
-                local CHOICE=$(echo -e "\n${BOLD}└─ 确定安装${aaPanel}吗? (Y/N): ${PLAIN}")
+                local CHOICE=$(echo -e "\n${BOLD}└─ 确定安装${app_name}吗? (Y/n): ${PLAIN}")
+                [[ -z "${INPUT}" ]] && INPUT="Y" 
                 read -rp "${CHOICE}" INPUT
                 case "$INPUT" in
                 [Yy] | [Yy][Ee][Ss])
-                    # sys_update 
-                    app_install wget 
-                    _BREAK_INFO=" 成功安装: ${aaPanel}!"
-                    if [ "$system_type" == "centos" ]; then
-                        yum install -y wget && wget -O install.sh http://www.aapanel.com/script/install_6.0_en.sh && bash install.sh aapanel
-                    elif [ "$system_type" == "ubuntu" ]; then
-                        wget -O install.sh http://www.aapanel.com/script/install-ubuntu_6.0_en.sh && bash install.sh aapanel
-                    elif [ "$system_type" == "debian" ]; then
-                        wget -O install.sh http://www.aapanel.com/script/install-ubuntu_6.0_en.sh && bash install.sh aapanel
-                    else
-                        _BREAK_INFO=" 不支持的系统类型(Debian|Ubuntu|CentOS), aaPanel安装取消!"
-                    fi
+                    _BREAK_INFO=" 成功安装${app_name}!"
+                    # https://cockpit-project.org/running.html
+                    # http://localip:9090
+                    # systemctl start --now cockpit.socket
+                    # systemctl enable --now cockpit.socket
+                    sys_update 
+                    app_install cockpit && systemctl start --now cockpit.socket && systemctl enable --now cockpit.socket
+                    # app_install cockpit* # 安装所有相关的插件 
                     ;;
                 [Nn] | [Nn][Oo])
-                    _BREAK_INFO=" 取消安装: ${aaPanel}!"
+                    _BREAK_INFO=" 取消安装${app_name}!"
                     ;;
                 *) 
                     _BREAK_INFO=" 输入错误，请重新输入!"
                     ;;
                 esac
             fi        
-            ;;
-        3) 
-            _IS_BREAK="true"
-            local app_name='爱影CMS'
-            local app_cmd='iycms'
-            function print_app_usage(){
-                echo -e "\n${BOLD} ${POINTING} ${app_name}使用说明: ${PLAIN}\n"
-                echo -e " - WebURL: https://iycms.com/index.html"
-                echo -e "" 
-                echo -e " > systemctl status ${app_cmd}      # 查看${app_name}服务运行状态"
-                echo -e " > systemctl start ${app_cmd}       # 查看${app_name}服务运行状态"
-                echo -e " > systemctl stop ${app_cmd}        # 查看${app_name}服务运行状态"
-                echo -e " > systemctl restart ${app_cmd}     # 查看${app_name}服务运行状态"
-                echo ""
-                [[ -n "$WAN4" ]] && echo -e " URL: http://$WAN4:21007 "
-                [[ -n "$WAN6" ]] && echo -e " URL: http://[$WAN6]:21007 "
-            }
+        
+    }
 
-            if systemctl status iycms > /dev/null 2>&1; then
+    function tools_install_vestacp(){
+            _IS_BREAK="true"
+            local app_name='HestiaCP'
+                    _BREAK_INFO=" 尚未实现VestaCP的安装!"
+        
+    }
+
+    function tools_install_hestiacp(){
+            _IS_BREAK="true"
+            local app_name='HestiaCP'
+            # if [ -f "/etc/init.d/bt" ] && [ -d "/www/server/panel" ]; then
+            #     _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
+            # else 
+                local system_type=$(get_system_type)
+                local CHOICE=$(echo -e "\n${BOLD}└─ 确定安装${app_name}吗? (Y/n): ${PLAIN}")
+                [[ -z "${INPUT}" ]] && INPUT="Y" 
+                read -rp "${CHOICE}" INPUT
+                case "$INPUT" in
+                [Yy] | [Yy][Ee][Ss])
+                    # https://hestiacp.com/docs/introduction/getting-started.html
+                    # https://hestiacp.com/install 
+                    # sys_update 
+                    app_install wget 
+                    local url=$(get_proxy_url 'https://raw.githubusercontent.com/hestiacp/hestiacp/release/install/hst-install.sh')
+                    wget $url && apt-get update && apt-get install ca-certificates && bash hst-install.sh
+                    _BREAK_INFO=" 成功安装: ${app_name}!"
+
+                    ;;
+                [Nn] | [Nn][Oo])
+                    _BREAK_INFO=" 取消安装: ${app_name}!"
+                    ;;
+                *) 
+                    _BREAK_INFO=" 输入错误，请重新输入!"
+                    ;;
+                esac
+            # fi        
+    }
+
+    function tools_install_cloudpanel(){
+            _IS_BREAK="true"
+            local app_name='CloudPanel'
+            if systemctl status ajenti.service &> /dev/null; then
                 _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
-                print_app_usage
             else 
-                local file="lucky.sh"
-                local url="https://www.iycms.com/api/static/down/linux/ubuntu/install_x86_64.sh"
-                echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
-                fetch_script_from_url $url $file 0
-                
-                print_app_usage
-                _BREAK_INFO=" 成功安装: ${app_name}"
+                local system_type=$(get_system_type)
+                local CHOICE=$(echo -e "\n${BOLD}└─ 确定安装${app_name}吗? (Y/n): ${PLAIN}")
+                [[ -z "${INPUT}" ]] && INPUT="Y" 
+                read -rp "${CHOICE}" INPUT
+                case "$INPUT" in
+                [Yy] | [Yy][Ee][Ss])
+                    _BREAK_INFO=" 成功安装${app_name}!"
+                    # https://www.cloudpanel.io/docs/v2/getting-started/other/
+                    # https://yourIpAddress:8443
+                    echo -e "$PRIGHT 1. MySQL 8.0"
+                    echo -e "$PRIGHT 2. MariaDB 11.4"
+                    local CHOICE=$(echo -e "\n${BOLD}└─ 请选择要安装的数据库(默认MySQL): ${PLAIN}")
+                    read -rp "${CHOICE}" INPUT
+                    [[ -z "$INPUT" ]] && INPUT="1"
+                    case "$INPUT" in
+                    1) 
+                        local url=$(get_proxy_url 'https://installer.cloudpanel.io/ce/v2/install.sh')
+                        curl -sS $url -o install.sh; \
+                        echo "a3ba69a8102345127b4ae0e28cfe89daca675cbc63cd39225133cdd2fa02ad36 install.sh" | \
+                        sha256sum -c && sudo bash install.sh
+                        _BREAK_INFO=" 成功安装${app_name}(MySQL 8.0)!"
+                        ;;
+                    2) 
+                        local url=$(get_proxy_url 'https://installer.cloudpanel.io/ce/v2/install.sh')
+                        curl -sS $url -o install.sh; \
+                        echo "a3ba69a8102345127b4ae0e28cfe89daca675cbc63cd39225133cdd2fa02ad36 install.sh" | \
+                        sha256sum -c && sudo bash install.sh
+                        _BREAK_INFO=" 成功安装${app_name}(MariaDB 11.4)!"
+                        ;;
+                    *) 
+                        _BREAK_INFO=" 输入错误，请重新输入!"
+                        ;;
+                    esac 
+
+                    # 安装MariaDb数据库 
+                    # curl -sS $url -o install.sh; \
+                    # echo "a3ba69a8102345127b4ae0e28cfe89daca675cbc63cd39225133cdd2fa02ad36 install.sh" | \
+                    # sha256sum -c && sudo DB_ENGINE=MARIADB_11.4 bash install.sh
+                    ;;
+                [Nn] | [Nn][Oo])
+                    _BREAK_INFO=" 取消安装${app_name}!"
+                    ;;
+                *) 
+                    _BREAK_INFO=" 输入错误，请重新输入!"
+                    ;;
+                esac
+            fi        
+        
+    }
+
+    function tools_install_cyberpanel(){
+            _IS_BREAK="true"
+            local app_name='CyberPanel'
+            if systemctl status ajenti.service &> /dev/null; then
+                _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
+            else 
+                local system_type=$(get_system_type)
+                local CHOICE=$(echo -e "\n${BOLD}└─ 确定安装${app_name}吗? (Y/n): ${PLAIN}")
+                [[ -z "${INPUT}" ]] && INPUT="Y" 
+                read -rp "${CHOICE}" INPUT
+                case "$INPUT" in
+                [Yy] | [Yy][Ee][Ss])
+                    _BREAK_INFO=" 成功安装${app_name}!"
+                    # https://cyberpanel.net/KnowledgeBase/home/install-cyberpanel/
+                    # https://github.com/usmannasir/cyberpanel
+                    # https://yourIpAddress:8443
+                    # Ubuntu 18.04, Ubuntu 20.04, AlmaLinux 8, AlmaLinux 9, Ubuntu 22.04, CloudLinux 8. 1024MB RAM, or higher
+                    local url_install='https://cyberpanel.net/install.sh'
+                    local url_update=$(get_proxy_url 'https://raw.githubusercontent.com/usmannasir/cyberpanel/stable/preUpgrade.sh')
+                    sh <(curl $url_install || wget -O - $url_install)
+                    # sh <(curl $url_update || wget -O - $url_update)
+                    ;;
+                [Nn] | [Nn][Oo])
+                    _BREAK_INFO=" 取消安装${app_name}!"
+                    ;;
+                *) 
+                    _BREAK_INFO=" 输入错误，请重新输入!"
+                    ;;
+                esac
+            fi        
+    }
+
+    function tools_install_redis(){
+            local app_name='Redis'
+            local app_cmd='redis'
+            _IS_BREAK="true"
+            _BREAK_INFO=" 由${app_name}返回！"
+            function print_app_usage(){
+                echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}\n"
+                # echo -e " > WebURL: https://coder.com/   "
+                echo ""
+                [[ -n "$WAN4" ]] && echo -e " URL: http://$WAN4:6379 "
+                [[ -n "$WAN6" ]] && echo -e " URL: http://[$WAN6]:6379 "
+            }
+            
+            if command -v ${app_cmd} &> /dev/null; then
+                _BREAK_INFO=" 系统已安装${app_name}数据库，无需重复安装!"
+                # print_app_usage
+            else 
+                curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
+                echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
+                apt update
+                apt install redis
+                systemctl start redis-server
+                systemctl enable redis-server
+                # print_app_usage
+                _BREAK_INFO=" 成功安装${app_name}数据库！"
             fi 
-            ;; 
-        4) 
+    }
+    function tools_install_mysql(){
+            local app_name='MySQL'
+            local app_cmd='mysql'
+            _IS_BREAK="true"
+            _BREAK_INFO=" 由${app_name}返回！"
+            # function print_app_usage(){
+            #     echo -e "\n${BOLD} ${POINTING} ${app_name}使用说明: ${PLAIN}\n"
+            #     # echo -e " > WebURL: https://coder.com/   "
+            #     echo ""
+            #     [[ -n "$WAN4" ]] && echo -e " URL: http://$WAN4:6379 "
+            #     [[ -n "$WAN6" ]] && echo -e " URL: http://[$WAN6]:6379 "
+            # }
+            
+            # if command -v ${app_cmd} &> /dev/null; then
+            #     _BREAK_INFO=" 系统已安装${app_name}数据库，无需重复安装!"
+            #     # print_app_usage
+            # else 
+            #     curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
+            #     echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
+            #     apt update
+            #     apt install redis
+            #     systemctl start redis-server
+            #     systemctl enable redis-server
+            #     # print_app_usage
+            #     _BREAK_INFO=" 成功安装${app_name}数据库！"
+            # fi 
+                _BREAK_INFO=" 尚未实现安装${app_name}数据库！"
+        
+    }
+    function tools_install_mariadb(){
+            local app_name='MariaDB'
+            local app_cmd='mariadb'
+            _IS_BREAK="true"
+            _BREAK_INFO=" 由${app_name}返回！"
+            
+            if command -v ${app_cmd} &> /dev/null; then
+                _BREAK_INFO=" 系统已安装${app_name}数据库，无需重复安装!"
+            else                 
+                apt install apt-transport-https curl
+                mkdir -p /etc/apt/keyrings
+                curl -o /etc/apt/keyrings/mariadb-keyring.pgp 'https://mariadb.org/mariadb_release_signing_key.pgp'
+
+                cat > /etc/apt/sources.list.d/mariadb.sources << EOF
+X-Repolib-Name: MariaDB
+Types: deb
+# deb.mariadb.org is a dynamic mirror if your preferred mirror goes offline. See https://mariadb.org/mirrorbits/ for details.
+URIs: https://deb.mariadb.org/11.2/ubuntu
+Suites: jammy
+Components: main main/debug
+Signed-By: /etc/apt/keyrings/mariadb-keyring.pgp
+EOF
+
+                apt update
+                apt install mariadb-server
+                systemctl start mariadb
+                systemctl enable mariadb
+                mariadb-secure-installation
+
+                _BREAK_INFO=" 成功安装${app_name}数据库！"
+            fi 
+    }
+    function tools_install_postgresql(){
+            local app_name='PostgreSQL'
+            local app_cmd='postgresql'
+            _IS_BREAK="true"
+            _BREAK_INFO=" 由${app_name}返回！"
+            
+            if command -v ${app_cmd} &> /dev/null; then
+                _BREAK_INFO=" 系统已安装${app_name}数据库，无需重复安装!"
+                postgresql_usage
+            else 
+                install postgresql-client && apt update && install postgresql
+                postgresql_usage
+                _BREAK_INFO=" 成功安装${app_name}数据库！"
+            fi 
+    }
+    function tools_install_frps(){
             _IS_BREAK="true"
             local app_name='frps'
             local app_cmd='frps'
             function print_app_usage(){
-                echo -e "\n${BOLD} ${POINTING} ${app_name}使用说明: ${PLAIN}\n"
+                echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}\n"
                 echo -e " - GitHub: https://github.com/fatedier/frp/ "
                 echo -e "" 
                 echo -e " > systemctl status ${app_cmd}      # 查看${app_name}服务运行状态"
@@ -3041,13 +3419,21 @@ function management_tools_menu(){
                 print_app_usage
                 _BREAK_INFO=" 成功安装: ${app_name}!"
             fi 
-            ;; 
-        6) 
+        
+    }
+    function tools_install_frpc(){
+            _IS_BREAK="true"
+            local app_name='Lucky'
+            local app_cmd='lucky'
+                _BREAK_INFO=" 尚未实现安装: ${app_name}!"
+        
+    }
+    function tools_install_lucky(){
             _IS_BREAK="true"
             local app_name='Lucky'
             local app_cmd='lucky'
             function print_app_usage(){
-                echo -e "\n${BOLD} ${POINTING} ${app_name}使用说明: ${PLAIN}\n"
+                echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}\n"
                 echo -e " > WebURL: https://lucky666.cn "
                 echo -e " > GitHub: https://github.com/gdy666/lucky "
                 echo -e "" 
@@ -3078,8 +3464,8 @@ function management_tools_menu(){
             # URL="https://release.ilucky.net:66"; curl -o /tmp/install.sh "$URL/install.sh" && sh /tmp/install.sh "$URL"
             # URL="https://release.ilucky.net:66"; wget -O  /tmp/install.sh "$URL/install.sh" && sh /tmp/install.sh "$URL"
             # curl -o /tmp/install.sh https://6.666666.host:66/files/golucky.sh  && sh /tmp/install.sh https://6.666666.host:66/files 2.11.2
-            ;; 
-        7) 
+    }
+    function tools_install_neza(){
             local app_name='NeZha Monitor'
             local app_cmd='nz'
             _IS_BREAK="true"
@@ -3091,13 +3477,33 @@ function management_tools_menu(){
             _BREAK_INFO=" 从${app_name}返回！"
             echo -e "\n $TIP 后续可直接运行脚本: ./${fname}\n"
             # curl -L https://raw.githubusercontent.com/nezhahq/scripts/refs/heads/main/install.sh -o nezha.sh && chmod +x nezha.sh && sudo ./nezha.sh 
-            ;; 
-        8) 
+            
+        
+    }
+    function tools_install_chrome(){
+            _IS_BREAK="true"
+            local app_name='Chrome'
+            local app_cmd='chrome'
+
+            if command -v ${app_cmd} &> /dev/null; then
+                _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
+            else 
+                _BREAK_INFO=" 成功安装${app_name}！"
+                local fname="google-chrome-stable_current_amd64.deb"
+                local url="https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
+                sudo apt-get install -f -y && wget ${url} && sudo dpkg -i ${fname}
+                # sudo apt-get install -f -y
+                # wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb 
+                # sudo dpkg -i google-chrome-stable_current_amd64.deb
+            fi 
+        
+    }
+    function tools_install_coder(){
             local app_name='Coder Server'
             local app_cmd='coder server'
             _IS_BREAK="true"
             function print_app_usage(){
-                echo -e "\n${BOLD} ${POINTING} ${app_name}使用说明: ${PLAIN}\n"
+                echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}\n"
                 echo -e " > WebURL: https://coder.com/   "
                 echo -e " > WebURL: https://github.com/coder/coder   "
                 echo -e " > Docker: https://github.com/coder/coder/blob/main/docker-compose.yaml   "
@@ -3122,13 +3528,13 @@ function management_tools_menu(){
                 print_app_usage
             fi 
             # curl -L https://coder.com/install.sh | sh ;;
-            ;; 
-        9) 
+    }
+    function tools_install_codeserver(){
             local app_name='Code Server'
             local app_cmd='code-server'
             _IS_BREAK="true"
             function print_app_usage(){
-                echo -e "\n${BOLD} ${POINTING} ${app_name}使用说明: ${PLAIN}\n"
+                echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}\n"
                 echo -e " > WebURL: https://coder.com/   "
                 echo -e " > WebURL: https://github.com/coder/coder   "
                 echo -e " > GitHub: https://github.com/coder/code-server  "
@@ -3153,8 +3559,8 @@ function management_tools_menu(){
                 print_app_usage
             fi 
             # curl -fsSL https://code-server.dev/install.sh | sh  ;;
-            ;; 
-        10) 
+    }
+    function tools_install_akilemonitor(){
             local app_name='Akile Monitor'
             local app_cmd='akm'
             _IS_BREAK="true"
@@ -3163,82 +3569,8 @@ function management_tools_menu(){
             local url="https://raw.githubusercontent.com/akile-network/akile_monitor/refs/heads/main/${file}"
             echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
             fetch_script_from_url $url $file 1
-            ;; 
-        21) 
-            local app_name='Redis'
-            local app_cmd='redis'
-            _IS_BREAK="true"
-            _BREAK_INFO=" 由${app_name}返回！"
-            function print_app_usage(){
-                echo -e "\n${BOLD} ${POINTING} ${app_name}使用说明: ${PLAIN}\n"
-                # echo -e " > WebURL: https://coder.com/   "
-                echo ""
-                [[ -n "$WAN4" ]] && echo -e " URL: http://$WAN4:6379 "
-                [[ -n "$WAN6" ]] && echo -e " URL: http://[$WAN6]:6379 "
-            }
-            
-            if command -v ${app_cmd} &> /dev/null; then
-                _BREAK_INFO=" 系统已安装${app_name}数据库，无需重复安装!"
-                # print_app_usage
-            else 
-                curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
-                echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
-                apt update
-                apt install redis
-                systemctl start redis-server
-                systemctl enable redis-server
-                # print_app_usage
-                _BREAK_INFO=" 成功安装${app_name}数据库！"
-            fi 
-            ;; 
-        23) 
-            local app_name='MariaDB'
-            local app_cmd='mariadb'
-            _IS_BREAK="true"
-            _BREAK_INFO=" 由${app_name}返回！"
-            
-            if command -v ${app_cmd} &> /dev/null; then
-                _BREAK_INFO=" 系统已安装${app_name}数据库，无需重复安装!"
-            else                 
-                apt install apt-transport-https curl
-                mkdir -p /etc/apt/keyrings
-                curl -o /etc/apt/keyrings/mariadb-keyring.pgp 'https://mariadb.org/mariadb_release_signing_key.pgp'
-
-                cat > /etc/apt/sources.list.d/mariadb.sources << EOF
-X-Repolib-Name: MariaDB
-Types: deb
-# deb.mariadb.org is a dynamic mirror if your preferred mirror goes offline. See https://mariadb.org/mirrorbits/ for details.
-URIs: https://deb.mariadb.org/11.2/ubuntu
-Suites: jammy
-Components: main main/debug
-Signed-By: /etc/apt/keyrings/mariadb-keyring.pgp
-EOF
-
-                apt update
-                apt install mariadb-server
-                systemctl start mariadb
-                systemctl enable mariadb
-                mariadb-secure-installation
-
-                _BREAK_INFO=" 成功安装${app_name}数据库！"
-            fi 
-            ;; 
-        24) 
-            local app_name='PostgreSQL'
-            local app_cmd='postgresql'
-            _IS_BREAK="true"
-            _BREAK_INFO=" 由${app_name}返回！"
-            
-            if command -v ${app_cmd} &> /dev/null; then
-                _BREAK_INFO=" 系统已安装${app_name}数据库，无需重复安装!"
-                postgresql_usage
-            else 
-                install postgresql-client && apt update && install postgresql
-                postgresql_usage
-                _BREAK_INFO=" 成功安装${app_name}数据库！"
-            fi 
-            ;; 
-        31) 
+    }
+    function tools_install_rustdesk(){
             _IS_BREAK="true"
             local app_name='RustDesk'
             local app_cmd='rustdesk'
@@ -3248,13 +3580,40 @@ EOF
             echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
             fetch_script_from_url $url $fname 0 
             # wget https://raw.githubusercontent.com/dinger1986/rustdeskinstall/master/install.sh && chmod +x install.sh && ./install.sh ;;
-            ;; 
-        32) 
+    }
+    function tools_install_sublinkx(){
+            _IS_BREAK="true"
+            local app_name='SubLinkX'
+            local app_cmd='sublink'
+            function print_app_usage(){
+                echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}"
+                echo -e "\n - GitHub: https://github.com/gooaclok819/sublinkX"
+                echo -e "\n - ${app_cmd}      # 查看${app_name}管理菜单"
+                echo ""
+                [[ -n "$WAN4" ]] && echo -e " URL: http://$WAN4:8000 "
+                [[ -n "$WAN6" ]] && echo -e " URL: http://[$WAN6]:8000 "
+            }
+
+            if command -v ${app_cmd} &> /dev/null; then
+                _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
+                print_app_usage
+            else 
+                _BREAK_INFO=" 成功安装${app_name}服务！"
+                local fname="sublinkx.sh"
+                local url="https://raw.githubusercontent.com/gooaclok819/sublinkX/main/install.sh"
+                echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
+                fetch_script_from_url $url $fname 1 
+                
+                print_app_usage
+            fi 
+            # curl -s https://raw.githubusercontent.com/gooaclok819/sublinkX/main/install.sh | sudo bash
+    }
+    function tools_install_deeplx(){
             _IS_BREAK="true"
             local app_name='DeepLX'
             local app_cmd='deeplx'
             function print_app_usage(){
-                echo -e "\n${BOLD} ${POINTING} ${app_name}使用说明: ${PLAIN}\n"
+                echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}\n"
                 echo -e " - WebURL: https://deeplx.owo.network/"
                 echo -e " - GitHub: https://github.com/OwO-Network/DeepLX"
                 echo ""
@@ -3291,80 +3650,44 @@ EOF
             fi 
             # bash <(curl -Ls https://ssa.sx/dx)
             # bash <(curl -Ls https://raw.githubusercontent.com/OwO-Network/DeepLX/main/install.sh)
-            ;; 
-        33) 
+    }
+    function tools_install_iycms(){
             _IS_BREAK="true"
-            local app_name='SubLinkX'
-            local app_cmd='sublink'
+            local app_name='爱影CMS'
+            local app_cmd='iycms'
             function print_app_usage(){
-                echo -e "\n${BOLD} ${POINTING} ${app_name}使用说明: ${PLAIN}"
-                echo -e "\n - GitHub: https://github.com/gooaclok819/sublinkX"
-                echo -e "\n - ${app_cmd}      # 查看${app_name}管理菜单"
+                echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}\n"
+                echo -e " - WebURL: https://iycms.com/index.html"
+                echo -e "" 
+                echo -e " > systemctl status ${app_cmd}      # 查看${app_name}服务运行状态"
+                echo -e " > systemctl start ${app_cmd}       # 查看${app_name}服务运行状态"
+                echo -e " > systemctl stop ${app_cmd}        # 查看${app_name}服务运行状态"
+                echo -e " > systemctl restart ${app_cmd}     # 查看${app_name}服务运行状态"
                 echo ""
-                [[ -n "$WAN4" ]] && echo -e " URL: http://$WAN4:8000 "
-                [[ -n "$WAN6" ]] && echo -e " URL: http://[$WAN6]:8000 "
+                [[ -n "$WAN4" ]] && echo -e " URL: http://$WAN4:21007 "
+                [[ -n "$WAN6" ]] && echo -e " URL: http://[$WAN6]:21007 "
             }
 
-            if command -v ${app_cmd} &> /dev/null; then
+            if systemctl status iycms > /dev/null 2>&1; then
                 _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
                 print_app_usage
             else 
-                _BREAK_INFO=" 成功安装${app_name}服务！"
-                local fname="sublinkx.sh"
-                local url="https://raw.githubusercontent.com/gooaclok819/sublinkX/main/install.sh"
+                local file="lucky.sh"
+                local url="https://www.iycms.com/api/static/down/linux/ubuntu/install_x86_64.sh"
                 echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
-                fetch_script_from_url $url $fname 1 
+                fetch_script_from_url $url $file 0
                 
                 print_app_usage
+                _BREAK_INFO=" 成功安装: ${app_name}"
             fi 
-            # curl -s https://raw.githubusercontent.com/gooaclok819/sublinkX/main/install.sh | sudo bash
-            ;; 
-        34) 
-            _IS_BREAK="true"
-            local app_name='Chrome'
-            local app_cmd='chrome'
-
-            if command -v ${app_cmd} &> /dev/null; then
-                _BREAK_INFO=" 系统已安装${app_name}，无需重复安装!"
-            else 
-                _BREAK_INFO=" 成功安装${app_name}！"
-                local fname="google-chrome-stable_current_amd64.deb"
-                local url="https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
-                sudo apt-get install -f -y && wget ${url} && sudo dpkg -i ${fname}
-                # sudo apt-get install -f -y
-                # wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb 
-                # sudo dpkg -i google-chrome-stable_current_amd64.deb
-            fi 
-
-            ;; 
-        41) 
-            _IS_BREAK="true"
-            local app_name='Warp'
-            local app_cmd='warp'
-             _BREAK_INFO=" 由${app_name}返回！"
-            local fname="menu.sh"
-            local url="https://gitlab.com/fscarmen/warp/-/raw/main/${fname}"
-            echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
-            fetch_script_from_url $url $fname 0 
-            ;; 
-        42) 
-            _IS_BREAK="true"
-            local app_name='Warp(hamid)'
-            local app_cmd='warp'
-             _BREAK_INFO=" 由${app_name}返回！"
-            local fname="warp_proxy.sh"
-            local ghurl="https://github.com/hamid-gh98"
-            local url="https://raw.githubusercontent.com/hamid-gh98/x-ui-scripts/main/install_warp_proxy.sh"
-            echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
-            fetch_script_from_url $url $fname 1  
-            ;; 
-        43) 
+    }
+    function tools_install_v2raya(){
             _IS_BREAK="true"
             local app_name='V2RayA'
             local app_cmd='v2raya'
              _BREAK_INFO=" 由${app_name}返回！"
             function print_app_usage(){
-                echo -e "\n${BOLD} ${POINTING} ${app_name}使用说明: ${PLAIN}\n"
+                echo -e "\n${BOLD} ${PRIGHT} ${app_name}使用说明: ${PLAIN}\n"
                 echo -e " - WebURL: https://v2raya.org/"
                 echo -e " - GitHub: https://github.com/v2rayA/v2rayA-installer"
                 echo ""
@@ -3468,9 +3791,9 @@ EOF
             *)
                 _BREAK_INFO=" 请输入正确选项！"
                 ;;
-            esac 
-            ;; 
-        44) 
+            esac             
+    }
+    function tools_install_sbfarsman(){
             _IS_BREAK="true"
             local app_name='Singbox'
             local app_cmd='sb'
@@ -3478,31 +3801,89 @@ EOF
             local fname="sing-box.sh"
             local url="https://raw.githubusercontent.com/fscarmen/sing-box/main/${fname}"
             echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
-            fetch_script_from_url $url $fname 
-            ;; 
-        45) 
+            fetch_script_from_url $url $fname 1
+    }
+    function tools_install_sbygkkk(){
             _IS_BREAK="true"
             local app_name='Singbox(yg)'
             local app_cmd='sb'
              _BREAK_INFO=" 由${app_name}返回！"
             local fname="sb.sh"
-            local url="https://gitlab.com/rwkgyg/sing-box-yg/raw/main/${fname}"
+            local url="https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/sb.sh"
+            echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
+            fetch_script_from_url $url $fname 1 
+    }
+    function tools_install_warpfarsman(){
+            _IS_BREAK="true"
+            local app_name='Warp'
+            local app_cmd='warp'
+             _BREAK_INFO=" 由${app_name}返回！"
+            local fname="menu.sh"
+            local url="https://gitlab.com/fscarmen/warp/-/raw/main/${fname}"
             echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
             fetch_script_from_url $url $fname 0 
-            ;; 
-        xx) 
-            sys_reboot
-            ;;
-        0) 
-            echo -e "\n$TIP 返回主菜单 ..."
-            break 
-            ;;
-        *)
-            _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！"
+    }
+    function tools_install_warpygkkk(){
             _IS_BREAK="true"
-            ;;
+            local app_name='Warp(yg)'
+            local app_cmd='sb'
+             _BREAK_INFO=" 由${app_name}返回！"
+            local fname="sb-yg.sh"
+            local url="https://gitlab.com/rwkgyg/CFwarp/raw/main/CFwarp.sh"
+            echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
+            fetch_script_from_url $url $fname 0 
+    }
+    function tools_install_warphamid(){
+            _IS_BREAK="true"
+            local app_name='Warp(hamid)'
+            local app_cmd='warp'
+             _BREAK_INFO=" 由${app_name}返回！"
+            local fname="warp_proxy.sh"
+            local ghurl="https://github.com/hamid-gh98"
+            local url="https://raw.githubusercontent.com/hamid-gh98/x-ui-scripts/main/install_warp_proxy.sh"
+            echo -e "\n $TIP 开始下载${app_name}脚本...\n  url: ${url}\n $RESET"
+            fetch_script_from_url $url $fname 1  
+    }
+
+    while true; do
+        print_sub_item_menu_headinfo
+
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        case "${INPUT}" in
+        1 ) tools_install_1panel ;;
+        2 ) tools_install_aaPanel ;;
+        3 ) tools_install_ajenti ;;
+        4 ) tools_install_cockpit ;;
+        6 ) tools_install_hestiacp ;;
+        7 ) tools_install_cloudpanel ;;
+        8 ) tools_install_cyberpanel ;;
+        21) tools_install_redis ;; 
+        22) tools_install_mysql ;; 
+        23) tools_install_mariadb ;; 
+        24) tools_install_postgresql ;; 
+        25) tools_install_frps ;; 
+        27) tools_install_lucky ;; 
+        28) tools_install_neza ;; 
+        29) tools_install_chrome ;; 
+        30) tools_install_coder ;; 
+        31) tools_install_codeserver ;; 
+        32) tools_install_akilemonitor ;; 
+        41) tools_install_rustdesk ;; 
+        42) tools_install_sublinkx ;; 
+        43) tools_install_deeplx ;; 
+        44) tools_install_iycms ;; 
+        45) tools_install_v2raya ;; 
+        46) tools_install_sbfarsman ;; 
+        47) tools_install_sbygkkk;; 
+        48) tools_install_warpfarsman ;; 
+        49) tools_install_warpygkkk ;; 
+        50) tools_install_warphamid ;; 
+        xx) sys_reboot ;;
+        0)  echo -e "\n$TIP 返回主菜单 ..." && break ;;
+        *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
         esac
-        break_tacle
+        case_break_tacle
     done
 
 }
@@ -3536,17 +3917,14 @@ function other_scripts_menu(){
 
     while true; do
         print_sub_item_menu_headinfo
+        _IS_BREAK="true"
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
-
         read -rp "${CHOICE}" INPUT
         case "${INPUT}" in
-        1) 
-            bash <(curl -sL kejilion.sh)
-            ;;
+        1) bash <(curl -sL kejilion.sh) && _BREAK_INFO=" 从 kejilion 返回 ... " ;;
         2)
             local app_name='1keji_docker'
             local app_cmd='1keji_docker'
-            _IS_BREAK="true"
              _BREAK_INFO=" 由${app_name}返回！"
             local fname="1keji_docker.sh"
             local url="https://pan.1keji.net/f/rRi2/${fname}"
@@ -3559,7 +3937,6 @@ function other_scripts_menu(){
         3) 
             local app_name='1keji_docker'
             local app_cmd='1keji_docker'
-            _IS_BREAK="true"
              _BREAK_INFO=" 由${app_name}返回！"
             local fname="1keji_nznginx.sh"
             local url="https://pan.1keji.net/f/YJTA/${fname}"
@@ -3572,7 +3949,6 @@ function other_scripts_menu(){
         4) 
             local app_name='1keji_docker'
             local app_cmd='1keji_docker'
-            _IS_BREAK="true"
              _BREAK_INFO=" 由${app_name}返回！"
             local fname="1kejiV01.sh"
             local url="https://pan.1keji.net/f/ERGcp/${fname}"
@@ -3582,26 +3958,10 @@ function other_scripts_menu(){
             # echo -e " 1kejiV01.sh 脚本下载中...\n"
             # wget -qO 1kejiV01.sh "https://pan.1keji.net/f/ERGcp/1kejiV01.sh" && chmod +x 1kejiV01.sh && ./1kejiV01.sh
             ;;
-        5) 
-            bash <(curl -sSL https://linuxmirrors.cn/main.sh)
-            _BREAK_INFO=" 从 linuxmirrors 返回 ... "
-            _IS_BREAK="true"
-            ;;
-        6) 
-            bash <(curl -sSL https://linuxmirrors.cn/main.sh) --edu 
-            _BREAK_INFO=" 从 linuxmirrors 返回 ... "
-            _IS_BREAK="true"
-            ;;
-        7) 
-            bash <(curl -sSL https://linuxmirrors.cn/main.sh) --abroad
-            _BREAK_INFO=" 从 linuxmirrors 返回 ... "
-            _IS_BREAK="true"
-            ;;
-        8) 
-            bash <(curl -sSL https://linuxmirrors.cn/docker.sh)
-            _BREAK_INFO=" 从 linuxmirrors(docker) 返回 ... "
-            _IS_BREAK="true"
-            ;;
+        5)  bash <(curl -sSL https://linuxmirrors.cn/main.sh)          && _BREAK_INFO=" 从 linuxmirrors 返回 ... " ;;
+        6)  bash <(curl -sSL https://linuxmirrors.cn/main.sh) --edu    && _BREAK_INFO=" 从 linuxmirrors(edu) 返回 ... " ;;
+        7)  bash <(curl -sSL https://linuxmirrors.cn/main.sh) --abroad && _BREAK_INFO=" 从 linuxmirrors(abroad) 返回 ... " ;;
+        8)  bash <(curl -sSL https://linuxmirrors.cn/docker.sh)        && _BREAK_INFO=" 从 linuxmirrors(docker) 返回 ... " ;;
         21) 
             # local country=$(curl -s --connect-timeout 1 --max-time 3 ipinfo.io/country)
             local url=$(get_proxy_url "https://raw.githubusercontent.com/BlueSkyXN/SKY-BOX/main/box.sh")
@@ -3616,21 +3976,12 @@ function other_scripts_menu(){
                 echo -e "\n${ERROR} 很抱歉，你的系统不支持 wget 或 curl 命令！${NC}"
             fi 
             _BREAK_INFO=" 从 SKY-BOX 工具箱返回 ... "
-            _IS_BREAK="true"
             ;;
-        xx) 
-            sys_reboot
-            ;;
-        0) 
-            echo -e "\n$TIP 返回主菜单 ..."
-            break 
-            ;;
-        *)
-            _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！"
-            _IS_BREAK="true"
-            ;;
+        xx) sys_reboot ;;
+        0)  echo -e "\n$TIP 返回主菜单 ..." && break ;;
+        *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" ;;
         esac
-        break_tacle
+        case_break_tacle
     done
 
 }
@@ -3804,7 +4155,7 @@ function python_management_menu(){
         local num_split=$MAX_SPLIT_CHAR_NUM
         print_sub_head "▼ Python管理 " $num_split 0 0 
         local VERSION=$(python3 -V 2>&1 | awk '{print $2}')
-        echo -e "\n $POINTING 当前Python: $VERSION\n"
+        echo -e "\n $PRIGHT 当前Python: $VERSION\n"
         generate_separator "…|$AZURE" $num_split # 另一个分割线
         split_menu_items MENU_PYTHON_ITEMS[@] $num_split
         # print_main_menu_tail $num_split
@@ -3848,21 +4199,11 @@ function python_management_menu(){
             local CHOICE=$(echo -e "\n${BOLD}└─ 输入你要安装选项: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
-            1) 
-                python_update_to_latest
-                ;;
-            2) 
-                python_install_version 3.12.7
-                ;;
-            3) 
-                python_install_version 3.11
-                ;;
-            4) 
-                python_install_version 3.10
-                ;;
-            5) 
-                python_install_version 3.9
-                ;;
+            1) python_update_to_latest ;;
+            2) python_install_version 3.12.7 ;;
+            3) python_install_version 3.11 ;;
+            4) python_install_version 3.10 ;;
+            5) python_install_version 3.9 ;;
             9) 
                 local CHOICE=$(echo -e "\n${BOLD}└─ 选择Python版本: ${PLAIN}")
                 read -rp "${CHOICE}" INPUT
@@ -3872,13 +4213,8 @@ function python_management_menu(){
                     python_install_version $INPUT
                 fi
                 ;;
-            0) 
-                echo -e "\n$TIP 返回主菜单 ..."
-                _IS_BREAK="false"
-                ;;
-            *)
-                _BREAK_INFO=" 请输入正确选项！"
-                ;;
+            0) echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" ;;
+            *) _BREAK_INFO=" 请输入正确选项！" ;;
             esac 
             ;;
         2) 
@@ -4136,8 +4472,467 @@ function python_management_menu(){
             _IS_BREAK="true"
             ;;
         esac
-        break_tacle
+        case_break_tacle
     done
+
+}
+
+
+function caddy_install(){
+    if command -v caddy >/dev/null 2>&1; then  
+        echo -e "\n$TIP Caddy已安装: $(caddy --version)"        
+        return 0 
+    fi
+
+    # 准备目录和主页文件
+    # mkdir -p /home/web/{caddy,html}
+    local dir_root=${1:-'/home/caddy_data'}
+    local dir_main=${dir_root}'/caddy'
+    local dir_html=${dir_root}'/html'
+    local dir_logs=${dir_root}'/log'
+
+    echo -e "$PRIGHT 1.创建配置文件目录 ... "
+
+    [[ -d "${dir_root}" ]] || mkdir -p "${dir_root}"
+    [[ -d "${dir_main}" ]] || mkdir -p "${dir_main}"
+    [[ -d "${dir_html}" ]] || mkdir -p "${dir_html}"
+    [[ -d "${dir_logs}" ]] || mkdir -p "${dir_logs}"
+
+    echo -e "$PRIGHT 2.切换至当前目录到: ${dir_root} ... "
+    cd "$dir_main"
+    echo -e "$PRIGHT 3.下载主页和默认配置文件 ... "
+    local url_caddy_index=$(get_proxy_url 'https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/scripts/caddy/index.html')
+    local url_caddy_conf=$(get_proxy_url  'https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/scripts/caddy/default.conf')
+    [[ -f "${dir_html}/index.html"   ]] || curl -sSL -o ${dir_html}/index.html   $url_caddy_index || wget -qO ${dir_html}/index.html   $url_caddy_index
+    [[ -f "${dir_main}/default.conf" ]] || curl -sSL -o ${dir_main}/default.conf $url_caddy_conf  || wget -qO ${dir_main}/default.conf $url_caddy_conf
+
+	if [ -f /etc/os-release ]; then
+		. /etc/os-release
+		case "$ID" in
+			ubuntu|debian|raspbian)
+                echo -e "$PRIGHT 4.开始安装Caddy ... "
+                sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https curl && \
+                curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg && \
+                curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list && \
+                sudo apt update && sudo apt install -y caddy                
+				;;
+			centos|rhel|almalinux|rocky|fedora)
+                echo -e "$PRIGHT 4.开始安装Caddy ... "
+				dnf install 'dnf-command(copr)'
+                dnf copr enable @caddy/caddy
+                dnf install caddy
+                ## For RHEL/CentOS 7
+                # yum install yum-plugin-copr
+                # yum copr enable @caddy/caddy
+                # yum install caddy
+				;;
+			# alpine) ;;
+			arch|manjaro) 
+                pacman -Syu caddy
+                ;;
+			# opensuse|suse|opensuse-tumbleweed) ;;
+			# iStoreOS|openwrt|ImmortalWrt|lede) ;;
+			# FreeBSD) ;;
+			*) echo -e "$WARN 不支持的发行版: $ID" && return ;;
+		esac
+	else
+		echo -e "$WARN 无法确定操作系统。"
+		return
+	fi
+
+    echo -e "$PRIGHT 5.完成安装Caddy. "
+
+}
+
+
+# 更新域名信息
+function caddy_new_caddyfile(){
+    local dir_caddy=${1:-'/home/caddy_data/caddy'}
+
+    if [ -z "$(find ${dir_caddy} -name "*.conf")" ]; then
+        echo -e "${WARN} No *.conf files found in ${dir_caddy}"
+    else
+        echo -e " >>> Join all *.conf files into: /etc/caddy/Caddyfile"
+        caddy_cfg_backup 
+        find ${dir_caddy} -name "*.conf" -exec cat {} + > /etc/caddy/Caddyfile
+        # cd /etc/caddy/Caddyfile
+    fi
+}
+
+## 重新加载Caddy，使新的配置文件生效 
+function caddy_reload(){ 
+    caddy_install; 
+    cd /etc/caddy; 
+    # caddy_new_caddyfile; 
+    caddy reload; 
+    cd - ; 
+}
+
+## 备份Caddy配置信息 
+function caddy_cfg_backup(){
+    local path_cfg='/etc/caddy/Caddyfile'
+    if [ ! -f "${path_cfg}" ]; then
+        echo -e "$WARN Caddy配置文件不存在($path_cfg)。"
+        return 1 
+    fi
+    cp "${path_cfg}" "${path_cfg}.bak" 
+    echo -e "$WARN 成功备份Caddy配置文件: ($path_cfg).bak"
+}
+
+# 更换站点域名 
+function caddy_alter_domain(){
+    local domain_new=$1
+    local domain_old=$2
+    local dir_caddy=${3:-'/home/caddy_data/caddy'}
+    
+    if [[ -z "${domain_new}" ]] ; then 
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入新域名: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        domain_new=$INPUT 
+    fi 
+    [[ -z "$domain_new" ]] && echo -e "$WARN 新域名不能为空。" && return 1 
+
+    if [[ -z "${domain_old}" ]] ; then 
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入需要替换的域名: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        domain_old=$INPUT 
+    fi 
+    [[ -z "$domain_old" ]] && echo -e "$WARN 要替换的域名不能为空。" && return 1 
+
+    mv ${dir_caddy}/$domain_old.conf ${dir_caddy}/$domain_new.conf
+    sed -i "s/$domain_old/$domain_new/g" ${dir_caddy}/$domain_new.conf
+
+    echo -e "\n${BOLD}└─ 更换域名成功: ${PLAIN}$domain_old -> $domain_new\n"
+    ## 刷新Caddy配置信息，并重启Caddy，使反代生效 
+    caddy_new_caddyfile
+    caddy_reload
+
+}
+
+# 删除站点域名 
+function caddy_del_domain(){
+    local domain_new=$1
+    local dir_caddy=${2:-'/home/caddy_data/caddy'}
+    
+    if [[ -z "${domain_new}" ]] ; then 
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入新域名: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        domain_new=$INPUT 
+    fi 
+    [[ -z "$domain_new" ]] && echo -e "$WARN 新域名不能为空。" && return 1 
+
+    if [[ -f "${dir_caddy}/$domain_new.conf" ]] ; then 
+        echo -e "$INFO 删除站点 $domain_new ..."
+        rm -f ${dir_caddy}/$domain_new.conf 
+
+        echo -e "\n$TIP 删除域名成功: $domain_new\n"
+        ## 刷新Caddy配置信息，并重启Caddy，使反代生效 
+        caddy_new_caddyfile
+        caddy_reload
+    else 
+        echo -e "$WARN 站点${domain_new}的域名配置文件不存在: ${dir_caddy}/${domain_new}.conf)"
+    fi
+}
+
+
+function caddy_domain_list(){
+    # ls -t /home/web/caddy | grep -v "default.conf" | sed 's/\.[^.]*$//'
+    local dm_list=$(ls -t /home/web/caddy | grep -v "default.conf" | sed 's/\.[^.]*$//')
+    # clear
+    echo -e "$PRIGHT 站点列表\n${PLAIN}-------------------------------\n"
+    echo "${list[@]}" | tr ' ' '\n' | nl -w2 -s'. '
+
+    # for dm_file in $dm_list; do
+    #     printf "%-s\n" "$dm_file"
+    # done
+    echo -e "\n${PLAIN}-------------------------------\n"
+}
+
+
+# 清空站点域名 
+function caddy_clean_all_domain(){
+    local dir_caddy=${1:-'/home/caddy_data/caddy'}
+    
+    
+    if [ -z "$(find ${dir_caddy} -name "*.conf")" ]; then
+        echo -e "${WARN} 配置文件目录没有站点配置文件 in ${dir_caddy}"
+    else
+        echo -e " >>> Join all *.conf files into: /etc/caddy/Caddyfile"
+        rm -f ${dir_caddy}/$domain_new.conf 
+        echo -e "\n$TIP 成功删除全部域名: $domain_new\n"
+        ## 刷新Caddy配置信息，并重启Caddy，使反代生效 
+        caddy_new_caddyfile
+        caddy_reload        
+    fi
+
+}
+
+# 添加域名反代
+function caddy_add_reproxy(){
+    local domain=$1
+    local ip=$2
+    local port=$3
+    local to_check=${4:-1}
+    local dir_caddy=${5:-'/home/caddy_data/caddy'}
+
+    if [[ -z "${domain}" ]] ; then 
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入需反代的域名: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] && echo -e "$WARN 输入的域名不能为空。" && return 1 
+        domain=$INPUT 
+    fi 
+    if [[ -z "${ip}" ]] ; then
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入反代的目标IP(默认: 127.0.0.1): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] &&  INPUT="127.0.0.1"
+        ip=$INPUT
+    fi
+    if [[ -z "${port}" ]] ; then
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入反代的目标端口(默认: 3000): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] &&  INPUT=3000
+        port=$INPUT
+    fi
+    
+    if [[ ${to_check} -eq 1 ]] ; then 
+        echo -e ''
+        echo -e "${BOLD}└─ 请确认反代信息是否有误: ${PLAIN}\n"
+        echo -e "${BOLD}   域名: ${PLAIN}$domain"
+        echo -e "${BOLD}   反代: ${PLAIN}$ip:$port"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 以上信息正确吗？[Y/n]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] &&  INPUT="Y"
+        case "${INPUT}" in
+        [Yy] | [Yy][Ee][Ss]) ;;
+        [Nn] | [Nn][Oo])  
+            echo -e "\n$TIP 反代信息有误！" 
+            return 1 
+            ;;
+        *)   
+            echo -e "\n$WARN 输入错误[Y/n],请重试！"
+            return 1 
+            ;;
+        esac
+    fi 
+    
+    cat > "${dir_caddy}/${domain}.conf" << EOF
+$domain {
+    reverse_proxy $ip:$port
+    encode gzip
+}
+EOF
+
+    echo -e "\n${BOLD}└─ 添加反代成功: ${PLAIN}$domain -> $ip:$port\n"
+    ## 刷新Caddy配置信息，并重启Caddy，使反代生效 
+    caddy_new_caddyfile
+    caddy_reload
+}
+
+# 添加负载均衡
+function caddy_add_url_balance(){
+    local domain=$1
+    local dir_caddy=${1:-'/home/caddy_data/caddy'}
+
+    if [[ -z "${domain}" ]] ; then 
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入需反代的域名: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] && echo -e "$WARN 输入的域名不能为空。" && return 1 
+        domain=$INPUT 
+    fi 
+
+    local url_list=()
+    echo -e "\n$WORKING 按顺序输入需要进行负载均衡的链接: \n" 
+    while true; do
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入负载均衡的链接(IP:PORT),直接回车结束输入:: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] && break
+        url_list+=("$INPUT")
+    done
+
+    if [ ${#url_list[@]} -eq 0 ]; then
+        echo -e "$WARN 负载均衡目标链接列表为空，返回。"
+        return -1 
+    fi
+    
+    local strategy='least_conn'
+    echo -e "${BOLD}└─ 请选择负载均衡策略: ${PLAIN}\n"
+    echo -e "  1. 轮询(Round Robin)(默认)"
+    echo -e "  2. IP哈希(Source Hash)"
+    echo -e "  3. 最少连接(Least Connections)"
+    echo -e "  4. 权重随机(Random)"
+    print_items_list "${url_list[@]}" "负载均衡链接列表"
+    local CHOICE=$(echo -e "\n${BOLD}└─ 以上信息正确吗？[Y/n]: ${PLAIN}")
+    read -rp "${CHOICE}" INPUT
+    [[ -z "$INPUT" ]] &&  INPUT=1
+    case "${INPUT}" in 
+    1) strategy='least_conn';; 
+    2) strategy='round_robin';; 
+    3) strategy='ip_hash';; 
+    4) 
+        strategy='random'
+        print_items_list "${url_list[@]}" "负载均衡链接列表"            
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请按序输入每个链接的权重值(1-100): ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] &&  INPUT=1
+        ;; 
+    *)   
+        echo -e "\n$WARN 输入错误,返回！"
+        return 1 
+        ;;
+    esac
+
+    
+    if [[ ${to_check} -eq 1 ]] ; then 
+        echo -e ''
+        echo -e "${BOLD}└─ 请确认负载均衡数据是否有误: ${PLAIN}\n"
+        echo -e "${BOLD}   域名: ${PLAIN}$domain"
+        print_items_list "${url_list[@]}" "负载均衡链接列表"
+        echo -e ''
+        echo -e "${BOLD}   负载均衡策略: ${strategy} ${PLAIN}\n"
+
+        local CHOICE=$(echo -e "\n${BOLD}└─ 以上信息正确吗？[Y/n]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] &&  INPUT="Y"
+        case "${INPUT}" in 
+        [Yy] | [Yy][Ee][Ss]) ;; 
+        [Nn] | [Nn][Oo]) 
+            echo -e "\n$TIP 信息有误，直接返回！" 
+            return 1 
+            ;;
+        *)   
+            echo -e "\n$WARN 输入错误[Y/n],请重试！"
+            return 1 
+            ;;
+        esac
+    fi 
+    
+    cat > "${dir_caddy}/${domain}.conf" << EOF
+$domain {
+    reverse_proxy "${list[*]}" {
+        lb_policy ${strategy}  
+
+        health_uri /health    
+        health_interval 10s   
+        health_timeout 2s     
+    }
+}
+EOF
+
+    echo -e "\n${BOLD}└─ 添加负载均衡成功: ${PLAIN}$domain \n"
+    print_items_list "${url_list[@]}" "负载均衡链接列表"
+    echo -e "" 
+
+    ## 刷新Caddy配置信息，并重启Caddy，使反代生效 
+    caddy_new_caddyfile
+    caddy_reload
+}
+
+# 添加重定向
+function caddy_add_url_redirect(){
+    local domain=$1
+    local redirurl=$2
+    local dir_caddy=${3:-'/home/caddy_data/caddy'}
+
+    if [[ -z "${domain}" ]] ; then 
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输重定向域名: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] && echo -e "$WARN 输入的域名不能为空。" && return 1 
+        domain=$INPUT 
+    fi 
+    if [[ -z "${redirurl}" ]] ; then
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输重定向的目标链接: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] &&  echo -e "$WARN 输入的目标链接不能为空。" && return 1 
+        redirurl=$INPUT
+    fi
+
+    if [[ ${to_check} -eq 1 ]] ; then 
+        echo -e ''
+        echo -e "${BOLD}└─ 请确认重定向信息是否有误: ${PLAIN}\n"
+        echo -e "${BOLD}   域名: ${PLAIN}$domain"
+        echo -e "${BOLD}   链接: ${PLAIN}$redirurl"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 以上信息正确吗？[Y/n]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] &&  INPUT="Y"
+        case "${INPUT}" in
+        [Yy] | [Yy][Ee][Ss]) ;;
+        [Nn] | [Nn][Oo])  
+            echo -e "\n$TIP 重定向信息有误！" 
+            return 1 
+            ;;
+        *)   
+            echo -e "\n$WARN 输入错误[Y/n],请重试！"
+            return 1 
+            ;;
+        esac
+    fi 
+
+    cat > "${dir_caddy}/${domain}.conf" << EOF
+$domain {
+    redir $redirurl{uri}
+}
+EOF
+
+    echo -e "\n${BOLD}└─ 添加重定向成功: ${PLAIN}$domain -> $redirurl\n"
+    ## 刷新Caddy配置信息，并重启Caddy，使重定向生效 
+    caddy_new_caddyfile
+    caddy_reload
+
+}
+
+
+# 静态网站
+function caddy_add_static_web(){
+    local domain=$1
+    local abspath=$2
+    local dir_caddy=${3:-'/home/caddy_data/caddy'}
+
+    if [[ -z "${domain}" ]] ; then 
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输重定向域名: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] && echo -e "$WARN 输入的域名不能为空。" && return 1 
+        domain=$INPUT 
+    fi 
+    if [[ -z "${abspath}" ]] ; then
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输重定向的目标链接: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] &&  echo -e "$WARN 输入的目标链接不能为空。" && return 1 
+        abspath=$INPUT
+    fi
+
+    if [[ ${to_check} -eq 1 ]] ; then 
+        echo -e ''
+        echo -e "${BOLD}└─ 请确认重定向信息是否有误: ${PLAIN}\n"
+        echo -e "${BOLD}   域名: ${PLAIN}$domain"
+        echo -e "${BOLD}   路径: ${PLAIN}$abspath"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 以上信息正确吗？[Y/n]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] &&  INPUT="Y"
+        case "${INPUT}" in
+        [Yy] | [Yy][Ee][Ss]) ;;
+        [Nn] | [Nn][Oo])  
+            echo -e "\n$TIP 静态站点信息有误！" 
+            return 1 
+            ;;
+        *)   
+            echo -e "\n$WARN 输入错误[Y/n],请重试！"
+            return 1 
+            ;;
+        esac
+    fi 
+
+    cat > "${dir_caddy}/${domain}.conf" << EOF
+$domain {
+    root * $abspath
+    encode gzip
+    file_server
+}
+EOF
+
+    echo -e "\n${BOLD}└─ 添加重定向成功: ${PLAIN}$domain -> $redirurl\n"
+    ## 刷新Caddy配置信息，并重启Caddy，使静态站点生效 
+    caddy_new_caddyfile
+    caddy_reload
 
 }
 
@@ -4146,16 +4941,20 @@ function python_management_menu(){
 MENU_CADDY_ITEMS=(
     "1|安装Caddy|$WHITE"
     "2|卸载Caddy|$WHITE"
-    "3|Caddy状态|$WHITE"
+    "3|更新Caddy|$WHITE"
     "4|重启Caddy|$WHITE"
-    "5|更新Caddy|$WHITE"
+    "5|查看状态|$YELLOW"
+    "6|站点列表|$CYAN" 
+    "7|重置配置|$WHITE"
     "…………………………|$WHITE" 
-    "21|站点管理|$WHITE" 
-    "22|添加反代|$YELLOW" 
-    "23|添重定向|$WHITE" 
-    "24|添静态站|$WHITE" 
+    "21|添加反代|$YELLOW" 
+    "22|添重定向|$WHITE" 
+    "23|添静态站|$WHITE" 
+    "24|负载均衡|$CYAN" 
+    "25|修改域名|$WHITE" 
+    "26|删除站点|$RED" 
+    "27|清空站点|$WHITE" 
 )
-
 function caddy_management_menu(){
     function print_sub_item_menu_headinfo(){
         clear 
@@ -4168,77 +4967,347 @@ function caddy_management_menu(){
     }
 
     while true; do
+        _IS_BREAK='true' 
         print_sub_item_menu_headinfo
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT 
+        case "${INPUT}" in 
+        1)  caddy_install ;;
+        2)  echo -e "\n$TIP Caddy卸载暂未实现 ..." ;;
+        3)  echo -e "\n$TIP Caddy更新暂未实现 ..." ;;
+        4)  caddy_reload ;;
+        5)  systemctl status caddy ;;
+        6)  caddy_domain_list ;;
+        7)  caddy_new_caddyfile && caddy_reload ;;
+        21) caddy_add_reproxy ;;
+        22) caddy_add_url_redirect ;;
+        23) caddy_add_static_web ;;
+        24) caddy_add_url_balance ;;
+        25) caddy_alter_domain ;;
+        26) caddy_del_domain ;;
+        27) caddy_clean_all_domain ;;
+        xx) sys_reboot ;;
+        0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK='false' && break ;;
+        *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
+        esac
+        case_break_tacle
+    done
 
+}
+
+# 容器部署管理
+MENU_DOCKER_DEPLOY_ITEMS=(
+    "1|RustDesk|$WHITE"
+    "2|DeepLX|$WHITE"
+    "3|AKTools|$CYAN"
+    "4|SubLinkX|$WHITE"
+    "………………………|$WHITE" 
+    "41|RustDesk|$YELLOW" 
+    "42|DeepLX|$WHITE" 
+    "43|AKTools|$WHITE" 
+    "44|SubLinkX|$WHITE" 
+)
+function docker_deploy_menu(){
+    function print_sub_item_menu_headinfo(){
+        clear 
+        # print_menu_head $MAX_SPLIT_CHAR_NUM
+        local num_split=$MAX_SPLIT_CHAR_NUM
+        print_sub_head "▼ Docker部署 " $num_split 0 0 
+        split_menu_items MENU_DOCKER_DEPLOY_ITEMS[@] $num_split
+        # print_main_menu_tail $num_split
+        print_sub_menu_tail $num_split
+    }
+    
+
+    while true; do
+        _IS_BREAK="true"
+        print_sub_item_menu_headinfo
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择要部署的容器: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         case "${INPUT}" in
-        1) 
-            ;;
-        xx) 
-            sys_reboot
-            ;;
-        0) 
-            echo -e "\n$TIP 返回主菜单 ..."
-            break 
-            ;;
-        *)
-            _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！"
-            _IS_BREAK="true"
-            ;;
+        1 )   ;;
+        2 )   ;;
+        3 )   ;;
+        4 )   ;;
+        5 )   ;;
+        11)   ;;
+        12)   ;;
+        13)   ;;
+        14)   ;;
+        21)   ;;
+        22)   ;;
+        23)   ;;
+        24)   ;;
+        xx) sys_reboot ;;
+        # 0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false"  && return  ;;
+        0)  docker_management_menu && _IS_BREAK="false" && break  ;;
+        *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
         esac
-        break_tacle
+        case_break_tacle
     done
 
 }
 
 # Docker管理
-MENU_DOCKER_ITEMS=(
-    "1|安装Docker|$WHITE"
-    "2|卸载Docker|$WHITE"
-    "3|Docker状态|$WHITE"
-    "4|重启Docker|$WHITE"
-    "5|更新Docker|$WHITE"
+MENU_DOCKER_MANAGE_ITEMS=(
+    "1|安装容器|$WHITE"
+    "2|卸载容器|$WHITE"
+    "3|重启容器|$CYAN"
+    "4|清理容器|$WHITE"
+    "11|容器状态|$WHITE"
+    "12|容器列表|$YELLOW" 
+    "13|容器镜像|$WHITE" 
+    "14|容器网络|$WHITE" 
     "………………………|$WHITE" 
-    "21|站点容器|$WHITE" 
-    "21|删除容器|$YELLOW" 
-    "21|添重定向|$WHITE" 
-    "21|添静态站|$WHITE" 
+    "31|站点部署|$YELLOW" 
+    "32|站点管理|$WHITE" 
+    "33|开关IPv6|$WHITE" 
+    "34|添加v4v6|$WHITE" 
+    "35|设置dcc|$WHITE" 
+    "41|停止容器|$WHITE" 
+    "42|删除容器|$WHITE" 
+    "43|停止所有|$WHITE" 
+    "44|删除所有|$WHITE" 
 )
-
 function docker_management_menu(){
     function print_sub_item_menu_headinfo(){
         clear 
         # print_menu_head $MAX_SPLIT_CHAR_NUM
         local num_split=$MAX_SPLIT_CHAR_NUM
         print_sub_head "▼ Docker管理 " $num_split 0 0 
-        split_menu_items MENU_DOCKER_ITEMS[@] $num_split
+        split_menu_items MENU_DOCKER_MANAGE_ITEMS[@] $num_split
         # print_main_menu_tail $num_split
         print_sub_menu_tail $num_split
+    }
+    # 设置docker-compose快捷命令
+    function docker_set_1ckl(){
+        local CHOICE=$(echo -e "\n${BOLD}└─ 输入要设置的快捷命令[默认为: dcc] ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        local tcmd=$INPUT
+        [[ -z $INPUT ]] && tcmd="dcc"
+        if [[ -x "$(command -v $tcmd)" ]] ; then
+            echo -e "$WARN 快捷命令${tcmd}已存在，请更换其他命令。"
+            local tpath=$(which $tcmd)
+            echo -e "\n$TIP ${tcmd} -> $tpath"
+            return 1
+        fi
+        # rm -rf `which $tcmd` 
+        tpath=/usr/local/bin/docker-compose
+        chmod a+x $tpath 
+        ln -s $tpath /usr/bin/$tcmd
+    }
+    ## 显示Docker版本信息
+    function docker_show_info() {
+        echo -e "\n${BOLD} ┌─ Docker版本信息${PLAIN}"
+        if [[ ! -x "$(command -v docker)" ]] ; then
+            echo -e "$WARN  Docker环境未安装。"
+        else
+            docker --version
+        fi
+        if [[ ! -x "$(command -v docker-compose)" ]] ; then
+            echo -e "$WARN  Docker-compose未安装。"
+        else
+            docker-compose --version
+        fi
+        echo -e "${BOLD} └───────────────────${PLAIN}"
+        # docker images
+    }
+    
+    # Docker清理不用的镜像和网络
+    function docker_clean() {
+        docker_show_info 
+        [[ ! -x "$(command -v docker)" ]] && echo -e "$WARN Docker环境未安装，无需卸载。" && return 1
+        local CHOICE=$(echo -e "\n${BOLD}└─ 是否清理镜像和网络？[Y/n] ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] &&  INPUT='Y'
+        case "$INPUT" in
+        [Yy] | [Yy][Ee][Ss]) 
+            docker system prune -af --volumes 
+            echo -e "$TIP Docker清理完成"
+            ;; 
+        [Nn] | [Nn][Oo]) echo -e "$WARN Docker清理取消 " && return 1  ;;
+        *) echo -e " 错误输入..." && return 1 ;;
+        esac
+    }
+    # Docker卸载
+    function docker_uninstall() {
+        docker_show_info 
+        [[ ! -x "$(command -v docker)" ]] && echo -e "$WARN Docker环境未安装，无需卸载。" && return 1
+        local CHOICE=$(echo -e "\n${BOLD}└─ 是否真要卸载Docker？[Y/n] ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] &&  INPUT='Y'
+        case "$INPUT" in
+        [Yy] | [Yy][Ee][Ss]) 
+            docker rm $(docker ps -a -q) && docker rmi $(docker images -q) && docker network prune
+            remove docker docker-ce docker-compose > /dev/null 2>&1
+            echo -e "$TIP Docker环境卸载完成"
+            ;; 
+        [Nn] | [Nn][Oo]) echo -e "$WARN 卸载取消 " && return 1  ;;
+        *) echo -e " 错误输入..." && return 1 ;;
+        esac
+    }
+    function docker_install_official() {
+        check_sys_virt 
+        if [[ "$VIRT" =~ "LXC" ]]; then
+            local CHOICE=$(echo -e "\n${BOLD}└─ 检测到${RED}LXC${PLAIN}服务器，不建议安装Docker。是否继续？[Y/n] ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] &&  INPUT='Y'
+            case "$INPUT" in
+            [Yy] | [Yy][Ee][Ss]) ;; 
+            [Nn] | [Nn][Oo]) echo -e "$WARN 安装取消 " && return 1  ;;
+            *) echo -e " 错误输入..." && return 1 ;;
+            esac
+        fi
+
+        echo -e "\n $WORKING 开始安装Docker ...\n"
+        if [ -f "/etc/alpine-release" ]; then
+            apk update
+            apk add docker docker-compose
+            rc-update add docker default
+            service docker start
+        else
+            curl -fsSL https://get.docker.com | sh && ln -s /usr/libexec/docker/cli-plugins/docker-compose /usr/local/bin
+            systemctl start docker
+            systemctl enable docker
+        fi
+    }
+    function docker_install(){
+        docker_show_info
+        if command -v docker &>/dev/null; then
+            echo ''
+            echo -e "$PRIGHT Docker已安装 ..."
+            generate_separator "=" 40
+            docker --version
+            docker-compose --version
+            generate_separator "=" 40
+            echo ''
+        else
+            echo -e ""
+            echo -e "$PRIGHT Docker安装选项"
+            generate_separator "=" 40
+            echo -e " 1.Official(官方)"
+            echo -e " 2.LinuxMirrors(大陆)"
+            echo -e " 3.LinuxMirrors(教育)"
+            echo -e " 4.LinuxMirrors(海外)"
+            echo -e " 0.返回"
+            generate_separator "=" 40
+
+            _IS_BREAK='true'
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择安装源？(默认官方): ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] &&  INPUT=1
+            case "${INPUT}" in 
+            1) docker_install_official ;; 
+            2) bash <(curl -sSL https://linuxmirrors.cn/docker.sh) ;; 
+            3) bash <(curl -sSL https://linuxmirrors.cn/docker.sh) -edu;; 
+            4) bash <(curl -sSL https://linuxmirrors.cn/docker.sh) -abroad;; 
+            0) _IS_BREAK='false' && break;; 
+            *) echo -e "\n$WARN 输入错误,返回！" return 1  ;;
+            esac        
+        fi
+    }
+    function docker_enable_ipv6(){
+        echo -e "\n $TIP 开启容器IPv6网络"
+        local CONFIG_FILE="/etc/docker/daemon.json"
+        local REQUIRED_IPV6_CONFIG='{"ipv6": true, "fixed-cidr-v6": "2001:db8:1::/64"}'
+
+        app_install jq
+
+        # 检查配置文件是否存在，如果不存在则创建文件并写入默认设置
+        if [ ! -f "$CONFIG_FILE" ]; then
+            echo "$REQUIRED_IPV6_CONFIG" | jq . > "$CONFIG_FILE"
+            systemctl restart docker
+        else
+            # 使用jq处理配置文件的更新
+            local ORIGINAL_CONFIG=$(<"$CONFIG_FILE")
+
+            # 检查当前配置是否已经有 ipv6 设置
+            local CURRENT_IPV6=$(echo "$ORIGINAL_CONFIG" | jq '.ipv6 // false')
+
+            # 更新配置，开启 IPv6
+            if [[ "$CURRENT_IPV6" == "false" ]]; then
+                UPDATED_CONFIG=$(echo "$ORIGINAL_CONFIG" | jq '. + {ipv6: true, "fixed-cidr-v6": "2001:db8:1::/64"}')
+            else
+                UPDATED_CONFIG=$(echo "$ORIGINAL_CONFIG" | jq '. + {"fixed-cidr-v6": "2001:db8:1::/64"}')
+            fi
+
+            # 对比原始配置与新配置
+            if [[ "$ORIGINAL_CONFIG" == "$UPDATED_CONFIG" ]]; then
+                echo -e "${TIP} 当前已开启ipv6访问"
+            else
+                echo "$UPDATED_CONFIG" | jq . > "$CONFIG_FILE"
+                systemctl restart docker
+            fi
+        fi
+    }
+    function docker_disable_ipv6(){
+        echo -e "\n $TIP 关闭容器IPv6网络"
+        local CONFIG_FILE="/etc/docker/daemon.json"
+        app_install jq
+        # 检查配置文件是否存在
+        if [ ! -f "$CONFIG_FILE" ]; then
+            echo -e "${gl_hong}配置文件不存在${gl_bai}"
+            return
+        fi
+
+        # 读取当前配置
+        local ORIGINAL_CONFIG=$(<"$CONFIG_FILE")
+
+        # 使用jq处理配置文件的更新
+        local UPDATED_CONFIG=$(echo "$ORIGINAL_CONFIG" | jq 'del(.["fixed-cidr-v6"]) | .ipv6 = false')
+
+        # 检查当前的 ipv6 状态
+        local CURRENT_IPV6=$(echo "$ORIGINAL_CONFIG" | jq -r '.ipv6 // false')
+
+        # 对比原始配置与新配置
+        if [[ "$CURRENT_IPV6" == "false" ]]; then
+            echo -e "${TIP}当前已关闭ipv6访问"
+        else
+            echo "$UPDATED_CONFIG" | jq . > "$CONFIG_FILE"
+            sytemctl restart docker
+            echo -e "${TIP}已成功关闭ipv6访问"
+        fi
+    }
+    function docker_add_network_ipv6(){
+        echo -e "\n $TIP 添加1panel-v4v6之前，请先确保1Panel面板中开启了bridge网络的IPv6."
+        docker network create --driver=bridge \
+            --subnet=172.16.10.0/24 \
+            --gateway=172.16.10.1 \
+            --ip-range=172.16.10.0/16 \
+            --subnet=2408:400e::/48 \
+            --gateway=2408:400e::1 \
+            --ip-range=2408:400e::/64 \
+            1panel-v4v6
+        echo -e "\n $TIP 添加1panel-v4v6完成.\n"
     }
 
     while true; do
         print_sub_item_menu_headinfo
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
-
         read -rp "${CHOICE}" INPUT
         case "${INPUT}" in
-        1) 
-            bash <(curl -sL kejilion.sh)
-            ;;
-        xx) 
-            sys_reboot
-            ;;
-        0) 
-            echo -e "\n$TIP 返回主菜单 ..."
-            break 
-            ;;
-        *)
-            _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！"
-            _IS_BREAK="true"
-            ;;
+        1 ) docker_install ;;
+        2 ) docker_uninstall ;;
+        3 ) docker restart ;;
+        4 ) docker_clean ;;
+        11) docker_show_info && docker ps ;;
+        12) docker_show_info && docker container ls ;;
+        13) docker_show_info && docker images ;;
+        14) docker_show_info && docker network ls ;;
+        31) docker_deploy_menu && _IS_BREAK="false"  && break ;;
+        32) caddy_management_menu && _IS_BREAK="false"  && break ;;
+        33) docker_enable_ipv6  ;;
+        34) docker_add_network_ipv6 ;;
+        35) docker_set_1ckl && _IS_BREAK="true"  && return  ;;
+        41) docker stop ;;
+        42)   ;;
+        43) docker stop ;;
+        44)   ;;
+        xx) sys_reboot ;;
+        0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false"  && return  ;;
+        *)  _BREAK_INFO=" 请输入有效的选项序号！" && _IS_BREAK="true" ;;
         esac
-        break_tacle
+        case_break_tacle
     done
 
 }
@@ -4290,18 +5359,11 @@ function main_menu(){
         23) python_management_menu ;;
 
         xx) sys_reboot ;;
-        00) 
-            ;;
-        0)  
-            echo -e "\n$WARN 退出脚本！${RESET}" 
-            exit 1 
-            ;;
-        *)
-            _BREAK_INFO=" 请输入正确的数字序号！"
-            _IS_BREAK="true"
-            ;;
+        00) ;;
+        0)  echo -e "\n$WARN 退出脚本！${RESET}"  && exit 1  ;;
+        *)  _BREAK_INFO=" 请输入正确的数字序号！" && _IS_BREAK="true" ;;
         esac
-        break_tacle
+        case_break_tacle
     done
 }
 
