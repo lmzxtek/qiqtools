@@ -23,7 +23,7 @@ URL_PROXY='https://proxy.zwdk.org/proxy/'
 URL_REDIRECT='https://sub.zwdk.org/qiq'
 URL_SCRIPT='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/src/qiqtools.sh'
 URL_UPDATE='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/src/update_log.sh'
-/src
+
 
 # Emoji: 💡🧹🎉⚙️🔧🛠️💣🎯🧲🌍🌎🌏🌐🏡🏚️🏠🏯🗼🧭♨️💧📡👫
 #        🐵🐒🐕🦍🫏🦒🐔🐤🐓🦅🪿🐦‍⬛🐋🐬🪼🪲🌹🥀🌿🌱☘️🍓🍉
@@ -1494,53 +1494,64 @@ echo -e 'systemctl start postgresql.service                # 启动 '
 
 # 定义性能测试数组
 MENU_TEST_ITEMS=(
-    "1|基本信息|$WHITE"
-    "2|GB5测试|$MAGENTA"
-    "3|NodeBench测试|$WHITE"
-    "4|Bench测试|$WHITE"
-    "5|融合怪测评|$GREEN"
-    "6|ChatGPT解锁状态|$WHITE"
-    "7|Region流媒体状态|$WHITE"
-    "8|yeahwu流媒体状态|$WHITE"
-    "………………………|$WHITE" 
-    "11|三网测速(Superspeed)|$CYAN"
-    "12|三网回程(bestrace)|$WHITE"
-    "13|回程线路(mtr_trace)|$WHITE" 
-    "21|单线程测速|$WHITE"
-    "22|带宽性能(yabs)|$WHITE"
+    # "1|ChatGPT解锁状态|$WHITE"
+    # "2|Region流媒体状态|$WHITE"
+    # "3|yeahwu流媒体状态|$WHITE"
+    # "………………………|$WHITE" 
+    # "11|三网测速(Superspeed)|$CYAN"
+    # "12|三网回程(bestrace)|$WHITE"
+    # "13|回程线路(mtr_trace)|$WHITE" 
+    # "21|单线程测速|$WHITE"
+    # "22|带宽性能(yabs)|$WHITE"
+    # "………………………|$WHITE" 
+    # "31|性能测试(bench)|$CYAN"
+    # "32|融合怪测评(spiritysdx)|$CYAN"
+    "………………………………………………………………" 
+    "$BLUE IP解锁状态检测 $PLAIN"
+    " 1.ChatGPT解锁状态"
+    " 2.Region流媒体状态"
+    " 3.yeahwu流媒体状态"
+    "………………………………………………………………" 
+    "$BLUE 网络线路测速 $PLAIN"
+    "11.三网测速(Superspeed)"
+    "12.三网回程(bestrace)"
+    "13.回程线路(mtr_trace)" 
+    "21.单线程测速"
+    "22.带宽性能(yabs)"
+    "………………………………………………………………" 
+    "$BLUE 综合测试 $PLAIN"
+    "31.性能测试(bench)"
+    "32.融合怪测评(spiritysdx)"
 )
 function system_test_menu(){
     function print_sub_item_menu_headinfo(){
         clear 
         # print_menu_head $MAX_SPLIT_CHAR_NUM
-        print_sub_head "▼ 性能测试 " $MAX_SPLIT_CHAR_NUM 1 
-        split_menu_items MENU_TEST_ITEMS[@] $MAX_SPLIT_CHAR_NUM
+        print_sub_head "▼ 性能测试 " $MAX_SPLIT_CHAR_NUM 1 1 
+        # split_menu_items MENU_TEST_ITEMS[@] $MAX_SPLIT_CHAR_NUM
+        print_items_list MENU_TEST_ITEMS[@] ' 性能测试脚本 '
         # print_main_menu_tail $MAX_SPLIT_CHAR_NUM
         print_sub_menu_tail $MAX_SPLIT_CHAR_NUM
     }
-    # collect_system_info
-
 
     while true; do
         print_sub_item_menu_headinfo
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         case "${INPUT}" in
-        3) 
-            ;;
-        4) 
-            ;;
-        xx) 
-            sys_reboot
-            ;;
-        0) 
-            echo -e "\n$TIP 返回主菜单 ..."
-            return  0 
-            ;;
-        *)
-            _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！"
-            _IS_BREAK="true"
-            ;;
+        1) bash <(curl -Ls https://cdn.jsdelivr.net/gh/missuo/OpenAI-Checker/openai.sh) ;;
+        2) bash <(curl -L -s check.unlock.media) ;;
+        3) wget -qO- ${gh_proxy}github.com/yeahwu/check/raw/main/check.sh | bash ;;
+        11) bash <(curl -Lso- https://git.io/superspeed_uxh) ;;
+        12) wget -qO- git.io/besttrace | bash ;;
+        13) curl ${URL_PROXY}/https://raw.githubusercontent.com/zhucaidan/mtr_trace/main/mtr_trace.sh | bash ;;
+        21) bash <(fetch https://bench.im/hyperspeed) ;;
+        22) curl -sL yabs.sh | bash -s -- -i -5 ;;
+        31) curl -Lso- bench.sh | bash ;;
+        32) curl -L https://gitlab.com/spiritysdx/za/-/raw/main/ecs.sh -o ecs.sh && chmod +x ecs.sh && bash ecs.sh ;;
+        xx) sys_reboot ;;
+        0)  echo -e "\n$TIP 返回主菜单 ..." && return  0  ;;
+        *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
         esac
         case_break_tacle
     done
@@ -1832,42 +1843,134 @@ function system_tools_menu(){
             fi
             
     }
-    function sys_setting_change_alter_timezone(){
-            local timezone=$(current_timezone)
-            local current_time=$(date +"%Y-%m-%d %H:%M:%S")
-            local tz_items_regions=(
-                "1|亚洲|$WHITE"
-                "2|欧洲|$WHITE"
-                "3|美洲|$WHITE"
-                "4|UTC|$WHITE"
-            )
-            local tz_items_asian=(
-                "1|中国上海|$WHITE"
-                "2|中国香港|$WHITE"
-                "3|日本东京|$WHITE"
-                "4|韩国首尔|$WHITE"
-                "5|新加坡|$WHITE"
-                "6|印度加尔各答|$WHITE"
-                "7|阿联酋迪拜|$WHITE"
-                "8|澳大利亚悉尼|$WHITE"
-                "9|泰国曼谷|$WHITE"
-            )
-            local tz_items_eu=(
-                "1|英国伦敦|$WHITE"
-                "2|法国巴黎|$WHITE"
-                "3|德国柏林|$WHITE"
-                "4|俄罗斯莫斯科|$WHITE"
-                "5|荷兰尤特赖赫特|$WHITE"
-                "6|西班牙马德里|$WHITE"
-            )
-            local tz_items_us=(
-                "1|美国西部|$WHITE"
-                "2|美国东部|$WHITE"
-                "3|加拿大|$WHITE"
-                "4|墨西哥|$WHITE"
-                "5|巴西|$WHITE"
-                "6|阿根廷|$WHITE"
-            )
+    function sys_setting_alter_timezone(){
+        local cur_timezone=$(timedatectl show --property=Timezone --value)
+        local cur_time=$(date +"%Y-%m-%d %H:%M:%S")
+        
+        local tz_items_regions=(
+            "1|亚洲|$WHITE"
+            "2|欧洲|$WHITE"
+            "3|美洲|$WHITE"
+            "4|UTC|$WHITE"
+        )
+        local tz_items_asian=(
+            "1|中国上海|$WHITE"
+            "2|中国香港|$WHITE"
+            "3|日本东京|$WHITE"
+            "4|韩国首尔|$WHITE"
+            "5|新加坡|$WHITE"
+            "6|印度加尔各答|$WHITE"
+            "7|阿联酋迪拜|$WHITE"
+            "8|澳大利亚悉尼|$WHITE"
+            "9|泰国曼谷|$WHITE"
+        )
+        local tz_items_eu=(
+            "1|英国伦敦|$WHITE"
+            "2|法国巴黎|$WHITE"
+            "3|德国柏林|$WHITE"
+            "4|俄罗斯莫斯科|$WHITE"
+            "5|荷兰尤特赖赫特|$WHITE"
+            "6|西班牙马德里|$WHITE"
+        )
+        local tz_items_us=(
+            "1|美国西部|$WHITE"
+            "2|美国东部|$WHITE"
+            "3|加拿大|$WHITE"
+            "4|墨西哥|$WHITE"
+            "5|巴西|$WHITE"
+            "6|阿根廷|$WHITE"
+        )
+
+        function set_timedate() {
+            local tz="$1"
+            if grep -q 'Alpine' /etc/issue; then
+                app_install tzdata
+                cp /usr/share/zoneinfo/${tz} /etc/localtime
+                hwclock --systohc
+            else
+                timedatectl set-timezone ${tz}
+            fi
+        }
+        function tz_alter_asia(){
+            echo -e "$PRIGHT 当前时区" 
+            # 显示时区和时间
+            echo "当前时区：$cur_timezone"
+            echo "当前时间：$cur_time"
+
+            print_items_list tz_items_asian[@] " 亚太地区列表:"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择时区: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            case "${INPUT}" in
+            1) set_timedate Asia/Shanghai ;;
+            2) set_timedate Asia/Hong_Kong ;;
+            3) set_timedate Asia/Tokyo ;;
+            4) set_timedate Asia/Seoul ;;
+            5) set_timedate Asia/Singapore ;;
+            6) set_timedate Asia/Kolkata ;;
+            7) set_timedate Asia/Dubai ;;
+            8) set_timedate Australia/Sydney ;;
+            9) set_timedate Asia/Bangkok ;;
+            0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" ;;
+            *)  _BREAK_INFO=" 请输入正确选项！" ;;
+            esac 
+        }
+        function tz_alter_eu(){
+            echo -e "$PRIGHT 系统时间信息" 
+            # 显示时区和时间
+            echo "当前系统时区：$cur_timezone"
+            echo "当前系统时间：$cur_time"
+
+            print_items_list tz_items_eu[@] " 欧洲地区列表:"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择时区: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            case "${INPUT}" in
+            1) set_timedate Europe/London ;;
+            2) set_timedate Europe/Paris ;;
+            3) set_timedate Europe/Berlin ;;
+            4) set_timedate Europe/Moscow ;;
+            5) set_timedate Europe/Amsterdam ;;
+            6) set_timedate Europe/Madrid ;;
+            0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" ;;
+            *)  _BREAK_INFO=" 请输入正确选项！" ;;
+            esac 
+        }
+        function tz_alter_us(){
+            echo -e "$PRIGHT 系统时间信息" 
+            # 显示时区和时间
+            echo "当前系统时区：$cur_timezone"
+            echo "当前系统时间：$cur_time"
+
+            print_items_list tz_items_us[@] " 美洲地区列表:"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择时区: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            case "${INPUT}" in
+            1) set_timedate America/Los_Angeles ;;
+            2) set_timedate America/New_York ;;
+            3) set_timedate America/Vancouver ;;
+            4) set_timedate America/Mexico_City ;;
+            5) set_timedate America/Sao_Paulo ;;
+            6) set_timedate America/Argentina/Buenos_Aires  ;;
+            0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" ;;
+            *)  _BREAK_INFO=" 请输入正确选项！" ;;
+            esac 
+        }
+
+        echo -e "$PRIGHT 系统时间信息" 
+        # 显示时区和时间
+        echo "当前系统时区：$cur_timezone"
+        echo "当前系统时间：$cur_time"
+
+        print_items_list tz_items_regions[@] " 时区地区列表:"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择时区所属区域: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        case "${INPUT}" in
+        1) tz_alter_asia ;;
+        2) tz_alter_eu ;;
+        3) tz_alter_us ;;
+        4) set_timedate UTC ;;
+        0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" ;;
+        *)  _BREAK_INFO=" 请输入正确选项！" ;;
+        esac 
     }
     function sys_setting_alter_sources(){
             local source_list_options=(
@@ -2585,7 +2688,7 @@ EOF
             fi             
             
     }
-    function sys_setting_buteafy_cmd_style(){
+    function sys_setting_beautify_cmd_style(){
             function print_better_cmd_style_options(){
                 echo -e ""
                 # echo -e "  1. \033[1;32mroot@\033[1;34mlocalhost \033[1;31m~ ${RESET}#"
@@ -2665,8 +2768,6 @@ EOF
                 _BREAK_INFO=" 请输入正确选项！"
                 ;; 
             esac 
-            
-            
     }
 
     while true; do
@@ -2678,7 +2779,7 @@ EOF
         2 ) sys_setting_enable_root ;;
         3 ) sys_setting_disable_root ;;
         4 ) sys_setting_change_change_hostname ;;
-        5 ) sys_setting_change_alter_timezone ;;
+        5 ) sys_setting_alter_timezone ;;
         6 ) sys_setting_alter_sources ;;
         8 ) sys_setting_change_ports_manage ;;
         9 ) sys_setting_dns_manage ;;
@@ -2687,18 +2788,10 @@ EOF
         23) sys_setting_enable_ssh_reproxy ;;
         24) sys_setting_alter_priority_v4v6 ;;
         25) sys_setting_bbrv3_manage ;;
-        27) sys_setting_buteafy_cmd_style ;;
-        xx) 
-            sys_reboot
-            ;;
-        0) 
-            echo -e "\n$TIP 返回主菜单 ..."
-            break 
-            ;;
-        *)
-            _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！"
-            _IS_BREAK="true"
-            ;;
+        27) sys_setting_beautify_cmd_style ;;
+        xx) sys_reboot ;;
+        0)  echo -e "\n$TIP 返回主菜单 ..." && break ;;
+        *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
         esac
         case_break_tacle
     done
@@ -5002,10 +5095,10 @@ MENU_DOCKER_DEPLOY_ITEMS=(
     "3|AKTools|$CYAN"
     "4|SubLinkX|$WHITE"
     "………………………|$WHITE" 
-    "41|RustDesk|$YELLOW" 
-    "42|DeepLX|$WHITE" 
-    "43|AKTools|$WHITE" 
-    "44|SubLinkX|$WHITE" 
+    "21|IT-Tools|$YELLOW" 
+    "22|DeepLX|$WHITE" 
+    "23|AKTools|$WHITE" 
+    "24|SubLinkX|$WHITE" 
 )
 function docker_deploy_menu(){
     function print_sub_item_menu_headinfo(){
@@ -5017,7 +5110,89 @@ function docker_deploy_menu(){
         # print_main_menu_tail $num_split
         print_sub_menu_tail $num_split
     }
+
+    function dc_add_domain_reproxy(){
+        local port=$1
+        local domain=''
+
+        if command -v caddy >/dev/null 2>&1; then
+            echo -e "\n$TIP 检测到系统已安装Caddy，是否给${dc_desc}添加域名反代？ ... \n"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 检测到系统已安装Caddy，是否添加域名？[y/N]: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            [[ -z "$INPUT" ]] &&  INPUT="N"
+            case "${INPUT}" in 
+            [Yy] | [Yy][Ee][Ss]) 
+                local CHOICE=$(echo -e "\n${BOLD}└─ 请输入域名: ${PLAIN}")
+                read -rp "${CHOICE}" INPUT
+                if [[ -z "$INPUT" ]] ; then
+                    echo -e "\n$TIP 输入域名为空，不进行反代！" 
+                else
+                    domain=$INPUT
+                fi   
+                ;; 
+            [Nn] | [Nn][Oo]) 
+                echo -e "\n$TIP 取消域名反代！" 
+                ;;
+            *)   
+                echo -e "\n$WARN 输入错误[Y/n],不进行域名反代！"
+                ;;
+            esac
+        else
+            echo -e "\n$TIP 系统已未安装Caddy，不进行域名反代 \n"
+            domain=''
+        fi
+
+        echo "${domain}"
+    }
     
+    function dc_deploy_ittools(){    
+        local base_root="/home/dcc.d"
+        local dc_port=45380
+        local dc_name=ittools
+        local dc_imag=corentinth/it-tools:latest
+        local dc_desc="IT-Tools常用工具箱"
+        local domain=''
+
+        local lfld="$base_root/$dc_name"
+        local fdat="$base_root/$dc_name/data"
+        local fyml="$lfld/docker-compose.yml"
+        local fcfg="$lfld/${dc_name}.conf"
+
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) && cd $lfld
+        [[ -f "$fyml"  ]] || touch $fyml
+
+        echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && dc_port=$INPUT
+        
+        cat > "$fyml" << EOF
+services:
+    ${dc_name}:
+        container_name: ${dc_name}
+        image: $dc_imag
+        ports:
+            - '$dc_port:80'
+        restart: always
+EOF
+
+        docker-compose up -d 
+        domain=$(dc_add_domain_reproxy ${dc_port})
+
+        local content=''
+        content+="\nService     : ${dc_name}"
+        content+="\nContainer   : ${dc_name}"
+        [[ -n $WAN4 ]]    && content+="\nURL(IPV4)   : http://$WAN4:$dc_port"
+        [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
+        [[ -n $domain ]]  && content+="\nDomain      : $domain  "
+        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+
+        echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
+        echo -e "$content" | tee $fcfg
+        
+        cd - # 返回原来目录 
+    }
+
 
     while true; do
         _IS_BREAK="true"
@@ -5030,11 +5205,7 @@ function docker_deploy_menu(){
         3 )   ;;
         4 )   ;;
         5 )   ;;
-        11)   ;;
-        12)   ;;
-        13)   ;;
-        14)   ;;
-        21)   ;;
+        21) dc_deploy_ittools  ;;
         22)   ;;
         23)   ;;
         24)   ;;
