@@ -5094,11 +5094,14 @@ MENU_DOCKER_DEPLOY_ITEMS=(
     "2|DeepLX|$WHITE"
     "3|AKTools|$CYAN"
     "4|SubLinkX|$WHITE"
+    "5|IPTVa|$WHITE"
+    "6|IPTVd|$WHITE"
+    "7|Lucky|$WHITE"
     "………………………|$WHITE" 
     "21|IT-Tools|$YELLOW" 
-    "22|DeepLX|$WHITE" 
-    "23|AKTools|$WHITE" 
-    "24|SubLinkX|$WHITE" 
+    "22|Stirling PDF|$WHITE" 
+    "23|MyIP|$WHITE" 
+    "24|Neko|$WHITE" 
 )
 function docker_deploy_menu(){
     function print_sub_item_menu_headinfo(){
@@ -5111,8 +5114,8 @@ function docker_deploy_menu(){
         print_sub_menu_tail $num_split
     }
 
-    function dc_add_domain_reproxy(){
-        local port=$1
+    function dc_get_domain(){
+        # local port=$1
         local domain=''
 
         if command -v caddy >/dev/null 2>&1; then
@@ -5148,7 +5151,7 @@ function docker_deploy_menu(){
     function dc_deploy_ittools(){    
         local base_root="/home/dcc.d"
         local dc_port=45380
-        local dc_name=ittools
+        local dc_name='ittools'
         local dc_imag=corentinth/it-tools:latest
         local dc_desc="IT-Tools常用工具箱"
         local domain=''
@@ -5177,7 +5180,9 @@ services:
 EOF
 
         docker-compose up -d 
-        domain=$(dc_add_domain_reproxy ${dc_port})
+        # domain=$(dc_get_domain ${dc_port})
+        domain=$(dc_get_domain)
+        [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
 
         local content=''
         content+="\nService     : ${dc_name}"
@@ -5193,22 +5198,566 @@ EOF
         cd - # 返回原来目录 
     }
 
+    function dc_deploy_deeplx(){    
+        local base_root="/home/dcc.d"
+        local dc_port=45188
+        local dc_name='deeplx'
+        local dc_imag=ghcr.io/owo-network/deeplx:latest
+        local dc_desc="DeepLX(Free API)"
+        local domain=''
 
+        local lfld="$base_root/$dc_name"
+        local fdat="$base_root/$dc_name/data"
+        local fyml="$lfld/docker-compose.yml"
+        local fcfg="$lfld/${dc_name}.conf"
+
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) && cd $lfld
+        [[ -f "$fyml"  ]] || touch $fyml
+
+        echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && dc_port=$INPUT
+        
+        cat > "$fyml" << EOF
+services:
+    ${dc_name}:
+        container_name: ${dc_name}
+        image: $dc_imag
+        ports:
+            - '$dc_port:1188'
+        restart: always
+        # environment:
+        # - TOKEN=helloworld
+        # - AUTHKEY=xxxxxxx:fx
+EOF
+
+        docker-compose up -d 
+        domain=$(dc_get_domain )
+        [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
+
+        local content=''
+        content+="\nService     : ${dc_name}"
+        content+="\nContainer   : ${dc_name}"
+        [[ -n $WAN4 ]]    && content+="\nURL(IPV4)   : http://$WAN4:$dc_port"
+        [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
+        [[ -n $domain ]]  && content+="\nDomain      : $domain  "
+        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+
+        echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
+        echo -e "$content" | tee $fcfg
+        
+        cd - # 返回原来目录 
+    }
+    function dc_deploy_sublinkx(){    
+        local base_root="/home/dcc.d"
+        local dc_port=45088
+        local dc_name='sublinkx'
+        local dc_imag=jaaksi/sublinkx
+        local dc_desc="SubLinkX"
+        local domain=''
+
+        local lfld="$base_root/$dc_name"
+        local fdat="$base_root/$dc_name/db"
+        local fyml="$lfld/docker-compose.yml"
+        local fcfg="$lfld/${dc_name}.conf"
+
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) && cd $lfld
+        [[ -f "$fyml"  ]] || touch $fyml
+
+        echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && dc_port=$INPUT
+        
+        cat > "$fyml" << EOF
+services:
+    ${dc_name}:
+        container_name: ${dc_name}
+        image: $dc_imag
+        ports:
+            - '$dc_port:8000'
+        restart: always
+        volumes:
+            - $LFLD/db:/app/db
+            - $LFLD/template:/app/template
+            - $LFLD/logs:/app/logs
+EOF
+
+        docker-compose up -d 
+        domain=$(dc_get_domain )
+        [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
+
+        local content=''
+        content+="\nService     : ${dc_name}"
+        content+="\nContainer   : ${dc_name}"
+        [[ -n $WAN4 ]]    && content+="\nURL(IPV4)   : http://$WAN4:$dc_port"
+        [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
+        [[ -n $domain ]]  && content+="\nDomain      : $domain  "
+        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+
+        echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
+        echo -e "$content" | tee $fcfg
+        
+        cd - # 返回原来目录 
+    }
+    function dc_deploy_aktools(){    
+        local base_root="/home/dcc.d"
+        local dc_port=45088
+        local dc_name='aktools'
+        local dc_imag=registry.cn-shanghai.aliyuncs.com/akfamily/aktools:1.8.95
+        local dc_desc="AKTools"
+        local domain=''
+
+        local lfld="$base_root/$dc_name"
+        local fdat="$base_root/$dc_name/db"
+        local fyml="$lfld/docker-compose.yml"
+        local fcfg="$lfld/${dc_name}.conf"
+
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) && cd $lfld
+        [[ -f "$fyml"  ]] || touch $fyml
+
+        echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && dc_port=$INPUT
+        
+        SITE_PASSWORD=''
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入网站密码: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && SITE_PASSWORD=$INPUT
+
+        cat > "$fyml" << EOF
+services:
+    ${dc_name}:
+        container_name: ${dc_name}
+        image: $dc_imag
+        environment:
+            - SITE_PASSWORD=$SITE_PASSWORD
+        ports:
+            - '$dc_port:8080'
+        restart: always
+EOF
+
+        docker-compose up -d 
+        domain=$(dc_get_domain )
+        [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
+
+        local content=''
+        content+="\nService     : ${dc_name}"
+        content+="\nContainer   : ${dc_name}"
+        [[ -n $WAN4 ]]    && content+="\nURL(IPV4)   : http://$WAN4:$dc_port"
+        [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
+        [[ -n $domain ]]  && content+="\nDomain      : $domain  "
+        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+
+        echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
+        echo -e "$content" | tee $fcfg
+        
+        cd - # 返回原来目录 
+    }
+    function dc_deploy_rustdesk(){    
+        local base_root="/home/dcc.d"
+        local dc_port=45115
+        local dc_name='rustdesk'
+        local dc_imag=rustdesk/rustdesk-server-s6:latest
+        local dc_desc="RustDesk-Server"
+        local domain=''
+
+        local lfld="$base_root/$dc_name"
+        local fdat="$base_root/$dc_name/data"
+        local fyml="$lfld/docker-compose.yml"
+        local fcfg="$lfld/${dc_name}.conf"
+
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) && cd $lfld
+        [[ -f "$fyml"  ]] || touch $fyml
+
+        echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
+        # local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        # read -rp "${CHOICE}" INPUT
+        # [[ -n "$INPUT" ]] && dc_port=$INPUT
+        HOST_ADDRESS='127.0.0.1'
+        PANEL_APP_PORT_HBBR=''
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入IP/域名: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && PANEL_APP_PORT_HBBR=$INPUT
+
+        cat > "$fyml" << EOF
+services:
+    ${dc_name}:
+        container_name: ${dc_name}
+        image: $dc_imag
+        volumes:
+            - "${fdat}:/data"
+        environment:
+            - "RELAY=${HOST_ADDRESS}:${PANEL_APP_PORT_HBBR}"
+            - "ENCRYPTED_ONLY=1"
+        ports:
+            - "21115:21115"
+            - "21116:21116"
+            - "21116:21116/udp"
+            - "21117:21117"
+            - "21118:21118"
+            - "21119:21119"
+        restart: always
+EOF
+
+        docker-compose up -d 
+        domain=$(dc_get_domain )
+        [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
+
+        local content=''
+        content+="\nService     : ${dc_name}"
+        content+="\nContainer   : ${dc_name}"
+        [[ -n $WAN4 ]]    && content+="\nURL(IPV4)   : http://$WAN4:$dc_port"
+        [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
+        [[ -n $domain ]]  && content+="\nDomain      : $domain  "
+        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+
+        echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
+        echo -e "$content" | tee $fcfg
+        
+        cd - # 返回原来目录 
+    }
+    function dc_deploy_lucky(){    
+        local base_root="/home/dcc.d"
+        local dc_port=45661
+        local dc_name='lucky'
+        local dc_imag=gdy666/lucky
+        local dc_desc="Lucky"
+        local domain=''
+
+        local lfld="$base_root/$dc_name"
+        local fdat="$base_root/$dc_name/data"
+        local fyml="$lfld/docker-compose.yml"
+        local fcfg="$lfld/${dc_name}.conf"
+
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) && cd $lfld
+        [[ -f "$fyml"  ]] || touch $fyml
+
+        echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && dc_port=$INPUT
+
+        cat > "$fyml" << EOF
+services:
+    ${dc_name}:
+        container_name: ${dc_name}
+        image: $dc_imag
+        volumes:
+            - "${fdat}:/goodluck"
+        network_mode: host
+        restart: always
+EOF
+
+        docker-compose up -d 
+        domain=$(dc_get_domain )
+        [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
+
+        local content=''
+        content+="\nService     : ${dc_name}"
+        content+="\nContainer   : ${dc_name}"
+        [[ -n $WAN4 ]]    && content+="\nURL(IPV4)   : http://$WAN4:$dc_port"
+        [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
+        [[ -n $domain ]]  && content+="\nDomain      : $domain  "
+        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+
+        echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
+        echo -e "$content" | tee $fcfg
+        
+        cd - # 返回原来目录 
+    }
+    function dc_deploy_iptva(){    
+        local base_root="/home/dcc.d"
+        local dc_port=45455
+        local dc_name='iptva'
+        local dc_imag=youshandefeiyang/allinone
+        local dc_desc="IPTv(Allinone)"
+        local domain=''
+
+        local lfld="$base_root/$dc_name"
+        local fdat="$base_root/$dc_name/data"
+        local fyml="$lfld/docker-compose.yml"
+        local fcfg="$lfld/${dc_name}.conf"
+
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) && cd $lfld
+        [[ -f "$fyml"  ]] || touch $fyml
+
+        echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && dc_port=$INPUT
+
+        cat > "$fyml" << EOF
+services:
+    ${dc_name}:
+        container_name: ${dc_name}
+        image: $dc_imag
+        volumes:
+            - "${fdat}:/downloads"
+        ports:
+            - '$dc_port:35455'
+        privileged: true
+        restart: always
+EOF
+
+        docker-compose up -d 
+        domain=$(dc_get_domain )
+        [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
+
+        local content=''
+        content+="\nService     : ${dc_name}"
+        content+="\nContainer   : ${dc_name}"
+        [[ -n $WAN4 ]]    && content+="\nURL(IPV4)   : http://$WAN4:$dc_port"
+        [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
+        [[ -n $domain ]]  && content+="\nDomain      : $domain  "
+        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+
+        echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
+        echo -e "$content" | tee $fcfg
+        
+        cd - # 返回原来目录 
+    }
+    function dc_deploy_iptvd(){    
+        local base_root="/home/dcc.d"
+        local dc_port=45427
+        local dc_name='iptvd'
+        local dc_imag=doubebly/doube-itv:latest
+        local dc_desc="IPTv(doubebly)"
+        local domain=''
+
+        local lfld="$base_root/$dc_name"
+        local fdat="$base_root/$dc_name/data"
+        local fyml="$lfld/docker-compose.yml"
+        local fcfg="$lfld/${dc_name}.conf"
+
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) && cd $lfld
+        [[ -f "$fyml"  ]] || touch $fyml
+
+        echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && dc_port=$INPUT
+
+        cat > "$fyml" << EOF
+services:
+    ${dc_name}:
+        container_name: ${dc_name}
+        image: $dc_imag
+        volumes:
+            - "${fdat}:/downloads"
+        ports:
+            - '$dc_port:5000'
+        privileged: true
+        restart: always
+EOF
+
+        docker-compose up -d 
+        domain=$(dc_get_domain )
+        [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
+
+        local content=''
+        content+="\nService     : ${dc_name}"
+        content+="\nContainer   : ${dc_name}"
+        [[ -n $WAN4 ]]    && content+="\nURL(IPV4)   : http://$WAN4:$dc_port"
+        [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
+        [[ -n $domain ]]  && content+="\nDomain      : $domain  "
+        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+
+        echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
+        echo -e "$content" | tee $fcfg
+        
+        cd - # 返回原来目录 
+    }
+    function dc_deploy_spdf(){    
+        local base_root="/home/dcc.d"
+        local dc_port=45427
+        local dc_name='spdf'
+        local dc_imag=frooodle/s-pdf:latest
+        local dc_desc="Stirling PDF"
+        local domain=''
+
+        local lfld="$base_root/$dc_name"
+        local fdat="$base_root/$dc_name/data"
+        local fyml="$lfld/docker-compose.yml"
+        local fcfg="$lfld/${dc_name}.conf"
+
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) && cd $lfld
+        [[ -f "$fyml"  ]] || touch $fyml
+
+        echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && dc_port=$INPUT
+
+        cat > "$fyml" << EOF
+services:
+    ${dc_name}:
+        container_name: ${dc_name}
+        image: $dc_imag
+        volumes:
+            - $fdat:/usr/share/tesseract-ocr/5/tessdata
+            - $lfld/extraConfigs:/configs
+            - $lfld/logs:/logs
+        ports:
+            - '$dc_port:8080'
+        privileged: true
+        restart: always
+EOF
+
+        docker-compose up -d 
+        domain=$(dc_get_domain )
+        [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
+
+        local content=''
+        content+="\nService     : ${dc_name}"
+        content+="\nContainer   : ${dc_name}"
+        [[ -n $WAN4 ]]    && content+="\nURL(IPV4)   : http://$WAN4:$dc_port"
+        [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
+        [[ -n $domain ]]  && content+="\nDomain      : $domain  "
+        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+
+        echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
+        echo -e "$content" | tee $fcfg
+        
+        cd - # 返回原来目录 
+    }
+    function dc_deploy_myip(){    
+        local base_root="/home/dcc.d"
+        local dc_port=45966
+        local dc_name='myip'
+        local dc_imag=ghcr.io/jason5ng32/myip:latest
+        local dc_desc="MyIP-IP Checking"
+        local domain=''
+
+        local lfld="$base_root/$dc_name"
+        local fdat="$base_root/$dc_name/data"
+        local fyml="$lfld/docker-compose.yml"
+        local fcfg="$lfld/${dc_name}.conf"
+
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) && cd $lfld
+        [[ -f "$fyml"  ]] || touch $fyml
+
+        echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && dc_port=$INPUT
+
+        cat > "$fyml" << EOF
+services:
+    ${dc_name}:
+        container_name: ${dc_name}
+        image: $dc_imag
+        ports:
+            - '$dc_port:18966'
+        restart: always
+EOF
+
+        docker-compose up -d 
+        domain=$(dc_get_domain )
+        [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
+
+        local content=''
+        content+="\nService     : ${dc_name}"
+        content+="\nContainer   : ${dc_name}"
+        [[ -n $WAN4 ]]    && content+="\nURL(IPV4)   : http://$WAN4:$dc_port"
+        [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
+        [[ -n $domain ]]  && content+="\nDomain      : $domain  "
+        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+
+        echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
+        echo -e "$content" | tee $fcfg
+        
+        cd - # 返回原来目录 
+    }
+    function dc_deploy_neko(){    
+        local base_root="/home/dcc.d"
+        local dc_port=45427
+        local dc_name='spdf'
+        local dc_imag=m1k1o/neko:edge
+        local dc_desc="Stirling PDF"
+        local domain=''
+
+        local lfld="$base_root/$dc_name"
+        local fdat="$base_root/$dc_name/data"
+        local fyml="$lfld/docker-compose.yml"
+        local fcfg="$lfld/${dc_name}.conf"
+
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) && cd $lfld
+        [[ -f "$fyml"  ]] || touch $fyml
+
+        echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && dc_port=$INPUT
+
+        pssuser=neko
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录密码(默认为:${pssuser})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && pssuser=$INPUT
+
+        pssadmin=admin
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入管理员密码(默认为:${pssadmin})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && pssadmin=$INPUT
+
+        cat > "$fyml" << EOF
+services:
+    ${dc_name}:
+        container_name: ${dc_name}
+        image: $dc_imag
+        shm_size: "2gb"
+        environment:
+            NEKO_SCREEN: 1920x1080@30
+            NEKO_PASSWORD: $pssuser
+            NEKO_PASSWORD_ADMIN: $pssadmin
+            NEKO_EPR: 52000-52100
+            NEKO_ICELITE: 1
+        ports:
+            - '$dc_port:8080'
+            - "52000-52100:52000-52100/udp"
+        restart: always
+EOF
+
+        docker-compose up -d 
+        domain=$(dc_get_domain )
+        [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
+
+        local content=''
+        content+="\nService     : ${dc_name}"
+        content+="\nContainer   : ${dc_name}"
+        [[ -n $WAN4 ]]    && content+="\nURL(IPV4)   : http://$WAN4:$dc_port"
+        [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
+        [[ -n $domain ]]  && content+="\nDomain      : $domain  "
+        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+        [[ -n $dc_desc ]] && content+="\nGitHub : # https://neko.m1k1o.net/#/getting-started/quick-start  "
+
+        echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
+        echo -e "$content" | tee $fcfg
+        
+        cd - # 返回原来目录 
+    }
+
+
+    #================================
     while true; do
         _IS_BREAK="true"
         print_sub_item_menu_headinfo
         local CHOICE=$(echo -e "\n${BOLD}└─ 请选择要部署的容器: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         case "${INPUT}" in
-        1 )   ;;
-        2 )   ;;
-        3 )   ;;
-        4 )   ;;
-        5 )   ;;
+        1 ) dc_deploy_rustdesk  ;;
+        2 ) dc_deploy_deeplx  ;;
+        3 ) dc_deploy_aktools  ;;
+        4 ) dc_deploy_sublinkx  ;;
+        5 ) dc_deploy_iptva  ;;
+        6 ) dc_deploy_iptvd  ;;
+        7 ) dc_deploy_lucky  ;;
         21) dc_deploy_ittools  ;;
-        22)   ;;
-        23)   ;;
-        24)   ;;
+        22) dc_deploy_spdf  ;;
+        23) dc_deploy_myip  ;;
+        24) dc_deploy_neko  ;;
         xx) sys_reboot ;;
         # 0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false"  && return  ;;
         0)  docker_management_menu && _IS_BREAK="false" && break  ;;
@@ -5554,7 +6103,7 @@ function script_update(){
 
 #=================
 # 设置qiq快捷命令 
-# set_qiq_alias
+set_qiq_alias
 # 初始化全局变量
 init_global_vars 
 # 检测系统IP地址
