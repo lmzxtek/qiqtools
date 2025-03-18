@@ -18,8 +18,9 @@ clear
 echoR " >>> " $(echoY "脚本更新日志") $(echoR "<<<") 
 echoB " - " $(echoT $url_update)
 echoT "--------------------------------"
-echoR " >>> 2025-03-15   v0.7.2" " $VLATEST"
+echoR " >>> 2025-03-18   v0.7.2" " $VLATEST"
 echoY "   1.日志文件接之前的版本"
+echoY "   2.修改qiq命令设置的判断逻辑"
 echoT "--------------------------------"
 echoR "" $(echoY "url") $(echoR ": $url_redir") 
 echoR "" $(echoY "url") $(echoR ": $url_script") 

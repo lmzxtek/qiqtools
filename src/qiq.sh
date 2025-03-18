@@ -135,10 +135,12 @@ function set_qiq_alias() {
     if [ $UID -ne 0 ]; then
         echo -e "$WARN 权限不足，请使用 Root 用户运行本脚本 "
     else
-        echo -e "\n >>> 设置 qiq 快捷命令 ... "
+        # echo -e "\n >>> 设置 qiq 快捷命令 ... "
         if ! command -v qiq &>/dev/null; then
-            echo -e "\n >>> qiq 快捷命令未设置 ... "
+            echo -e "\n $WARN qiq 快捷命令未设置 ... "
             ln -sf ~/qiq.sh /usr/local/bin/qiq
+        else
+            echo -e "\n $WARN qiq快捷命令已设置: $(whereis qiq) "
         fi
     fi
 }
