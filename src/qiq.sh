@@ -5676,9 +5676,11 @@ EOF
     function dc_deploy_neko(){    
         local base_root="/home/dcc.d"
         local dc_port=45427
-        local dc_name='spdf'
-        local dc_imag=m1k1o/neko:edge
-        local dc_desc="Stirling PDF"
+        local dc_name='neko'
+        local dc_imag=m1k1o/neko:microsoft-edge
+        # local dc_imag=m1k1o/neko:firefox
+        # local dc_imag=m1k1o/neko:chromium
+        local dc_desc="Neko-Browser"
         local domain=''
 
         local lfld="$base_root/$dc_name"
@@ -5694,10 +5696,27 @@ EOF
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && dc_port=$INPUT
 
+        brkernel='microsoft-edge'
+        echo -e ""
+        echo -e "$PRIGHT 1.Edge(dafault)"
+        echo -e "$PRIGHT 2.Firefox"
+        echo -e "$PRIGHT 3.Chromium"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择浏览器内核(默认为:Edge)]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] && INPUT=1
+        
+        case "${INPUT}" in
+        1) brkernel='microsoft-edge' ;;
+        2) brkernel='firefox' ;;
+        3) brkernel='chromium' ;;
+        *) echo -e "\n$WARN 输入错误[Y/n],设置为默认Edge浏览器内核"  ;;
+        esac
+        
         pssuser=neko
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录密码(默认为:${pssuser})]: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && pssuser=$INPUT
+
 
         pssadmin=admin
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入管理员密码(默认为:${pssadmin})]: ${PLAIN}")
@@ -5707,7 +5726,7 @@ EOF
         cat > "$fyml" << EOF
 services:
     ${dc_name}:
-        container_name: ${dc_name}
+        container_name: m1k1o/neko:${brkernel}
         image: $dc_imag
         shm_size: "2gb"
         environment:
