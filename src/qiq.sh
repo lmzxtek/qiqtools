@@ -2260,7 +2260,7 @@ EOF
             function dd_sys_mollylau(){
                 local sys_type=$1
                 local sys_ver=$2
-                local sys_type=$3
+                local sys_lang=$3
 
                 local weburl='https://github.com/leitbogioro/Tools'
                 local fname='InstallNET.sh' 
@@ -2275,7 +2275,7 @@ EOF
                     return 
                 fi 
 
-                echo -e "\n$TIP dd input: ${sys_type} ${sys_ver}\n"
+                # echo -e "\n$TIP dd input: ${sys_type} ${sys_ver}\n"
                 if [[ -n "${sys_lang}" ]] ; then 
                     bash ${fname} "-"${sys_type} ${sys_ver} -lang $sys_lang
                 else 
@@ -2289,7 +2289,7 @@ EOF
             function dd_sys_bin456789(){
                 local sys_type=$1
                 local sys_ver=$2
-                local sys_type=$3
+                local sys_lang=$3
 
                 local weburl='https://github.com/bin456789/reinstall'
                 local fname='reinstall.sh' 
@@ -2305,7 +2305,9 @@ EOF
                 fi 
 
                 if [[ -n "${sys_lang}" ]] ; then 
-                    bash ${fname} "-"${sys_type} ${sys_ver} -lang $sys_lang
+                    sys_lang='en-us'
+                    [[ "${sys_lang}" == "cn" ]] && sys_lang='zh-cn'
+                    bash ${fname} ${sys_type} ${sys_ver} --lang $sys_lang
                 else 
                     bash ${fname} ${sys_type} ${sys_ver}
                 fi 
