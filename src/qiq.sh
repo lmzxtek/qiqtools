@@ -22,7 +22,7 @@ SRC_VER=v0.7.2
 URL_PROXY='https://proxy.zwdk.org/proxy/'
 URL_REDIRECT='https://sub.zwdk.org/qiq'
 URL_SCRIPT='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/src/qiqtools.sh'
-URL_UPDATE='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/src/update_log.sh'
+URL_UPDATE='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/src/log.sh'
 
 
 # Emoji: 💡🧹🎉⚙️🔧🛠️💣🎯🧲🌍🌎🌏🌐🏡🏚️🏠🏯🗼🧭♨️💧📡👫

@@ -12,7 +12,7 @@ FTSS='\033[5m'         # 字体：闪烁
 VLATEST="${FCLS}${FTSS}NEW${FTCZ}" # 蓝色闪烁字体
 url_redir='https://sub.zwdk.org/qiq'
 url_script='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/src/qiqtools.sh'
-url_update='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/src/update_log.sh'
+url_update='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/src/log.sh'
 
 clear
 echoR " >>> " $(echoY "脚本更新日志") $(echoR "<<<") 
@@ -20,7 +20,7 @@ echoB " - " $(echoT $url_update)
 echoT "--------------------------------"
 echoR " >>> 2025-03-19   v0.7.2" " $VLATEST"
 echoY "   1.日志文件接之前的版本"
-echoY "   2.修改qiq命令设置的判断逻辑"
 echoT "--------------------------------"
 echoR "" $(echoY "url") $(echoR ": $url_redir") 
 echoR "" $(echoY "url") $(echoR ": $url_script") 
+
