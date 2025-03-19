@@ -2276,9 +2276,9 @@ EOF
                 fi 
 
                 if [[ -n "${sys_lang}" ]] ; then 
-                    bash ${fname} "-"${sys_type} ${sys_ver} -lang $sys_lang
+                    bash ${fname} "-${sys_type}" ${sys_ver} -lang $sys_lang
                 else 
-                    bash ${fname} "-"${sys_type} ${sys_ver}
+                    bash ${fname} "-${sys_type}" ${sys_ver}
                 fi 
 
                 _IS_BREAK="false"
