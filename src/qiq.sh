@@ -133,14 +133,14 @@ function permission_judgment() {
 # 设置脚本的快捷命令为 `qiq`
 function set_qiq_alias() {
     if [ $UID -ne 0 ]; then
-        echo -e "$WARN 权限不足，请使用 Root 用户运行本脚本 "
+        echo -e "\n$WARN 权限不足，请使用 Root 用户运行本脚本 \n"
     else
         # echo -e "\n >>> 设置 qiq 快捷命令 ... "
         if ! command -v qiq &>/dev/null; then
-            echo -e "\n $WARN qiq 快捷命令未设置 ... "
+            echo -e "\n $WARN qiq 快捷命令未设置 ... \n"
             ln -sf ~/qiq.sh /usr/local/bin/qiq
         else
-            echo -e "\n $WARN qiq快捷命令已设置: $(whereis qiq) "
+            echo -e "\n $WARN qiq快捷命令已设置: $(whereis qiq) \n"
         fi
     fi
 }
@@ -1738,12 +1738,12 @@ MENU_SYSTEM_TOOLS_ITEMS=(
     "1|修改ROOT密码|$WHITE"
     "2|开启ROOT登录|$WHITE"
     "3|禁用ROOT用户|$WHITE"
-    "4|改主机名|$WHITE"
-    "5|时区调整|$WHITE" 
-    "6|系统源管理|$MAGENTA"
-    "7|用户管理|$WHITE"
-    "8|端口管理|$WHITE"
-    "9|DNS管理|$CYAN"
+    "4|系统源管理|$MAGENTA"
+    "5|DNS管理|$CYAN"
+    "6|改主机名|$WHITE"
+    "7|时区调整|$WHITE" 
+    "8|用户管理|$WHITE"
+    "9|端口管理|$WHITE"
     "………………………|$WHITE" 
     "21|DD系统|$GREEN"
     "22|虚拟内存|$CYAN"
@@ -1845,6 +1845,90 @@ function system_tools_menu(){
                 echo "未更改主机名。"
             fi
             
+    }
+    function sys_setting_users_manage(){
+        local users_items_list=(
+            '1.用户列表'
+            '2.新普通账户'
+            '3.新高级账户'
+            '4.设置最高权限'
+            '5.取消最高权限'
+            '6.删除账号'
+            '0.返回'
+        )
+        function print_items_users(){
+            echo "用户列表"
+            generate_separator "=|$WHITE" 
+            printf "%-24s %-34s %-20s %-10s\n" "用户名" "用户权限" "用户组" "sudo权限"
+            while IFS=: read -r username _ userid groupid _ _ homedir shell; do
+                groups=$(groups "$username" | cut -d : -f 2)
+                sudo_status=$(sudo -n -lU "$username" 2>/dev/null | grep -q '(ALL : ALL)' && echo "Yes" || echo "No")
+                printf "%-20s %-30s %-20s %-10s\n" "$username" "$homedir" "$groups" "$sudo_status"
+            done < /etc/passwd
+            generate_separator "=|$WHITE" 
+        }
+        function users_add_new(){
+            print_items_users
+            # echo "新普通账户"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入新用户名(普通账户): ${PLAIN}")
+            read -rp "${CHOICE}" new_username
+            useradd -m -s /bin/bash "$new_username"
+            passwd "$new_username"
+            print_items_users
+        }
+        function users_add_sudo(){
+            print_items_users
+            # echo "新高级账户"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入新用户名(高级账户): ${PLAIN}")
+            read -rp "${CHOICE}" new_username
+            useradd -m -s /bin/bash "$new_username"
+            passwd "$new_username"
+            usermod -aG sudo "$new_username"
+            print_items_users
+        }
+        function users_set_sudo(){
+            print_items_users
+            # echo "设置最高权限"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入用户名(设置最高权限): ${PLAIN}")
+            read -rp "${CHOICE}" username
+            usermod -aG sudo "$username"
+            print_items_users
+        }
+        function users_unset_sudo(){
+            print_items_users
+            # echo "取消最高权限"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入用户名(取消最高权限): ${PLAIN}")
+            read -rp "${CHOICE}" username
+            gpasswd -d "$username" sudo
+            print_items_users
+        }
+        function users_delete(){
+            print_items_users
+            # echo "删除账号"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请输入用户名(删除账号): ${PLAIN}")
+            read -rp "${CHOICE}" username
+            userdel -r "$username"
+            print_items_users
+        }
+
+        # 询问用户是否要更改主机名
+        clear 
+        _IS_BREAK="true"
+        print_items_list users_items_list[@] " 用户管理:"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        case "${INPUT}" in
+        1) print_items_users ;;
+        2) users_add_new ;;
+        3) users_add_sudo ;;
+        4) users_set_sudo ;;
+        5) users_unset_sudo ;;
+        6) users_delete ;;
+        0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" ;;
+        *)  _BREAK_INFO=" 请输入正确选项！" ;;
+        esac 
+        # print_items_users
+        case_break_tacle
     }
     function sys_setting_alter_timezone(){
         local cur_timezone=$(timedatectl show --property=Timezone --value)
@@ -2327,91 +2411,91 @@ EOF
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
             1) 
-                dd_sys_mollylau 'alpine' ''
                 dd_sys_login_info 'root' 'LeitboGi0ro' '22'
+                dd_sys_mollylau 'alpine' ''
                 ;;
             2) 
                 dd_sys_mollylau 'alpine' 3.20
                 dd_sys_login_info 'root' 'LeitboGi0ro' '22'
                 ;;
             3) 
-                dd_sys_mollylau 'alpine' 3.19
                 dd_sys_login_info 'root' 'LeitboGi0ro' '22'
+                dd_sys_mollylau 'alpine' 3.19
                 ;;
             4) 
-                dd_sys_mollylau 'alpine' 3.18
                 dd_sys_login_info 'root' 'LeitboGi0ro' '22'
+                dd_sys_mollylau 'alpine' 3.18
                 ;;
             11) 
-                dd_sys_mollylau 'debian' 12
                 dd_sys_login_info 'root' 'LeitboGi0ro' '22'
+                dd_sys_mollylau 'debian' 12
                 ;;
             12) 
-                dd_sys_mollylau 'debian' 11
                 dd_sys_login_info 'root' 'LeitboGi0ro' '22'
+                dd_sys_mollylau 'debian' 11
                 ;;
             13) 
-                dd_sys_mollylau 'debian' 10
                 dd_sys_login_info 'root' 'LeitboGi0ro' '22'
+                dd_sys_mollylau 'debian' 10
                 ;;
             14) 
-                dd_sys_mollylau 'ubuntu' 24.04
                 dd_sys_login_info 'root' 'LeitboGi0ro' '22'
+                dd_sys_mollylau 'ubuntu' 24.04
                 ;;
             15) 
-                dd_sys_mollylau 'ubuntu' 22.04
                 dd_sys_login_info 'root' 'LeitboGi0ro' '22'
+                dd_sys_mollylau 'ubuntu' 22.04
                 ;;
             16) 
-                dd_sys_mollylau 'ubuntu' 20.04
                 dd_sys_login_info 'root' 'LeitboGi0ro' '22'
+                dd_sys_mollylau 'ubuntu' 20.04
                 ;;
             21) 
-                dd_sys_bin456789 'almalinux' 9
                 dd_sys_login_info 'root' '123@@@' '22'
+                dd_sys_bin456789 'almalinux' 9
                 ;;
             22) 
-                dd_sys_bin456789 'almalinux' 8
                 dd_sys_login_info 'root' '123@@@' '22'
+                dd_sys_bin456789 'almalinux' 8
                 ;;
             23) 
-                dd_sys_bin456789 'rocky' 9
                 dd_sys_login_info 'root' '123@@@' '22'
+                dd_sys_bin456789 'rocky' 9
                 ;;
             24) 
-                dd_sys_bin456789 'rocky' 8
                 dd_sys_login_info 'root' '123@@@' '22'
+                dd_sys_bin456789 'rocky' 8
                 ;;
             31) 
                 local lang=$(get_sys_lang) 
+                dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
                 # dd_sys_bin456789 'windows' 2025 $lang 
                 bash reinstall.sh dd --img "https://dl.lamp.sh/vhd/zh-cn_win2025.xz"
-                dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
                 ;;
             32) 
                 local lang=$(get_sys_lang) 
-                dd_sys_mollylau 'windows' 2022 $lang 
                 dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
+                dd_sys_mollylau 'windows' 2022 $lang 
                 ;;
             33) 
                 local lang=$(get_sys_lang) 
-                dd_sys_mollylau 'windows' 2019 $lang 
                 dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
+                dd_sys_mollylau 'windows' 2019 $lang 
                 ;;
             34) 
                 local lang=$(get_sys_lang) 
-                dd_sys_mollylau 'windows' 11 $lang 
                 dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
+                dd_sys_mollylau 'windows' 11 $lang 
                 ;;
             35) 
                 local lang=$(get_sys_lang) 
-                dd_sys_mollylau 'windows' 10 $lang 
                 dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
+                dd_sys_mollylau 'windows' 10 $lang 
                 ;;
             36) 
                 local lang=$(get_sys_lang) 
-                dd_sys_mollylau 'windows' 7 $lang 
                 dd_sys_login_info 'Administrator' '123@@@' '3389'
+                dd_sys_mollylau 'windows' 7 $lang 
                 ;;
             88) 
                 sys_update 
@@ -2770,11 +2854,12 @@ EOF
         1 ) sys_setting_change_root_password ;;
         2 ) sys_setting_enable_root ;;
         3 ) sys_setting_disable_root ;;
-        4 ) sys_setting_change_change_hostname ;;
-        5 ) sys_setting_alter_timezone ;;
-        6 ) sys_setting_alter_sources ;;
-        8 ) sys_setting_change_ports_manage ;;
-        9 ) sys_setting_dns_manage ;;
+        4 ) sys_setting_alter_sources ;;
+        5 ) sys_setting_dns_manage ;;
+        6 ) sys_setting_change_change_hostname ;;
+        7 ) sys_setting_alter_timezone ;;
+        8 ) sys_setting_users_manage ;;
+        9 ) sys_setting_change_ports_manage ;;
         21) sys_setting_dd_system ;;
         22) sys_setting_alter_swap ;;
         23) sys_setting_enable_ssh_reproxy ;;
