@@ -1537,6 +1537,7 @@ function system_test_menu(){
     }
 
     while true; do
+        _IS_BREAK="true"
         print_sub_item_menu_headinfo
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
@@ -1552,7 +1553,7 @@ function system_test_menu(){
         31) curl -Lso- bench.sh | bash ;;
         32) curl -L https://gitlab.com/spiritysdx/za/-/raw/main/ecs.sh -o ecs.sh && chmod +x ecs.sh && bash ecs.sh ;;
         xx) sys_reboot ;;
-        0)  echo -e "\n$TIP 返回主菜单 ..." && return  0  ;;
+        0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" && return  0  ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
         esac
         case_break_tacle
