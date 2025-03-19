@@ -906,8 +906,8 @@ function print_main_menu_tail() {
     # adj_width=$((MAX_COL_NUM + chinese_width + emoji_count + chinese_width + emoji_count))
     adj_width=$((MAX_COL_NUM + chinese_width + emoji_count))
 
-    s_exit=${BLUE}'退出脚本'${RED}"✘"${RESET}
-    s_restart=${BLUE}'重启系统'${RED}"☋"${RESET}
+    s_exit=${RED}'退出脚本'${RED}"✘"${RESET}
+    s_restart=${WHITE}'重启系统'${RED}"☋"${RESET}
     printf "%${NUM_WIDTH}s.%-${adj_width}b%${NUM_SPLIT}s%${NUM_WIDTH}s.%-${MAX_COL_NUM}b\n${RESET}" \
             '0' $s_exit "" 'xx' $s_restart
 
@@ -917,7 +917,7 @@ function print_main_menu_tail() {
     # adj_width=$((MAX_COL_NUM + chinese_width + emoji_count + chinese_width + emoji_count))
     adj_width=$((MAX_COL_NUM + chinese_width + emoji_count ))
 
-    s_update=${CYAN}'脚本更新'${PURPLE}"ღ"${RESET}
+    s_update=${GREEN}'脚本更新'${PURPLE}"ღ"${RESET}
     s_qiq=${BLUE}'✟✟'${ITEM_CAT_CHAR}${RESET}'快捷命令☽_'${YELLOW}"qiq"${BLUE}${RESET}"_☾"
     printf "%${NUM_WIDTH}s${ITEM_CAT_CHAR}%-${adj_width}b%${NUM_SPLIT}s%-${MAX_COL_NUM}b\n\n${RESET}" \
         '00' $s_update "" $s_qiq
