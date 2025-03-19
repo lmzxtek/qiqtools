@@ -20,6 +20,7 @@ echoB " - " $(echoT $url_update)
 echoT "--------------------------------"
 echoR " >>> 2025-03-19   v0.7.2" " $VLATEST"
 echoY "   1.日志文件接之前的版本"
+echoY "   2.测试DD脚本项"
 echoT "--------------------------------"
 echoR "" $(echoY "url") $(echoR ": $url_redir") 
 echoR "" $(echoY "url") $(echoR ": $url_script") 
