@@ -2324,95 +2324,91 @@ EOF
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
             1) 
-                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
                 dd_sys_mollylau 'alpine' ''
+                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
                 ;;
             2) 
-                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
                 dd_sys_mollylau 'alpine' 3.20
+                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
                 ;;
             3) 
-                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
                 dd_sys_mollylau 'alpine' 3.19
+                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
                 ;;
             4) 
-                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
                 dd_sys_mollylau 'alpine' 3.18
+                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
                 ;;
             11) 
-                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
                 dd_sys_mollylau 'debian' 12
+                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
                 ;;
             12) 
-                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
                 dd_sys_mollylau 'debian' 11
+                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
                 ;;
             13) 
-                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
                 dd_sys_mollylau 'debian' 10
+                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
                 ;;
             14) 
-                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
                 dd_sys_mollylau 'ubuntu' 24.04
+                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
                 ;;
             15) 
-                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
                 dd_sys_mollylau 'ubuntu' 22.04
+                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
                 ;;
             16) 
-                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
                 dd_sys_mollylau 'ubuntu' 20.04
+                dd_sys_login_info 'root' 'LeitboGi0ro' '22'
                 ;;
             21) 
-                dd_sys_login_info 'root' '123@@@' '22'
                 dd_sys_bin456789 'almalinux' 9
+                dd_sys_login_info 'root' '123@@@' '22'
                 ;;
             22) 
-                dd_sys_login_info 'root' '123@@@' '22'
                 dd_sys_bin456789 'almalinux' 8
+                dd_sys_login_info 'root' '123@@@' '22'
                 ;;
             23) 
-                dd_sys_login_info 'root' '123@@@' '22'
                 dd_sys_bin456789 'rocky' 9
+                dd_sys_login_info 'root' '123@@@' '22'
                 ;;
             24) 
-                dd_sys_login_info 'root' '123@@@' '22'
                 dd_sys_bin456789 'rocky' 8
+                dd_sys_login_info 'root' '123@@@' '22'
                 ;;
             31) 
                 local lang=$(get_sys_lang) 
-                dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
                 # dd_sys_bin456789 'windows' 2025 $lang 
                 bash reinstall.sh dd --img "https://dl.lamp.sh/vhd/zh-cn_win2025.xz"
+                dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
                 ;;
             32) 
                 local lang=$(get_sys_lang) 
-                dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
                 dd_sys_mollylau 'windows' 2022 $lang 
+                dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
                 ;;
             33) 
                 local lang=$(get_sys_lang) 
-                dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
                 dd_sys_mollylau 'windows' 2019 $lang 
+                dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
                 ;;
             34) 
                 local lang=$(get_sys_lang) 
-                dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
                 dd_sys_mollylau 'windows' 11 $lang 
+                dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
                 ;;
             35) 
                 local lang=$(get_sys_lang) 
-                dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
                 dd_sys_mollylau 'windows' 10 $lang 
+                dd_sys_login_info 'Administrator' 'Teddysun.com' '3389'
                 ;;
             36) 
                 local lang=$(get_sys_lang) 
-                dd_sys_login_info 'Administrator' '123@@@' '3389'
                 dd_sys_mollylau 'windows' 7 $lang 
-                ;;
-            0) 
-                echo -e "\n$TIP 返回主菜单 ..."
-                _IS_BREAK="false"
+                dd_sys_login_info 'Administrator' '123@@@' '3389'
                 ;;
             88) 
                 sys_update 
@@ -2429,20 +2425,10 @@ EOF
                 fi
                 # wget --no-check-certificate -O NewReinstall.sh https://raw.githubusercontent.com/fcurrk/reinstall/master/NewReinstall.sh && chmod a+x NewReinstall.sh && bash NewReinstall.sh
                 ;;
-            99) 
-                system_dd_usage 
-                _BREAK_INFO=" DD系统说明 "
-                ;; 
-            0) 
-                echo -e "\n$TIP 返回主菜单 ..."
-                _IS_BREAK="false"
-                ;;
-            xx) 
-                sys_reboot
-                ;;
-            *)
-                _BREAK_INFO=" 请输入正确选项！"
-                ;;
+            99) system_dd_usage && _BREAK_INFO=" DD系统说明 " ;; 
+            0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" ;;
+            xx) sys_reboot ;;
+            *)  _BREAK_INFO=" 请输入正确选项！" ;;
             esac 
             
     }
