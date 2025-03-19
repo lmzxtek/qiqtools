@@ -6100,16 +6100,18 @@ function main_menu(){
 
 
 function script_update(){
+    local fname='qiq.sh'
     echo -e "\n $TIP 检测更新中，请稍等..."
     local url_update=$(get_proxy_url $URL_UPDATE)
     local url_script=$(get_proxy_url $URL_SCRIPT)
     bash <(wget --no-check-certificate -qO- $url_update)
-    curl -sS -O $url_script && \
-    chmod +x qiq.sh && \
+    echo -e "$TIP 脚本下载 ...\n"
+    curl -sSL -o ${fname} $url_script && \
+    chmod +x ${fname} && \
     echo -e "$TIP 脚本已更新至最新版本！\n"
     _IS_BREAK="true"
     case_break_tacle #&& exit && qiq
-    cd ~ && ./qiq.sh && exit; 
+    cd ~ && ./${fname} && exit; 
 }
 
 #=================
