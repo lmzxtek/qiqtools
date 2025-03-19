@@ -16,7 +16,7 @@
 
 
 #==== 脚本版本号 ===========
-SRC_VER=v0.7.1
+SRC_VER=v0.7.2
 #==========================
 
 URL_PROXY='https://proxy.zwdk.org/proxy/'
