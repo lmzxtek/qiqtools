@@ -1513,6 +1513,7 @@ MENU_TEST_ITEMS=(
     " 1.ChatGPT解锁状态"
     " 2.Region流媒体状态"
     " 3.yeahwu流媒体状态"
+    " 4.Youtube地区检测"
     "………………………………………………………………" 
     "$BLUE 网络线路测速 $PLAIN"
     "11.三网测速(Superspeed)"
@@ -1544,7 +1545,8 @@ function system_test_menu(){
         case "${INPUT}" in
         1) bash <(curl -Ls https://cdn.jsdelivr.net/gh/missuo/OpenAI-Checker/openai.sh) ;;
         2) bash <(curl -L -s check.unlock.media) ;;
-        3) wget -qO- ${gh_proxy}github.com/yeahwu/check/raw/main/check.sh | bash ;;
+        3) wget -qO- ${URL_PROXY}/https://github.com/yeahwu/check/raw/main/check.sh | bash ;;
+        4) bash <(curl -L -s https://raw.githubusercontent.com/1-stream/RegionRestrictionCheck/main/check.sh) ;;
         11) bash <(curl -Lso- https://git.io/superspeed_uxh) ;;
         12) wget -qO- git.io/besttrace | bash ;;
         13) curl ${URL_PROXY}/https://raw.githubusercontent.com/zhucaidan/mtr_trace/main/mtr_trace.sh | bash ;;
