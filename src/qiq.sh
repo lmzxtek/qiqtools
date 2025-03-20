@@ -10,8 +10,8 @@
 #   $> wget -qO qiqtools.sh https://sub.zwdk.org/qiq && chmod +x qiqtools.sh && ./qiqtools.sh
 #   $> curl -sSL -o qiqtools.sh https://sub.zwdk.org/qiq && chmod +x qiqtools.sh && ./qiqtools.sh
 
-#   $> wget -qN https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiqtools.sh && chmod +x qiqtools.sh && ./qiqtools.sh
-#   $> curl -sS -O https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiqtools.sh && chmod +x qiqtools.sh && ./qiqtools.sh
+#   $> wget -qN https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiq.sh && chmod +x qiqtools.sh && ./qiqtools.sh
+#   $> curl -sS -O https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiq.sh && chmod +x qiqtools.sh && ./qiqtools.sh
 #========================================================
 
 
@@ -5878,7 +5878,7 @@ MENU_DOCKER_MANAGE_ITEMS=(
     "31|站点部署|$YELLOW" 
     "32|站点管理|$WHITE" 
     "33|开关IPv6|$WHITE" 
-    "34|添加v4v6|$WHITE" 
+    "34|网络v4v6|$WHITE" 
     "35|设置dcc|$WHITE" 
     "41|停止容器|$WHITE" 
     "42|删除容器|$WHITE" 
@@ -6096,6 +6096,27 @@ function docker_management_menu(){
             1panel-v4v6
         echo -e "\n $TIP 添加1panel-v4v6完成.\n"
     }
+    function docker_con_restart(){
+        local dc_name=$1
+        docker restart $dc_name
+    }
+    function docker_con_stop(){
+        local dc_name=$1
+        docker stop $dc_name
+    }
+    function docker_con_rm(){
+        local dc_name=$1
+        docker rm $dc_name
+    }
+    function docker_con_rmall(){
+        docker rm $(docker ps -a -q)
+    }
+    function docker_con_stopall(){
+        docker stop $(docker ps -q)
+    }
+    function docker_con_clean(){
+        docker system prune -af --volumes 
+    }
 
     while true; do
         print_sub_item_menu_headinfo
@@ -6104,7 +6125,7 @@ function docker_management_menu(){
         case "${INPUT}" in
         1 ) docker_install ;;
         2 ) docker_uninstall ;;
-        3 ) docker restart ;;
+        3 ) docker_con_restart ;;
         4 ) docker_clean ;;
         11) docker_show_info && docker ps ;;
         12) docker_show_info && docker container ls ;;
@@ -6116,9 +6137,9 @@ function docker_management_menu(){
         34) docker_add_network_ipv6 ;;
         35) docker_set_1ckl && _IS_BREAK="true"  && return  ;;
         41) docker stop ;;
-        42)   ;;
+        42) docker_con_rm  ;;
         43) docker stop ;;
-        44)   ;;
+        44) docker_con_rmall  ;;
         xx) sys_reboot ;;
         0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false"  && return  ;;
         *)  _BREAK_INFO=" 请输入有效的选项序号！" && _IS_BREAK="true" ;;
