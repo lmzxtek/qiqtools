@@ -1545,11 +1545,18 @@ function system_test_menu(){
         case "${INPUT}" in
         1) bash <(curl -Ls https://cdn.jsdelivr.net/gh/missuo/OpenAI-Checker/openai.sh) ;;
         2) bash <(curl -L -s check.unlock.media) ;;
-        3) wget -qO- ${URL_PROXY}/https://github.com/yeahwu/check/raw/main/check.sh | bash ;;
-        4) bash <(curl -L -s https://raw.githubusercontent.com/1-stream/RegionRestrictionCheck/main/check.sh) ;;
+        3) 
+            url=$(get_proxy_url "https://github.com/yeahwu/check/raw/main/check.sh")
+            wget -qO- ${url} | bash ;;
+        4)  
+            url=$(get_proxy_url " https://raw.githubusercontent.com/1-stream/RegionRestrictionCheck/main/check.sh")
+            bash <(curl -L -s ${url}) ;;
         11) bash <(curl -Lso- https://git.io/superspeed_uxh) ;;
         12) wget -qO- git.io/besttrace | bash ;;
-        13) curl ${URL_PROXY}/https://raw.githubusercontent.com/zhucaidan/mtr_trace/main/mtr_trace.sh | bash ;;
+        13) 
+            url=$(get_proxy_url "https://raw.githubusercontent.com/zhucaidan/mtr_trace/main/mtr_trace.sh")
+            # wget -qO- ${url} | bash ;;
+            curl ${url} | bash ;;
         21) bash <(fetch https://bench.im/hyperspeed) ;;
         22) curl -sL yabs.sh | bash -s -- -i -5 ;;
         31) curl -Lso- bench.sh | bash ;;
