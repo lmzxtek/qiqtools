@@ -4825,11 +4825,11 @@ function caddy_domain_list(){
     num=0
     for dm_file in $dm_list; do
         num+=1
-        printf "\t%2d.%-s\n"  ${num} "$dm_file"
+        printf " %2d.%-s\n"  ${num} "$dm_file"
     done
     echo -e "\n${PLAIN}============================\n"
 
-    echo "${dm_list[@]}"
+    # echo "${dm_list[@]}"
 }
 
 
