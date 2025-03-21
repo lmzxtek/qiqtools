@@ -4822,10 +4822,14 @@ function caddy_domain_list(){
     echo -e "$PRIGHT 站点列表\n${PLAIN}============================\n"
     echo "${list[@]}" | tr ' ' '\n' | nl -w2 -s'. '
 
-    # for dm_file in $dm_list; do
-    #     printf "%-s\n" "$dm_file"
-    # done
+    num=0
+    for dm_file in $dm_list; do
+        num+=1
+        printf "%t%2d%-s\n"  ${num} "$dm_file"
+    done
     echo -e "\n${PLAIN}============================\n"
+
+    echo "${dm_list[@]}"
 }
 
 
@@ -4849,9 +4853,9 @@ function caddy_clean_all_domain(){
 
 # 添加域名反代
 function caddy_add_reproxy(){
-    local domain=$1
-    local ip=$2
-    local port=$3
+    local domain="$1"
+    local ip="$2"
+    local port="$3"
     local to_check=${4:-1}
     local dir_caddy=${5:-'/home/caddy_data/caddy'}
 
