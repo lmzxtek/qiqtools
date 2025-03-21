@@ -6221,6 +6221,7 @@ function main_menu(){
 
 
 function script_update(){
+    cd ~ 
     local fname='qiq.sh'
     echo -e "\n $TIP 检测更新中，请稍等..."
     local url_update=$(get_proxy_url $URL_UPDATE)
@@ -6232,7 +6233,7 @@ function script_update(){
     echo -e "$TIP 脚本已更新至最新版本！\n"
     _IS_BREAK="true"
     case_break_tacle #&& exit && qiq
-    cd ~ && ./${fname} && exit; 
+    ./${fname} && exit; 
 }
 
 #=================
