@@ -907,7 +907,7 @@ function print_main_menu_tail() {
     adj_width=$((MAX_COL_NUM + chinese_width + emoji_count))
 
     s_exit=${RED}'退出脚本'${RED}"✘"${RESET}
-    s_restart=${WHITE}'重启系统'${RED}"☋"${RESET}
+    s_restart=${WHITE}'重启系统'${BLUE}"☋"${RESET}
     printf "%${NUM_WIDTH}s.%-${adj_width}b%${NUM_SPLIT}s%${NUM_WIDTH}s.%-${MAX_COL_NUM}b\n${RESET}" \
             '0' $s_exit "" 'xx' $s_restart
 
@@ -5228,9 +5228,11 @@ function docker_deploy_menu(){
                 ;; 
             [Nn] | [Nn][Oo]) 
                 echo -e "\n$TIP 取消域名反代！" 
+                domain=''
                 ;;
             *)   
-                echo -e "\n$WARN 输入错误[Y/n],不进行域名反代！"
+                echo -e "\n$WARN 输入错误,不进行域名反代！"
+                domain=''
                 ;;
             esac
         else
@@ -5238,7 +5240,7 @@ function docker_deploy_menu(){
             domain=''
         fi
 
-        echo "${domain}"
+        echo -e "${domain}"
     }
     
     function dc_deploy_ittools(){    
@@ -5275,7 +5277,7 @@ EOF
         docker-compose up -d 
         # domain=$(dc_get_domain ${dc_port})
         domain=$(dc_get_domain)
-        [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
+        [[ -n "${domain}" ]] && caddy_add_reproxy "${domain}" '127.0.0.1' $dc_port 0 
 
         local content=''
         content+="\nService     : ${dc_name}"
