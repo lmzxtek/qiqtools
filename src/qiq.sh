@@ -16,7 +16,7 @@
 
 
 #==== 脚本版本号 ===========
-SRC_VER=v0.7.3
+SRC_VER=v0.7.2
 #==========================
 
 URL_PROXY='https://proxy.zwdk.org/proxy/'
@@ -177,7 +177,7 @@ function gradient_text() {
   for ((i = 0; i < length; i++)); do
     char=${text:i:1}
     color_code=${gradient[$((i % ${#gradient[@]}))]}
-    result+=$(echo -en "\e[38;5;${color_code}m${char}\e[0m")
+    result+=$(echo -en "\033[38;5;${color_code}m${char}\033[0m")
   done
 
   echo "$result"
@@ -548,8 +548,10 @@ function str_width_awk() {
 function get_split_list() {
     local items=("${@}")
     local result=()
+    # local length=0
     
     for i in "${!items[@]}"; do
+        # length=${#items[i]}
         if [[ ! "${items[i]}" =~ ^[0-9] ]]; then  # 只要不是数字开头的项，就作为分割线
             result+=("$i")  # 记录分隔符的位置索引
         fi
@@ -561,7 +563,7 @@ function get_split_list() {
 # 生成重复字符的分割行，并应用颜色
 function generate_separator() {
     local separator_info="$1"
-    local count=${2:-35}
+    local count=${2:-$MAX_SPLIT_CHAR_NUM}
     
     # 解析分割符和颜色
     IFS='|' read -r separator color <<< "$separator_info"
@@ -591,8 +593,7 @@ function fill_array() {
 function print_sub_items() {
     local items=("${@}")
     # local items=("${!1}")  # 传入数组
-    local is2check=${2:-0} # 是否检测无数个数
-
+    # local is2check=${2:-0} # 是否检测无数个数
     # [[ ${is2check} -eq 1 ]] && items=$(fill_array "${items[@]}")
 
     local total_items=${#items[@]}
@@ -638,13 +639,13 @@ function print_sub_items() {
 function print_items_list(){
     local items=("${!1}")  # 传入数组
     local head="$2"
-    local tagd="${3:-${PRIGHT}}"
+    # local tagd="${3:-${PRIGHT}}"
     # clear 
     [[ -n ${head} ]] && echo -e "\n${BOLD}${head}: \n${PLAIN}"
     for option in "${items[@]}"; do
         IFS='|' read -r l_text l_color tag <<< "$option"
         l_color=${l_color:-$RESET}   # 默认颜色
-        tag=${tag:-$_TAG_DEFAULT}  # 默认标识符
+        tag=${tag:-$_TAG_DEFAULT}    # 默认标识符
         echo -e "${tag} ${l_color}${l_text}${RESET}"
     done
 }
@@ -1042,54 +1043,54 @@ function print_system_info() {
 
     clear 
 	echo ""
-	echo -e " 系统信息 "
-    generate_separator "↓|$AZURE" 40 # 割线
-	echo -e "${BLUE}主机名称:  ${BLUE}$hostname"
-	echo -e "${BLUE}运营商家:  ${BLUE}$ASNORG4"
-	echo -e "${BLUE}系统版本:  ${BLUE}$os_info"
-	echo -e "${BLUE}内核版本:  ${BLUE}$kernel_version"
-	echo -e "${BLUE}虚拟类型:  ${BLUE}$VIRT"
+	echo -e " ⚙️  系统信息 "
+    generate_separator "↓|$FCYE" 40 # 割线
+	echo -e "${FCQH}主机名称:  ${FCTL}$hostname"
+	echo -e "${FCQH}运营商家:  ${FCTL}$ASNORG4"
+	echo -e "${FCQH}系统版本:  ${FCTL}$os_info"
+	echo -e "${FCQH}内核版本:  ${FCTL}$kernel_version"
+	echo -e "${FCQH}虚拟类型:  ${FCGR}$VIRT"
     generate_separator "…|$AZURE" 40 # 割线
-	echo -e "${BLUE}CPU核数:   ${BLUE}$cpu_cores"
-	echo -e "${BLUE}CPU架构:   ${BLUE}$DEVICE_ARCH"
-	echo -e "${BLUE}CPU频率:   ${BLUE}$cpu_freq"
-	echo -e "${BLUE}CPU型号:   ${BLUE}$cpu_info"
+	echo -e "${FCQH}CPU核数:   ${FCTL}$cpu_cores"
+	echo -e "${FCQH}CPU架构:   ${FCTL}$DEVICE_ARCH"
+	echo -e "${FCQH}CPU频率:   ${FCGR}$cpu_freq"
+	echo -e "${FCQH}CPU型号:   ${FCTL}$cpu_info"
     generate_separator "…|$AZURE" 40 # 割线
-	echo -e "${BLUE}CPU占用:   ${BLUE}$cpu_usage_percent%"
-	echo -e "${BLUE}系统负载:  ${BLUE}$load"
-	echo -e "${BLUE}物理内存:  ${BLUE}$mem_info"
-	echo -e "${BLUE}虚拟内存:  ${BLUE}$swap_info"
-	echo -e "${BLUE}硬盘占用:  ${BLUE}$disk_info"
-    generate_separator "…|$AZURE" 40 # 割线
+	echo -e "${FCQH}CPU占用:   ${FCTL}$cpu_usage_percent%"
+	echo -e "${FCQH}系统负载:  ${FCTL}$load"
+	echo -e "${FCQH}物理内存:  ${FCTL}$mem_info"
+	echo -e "${FCQH}虚拟内存:  ${FCGR}$swap_info"
+	echo -e "${FCQH}硬盘占用:  ${FCTL}$disk_info"
+    generate_separator "…|$FCYE" 40 # 割线
 
     if [[ $IPV4_SUPPORTED -eq 1 ]]; then
-		echo -e "${BLUE}IPv4地址:  ${RED}$WAN4"
-        [[ -n "$WAN4" ]] && echo -e "${BLUE}地理位置:  ${BLUE}$COUNTRY4,$IP_INFO4,$ASNORG4"
+		echo -e "${FCQH}IPv4地址:  ${FCGR}$WAN4"
+        [[ -n "$WAN4" ]] && echo -e "${FCTL}地理位置:  ${BLUE}$COUNTRY4,$IP_INFO4,$ASNORG4"
     else
-		echo -e "${BLUE}IPv4地址:  ${RED} Not Supported "
+		echo -e "${FCQH}IPv4地址:  ${FCGR} Not Supported "
 	fi
 
     if [[ $IPV6_SUPPORTED -eq 1 ]]; then
-		echo -e "${BLUE}IPv6地址:  ${RED}$WAN6"
-        [[ -n "$WAN6" ]] && echo -e "${BLUE}地理位置:  ${BLUE}$COUNTRY6,$IP_INFO6,$ASNORG6"
+		echo -e "${FCQH}IPv6地址:  ${FCGR}$WAN6"
+        [[ -n "$WAN6" ]] && echo -e "${FCTL}地理位置:  ${BLUE}$COUNTRY6,$IP_INFO6,$ASNORG6"
     else
-		echo -e "${BLUE}IPv6地址:  ${RED} Not Supported "
+		echo -e "${FCQH}IPv6地址:  ${FCGR} Not Supported "
 	fi
 
     generate_separator "~|$AZURE" 40 # 割线
 	local dns_addresses=$(awk '/^nameserver/{printf "%s, ", $2} END {print ""}' /etc/resolv.conf)
 	local congestion_algorithm=$(sysctl -n net.ipv4.tcp_congestion_control)
 	local queue_algorithm=$(sysctl -n net.core.default_qdisc)
-	echo -e "${BLUE}DNS地址:  ${BLUE}$dns_addresses"
-	echo -e "${BLUE}网络算法:  ${BLUE}$congestion_algorithm $queue_algorithm"
+	echo -e "${FCQH}DNS地址:  ${BLUE}$dns_addresses"
+	echo -e "${FCQH}网络算法:  ${FCZS}$congestion_algorithm $queue_algorithm"
 
     generate_separator "…|$AZURE" 40 # 割线
     local date_time="$(date "+%Y-%m-%d %H:%M")"
     local time_zone="$(timedatectl status 2>/dev/null | grep "Time zone" | awk -F ':' '{print$2}' | awk -F ' ' '{print$1}')"
     local runtime=$(cat /proc/uptime | awk -F. '{run_days=int($1 / 86400);run_hours=int(($1 % 86400) / 3600);run_minutes=int(($1 % 3600) / 60); if (run_days > 0) printf("%d天 ", run_days); if (run_hours > 0) printf("%d时 ", run_hours); printf("%d分\n", run_minutes)}')
-	echo -e "${BLUE}系统时间:  ${BLUE}$time_zone $date_time"
-	echo -e "${BLUE}运行时长:  ${BLUE}$runtime"
-    generate_separator "↑|$AZURE" 40 # 割线
+	echo -e "${FCBL}系统时间:  ${BLUE}$time_zone $date_time"
+	echo -e "${FCBL}运行时长:  ${FCTL}$runtime"
+    generate_separator "↑|$FCYE" 40 # 割线
 
     _BREAK_INFO=" 系统信息获取完成"
     _IS_BREAK="true"
@@ -1129,7 +1130,7 @@ function interactive_select_mirror() {
         fi
         for ((i = start; i <= end; i++)); do
             if [ "$i" -eq "$selected" ]; then
-                echo -e "\e[34;4m➤ ${options[$i]%@*}\e[0m"
+                echo -e "\033[34;4m➤ ${options[$i]%@*}\033[0m"
             else
                 echo -e "  ${options[$i]%@*}"
             fi
@@ -4353,9 +4354,8 @@ MENU_PYTHON_ITEMS=(
     "2|安装pipenv|$WHITE" 
     "3|安装miniForge|$YELLOW" 
     "4|安装miniConda|$WHITE"  
-    "………………………|$WHITE" 
-    "21|设置pip源|$WHITE" 
-    "22|设置conda源|$WHITE" 
+    "5|设置pip源|$WHITE" 
+    "6|设置conda源|$WHITE" 
     "………………………|$WHITE"
     "31|安装dash|$WHITE"
     "32|安装julia|$WHITE"
@@ -4669,8 +4669,8 @@ function python_management_menu(){
         2 ) py_subitem_install_pipenv ;;
         3 ) py_subitem_install_miniforge ;;
         4 ) py_subitem_install_miniconda ;;
-        21) py_subitem_set_source_pip ;;
-        22) py_subitem_set_source_conda ;;
+        5 ) py_subitem_set_source_pip ;;
+        6 ) py_subitem_set_source_conda ;;
         31) py_subitem_install_dash ;;
         32) py_subitem_install_julia ;;
         33) py_subitem_install_gunicorn ;;

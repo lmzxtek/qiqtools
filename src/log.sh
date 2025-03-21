@@ -26,6 +26,7 @@ echoT "   4.完善Docker部署"
 echoT "--------------------------------"
 echoR " -=> 2025-03-21   v0.7.3" " $VLATEST"
 echoY "   1.美化单栏菜单显示效果：左侧增加自定义Emoji表情"
+echoY "   2.美化系统信息显示效果"
 echoT "--------------------------------"
 echoR "" $(echoY "url") $(echoR ": $url_redir") 
 echoR "" $(echoY "url") $(echoR ": $url_script") 
