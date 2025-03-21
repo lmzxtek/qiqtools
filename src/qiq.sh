@@ -6181,9 +6181,9 @@ function docker_management_menu(){
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
-            1) dc_id=$(docker_get_id) && [[ -n $dc_id]] && docker stop $dc_id ;;
-            2) dc_id=$(docker_get_id) && [[ -n $dc_id]] && docker rm $dc_id ;;
-            3) dc_id=$(docker_get_id) && [[ -n $dc_id]] && docker stats $dc_id ;;
+            1) dc_id=$(docker_get_id) && [[ -n ${dc_id} ]] && docker stop $dc_id ;;
+            2) dc_id=$(docker_get_id) && [[ -n ${dc_id} ]] && docker rm $dc_id ;;
+            3) dc_id=$(docker_get_id) && [[ -n ${dc_id} ]] && docker stats $dc_id ;;
             # 2) 
             #     local CHOICE=$(echo -e "\n${BOLD}└─ 输入要删除的容器ID: ${PLAIN}")
             #     read -rp "${CHOICE}" INPUT 
