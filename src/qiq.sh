@@ -16,7 +16,7 @@
 
 
 #==== 脚本版本号 ===========
-SRC_VER=v0.7.2
+SRC_VER=v0.7.3
 #==========================
 
 URL_PROXY='https://proxy.zwdk.org/proxy/'
@@ -25,12 +25,13 @@ URL_SCRIPT='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/s
 URL_UPDATE='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/src/log.sh'
 
 
-# Emoji: 💡🧹🎉⚙️🔧🛠️💣🎯🧲🌍🌎🌏🌐🏡🏚️🏠🏯🗼🧭♨️💧📡👫
-#        🐵🐒🐕🦍🫏🦒🐔🐤🐓🦅🪿🐦‍⬛🐋🐬🪼🪲🌹🥀🌿🌱☘️🍓🍉
-# Emoji: 😀😀😝😔🫨💥💯💤💫💦🛑⚓🎁🎀🏅🎖️🥇🥈🥉
+# Emoji: 💡🧹🎉⚙️♻️🔧🛠️🏹💣🎯🧲🌍🌎🌏🌐🏡🏚️🏠🏯🗼🧭♨️💧📡👫
+#        🐵🐒🐕🦍🫏🦒🦜🐔🐤🐓🦅🪿🐦‍⬛🐋🐬🪼🪲🌹🥀🌿🌱☘️🍓🍉
+# Emoji: 😀😀😝😔🫨💥💯💤💫⭐🌟✨💦🛑⚓🎁🎀🏅🎖️🥇🥈🥉❗❕⚠️
 # Emoji: 💔💖💝🩷❤️💗⛳🕹️🎨♥️♠️♣️♦️♟️🃏🔒🔓🔐🔏🔑🗝️
 #        👌👍✌️👋👉👈👆👇👎✊👊🤛🤝👐👀👁️🦶🩸💊🩹
 #        ⚠️🚸⛔🚫🚳📵☣️☢️🔅🔆✖️➕➖➗🟰♾️⁉️❓❔💲♻️🔱⚜️📛⭕❌✔️☑️✅❎✳️❇️✴️
+#        🔛🔚🔙🔜🔝⬆️⬇️⬅️➡️↖️↕️↗️↪️↙️↩️⤴️⤵️↔️🔄🔃
 
 BOLD='\033[1m'
 PLAIN='\033[0m'
