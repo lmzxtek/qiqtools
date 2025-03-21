@@ -4734,7 +4734,9 @@ function caddy_new_caddyfile(){
         echo -e " >>> Join all *.conf files into: /etc/caddy/Caddyfile"
         caddy_cfg_backup 
         find ${dir_caddy} -name "*.conf" -exec cat {} + > /etc/caddy/Caddyfile
-        # cd /etc/caddy/Caddyfile
+        cd /etc/caddy
+        caddy fmt --overwrite
+        cd -
     fi
 }
 
