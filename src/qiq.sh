@@ -6232,11 +6232,11 @@ function script_update(){
     local url_script=$(get_proxy_url $URL_SCRIPT)
     bash <(wget --no-check-certificate -qO- $url_update)
     echo -e "$TIP 脚本下载 ...\n"
-    curl -sSL -o ${fname} $url_script && \
+    curl -SL -o ${fname} $url_script && \
     chmod +x ${fname} && \
     echo -e "$TIP 脚本已更新至最新版本！\n"
     _IS_BREAK="true"
-    case_break_tacle #&& exit && qiq
+    case_break_tacle && _IS_BREAK="false"
     ./${fname} && _IS_BREAK="false" && exit 1; 
     # _IS_BREAK="false" && exit 1 && ./${fname} ; 
 }
