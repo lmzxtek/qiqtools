@@ -4736,7 +4736,7 @@ function caddy_new_caddyfile(){
         find ${dir_caddy} -name "*.conf" -exec cat {} + > /etc/caddy/Caddyfile
         cd /etc/caddy
         caddy fmt --overwrite
-        cd -
+        cd - &>/dev/null
     fi
 }
 
@@ -4746,7 +4746,7 @@ function caddy_reload(){
     cd /etc/caddy; 
     # caddy_new_caddyfile; 
     caddy reload; 
-    cd - ; 
+    cd - &>/dev/null ; 
 }
 
 ## 备份Caddy配置信息 
@@ -5122,16 +5122,17 @@ EOF
 
 }
 
-function is_valid_domain() {
-    local domain=$1
+function get_valid_domain() {
+    local domain
     local regex='^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$'
 
+    read -p " └─ 请输入域名: " domain
     if [[ $domain =~ $regex ]]; then
         # echo -e "Valid domain"
-        return $domain
+        echo $domain
     else
-        echo -e "$WARN Invalid domain: $domain"
-        return ''
+        # echo -e "$WARN Invalid domain: $domain"
+        echo ''
     fi
 }
 
@@ -5221,9 +5222,8 @@ function docker_deploy_menu(){
         print_sub_menu_tail $num_split
     }
 
-    function dc_get_domain(){
-        # local port=$1
-        local domain=''
+    function dc_set_domain_reproxy(){
+        local port=$1
 
         if command -v caddy >/dev/null 2>&1; then
             echo -e "\n$TIP 检测到系统已安装Caddy，是否给${dc_desc}添加域名反代？ ... \n"
@@ -5232,34 +5232,18 @@ function docker_deploy_menu(){
             [[ -z "$INPUT" ]] &&  INPUT="N"
             case "${INPUT}" in 
             [Yy] | [Yy][Ee][Ss]) 
-                local CHOICE=$(echo -e "\n${BOLD}└─ 请输入域名: ${PLAIN}")
-                read -rp "${CHOICE}" INPUT
-                if [[ -z "$INPUT" ]] ; then
-                    echo -e "\n$TIP 输入域名为空，不进行反代！" 
-                    return ''
-                else
-                    domain=$(is_valid_domain $INPUT)
-                    echo -e "\n$TIP 输入的域名为(dc_get_domain): $domain" 
-                    return "${domain}"
-                fi 
+                local domain=$(get_valid_domain)
+                [[ -n "$domain" ]] && caddy_add_reproxy "${domain}" '127.0.0.1' $port 0
+                # echo -e "\n$TIP 输入的域名为(dc_get_domain): $domain" 
                 ;; 
             [Nn] | [Nn][Oo]) 
                 echo -e "\n$TIP 取消域名反代！" 
-                domain=''
-                return ''
                 ;;
-            *)   
-                echo -e "\n$WARN 输入错误,不进行域名反代！"
-                domain=''
-                return ''
-                ;;
+            *)  echo -e "\n$WARN 输入错误,不进行域名反代！" ;;
             esac
         else
             echo -e "\n$TIP 系统已未安装Caddy，不进行域名反代 \n"
-            domain=''
-            return ''
         fi
-        return $domain
     }
     
     function dc_deploy_ittools(){    
@@ -5294,10 +5278,10 @@ services:
 EOF
 
         docker-compose up -d 
-        # domain=$(dc_get_domain ${dc_port})
-        domain=$(dc_get_domain)
-        echo -e "\n$TIP 输入的域名为(ittools)： ${domain}\n"
-        [[ -n "${domain}" ]] && caddy_add_reproxy "${domain}" '127.0.0.1' $dc_port 0 
+        dc_set_domain_reproxy $dc_port 
+        # domain=$(dc_get_domain ${dc_port}) 
+        # echo -e "\n$TIP 输入的域名为(ittools)： ${domain}\n"
+        # [[ -n "${domain}" ]] && caddy_add_reproxy "${domain}" '127.0.0.1' $dc_port 0 
 
         local content=''
         content+="\nService     : ${dc_name}"
@@ -5310,7 +5294,7 @@ EOF
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
         
-        cd - # 返回原来目录 
+        cd - &>/dev/null # 返回原来目录 
     }
 
     function dc_deploy_deeplx(){    
@@ -5348,7 +5332,7 @@ services:
 EOF
 
         docker-compose up -d 
-        domain=$(dc_get_domain )
+        domain=$(dc_set_domain_reproxy )
         [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
 
         local content=''
@@ -5362,7 +5346,7 @@ EOF
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
         
-        cd - # 返回原来目录 
+        cd - &>/dev/null # 返回原来目录 
     }
     function dc_deploy_sublinkx(){    
         local base_root="/home/dcc.d"
@@ -5400,7 +5384,7 @@ services:
 EOF
 
         docker-compose up -d 
-        domain=$(dc_get_domain )
+        domain=$(dc_set_domain_reproxy )
         [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
 
         local content=''
@@ -5414,7 +5398,7 @@ EOF
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
         
-        cd - # 返回原来目录 
+        cd - &>/dev/null # 返回原来目录 
     }
     function dc_deploy_aktools(){    
         local base_root="/home/dcc.d"
@@ -5455,7 +5439,7 @@ services:
 EOF
 
         docker-compose up -d 
-        domain=$(dc_get_domain )
+        domain=$(dc_set_domain_reproxy )
         [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
 
         local content=''
@@ -5469,7 +5453,7 @@ EOF
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
         
-        cd - # 返回原来目录 
+        cd -  &>/dev/null # 返回原来目录 
     }
     function dc_deploy_rustdesk(){    
         local base_root="/home/dcc.d"
@@ -5518,7 +5502,7 @@ services:
 EOF
 
         docker-compose up -d 
-        domain=$(dc_get_domain )
+        domain=$(dc_set_domain_reproxy )
         [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
 
         local content=''
@@ -5532,7 +5516,7 @@ EOF
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
         
-        cd - # 返回原来目录 
+        cd -  &>/dev/null # 返回原来目录 
     }
     function dc_deploy_lucky(){    
         local base_root="/home/dcc.d"
@@ -5567,7 +5551,7 @@ services:
 EOF
 
         docker-compose up -d 
-        domain=$(dc_get_domain )
+        domain=$(dc_set_domain_reproxy )
         [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
 
         local content=''
@@ -5581,7 +5565,7 @@ EOF
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
         
-        cd - # 返回原来目录 
+        cd -  &>/dev/null # 返回原来目录 
     }
     function dc_deploy_iptva(){    
         local base_root="/home/dcc.d"
@@ -5618,7 +5602,7 @@ services:
 EOF
 
         docker-compose up -d 
-        domain=$(dc_get_domain )
+        domain=$(dc_set_domain_reproxy )
         [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
 
         local content=''
@@ -5632,7 +5616,7 @@ EOF
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
         
-        cd - # 返回原来目录 
+        cd -  &>/dev/null # 返回原来目录 
     }
     function dc_deploy_iptvd(){    
         local base_root="/home/dcc.d"
@@ -5669,7 +5653,7 @@ services:
 EOF
 
         docker-compose up -d 
-        domain=$(dc_get_domain )
+        domain=$(dc_set_domain_reproxy )
         [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
 
         local content=''
@@ -5683,7 +5667,7 @@ EOF
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
         
-        cd - # 返回原来目录 
+        cd -  &>/dev/null # 返回原来目录 
     }
     function dc_deploy_spdf(){    
         local base_root="/home/dcc.d"
@@ -5722,7 +5706,7 @@ services:
 EOF
 
         docker-compose up -d 
-        domain=$(dc_get_domain )
+        domain=$(dc_set_domain_reproxy )
         [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
 
         local content=''
@@ -5736,7 +5720,7 @@ EOF
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
         
-        cd - # 返回原来目录 
+        cd -  &>/dev/null # 返回原来目录 
     }
     function dc_deploy_myip(){    
         local base_root="/home/dcc.d"
@@ -5770,7 +5754,7 @@ services:
 EOF
 
         docker-compose up -d 
-        domain=$(dc_get_domain )
+        domain=$(dc_set_domain_reproxy )
         [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
 
         local content=''
@@ -5784,7 +5768,7 @@ EOF
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
         
-        cd - # 返回原来目录 
+        cd -  &>/dev/null # 返回原来目录 
     }
     function dc_deploy_neko(){    
         local base_root="/home/dcc.d"
@@ -5855,7 +5839,7 @@ services:
 EOF
 
         docker-compose up -d 
-        domain=$(dc_get_domain )
+        domain=$(dc_set_domain_reproxy )
         [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
 
         local content=''
@@ -5870,7 +5854,7 @@ EOF
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
         
-        cd - # 返回原来目录 
+        cd -  &>/dev/null # 返回原来目录 
     }
 
 
@@ -6402,7 +6386,7 @@ function main_menu(){
 
 
 function script_update(){
-    cd ~ 
+    cd ~ &>/dev/null
     local fname='qiq.sh'
     echo -e "\n $TIP 检测更新中，请稍等..."
     local url_update=$(get_proxy_url $URL_UPDATE)
