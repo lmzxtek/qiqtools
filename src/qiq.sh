@@ -4796,7 +4796,7 @@ function caddy_del_domain(){
     local dir_caddy=${2:-'/home/caddy_data/caddy'}
     
     if [[ -z "${domain_new}" ]] ; then 
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入新域名: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入要删除的域名: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         domain_new=$INPUT 
     fi 
@@ -5165,13 +5165,13 @@ function caddy_management_menu(){
         5)  systemctl status caddy ;;
         6)  caddy_domain_list ;;
         7)  caddy_new_caddyfile && caddy_reload ;;
-        21) caddy_add_reproxy ;;
-        22) caddy_add_url_redirect ;;
-        23) caddy_add_static_web ;;
-        24) caddy_add_url_balance ;;
-        25) caddy_alter_domain ;;
-        26) caddy_del_domain ;;
-        27) caddy_clean_all_domain ;;
+        21) caddy_add_reproxy && caddy_domain_list ;;
+        22) caddy_add_url_redirect && caddy_domain_list ;;
+        23) caddy_add_static_web && caddy_domain_list ;;
+        24) caddy_add_url_balance && caddy_domain_list ;;
+        25) caddy_domain_list && caddy_alter_domain && caddy_domain_list ;;
+        26) caddy_domain_list && caddy_del_domain && caddy_domain_list ;;
+        27) caddy_domain_list && caddy_clean_all_domain && caddy_domain_list ;;
         xx) sys_reboot ;;
         0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK='false' && break ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
