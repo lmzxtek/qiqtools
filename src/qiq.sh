@@ -9,7 +9,7 @@
 #   一键安装命令如下：
 #   $> wget -qO qiqtools.sh https://sub.zwdk.org/qiq && chmod +x qiqtools.sh && ./qiqtools.sh
 #   $> curl -sSL -o qiqtools.sh https://sub.zwdk.org/qiq && chmod +x qiqtools.sh && ./qiqtools.sh
-
+# 
 #   $> wget -qN https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiq.sh && chmod +x qiqtools.sh && ./qiqtools.sh
 #   $> curl -sS -O https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiq.sh && chmod +x qiqtools.sh && ./qiqtools.sh
 #========================================================
