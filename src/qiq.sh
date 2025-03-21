@@ -6203,7 +6203,7 @@ function docker_management_menu(){
             3)  dc_id=$(docker_get_id) && [[ -n ${dc_id} ]] && docker stats $dc_id ;;
             4)  dc_id=$(docker_get_id) && [[ -n ${dc_id} ]] && docker stop $dc_id && docker rm $dc_id ;;
             5)  docker_containers_rm_all ;;
-            0)  echo -e "\n$TIP 返回 ..." && _IS_BREAK="false" ;;
+            0)  echo -e "\n$TIP 返回 ..." && _IS_BREAK="false" && break ;;
             *)  _BREAK_INFO=" 请输入有效的容器选项！" ;;
             esac 
             case_end_tackle 
