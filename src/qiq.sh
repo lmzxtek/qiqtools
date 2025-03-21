@@ -1088,8 +1088,8 @@ function print_system_info() {
     local date_time="$(date "+%Y-%m-%d %H:%M")"
     local time_zone="$(timedatectl status 2>/dev/null | grep "Time zone" | awk -F ':' '{print$2}' | awk -F ' ' '{print$1}')"
     local runtime=$(cat /proc/uptime | awk -F. '{run_days=int($1 / 86400);run_hours=int(($1 % 86400) / 3600);run_minutes=int(($1 % 3600) / 60); if (run_days > 0) printf("%d天 ", run_days); if (run_hours > 0) printf("%d时 ", run_hours); printf("%d分\n", run_minutes)}')
-	echo -e "${FCBL}系统时间:  ${BLUE}$time_zone $date_time"
-	echo -e "${FCBL}运行时长:  ${FCTL}$runtime"
+	echo -e "${FCLS}系统时间:  ${BLUE}$time_zone $date_time"
+	echo -e "${FCLS}运行时长:  ${FCTL}$runtime"
     generate_separator "↑|$FCYE" 40 # 割线
 
     _BREAK_INFO=" 系统信息获取完成"
