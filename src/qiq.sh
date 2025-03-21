@@ -6226,8 +6226,8 @@ function docker_management_menu(){
         )
 
         while true; do
-            docker_show_images 
-            print_items_list dc_items_list[@] "网络操作:"
+            docker_show_networks
+            print_items_list dc_items_list[@] " 网络操作:"
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
