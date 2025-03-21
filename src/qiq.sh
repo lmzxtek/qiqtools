@@ -870,7 +870,6 @@ function print_sys_title() {
     echo -e "系统时间: ${BLUE}${date_time} ${time_zone}${PLAIN}"
 }
 
-
 function print_sub_head() {
     local head="$1"
     local n=${2:-35}    # 传入分割符重复次数, 默认35
@@ -5201,9 +5200,11 @@ MENU_DOCKER_DEPLOY_ITEMS=(
     "2|DeepLX|$WHITE"
     "3|AKTools|$CYAN"
     "4|SubLinkX|$WHITE"
-    "5|IPTVa|$WHITE"
-    "6|IPTVd|$WHITE"
-    "7|Lucky|$WHITE"
+    "5|Lucky|$WHITE"
+    "6|IPTVa|$WHITE"
+    "7|IPTVd|$WHITE"
+    "8|Docker-win|$WHITE"
+    "9|Docker-mac|$WHITE"
     "………………………|$WHITE" 
     "21|IT-Tools|$YELLOW" 
     "22|Stirling PDF|$WHITE" 
@@ -5225,15 +5226,14 @@ function docker_deploy_menu(){
         local port=$1
 
         if command -v caddy >/dev/null 2>&1; then
-            echo -e "\n$TIP 检测到系统已安装Caddy，是否给${dc_desc}添加域名反代？ ... \n"
-            local CHOICE=$(echo -e "\n${BOLD}└─ 检测到系统已安装Caddy，是否添加域名？[y/N]: ${PLAIN}")
+            # echo -e "\n$TIP 检测到系统已安装Caddy，是否给${dc_desc}添加域名反代？ ... \n"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 系统已安装Caddy，是否添加域名反代？[y/N]: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             [[ -z "$INPUT" ]] &&  INPUT="N"
             case "${INPUT}" in 
             [Yy] | [Yy][Ee][Ss]) 
                 local domain=$(get_valid_domain)
                 [[ -n "$domain" ]] && caddy_add_reproxy "${domain}" '127.0.0.1' $port 0
-                # echo -e "\n$TIP 输入的域名为(dc_get_domain): $domain" 
                 ;; 
             [Nn] | [Nn][Oo]) 
                 echo -e "\n$TIP 取消域名反代！" 
@@ -5852,8 +5852,6 @@ EOF
 
         docker-compose up -d 
         dc_set_domain_reproxy $dc_port 
-        # domain=$(dc_set_domain_reproxy )
-        # [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
 
         local content=''
         content+="\nService     : ${dc_name}"
@@ -5870,6 +5868,148 @@ EOF
         cd -  &>/dev/null # 返回原来目录 
     }
 
+    function dc_deploy_docker_win(){    
+        local base_root="/home/dcc.d"
+        local dc_port=48006
+        local dc_name='docker_win'
+        local dc_imag=dockurr/windows
+        local dc_desc="Docker(win)"
+        local domain=''
+
+        local lfld="$base_root/$dc_name"
+        local fdat="$base_root/$dc_name/data"
+        local fyml="$lfld/docker-compose.yml"
+        local fcfg="$lfld/${dc_name}.conf"
+
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) 
+        [[ -f "$fyml"  ]] || touch $fyml
+        cd $lfld
+
+        echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入VNC监听端口(默认为:${dc_port})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && dc_port=$INPUT
+
+        winver='2025'
+        echo -e ""
+        echo -e "$PRIGHT 1.2025(Windows Server 2025)"
+        echo -e "$PRIGHT 2.2022(Windows Server 2022)"
+        echo -e "$PRIGHT 3.2019(Windows Server 2019)"
+        echo -e "$PRIGHT 4.win11(Windows 11)"
+        echo -e "$PRIGHT 5.win10(Windows 10)"
+        echo -e "$PRIGHT 6.tiny11(Tiny 11)"
+        echo -e "$PRIGHT 7.tiny10(Tiny 10)"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择Windows版本(默认为: Win2025)]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] && INPUT=1        
+        case "${INPUT}" in
+        1) winver='2025' ;;
+        2) winver='2022' ;;
+        3) winver='2019' ;;
+        4) winver='win11' ;;
+        5) winver='win10' ;;
+        6) winver='tiny11' ;;
+        7) winver='tiny10' ;;
+        *) echo -e "\n$WARN 输入错误[Y/n],设置为默认2025"  ;;
+        esac
+        
+        local lang="Chinese"
+        echo -e "\n" " 可选择的语言 "
+        echo -e "  " " 1.Chinese "
+        echo -e "  " " 2.English "
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择Windows语言(默认为: Chinese)]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT 
+        [[ -z "$INPUT" ]] && INPUT=1 
+        case "${INPUT}" in
+        1) lang='Chinese' ;;
+        2) lang='English' ;;
+        *) echo -e "\n$WARN 输入错误[Y/n],设置为${lang}"  ;;
+        esac
+        
+        local numcpu=4
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入CPU核心数(默认为:${numcpu})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && numcpu=$INPUT
+
+        local memsize=4
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入内存大小(默认为:${memsize}GB)]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && memsize=$INPUT
+
+        local disksize=30
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入硬盘大小(默认为:${disksize}GB)]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && disksize=$INPUT
+
+        local user='dd'
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录账户(默认为:${user})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && user=$INPUT
+
+        local pass='dd543212345'
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录密码(默认为:${pass})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && pass=$INPUT
+
+
+        cat > "$fyml" << EOF
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/kvm
+    environment:
+      VERSION: "${winver}"
+      LANGUAGE: "${lang}"
+      CPU_CORES: "${numcpu}"
+      RAM_SIZE: "${memsize}"
+      DISK_SIZE: "${disksize}"
+      USERNAME: "${user}"
+      PASSWORD: "${pass}"
+    volumes:
+      - $lfld/$dc_name/dcwin_disk:/storage
+      - $lfld/$dc_name/dcwin_share:/shared
+    ports:
+      - ${dc_port}:8006
+      - 5000:5000
+      - 3389:3389/tcp
+      - 3389:3389/udp
+    stop_grace_period: 2m
+    restart: unless-stopped
+EOF
+
+        local CHOICE=$(echo -e "\n${BOLD}└─ 容器配置文件已生成是否启动容器？[y/N]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] &&  INPUT="N"
+        case "${INPUT}" in 
+        [Yy] | [Yy][Ee][Ss]) 
+            docker-compose up -d 
+            ;; 
+        [Nn] | [Nn][Oo]) 
+            echo -e "\n$TIP 手动启动容器: ${fyml}" 
+            ;;
+        *)  echo -e "\n$WARN 输入错误！" ;;
+        esac
+
+        dc_set_domain_reproxy $dc_port 
+
+        local content=''
+        content+="\nService     : ${dc_name}"
+        content+="\nContainer   : ${dc_name}"
+        [[ -n $WAN4 ]]    && content+="\nURL(IPV4)   : http://$WAN4:$dc_port"
+        [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
+        [[ -n $domain ]]  && content+="\nDomain      : $domain  "
+        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+        [[ -n $dc_desc ]] && content+="\nGitHub : # https://neko.m1k1o.net/#/getting-started/quick-start  "
+
+        echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
+        echo -e "$content" | tee $fcfg
+        
+        cd -  &>/dev/null # 返回原来目录 
+    }
 
     #================================
     while true; do
@@ -5882,9 +6022,9 @@ EOF
         2 ) dc_deploy_deeplx  ;;
         3 ) dc_deploy_aktools  ;;
         4 ) dc_deploy_sublinkx  ;;
-        5 ) dc_deploy_iptva  ;;
-        6 ) dc_deploy_iptvd  ;;
-        7 ) dc_deploy_lucky  ;;
+        5 ) dc_deploy_lucky  ;;
+        6 ) dc_deploy_iptva  ;;
+        7 ) dc_deploy_iptvd  ;;
         21) dc_deploy_ittools  ;;
         22) dc_deploy_spdf  ;;
         23) dc_deploy_myip  ;;
