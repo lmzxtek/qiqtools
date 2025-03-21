@@ -5140,6 +5140,7 @@ MENU_CADDY_ITEMS=(
     "25|修改域名|$WHITE" 
     "26|删除站点|$RED" 
     "27|清空站点|$WHITE" 
+    "28|容器管理|$BLUE" 
 )
 function caddy_management_menu(){
     function print_sub_item_menu_headinfo(){
@@ -5172,6 +5173,7 @@ function caddy_management_menu(){
         25) caddy_domain_list && caddy_alter_domain && caddy_domain_list ;;
         26) caddy_domain_list && caddy_del_domain && caddy_domain_list ;;
         27) caddy_domain_list && caddy_clean_all_domain && caddy_domain_list ;;
+        28) docker_management_menu && _IS_BREAK="false"  && break  ;;
         xx) sys_reboot ;;
         0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK='false' && break ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
@@ -5899,7 +5901,7 @@ MENU_DOCKER_MANAGE_ITEMS=(
     "34|网络v4v6|$WHITE" 
     "35|设置dcc|$WHITE" 
     "41|停止容器|$WHITE" 
-    "42|删除容器|$WHITE" 
+    "42|删除容器|$RED" 
     "43|停止所有|$WHITE" 
     "44|删除所有|$WHITE" 
 )
@@ -6248,7 +6250,7 @@ function script_update(){
     local url_update=$(get_proxy_url $URL_UPDATE)
     local url_script=$(get_proxy_url $URL_SCRIPT)
     bash <(wget --no-check-certificate -qO- $url_update)
-    echo -e "$TIP 脚本下载 ...\n"
+    echo -e "\n$TIP 脚本下载 ...\n"
     curl -SL -o ${fname} $url_script && \
     chmod +x ${fname} && \
     echo -e "$TIP 脚本已更新至最新版本！\n"
