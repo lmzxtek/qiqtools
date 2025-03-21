@@ -6226,6 +6226,7 @@ function docker_management_menu(){
         )
 
         while true; do
+            clear 
             docker_show_networks
             print_items_list dc_items_list[@] " 网络操作:"
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
@@ -6254,6 +6255,7 @@ function docker_management_menu(){
         )
 
         while true; do
+            clear 
             docker_show_images 
             print_items_list dc_items_list[@] "镜像操作:"
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
@@ -6282,6 +6284,7 @@ function docker_management_menu(){
         )
 
         while true; do
+            clear 
             docker_show_containers 
             print_items_list dc_items_list[@] "容器操作:"
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
