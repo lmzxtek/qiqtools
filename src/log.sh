@@ -18,11 +18,14 @@ clear
 echoR " >>> " $(echoY "脚本更新日志") $(echoR "<<<") 
 echoB " - " $(echoT $url_update)
 echoT "--------------------------------"
-echoR " -=> 2025-03-21   v0.7.2" " $VLATEST"
-echoY "   1.日志文件接之前的版本"
-echoY "   2.测试DD脚本项"
-echoY "   3.修正测试项链接"
-echoY "   4.完善Docker部署"
+echoT " -=> 2025-03-21   v0.7.2" " "
+echoT "   1.日志文件接之前的版本"
+echoT "   2.测试DD脚本项"
+echoT "   3.修正测试项链接"
+echoT "   4.完善Docker部署"
+echoT "--------------------------------"
+echoR " -=> 2025-03-21   v0.7.3" " $VLATEST"
+echoY "   1.美化单栏菜单显示效果：左侧增加自定义Emoji表情"
 echoT "--------------------------------"
 echoR "" $(echoY "url") $(echoR ": $url_redir") 
 echoR "" $(echoY "url") $(echoR ": $url_script") 

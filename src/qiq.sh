@@ -16,7 +16,7 @@
 
 
 #==== 脚本版本号 ===========
-SRC_VER=v0.7.2
+SRC_VER=v0.7.3
 #==========================
 
 URL_PROXY='https://proxy.zwdk.org/proxy/'
@@ -44,6 +44,7 @@ WARN="\033[1;36m⚠️${PLAIN}"
 ERROR="\033[1;31m✘${PLAIN}"
 FAIL="\033[1;31m✘${PLAIN}"
 TIP="\033[1;36m💡${PLAIN}"
+_TAG_DEFAULT="\033[1;36m🌿${PLAIN}"
 
 
 # 颜色定义：\033比\e的兼容性更好 
@@ -574,11 +575,27 @@ function generate_separator() {
     echo -e "${color}$(printf "%0.s$first_char" $(seq 1 "$count"))${RESET}"
 }
 
-## 菜单项按2栏显示
-function print_sub_menu_items() {
-    local items=("${@}")
-    local total_items=${#items[@]}
+function fill_array() {
+    local -n arr=$1  # 使用命名引用传递数组
+    local num=${2:-5}  # 默认填充5个空字符串
+    local length=${#arr[@]}
+    
+    if (( length < num )); then
+        for ((i=length; i<length+length; i++)); do
+            arr[i]=""
+        done
+    fi
+}
 
+## 菜单项按2栏显示
+function print_sub_items() {
+    local items=("${@}")
+    # local items=("${!1}")  # 传入数组
+    local is2check=${2:-0} # 是否检测无数个数
+
+    # [[ ${is2check} -eq 1 ]] && items=$(fill_array "${items[@]}")
+
+    local total_items=${#items[@]}
     local half=$(( (total_items + 1) / 2 ))  # 计算左右分栏
 
     for ((i=0; i<half; i++)); do
@@ -621,10 +638,14 @@ function print_sub_menu_items() {
 function print_items_list(){
     local items=("${!1}")  # 传入数组
     local head="$2"
+    local tagd="${3:-${PRIGHT}}"
     # clear 
-    echo -e "\n${BOLD} ⚓ ${head}: \n${PLAIN}"
+    [[ -n ${head} ]] && echo -e "\n${BOLD}${head}: \n${PLAIN}"
     for option in "${items[@]}"; do
-        echo -e "$PRIGHT $option"
+        IFS='|' read -r l_text l_color tag <<< "$option"
+        l_color=${l_color:-$RESET}   # 默认颜色
+        tag=${tag:-$_TAG_DEFAULT}  # 默认标识符
+        echo -e "${tag} ${l_color}${l_text}${RESET}"
     done
 }
 
@@ -643,7 +664,7 @@ function split_menu_items() {
         sub_list=("${items[@]:start:split-start}")
         
         # 调用 print_sub_menu_items 进行子列表显示
-        print_sub_menu_items "${sub_list[@]}"
+        print_sub_items "${sub_list[@]}"
         
         # 生成新的分割行
         generate_separator "${items[split]}" "$n"
@@ -654,7 +675,7 @@ function split_menu_items() {
     # 处理最后一部分（如果还有剩余项）
     if [[ $start -lt ${#items[@]} ]]; then
         sub_list=("${items[@]:start}")
-        print_sub_menu_items "${sub_list[@]}"
+        print_sub_items "${sub_list[@]}"
     fi
 }
 
@@ -1527,22 +1548,22 @@ MENU_TEST_ITEMS=(
     # "………………………|$WHITE" 
     # "31|性能测试(bench)|$CYAN"
     # "32|融合怪测评(spiritysdx)|$CYAN"
-    "………………………………………………………………" 
-    "$BLUE IP解锁状态检测 $PLAIN"
+    "………………………………………………………………💡||💡" 
+    "IP解锁状态检测|$GREEN|🌏"
     " 1.ChatGPT解锁状态"
     " 2.Region流媒体状态"
     " 3.yeahwu流媒体状态"
-    " 4.流媒体地区限制检测"
-    "………………………………………………………………" 
-    "$BLUE 网络线路测速 $PLAIN"
+    " 4.流媒体地区限制检测|$BLUE"
+    "………………………………………………………………💡||💡" 
+    "网络线路测速|$GREEN|🌐"
     "11.三网测速(Superspeed)"
     "12.三网回程(bestrace)"
     "13.回程线路(mtr_trace)" 
     "21.单线程测速"
     "22.带宽性能(yabs)"
-    "………………………………………………………………" 
-    "$BLUE 综合测试 $PLAIN"
-    "31.性能测试(bench)"
+    "………………………………………………………………💡||💡" 
+    "综合测试|$GREEN|🌏"
+    "31.性能测试(bench)|$RED"
     "32.融合怪测评(spiritysdx)"
 )
 function system_test_menu(){
@@ -1551,7 +1572,7 @@ function system_test_menu(){
         # print_menu_head $MAX_SPLIT_CHAR_NUM
         print_sub_head "▼ 性能测试 " $MAX_SPLIT_CHAR_NUM 1 1 
         # split_menu_items MENU_TEST_ITEMS[@] $MAX_SPLIT_CHAR_NUM
-        print_items_list MENU_TEST_ITEMS[@] ' 性能测试脚本 '
+        print_items_list MENU_TEST_ITEMS[@] ' ⚓ 性能测试脚本 '
         # print_main_menu_tail $MAX_SPLIT_CHAR_NUM
         print_sub_menu_tail $MAX_SPLIT_CHAR_NUM
     }
@@ -1776,11 +1797,12 @@ MENU_SYSTEM_TOOLS_ITEMS=(
     "21|DD系统|$GREEN"
     "22|虚拟内存|$CYAN"
     "23|开启SSH转发|$WHITE"
-    "24|切换IPv4/IPv6|$WHITE"
+    "24|切换v4/v6|$WHITE"
     "25|BBRv3加速|$WHITE"
     "26|定时任务|$WHITE"
-    "27|命令行美化|$CYAN"
-    "28|删除快捷命令(qiq)|$BLUE"
+    "27|命令行美化|$YELLOW"
+    "28|设置qiq命令|$CYAN"
+    "29|删除qiq命令|$WHITE"
 )
 function system_tools_menu(){
     function print_sub_item_menu_headinfo(){
@@ -1943,7 +1965,7 @@ function system_tools_menu(){
         # 询问用户是否要更改主机名
         clear 
         _IS_BREAK="true"
-        print_items_list users_items_list[@] " 用户管理:"
+        print_items_list users_items_list[@] " ⚓ 用户管理:"
         local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         case "${INPUT}" in
@@ -2013,7 +2035,7 @@ function system_tools_menu(){
             echo "当前时区：$cur_timezone"
             echo "当前时间：$cur_time"
 
-            print_items_list tz_items_asian[@] " 亚太地区列表:"
+            print_items_list tz_items_asian[@] " ⚓ 亚太地区列表:"
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择时区: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
@@ -2036,7 +2058,7 @@ function system_tools_menu(){
             echo "当前系统时区：$cur_timezone"
             echo "当前系统时间：$cur_time"
 
-            print_items_list tz_items_eu[@] " 欧洲地区列表:"
+            print_items_list tz_items_eu[@] " ⚓ 欧洲地区列表:"
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择时区: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
@@ -2056,7 +2078,7 @@ function system_tools_menu(){
             echo "当前系统时区：$cur_timezone"
             echo "当前系统时间：$cur_time"
 
-            print_items_list tz_items_us[@] " 美洲地区列表:"
+            print_items_list tz_items_us[@] " ⚓ 美洲地区列表:"
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择时区: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
@@ -2076,7 +2098,7 @@ function system_tools_menu(){
         echo "当前系统时区：$cur_timezone"
         echo "当前系统时间：$cur_time"
 
-        print_items_list tz_items_regions[@] " 时区地区列表:"
+        print_items_list tz_items_regions[@] " ⚓ 时区地区列表:"
         local CHOICE=$(echo -e "\n${BOLD}└─ 请选择时区所属区域: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         case "${INPUT}" in
@@ -2098,7 +2120,7 @@ function system_tools_menu(){
 
             _IS_BREAK="true"
             _BREAK_INFO=" 已修改系统源！"
-            print_items_list source_list_options[@] "系统源地区选择:"
+            print_items_list source_list_options[@] " ⚓ 系统源地区选择:"
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
@@ -2136,7 +2158,7 @@ function system_tools_menu(){
 
             _IS_BREAK="true"
             _BREAK_INFO=" 由端口管理子菜单返回！"
-            print_items_list ports_management_options[@] "选择:"
+            print_items_list ports_management_options[@] " ⚓ 选择:"
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
@@ -2241,7 +2263,7 @@ EOF
             cat /etc/resolv.conf
             generate_separator "=|$WHITE" 
 
-            print_items_list dns_list_options[@] "DNS切换:"
+            print_items_list dns_list_options[@] " ⚓ DNS切换:"
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
@@ -2292,7 +2314,7 @@ EOF
             ) 
             function select_system_language(){
                 local sys_lang='CN'
-                print_items_list sys_lang_options[@] " 系统语言选择:"
+                print_items_list sys_lang_options[@] " ⚓ 系统语言选择:"
                 local CHOICE=$(echo -e "\n${BOLD}└─ 请选择语言(默认为中文)[CN/EN]: ${PLAIN}")
                 read -rp "${CHOICE}" INPUT
                 case "${INPUT}" in
@@ -2433,7 +2455,7 @@ EOF
             clear 
             local num_split=40
             print_sub_head " DD系统 " $num_split 1 0 
-            # print_items_list sys_dd_options[@] "DD系统脚本选择:"
+            # print_items_list sys_dd_options[@] " ⚓ DD系统脚本选择:"
             split_menu_items systems_list[@] $num_split
             print_sub_menu_tail $num_split
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择要DD的系统: ${PLAIN}")
@@ -2563,7 +2585,7 @@ EOF
             )           
             
             _IS_BREAK="true"
-            print_items_list swap_size_options[@] "虚拟内存容量菜单:"
+            print_items_list swap_size_options[@] " ⚓ 虚拟内存容量菜单:"
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
@@ -2623,7 +2645,7 @@ EOF
             )
             
             _IS_BREAK="true"
-            print_items_list net_1st_options[@] "功能菜单:"
+            print_items_list net_1st_options[@] " ⚓ 功能菜单:"
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
@@ -2673,7 +2695,7 @@ EOF
                 local kernel_version=$(uname -r)
                 echo -e "\n$TIP 系统已安装xanmod的BBRv3内核"
                 echo -e "\n$PRIGHT 当前内核版本: $kernel_version"
-                print_items_list bbrv3_1st_options[@] "BBRv3功能选项:"
+                print_items_list bbrv3_1st_options[@] " ⚓ BBRv3功能选项:"
                 local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
                 read -rp "${CHOICE}" INPUT
                 case "${INPUT}" in
@@ -2895,7 +2917,8 @@ EOF
         24) sys_setting_alter_priority_v4v6 ;;
         25) sys_setting_bbrv3_manage ;;
         27) sys_setting_beautify_cmd_style ;;
-        28) del_qiq_alias && _BREAK_INFO=" 删除qiq快捷命令 ";;
+        28) set_qiq_alias 1 && _BREAK_INFO=" 成功设置qiq快捷命令 " ;;
+        29) del_qiq_alias && _BREAK_INFO=" 成功删除qiq快捷命令 " ;;
         xx) sys_reboot ;;
         0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" && break ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
@@ -3951,7 +3974,7 @@ EOF
             local url="https://github.com/v2rayA/v2rayA-installer/raw/main/installer.sh"
             url=$(get_proxy_url "$url")
 
-            print_items_list v2raya_options_list[@] "${app_name}菜单"
+            print_items_list v2raya_options_list[@] " ⚓ ${app_name}菜单"
             local CHOICE=$(echo -e "\n${BOLD}└─ 输入选项: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
@@ -4354,13 +4377,13 @@ function python_management_menu(){
         print_sub_menu_tail $num_split
     }
     local py_vesions_list=(
-        "1.升级为最新版本"
-        "2.Python3.12.7"
+        "1.升级为最新版本|$RED|👉"
+        "2.Python3.12.7|$CYAN|👍"
         "3.Python3.11"
         "4.Python3.10"
         "5.Python3.9"
-        "9.指定版本"
-        "0.退出"
+        "9.指定版本|$BLUE"
+        "0.退出|$RED|❌"
     )
     local pip_sources_list=(
         "1.官方源"
@@ -4397,7 +4420,7 @@ function python_management_menu(){
             local host=""
             _BREAK_INFO=" 设置conda镜像源成功！"
 
-            print_items_list conda_sources_list[@] "conda镜像列表"
+            print_items_list conda_sources_list[@] " ⚓ conda镜像列表"
             local CHOICE=$(echo -e "\n${BOLD}└─ 选择镜像源: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
@@ -4450,7 +4473,7 @@ function python_management_menu(){
             local url=""
             local host=""
             _BREAK_INFO=" 设置pip镜像源成功！"
-            print_items_list pip_sources_list[@] "pip镜像列表"
+            print_items_list pip_sources_list[@] " ⚓ pip镜像列表"
             local CHOICE=$(echo -e "\n${BOLD}└─ 选择镜像源: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
@@ -4507,7 +4530,7 @@ function python_management_menu(){
         fi
     }
     function py_subitem_install_python(){
-        print_items_list py_vesions_list[@] "Python版本列表"
+        print_items_list py_vesions_list[@] " ⚓ Python版本列表"
         local CHOICE=$(echo -e "\n${BOLD}└─ 输入你要安装选项: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         case "${INPUT}" in
@@ -4658,7 +4681,6 @@ function python_management_menu(){
         esac
         case_end_tackle
     done
-
 }
 
 
@@ -4951,7 +4973,7 @@ function caddy_add_url_balance(){
     echo -e "  2. IP哈希(Source Hash)"
     echo -e "  3. 最少连接(Least Connections)"
     echo -e "  4. 权重随机(Random)"
-    print_items_list "${url_list[@]}" "负载均衡链接列表"
+    print_items_list "${url_list[@]}" " ⚓ 负载均衡链接列表"
     local CHOICE=$(echo -e "\n${BOLD}└─ 以上信息正确吗？[Y/n]: ${PLAIN}")
     read -rp "${CHOICE}" INPUT
     [[ -z "$INPUT" ]] &&  INPUT=1
@@ -4961,7 +4983,7 @@ function caddy_add_url_balance(){
     3) strategy='ip_hash';; 
     4) 
         strategy='random'
-        print_items_list "${url_list[@]}" "负载均衡链接列表"            
+        print_items_list "${url_list[@]}" " ⚓ 负载均衡链接列表"            
         local CHOICE=$(echo -e "\n${BOLD}└─ 请按序输入每个链接的权重值(1-100): ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -z "$INPUT" ]] &&  INPUT=1
@@ -4977,7 +4999,7 @@ function caddy_add_url_balance(){
         echo -e ''
         echo -e "${BOLD}└─ 请确认负载均衡数据是否有误: ${PLAIN}\n"
         echo -e "${BOLD}   域名: ${PLAIN}$domain"
-        print_items_list "${url_list[@]}" "负载均衡链接列表"
+        print_items_list "${url_list[@]}" " ⚓ 负载均衡链接列表"
         echo -e ''
         echo -e "${BOLD}   负载均衡策略: ${strategy} ${PLAIN}\n"
 
@@ -5010,7 +5032,7 @@ $domain {
 EOF
 
     echo -e "\n${BOLD}└─ 添加负载均衡成功: ${PLAIN}$domain \n"
-    print_items_list "${url_list[@]}" "负载均衡链接列表"
+    print_items_list "${url_list[@]}" " ⚓ 负载均衡链接列表"
     echo -e "" 
 
     ## 刷新Caddy配置信息，并重启Caddy，使反代生效 
@@ -6666,7 +6688,7 @@ function docker_management_menu(){
         while true; do
             clear 
             docker_show_networks
-            print_items_list dc_items_list[@] " 网络操作"
+            print_items_list dc_items_list[@] " ⚓ 网络操作"
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
@@ -6695,7 +6717,7 @@ function docker_management_menu(){
         while true; do
             clear 
             docker_show_images 
-            print_items_list dc_items_list[@] "镜像操作"
+            print_items_list dc_items_list[@] " ⚓ 镜像操作"
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
@@ -6724,7 +6746,7 @@ function docker_management_menu(){
         while true; do
             clear 
             docker_show_containers 
-            print_items_list dc_items_list[@] "容器操作"
+            print_items_list dc_items_list[@] " ⚓ 容器操作"
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
