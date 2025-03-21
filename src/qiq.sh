@@ -1235,7 +1235,7 @@ function interactive_select_boolean() {
 
 
 ## 处理break，显示信息或直接跳过 
-function case_break_tacle() {
+function case_end_tackle() {
     _IS_BREAK=${_IS_BREAK:-"false"}
     _BREAK_INFO=${_BREAK_INFO:-" 操作完成"}
 
@@ -1565,7 +1565,7 @@ function system_test_menu(){
         0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" && return  0  ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
         esac
-        case_break_tacle
+        case_end_tackle
     done
 
 }
@@ -1937,7 +1937,7 @@ function system_tools_menu(){
         *)  _BREAK_INFO=" 请输入正确选项！" ;;
         esac 
         # print_items_users
-        case_break_tacle
+        case_end_tackle
     }
     function sys_setting_alter_timezone(){
         local cur_timezone=$(timedatectl show --property=Timezone --value)
@@ -2129,7 +2129,7 @@ function system_tools_menu(){
                 if [ "$EUID" -ne 0 ] ; then 
                     # echo -e "$WARN 该操作需要root权限！"
                     _BREAK_INFO=" 开放所有端口需要root权限"
-                    case_break_tacle 
+                    case_end_tackle 
                     continue 
                 fi 
                 iptables_open 
@@ -2638,7 +2638,7 @@ EOF
                 bash <(curl -sL jhb.ovh/jb/bbrv3arm.sh)
                 _BREAK_INFO=" 系统为ARM架构,已使用jhb的bbrv3arm.sh安装BBRv3内核" 
                 _IS_BREAK="true" 
-                case_break_tacle 
+                case_end_tackle 
                 continue 
             fi
 
@@ -2679,7 +2679,7 @@ EOF
 
                     _BREAK_INFO=" 已更新 linux-xammod1内核 ！"
                     _IS_BREAK="false"
-                    case_break_tacle 
+                    case_end_tackle 
                     sys_reboot 
                     continue 
                     ;;
@@ -2689,7 +2689,7 @@ EOF
                     echo "XanMod内核已卸载。重启后生效"
                     _BREAK_INFO=" XanMod内核已卸载。重启后生效"
                     _IS_BREAK="false"
-                    case_break_tacle 
+                    case_end_tackle 
                     sys_reboot 
                     continue 
                     ;;
@@ -2720,20 +2720,20 @@ EOF
                             bbr_on
                             _BREAK_INFO=" 当前为Alpine系统"
                             _IS_BREAK="false"
-                            case_break_tacle
+                            case_end_tackle
                             sys_reboot
                             continue
                         elif [ "$ID" != "debian" ] && [ "$ID" != "ubuntu" ]; then
                             _BREAK_INFO=" 当前环境不支持, 仅支持Alpine,Debian和Ubuntu系统"
                             _IS_BREAK="true"
-                            case_break_tacle
+                            case_end_tackle
                             continue
                         fi                        
                     else
                         echo "无法确定操作系统类型"
                         _BREAK_INFO=" 无法确定操作系统类型"
                         _IS_BREAK="true"
-                        case_break_tacle
+                        case_end_tackle
                         continue
                     fi
 
@@ -2879,7 +2879,7 @@ EOF
         0)  echo -e "\n$TIP 返回主菜单 ..." && break ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
         esac
-        case_break_tacle
+        case_end_tackle
     done
 
 }
@@ -3117,7 +3117,7 @@ function commonly_tools_menu(){
             _IS_BREAK="true"
             ;;
         esac
-        case_break_tacle
+        case_end_tackle
     done
 
 }
@@ -4062,7 +4062,7 @@ EOF
         0)  echo -e "\n$TIP 返回主菜单 ..." && break ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
         esac
-        case_break_tacle
+        case_end_tackle
     done
 
 }
@@ -4160,7 +4160,7 @@ function other_scripts_menu(){
         0)  echo -e "\n$TIP 返回主菜单 ..." && break ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" ;;
         esac
-        case_break_tacle
+        case_end_tackle
     done
 
 }
@@ -4651,7 +4651,7 @@ function python_management_menu(){
             _IS_BREAK="true"
             ;;
         esac
-        case_break_tacle
+        case_end_tackle
     done
 
 }
@@ -5178,7 +5178,7 @@ function caddy_management_menu(){
         0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK='false' && break ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
         esac
-        case_break_tacle
+        case_end_tackle
     done
 
 }
@@ -5879,7 +5879,7 @@ EOF
         0)  docker_management_menu && _IS_BREAK="false" && break  ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
         esac
-        case_break_tacle
+        case_end_tackle
     done
 
 }
@@ -5888,22 +5888,18 @@ EOF
 MENU_DOCKER_MANAGE_ITEMS=(
     "1|安装容器|$WHITE"
     "2|卸载容器|$WHITE"
-    "3|重启容器|$CYAN"
-    "4|清理容器|$WHITE"
-    "11|容器状态|$WHITE"
+    "3|清理容器|$WHITE"
+    "4|重启服务|$CYAN"
+    "11|状态查看|$WHITE"
     "12|容器列表|$YELLOW" 
-    "13|容器镜像|$WHITE" 
-    "14|容器网络|$WHITE" 
+    "13|镜像列表|$WHITE" 
+    "14|网络列表|$WHITE" 
     "………………………|$WHITE" 
-    "31|站点部署|$YELLOW" 
-    "32|站点管理|$WHITE" 
-    "33|开关IPv6|$WHITE" 
-    "34|网络v4v6|$WHITE" 
-    "35|设置dcc|$WHITE" 
-    "41|停止容器|$WHITE" 
-    "42|删除容器|$RED" 
-    "43|停止所有|$WHITE" 
-    "44|删除所有|$WHITE" 
+    "31|开关IPv6|$WHITE" 
+    "32|网络v4v6|$WHITE" 
+    "33|设置dcc|$WHITE" 
+    "34|站点部署|$YELLOW" 
+    "35|站点管理|$WHITE" 
 )
 function docker_management_menu(){
     function print_sub_item_menu_headinfo(){
@@ -5947,6 +5943,18 @@ function docker_management_menu(){
         fi
         echo -e "${BOLD} └───────────────────${PLAIN}"
         # docker images
+    }
+    function docker_show_containers() {
+        # docker_show_info
+        echo -e "\n${BOLD} ┌─ Docker容器列表${PLAIN}"
+        docker ps -a
+        echo -e "${BOLD} └───────────────────${PLAIN}"
+    }
+    function docker_show_images() {
+        # docker_show_info
+        echo -e "\n${BOLD} ┌─ Docker镜像列表${PLAIN}"
+        docker images
+        echo -e "${BOLD} └───────────────────${PLAIN}"
     }
     
     # Docker清理不用的镜像和网络
@@ -6119,7 +6127,7 @@ function docker_management_menu(){
         0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false"  && return  ;;
         *)  _BREAK_INFO=" 请输入有效的选项序号！" && _IS_BREAK="true" ;;
         esac
-        case_break_tacle
+        case_end_tackle
     }
     function docker_add_1panel_v4v6(){
         echo -e "\n $TIP 添加1panel-v4v6之前，请先确保1Panel面板中开启了bridge网络的IPv6."
@@ -6133,19 +6141,11 @@ function docker_management_menu(){
             1panel-v4v6
         echo -e "\n $TIP 添加1panel-v4v6完成.\n"
     }
-    function docker_con_restart(){
-        local dc_name=$1
-        docker restart $dc_name
+    function docker_service_restart(){
+        # docker restart $dc_name
+        systemctl stop docker && systemctl start docker
     }
-    function docker_con_stop(){
-        local dc_name=$1
-        docker stop $dc_name
-    }
-    function docker_con_rm(){
-        local dc_name=$1
-        docker rm $dc_name
-    }
-    function docker_con_rmall(){
+    function docker_containers_rm_all(){
         docker rm $(docker ps -a -q)
     }
     function docker_con_stopall(){
@@ -6153,6 +6153,63 @@ function docker_management_menu(){
     }
     function docker_con_clean(){
         docker system prune -af --volumes 
+    }
+    function docker_get_id(){
+        local dc_id=''
+        local CHOICE=$(echo -e "\n${BOLD}└─ 输入容器ID: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT 
+        if [[ -n $INPUT ]]; then 
+            local dc_id=$INPUT 
+        else 
+            echo -e "\n$WARN 请输入有效的容器ID！"
+        fi
+        echo "${dc_id}"
+    }
+    function docker_containers_list(){
+        local dc_id=''
+        local dc_con_items=(
+            "1.停止容器"
+            "2.删除容器"
+            "3.查看容器"
+            "4.删除所有"
+            "0.返回"
+        )
+
+        while true; do
+            docker_show_containers 
+            print_items_list dc_con_items[@] "容器操作:"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            case "${INPUT}" in
+            1) dc_id=$(docker_get_id) && [[ -n $dc_id]] && docker stop $dc_id ;;
+            2) dc_id=$(docker_get_id) && [[ -n $dc_id]] && docker rm $dc_id ;;
+            3) dc_id=$(docker_get_id) && [[ -n $dc_id]] && docker stats $dc_id ;;
+            # 2) 
+            #     local CHOICE=$(echo -e "\n${BOLD}└─ 输入要删除的容器ID: ${PLAIN}")
+            #     read -rp "${CHOICE}" INPUT 
+            #     if [[ -z $INPUT ]]; then
+            #         echo -e "\n$WARN 请输入有效的容器ID！"
+            #     else 
+            #         local dc_id=$INPUT
+            #         docker rm $dc_id
+            #     fi
+            #     ;;
+            # 3) 
+            #     local CHOICE=$(echo -e "\n${BOLD}└─ 输入要查看的容器ID: ${PLAIN}")
+            #     read -rp "${CHOICE}" INPUT 
+            #     if [[ -z $INPUT ]]; then
+            #         echo -e "\n$WARN 请输入有效的容器ID！"
+            #     else 
+            #         local dc_id=$INPUT
+            #         docker containers stats $dc_id
+            #     fi
+            #     ;;
+            4)  docker_containers_rm_all ;;
+            0)  echo -e "\n$TIP 返回 ..." && _IS_BREAK="false" ;;
+            *)  _BREAK_INFO=" 请输入有效的容器选项！" ;;
+            esac 
+            case_end_tackle 
+        done 
     }
 
     while true; do
@@ -6163,26 +6220,26 @@ function docker_management_menu(){
         case "${INPUT}" in
         1 ) docker_install ;;
         2 ) docker_uninstall ;;
-        3 ) docker_con_restart ;;
-        4 ) docker_clean ;;
-        11) docker_show_info && docker ps ;;
-        12) docker_show_info && docker container ls ;;
+        3 ) docker_clean ;;
+        4 ) docker_service_restart ;;
+        11) docker_show_info && docker ps ;; 
+        12) docker_containers_list ;; 
         13) docker_show_info && docker images ;;
         14) docker_show_info && docker network ls ;;
-        31) docker_deploy_menu && _IS_BREAK="false"  && break ;;
-        32) caddy_management_menu && _IS_BREAK="false"  && break ;;
-        33) docker_manage_ipv6  ;;
-        34) docker_add_1panel_v4v6 ;;
-        35) docker_set_1ckl && _IS_BREAK="true"  && return  ;;
-        41) docker stop ;;
-        42) docker_con_rm  ;;
-        43) docker stop ;;
-        44) docker_con_rmall  ;;
+        31) docker_manage_ipv6  ;;
+        32) docker_add_1panel_v4v6 ;;
+        33) docker_set_1ckl && _IS_BREAK="true"  && return  ;;
+        34) docker_deploy_menu && _IS_BREAK="false"  && break ;;
+        35) caddy_management_menu && _IS_BREAK="false"  && break ;;
+        # 41) docker stop ;;
+        # 42) docker_containers_list  ;;
+        # 43) docker stop ;;
+        # 44) docker_con_rmall  ;;
         xx) sys_reboot ;;
         0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false"  && return  ;;
         *)  _BREAK_INFO=" 请输入有效的选项序号！" && _IS_BREAK="true" ;;
         esac
-        case_break_tacle
+        case_end_tackle
     done
 
 }
@@ -6238,7 +6295,7 @@ function main_menu(){
         0)  echo -e "\n$WARN 退出脚本！${RESET}" && _IS_BREAK="false"  && exit 0  ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号！" && _IS_BREAK="true" ;;
         esac
-        case_break_tacle
+        case_end_tackle
     done
 }
 
@@ -6255,7 +6312,7 @@ function script_update(){
     chmod +x ${fname} && \
     echo -e "$TIP 脚本已更新至最新版本！\n"
     _IS_BREAK="true"
-    case_break_tacle && _IS_BREAK="false"
+    case_end_tackle && _IS_BREAK="false"
     ./${fname} && _IS_BREAK="false" && exit 1; 
     # _IS_BREAK="false" && exit 1 && ./${fname} ; 
 }
