@@ -5956,6 +5956,12 @@ function docker_management_menu(){
         docker images
         echo -e "${BOLD} └───────────────────${PLAIN}"
     }
+    function docker_show_networks() {
+        # docker_show_info
+        echo -e "\n${BOLD} ┌─ Docker容器网络${PLAIN} ────"
+        docker network ls 
+        echo -e "${BOLD} └───────────────────${PLAIN}"
+    }
     
     # Docker清理不用的镜像和网络
     function docker_clean() {
@@ -6049,71 +6055,70 @@ function docker_management_menu(){
             *) echo -e "\n$WARN 输入错误,返回！" return 1  ;;
             esac        
         fi
-    }
-    function docker_manage_ipv6(){
-        function docker_add_ipv6(){
-            echo -e "\n $TIP 开启容器IPv6网络"
-            local CONFIG_FILE="/etc/docker/daemon.json"
-            local REQUIRED_IPV6_CONFIG='{"ipv6": true, "fixed-cidr-v6": "2001:db8:1::/64"}'
+    }    
+    function docker_enable_ipv6(){
+        echo -e "\n $TIP 开启容器IPv6网络"
+        local CONFIG_FILE="/etc/docker/daemon.json"
+        local REQUIRED_IPV6_CONFIG='{"ipv6": true, "fixed-cidr-v6": "2001:db8:1::/64"}'
 
-            app_install jq
+        app_install jq
 
-            # 检查配置文件是否存在，如果不存在则创建文件并写入默认设置
-            if [ ! -f "$CONFIG_FILE" ]; then
-                echo "$REQUIRED_IPV6_CONFIG" | jq . > "$CONFIG_FILE"
-                systemctl restart docker
-            else
-                # 使用jq处理配置文件的更新
-                local ORIGINAL_CONFIG=$(<"$CONFIG_FILE")
-
-                # 检查当前配置是否已经有 ipv6 设置
-                local CURRENT_IPV6=$(echo "$ORIGINAL_CONFIG" | jq '.ipv6 // false')
-
-                # 更新配置，开启 IPv6
-                if [[ "$CURRENT_IPV6" == "false" ]]; then
-                    UPDATED_CONFIG=$(echo "$ORIGINAL_CONFIG" | jq '. + {ipv6: true, "fixed-cidr-v6": "2001:db8:1::/64"}')
-                else
-                    UPDATED_CONFIG=$(echo "$ORIGINAL_CONFIG" | jq '. + {"fixed-cidr-v6": "2001:db8:1::/64"}')
-                fi
-
-                # 对比原始配置与新配置
-                if [[ "$ORIGINAL_CONFIG" == "$UPDATED_CONFIG" ]]; then
-                    echo -e "${TIP} 当前已开启ipv6访问"
-                else
-                    echo "$UPDATED_CONFIG" | jq . > "$CONFIG_FILE"
-                    systemctl restart docker
-                fi
-            fi
-        }
-        function docker_disable_ipv6(){
-            echo -e "\n $TIP 关闭容器IPv6网络"
-            local CONFIG_FILE="/etc/docker/daemon.json"
-            app_install jq
-            # 检查配置文件是否存在
-            if [ ! -f "$CONFIG_FILE" ]; then
-                echo -e "${gl_hong}配置文件不存在${gl_bai}"
-                return
-            fi
-
-            # 读取当前配置
+        # 检查配置文件是否存在，如果不存在则创建文件并写入默认设置
+        if [ ! -f "$CONFIG_FILE" ]; then
+            echo "$REQUIRED_IPV6_CONFIG" | jq . > "$CONFIG_FILE"
+            systemctl restart docker
+        else
+            # 使用jq处理配置文件的更新
             local ORIGINAL_CONFIG=$(<"$CONFIG_FILE")
 
-            # 使用jq处理配置文件的更新
-            local UPDATED_CONFIG=$(echo "$ORIGINAL_CONFIG" | jq 'del(.["fixed-cidr-v6"]) | .ipv6 = false')
+            # 检查当前配置是否已经有 ipv6 设置
+            local CURRENT_IPV6=$(echo "$ORIGINAL_CONFIG" | jq '.ipv6 // false')
 
-            # 检查当前的 ipv6 状态
-            local CURRENT_IPV6=$(echo "$ORIGINAL_CONFIG" | jq -r '.ipv6 // false')
+            # 更新配置，开启 IPv6
+            if [[ "$CURRENT_IPV6" == "false" ]]; then
+                UPDATED_CONFIG=$(echo "$ORIGINAL_CONFIG" | jq '. + {ipv6: true, "fixed-cidr-v6": "2001:db8:1::/64"}')
+            else
+                UPDATED_CONFIG=$(echo "$ORIGINAL_CONFIG" | jq '. + {"fixed-cidr-v6": "2001:db8:1::/64"}')
+            fi
 
             # 对比原始配置与新配置
-            if [[ "$CURRENT_IPV6" == "false" ]]; then
-                echo -e "${TIP}当前已关闭ipv6访问"
+            if [[ "$ORIGINAL_CONFIG" == "$UPDATED_CONFIG" ]]; then
+                echo -e "${TIP} 当前已开启ipv6访问"
             else
                 echo "$UPDATED_CONFIG" | jq . > "$CONFIG_FILE"
-                sytemctl restart docker
-                echo -e "${TIP}已成功关闭ipv6访问"
+                systemctl restart docker
             fi
-        }
+        fi
+    }
+    function docker_disable_ipv6(){
+        echo -e "\n $TIP 关闭容器IPv6网络"
+        local CONFIG_FILE="/etc/docker/daemon.json"
+        app_install jq
+        # 检查配置文件是否存在
+        if [ ! -f "$CONFIG_FILE" ]; then
+            echo -e "${gl_hong}配置文件不存在${gl_bai}"
+            return
+        fi
 
+        # 读取当前配置
+        local ORIGINAL_CONFIG=$(<"$CONFIG_FILE")
+
+        # 使用jq处理配置文件的更新
+        local UPDATED_CONFIG=$(echo "$ORIGINAL_CONFIG" | jq 'del(.["fixed-cidr-v6"]) | .ipv6 = false')
+
+        # 检查当前的 ipv6 状态
+        local CURRENT_IPV6=$(echo "$ORIGINAL_CONFIG" | jq -r '.ipv6 // false')
+
+        # 对比原始配置与新配置
+        if [[ "$CURRENT_IPV6" == "false" ]]; then
+            echo -e "${TIP}当前已关闭ipv6访问"
+        else
+            echo "$UPDATED_CONFIG" | jq . > "$CONFIG_FILE"
+            sytemctl restart docker
+            echo -e "${TIP}已成功关闭ipv6访问"
+        fi
+    }
+    function docker_manage_ipv6(){
         generate_separator "=" 40
         echo -e " 1.开启容器IPv6网络"
         echo -e " 2.关闭容器IPv6网络"
@@ -6122,7 +6127,7 @@ function docker_management_menu(){
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         case "${INPUT}" in
-        1) docker_add_ipv6 ;;
+        1) docker_enable_ipv6 ;;
         2) docker_disable_ipv6 ;;
         0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false"  && return  ;;
         *)  _BREAK_INFO=" 请输入有效的选项序号！" && _IS_BREAK="true" ;;
@@ -6208,23 +6213,37 @@ function docker_management_menu(){
         *)  _BREAK_INFO=" 输入错误！" && _IS_BREAK="true" ;;
         esac
     }
-    function docker_con_clean(){
-        local CHOICE=$(echo -e "\n${BOLD}└─ 是否清理[容器/镜像/网络]? [Y/n] ${PLAIN}")
-        read -rp "${CHOICE}" INPUT
-        [[ -z "${INPUT}" ]] && INPUT=Y # 回车默认为Y
-        case "${INPUT}" in
-        [Yy] | [Yy][Ee][Ss])
-            echo -e "\n$TIP 清理容器 ..."
-            docker system prune -af --volumes 
-            echo -e "\n$TIP 清理成功！"
-            ;;
-        [Nn] | [Nn][Oo])
-            echo -e "\n$TIP 取消清理！"
-            ;;
-        *)  _BREAK_INFO=" 输入错误！" && _IS_BREAK="true" ;;
-        esac
+    function docker_network_list(){
+        local dc_name=''
+        local dc_items_list=(
+            "1.删除网络"
+            "2.清理网络"
+            "3.删除所有"
+            "4.开启IPv6"
+            "5.关闭IPv6"
+            "6.添加1panel-v4v6"
+            "0.返回"
+        )
+
+        while true; do
+            docker_show_images 
+            print_items_list dc_items_list[@] "网络操作:"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            case "${INPUT}" in
+            1)  dc_name=$(docker_get_id '网络名') && [[ -n ${dc_name} ]] && docker network rm $dc_name ;;
+            2)  docker network prune ;; # 清理网络
+            3)  docker_images_rm_all ;;
+            4)  docker_enable_ipv6 ;;
+            5)  docker_disable_ipv6 ;;
+            6)  docker_add_1panel_v4v6 ;;
+            0)  echo -e "\n$TIP 返回 ..." && _IS_BREAK="false" && break ;;
+            *)  _BREAK_INFO=" 请输入有效选项！" ;;
+            esac 
+            case_end_tackle 
+        done 
     }
-    function docker_imagess_list(){
+    function docker_images_list(){
         local dc_name=''
         local dc_items_list=(
             "1.删除镜像"
@@ -6291,12 +6310,12 @@ function docker_management_menu(){
         2 ) docker_uninstall ;;
         3 ) docker_clean ;;
         4 ) docker_service_restart ;;
-        11) docker_show_info && docker ps ;; 
+        11) docker_show_info && docker ps && docker images && docker network ls ;; 
         12) docker_containers_list ;; 
-        13) docker_imagess_list ;; 
-        14) docker_show_info && docker network ls ;;
-        31) docker_manage_ipv6  ;;
-        32) docker_add_1panel_v4v6 ;;
+        13) docker_images_list ;; 
+        14) docker_network_list ;;
+        # 31) docker_manage_ipv6  ;;
+        # 32) docker_add_1panel_v4v6 ;;
         33) docker_set_1ckl && _IS_BREAK="true"  && return  ;;
         34) docker_deploy_menu && _IS_BREAK="false"  && break ;;
         35) caddy_management_menu && _IS_BREAK="false"  && break ;;
