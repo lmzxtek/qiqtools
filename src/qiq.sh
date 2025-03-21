@@ -5122,6 +5122,18 @@ EOF
 
 }
 
+function is_valid_domain() {
+    local domain=$1
+    local regex='^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$'
+
+    if [[ $domain =~ $regex ]]; then
+        # echo -e "Valid domain"
+        return $domain
+    else
+        echo -e "$WARN Invalid domain: $domain"
+        return ''
+    fi
+}
 
 # Caddy管理
 MENU_CADDY_ITEMS=(
@@ -5225,7 +5237,7 @@ function docker_deploy_menu(){
                 if [[ -z "$INPUT" ]] ; then
                     echo -e "\n$TIP 输入域名为空，不进行反代！" 
                 else
-                    domain=$INPUT
+                    domain=$(is_valid_domain $INPUT)
                 fi 
                 ;; 
             [Nn] | [Nn][Oo]) 
@@ -5242,7 +5254,7 @@ function docker_deploy_menu(){
             domain=''
         fi
 
-        echo -e "${domain}"
+        return $domain
     }
     
     function dc_deploy_ittools(){    
