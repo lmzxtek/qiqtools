@@ -5895,11 +5895,9 @@ MENU_DOCKER_MANAGE_ITEMS=(
     "13|镜像列表|$WHITE" 
     "14|网络列表|$WHITE" 
     "………………………|$WHITE" 
-    "31|开关IPv6|$WHITE" 
-    "32|网络v4v6|$WHITE" 
+    "31|站点部署|$YELLOW" 
+    "32|站点管理|$WHITE" 
     "33|设置dcc|$WHITE" 
-    "34|站点部署|$YELLOW" 
-    "35|站点管理|$WHITE" 
 )
 function docker_management_menu(){
     function print_sub_item_menu_headinfo(){
@@ -6228,7 +6226,7 @@ function docker_management_menu(){
         while true; do
             clear 
             docker_show_networks
-            print_items_list dc_items_list[@] " 网络操作:"
+            print_items_list dc_items_list[@] " 网络操作"
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
@@ -6257,7 +6255,7 @@ function docker_management_menu(){
         while true; do
             clear 
             docker_show_images 
-            print_items_list dc_items_list[@] "镜像操作:"
+            print_items_list dc_items_list[@] "镜像操作"
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
@@ -6286,7 +6284,7 @@ function docker_management_menu(){
         while true; do
             clear 
             docker_show_containers 
-            print_items_list dc_items_list[@] "容器操作:"
+            print_items_list dc_items_list[@] "容器操作"
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
@@ -6317,11 +6315,9 @@ function docker_management_menu(){
         12) docker_containers_list ;; 
         13) docker_images_list ;; 
         14) docker_network_list ;;
-        # 31) docker_manage_ipv6  ;;
-        # 32) docker_add_1panel_v4v6 ;;
+        31) docker_deploy_menu && _IS_BREAK="false"  && break ;;
+        32) caddy_management_menu && _IS_BREAK="false"  && break ;;
         33) docker_set_1ckl && _IS_BREAK="true"  && return  ;;
-        34) docker_deploy_menu && _IS_BREAK="false"  && break ;;
-        35) caddy_management_menu && _IS_BREAK="false"  && break ;;
         xx) sys_reboot ;;
         0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false"  && return  ;;
         *)  _BREAK_INFO=" 请输入有效的选项序号！" && _IS_BREAK="true" ;;
