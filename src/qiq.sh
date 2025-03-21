@@ -5946,13 +5946,13 @@ function docker_management_menu(){
     }
     function docker_show_containers() {
         # docker_show_info
-        echo -e "\n${BOLD} ┌─ Docker容器列表${PLAIN}"
+        echo -e "\n${BOLD} ┌─ Docker容器列表${PLAIN} ────"
         docker ps -a
         echo -e "${BOLD} └───────────────────${PLAIN}"
     }
     function docker_show_images() {
         # docker_show_info
-        echo -e "\n${BOLD} ┌─ Docker镜像列表${PLAIN}"
+        echo -e "\n${BOLD} ┌─ Docker镜像列表${PLAIN} ────"
         docker images
         echo -e "${BOLD} └───────────────────${PLAIN}"
     }
@@ -6293,7 +6293,7 @@ function docker_management_menu(){
         4 ) docker_service_restart ;;
         11) docker_show_info && docker ps ;; 
         12) docker_containers_list ;; 
-        13) docker_show_info && docker images ;;
+        13) docker_imagess_list ;; 
         14) docker_show_info && docker network ls ;;
         31) docker_manage_ipv6  ;;
         32) docker_add_1panel_v4v6 ;;
