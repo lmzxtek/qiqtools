@@ -6844,7 +6844,8 @@ function script_update(){
 
 #=================
 # 设置qiq快捷命令 
-set_qiq_alias 1
+# set_qiq_alias 1
+set_qiq_alias
 # 初始化全局变量
 init_global_vars 
 # 检测系统IP地址
