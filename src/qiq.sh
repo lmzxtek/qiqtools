@@ -5981,7 +5981,7 @@ services:
     restart: unless-stopped
 EOF
 
-        local CHOICE=$(echo -e "\n${BOLD}└─ 容器配置文件已生成是否启动容器？[y/N]: ${PLAIN}")
+        local CHOICE=$(echo -e "\n${BOLD}└─ ${dc_name}配置文件已生成是否启动容器？[y/N]: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -z "$INPUT" ]] &&  INPUT="N"
         case "${INPUT}" in 
@@ -5989,7 +5989,10 @@ EOF
             docker-compose up -d 
             ;; 
         [Nn] | [Nn][Oo]) 
-            echo -e "\n$TIP 手动启动容器: ${fyml}" 
+            echo -e "$TIP 手动启动容器: " 
+            echo -e "$TIP 配置目录: ${lfld}" 
+            echo -e "$TIP 配置文件: ${fyml}" 
+            echo -e "$TIP 运行命令: docker-compose up -d " 
             ;;
         *)  echo -e "\n$WARN 输入错误！" ;;
         esac
