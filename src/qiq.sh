@@ -6235,7 +6235,8 @@ function script_update(){
     echo -e "$TIP 脚本已更新至最新版本！\n"
     _IS_BREAK="true"
     case_break_tacle #&& exit && qiq
-    ./${fname} && _IS_BREAK="false" && exit; 
+    # ./${fname} && _IS_BREAK="false" && exit 1; 
+    _IS_BREAK="false" && exit 1 && ./${fname} ; 
 }
 
 #=================
