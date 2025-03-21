@@ -6216,7 +6216,7 @@ function main_menu(){
 
         xx) sys_reboot ;;
         00) script_update ;;
-        0)  echo -e "\n$WARN 退出脚本！${RESET}" && _IS_BREAK="false"  && exit 1  ;;
+        0)  echo -e "\n$WARN 退出脚本！${RESET}" && _IS_BREAK="false"  && exit 0  ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号！" && _IS_BREAK="true" ;;
         esac
         case_break_tacle
@@ -6237,8 +6237,8 @@ function script_update(){
     echo -e "$TIP 脚本已更新至最新版本！\n"
     _IS_BREAK="true"
     case_break_tacle #&& exit && qiq
-    # ./${fname} && _IS_BREAK="false" && exit 1; 
-    _IS_BREAK="false" && exit 1 && ./${fname} ; 
+    ./${fname} && _IS_BREAK="false" && exit 1; 
+    # _IS_BREAK="false" && exit 1 && ./${fname} ; 
 }
 
 #=================

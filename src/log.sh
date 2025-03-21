@@ -18,7 +18,7 @@ clear
 echoR " >>> " $(echoY "脚本更新日志") $(echoR "<<<") 
 echoB " - " $(echoT $url_update)
 echoT "--------------------------------"
-echoR " >>> 2025-03-21   v0.7.2" " $VLATEST"
+echoR " -=> 2025-03-21   v0.7.2" " $VLATEST"
 echoY "   1.日志文件接之前的版本"
 echoY "   2.测试DD脚本项"
 echoY "   3.修正测试项链接"
