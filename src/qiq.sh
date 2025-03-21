@@ -153,6 +153,18 @@ function set_qiq_alias() {
         fi
     fi
 }
+function del_qiq_alias(){
+    if [ $UID -ne 0 ]; then
+        echo -e "\n$WARN 权限不足，请使用 Root 用户运行本脚本 \n"
+    else
+        if command -v qiq &>/dev/null; then
+            rm -f /usr/local/bin/qiq
+            echo -e "\n $WARN qiq 快捷命令已删除 ... \n"
+        else
+            echo -e "\n $WARN qiq 快捷命令未设置 ... \n"
+        fi
+    fi
+}
 
 # 定义颜色渐变函数，返回带颜色的字符串
 function gradient_text() {
@@ -1768,6 +1780,7 @@ MENU_SYSTEM_TOOLS_ITEMS=(
     "25|BBRv3加速|$WHITE"
     "26|定时任务|$WHITE"
     "27|命令行美化|$CYAN"
+    "28|删除快捷命令(qiq)|$BLUE"
 )
 function system_tools_menu(){
     function print_sub_item_menu_headinfo(){
@@ -2882,8 +2895,9 @@ EOF
         24) sys_setting_alter_priority_v4v6 ;;
         25) sys_setting_bbrv3_manage ;;
         27) sys_setting_beautify_cmd_style ;;
+        28) del_qiq_alias && _BREAK_INFO=" 删除qiq快捷命令 ";;
         xx) sys_reboot ;;
-        0)  echo -e "\n$TIP 返回主菜单 ..." && break ;;
+        0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" && break ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
         esac
         case_end_tackle
@@ -3112,17 +3126,9 @@ function commonly_tools_menu(){
             _IS_BREAK="true"
             _BREAK_INFO=" > curl wttr.in "
             ;;
-        xx) 
-            sys_reboot
-            ;;
-        0) 
-            echo -e "\n$TIP 返回主菜单 ..."
-            break 
-            ;;
-        *)
-            _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！"
-            _IS_BREAK="true"
-            ;;
+        xx) sys_reboot ;;
+        0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" && break ;;
+        *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
         esac
         case_end_tackle
     done
@@ -4066,7 +4072,7 @@ EOF
         49) tools_install_warpygkkk ;; 
         50) tools_install_warphamid ;; 
         xx) sys_reboot ;;
-        0)  echo -e "\n$TIP 返回主菜单 ..." && break ;;
+        0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" && break ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
         esac
         case_end_tackle
@@ -4164,7 +4170,7 @@ function other_scripts_menu(){
             _BREAK_INFO=" 从 SKY-BOX 工具箱返回 ... "
             ;;
         xx) sys_reboot ;;
-        0)  echo -e "\n$TIP 返回主菜单 ..." && break ;;
+        0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" && break ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" ;;
         esac
         case_end_tackle
@@ -4373,290 +4379,282 @@ function python_management_menu(){
         "0.退出"
     )
 
-    while true; do
-        print_sub_item_menu_headinfo
-        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
+    function py_subitem_set_source_conda(){
+        if command -v conda &>/dev/null; then
+            function conda_sources_backup(){
+                conda config --show-sources > conda_sources_backup.txt
+            }
+            function conda_sources_remove(){
+                conda config --remove-key channels
+            }
+            function conda_sources_default(){
+                conda config --remove-key channels
+                conda config --add channels defaults
+            }
 
-        read -rp "${CHOICE}" INPUT
-        case "${INPUT}" in
-        1) 
-            _IS_BREAK="true"
-            print_items_list py_vesions_list[@] "Python版本列表"
-            local CHOICE=$(echo -e "\n${BOLD}└─ 输入你要安装选项: ${PLAIN}")
+            local is_to_set=1
+            local url=""
+            local host=""
+            _BREAK_INFO=" 设置conda镜像源成功！"
+
+            print_items_list conda_sources_list[@] "conda镜像列表"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 选择镜像源: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
-            1) python_update_to_latest ;;
-            2) python_install_version 3.12.7 ;;
-            3) python_install_version 3.11 ;;
-            4) python_install_version 3.10 ;;
-            5) python_install_version 3.9 ;;
-            9) 
-                local CHOICE=$(echo -e "\n${BOLD}└─ 选择Python版本: ${PLAIN}")
-                read -rp "${CHOICE}" INPUT
-                if [[ "$INPUT" == "0" ]]; then
-                    _BREAK_INFO=" 取消安装Python ..."
-                else
-                    python_install_version $INPUT
-                fi
+            1) 
+                conda_sources_default
+                _BREAK_INFO=" 设置Conda源为默认源！"
                 ;;
-            0) echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" ;;
-            *) _BREAK_INFO=" 请输入正确选项！" ;;
+            2) 
+                conda config --add channels http://mirrors.aliyun.com/anaconda/pkgs/main/
+                conda config --add channels http://mirrors.aliyun.com/anaconda/pkgs/r/
+                conda config --add channels http://mirrors.aliyun.com/anaconda/pkgs/msys2/
+                conda config --set show_channel_urls yes
+                conda clean -i 
+                _BREAK_INFO=" 设置Conda源成功: 阿里云镜像！"
+                ;;
+            3) 
+                conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
+                conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
+                conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
+                conda config --set show_channel_urls yes
+                conda clean -i 
+                _BREAK_INFO=" 设置Conda源成功: 清华大学镜像！"
+                ;;
+            4) 
+                conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/main
+                conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/r
+                conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/msys2
+                conda config --set show_channel_urls yes
+                conda clean -i 
+                _BREAK_INFO=" 设置Conda源成功: 中科大镜像！"
+                ;;
+            0) 
+                echo -e "\n$TIP 返回主菜单 ..."
+                _IS_BREAK="false"
+                is_to_set=0
+                ;;
+            *)
+                _BREAK_INFO=" 请输入正确选项！"
+                is_to_set=0
+                ;;
             esac 
-            ;;
-        2) 
-            _IS_BREAK="true"
-            if command -v pipenv &>/dev/null; then
-                _BREAK_INFO=" pipenv已安装，无需重新安装！"
+
+        else
+            _BREAK_INFO=" conda尚未安装！"
+        fi
+    }
+    function py_subitem_set_source_pip(){
+        if command -v pip &>/dev/null; then
+            local is_to_set=1
+            local url=""
+            local host=""
+            _BREAK_INFO=" 设置pip镜像源成功！"
+            print_items_list pip_sources_list[@] "pip镜像列表"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 选择镜像源: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            case "${INPUT}" in
+            1) 
+                url="https://pypi.org/simple"
+                host="pypi.org"
+                ;;
+            2) 
+                url="https://mirrors.aliyun.com/simple"
+                host="mirrors.aliyun.com"
+                ;;
+            3) 
+                url="https://mirrors.cloud.tencent.com/pypi/simple"
+                host="mirrors.cloud.tencent.com"
+                ;;
+            4) 
+                url="https://pypi.tuna.tsinghua.edu.cn/simple"
+                host="pypi.tuna.tsinghua.edu.cn"
+                ;;
+            5) 
+                url="https://pypi.mirrors.ustc.edu.cn/simple"
+                host="pypi.mirrors.ustc.edu.cn"
+                ;;
+            9) 
+                local CHOICE=$(echo -e "\n${BOLD}└─ 请输入镜像源地址: \n ${PLAIN}")
+                read -rp "${CHOICE}" INPUT 
+                [[ -z "${INPUT}" ]] && url=$INPUT 
+                ;;
+            0) 
+                echo -e "\n$TIP 返回主菜单 ..."
+                _IS_BREAK="false"
+                is_to_set=0
+                ;;
+            *)
+                _BREAK_INFO=" 请输入正确选项！"
+                is_to_set=0
+                ;;
+            esac 
+
+            if [[ ${is_to_set} -eq 1 ]]; then
+                # if [[ -f "/etc/pip.conf" ]]; then
+                #     sed -i "s|index-url=.*|index-url=${url}|g" /etc/pip.conf
+                # else
+                #     echo "index-url=${url}" > /etc/pip.conf
+                # fi
+                [[ -n $url ]] && pip config set global.index-url  $url
+                [[ -n $host ]] && pip config set global.trusted-host $host
+                pip config set global.timeout 30
+                pip config set global.disable-pip-version-check true
+                _BREAK_INFO=" 设置pip镜像源成功: ${url}"
+            fi
+        else
+            _BREAK_INFO=" pip尚未安装！"
+        fi
+    }
+    function py_subitem_install_python(){
+        print_items_list py_vesions_list[@] "Python版本列表"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 输入你要安装选项: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        case "${INPUT}" in
+        1) python_update_to_latest ;;
+        2) python_install_version 3.12.7 ;;
+        3) python_install_version 3.11 ;;
+        4) python_install_version 3.10 ;;
+        5) python_install_version 3.9 ;;
+        9) 
+            local CHOICE=$(echo -e "\n${BOLD}└─ 选择Python版本: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            if [[ "$INPUT" == "0" ]]; then
+                _BREAK_INFO=" 取消安装Python ..."
             else
-                sys_update && app_install pipenv 
-                _BREAK_INFO=" pipenv安装成功！"
+                python_install_version $INPUT
             fi
             ;;
-        3) 
-            _IS_BREAK="true"
-            if command -v conda &>/dev/null; then
-                _BREAK_INFO=" 系统已安装conda！"
-            else
-                local file="Miniforge3-$(uname)-$(uname -m).sh"
-                local url="https://github.com/conda-forge/miniforge/releases/latest/download/$file"
-                url=$(get_proxy_url $url)
-                # check_ip_china
-                # [[ $_IS_CN -eq 1 ]] && url="${URL_PROXY}${url}"
+        0) echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" ;;
+        *) _BREAK_INFO=" 请输入正确选项！" ;;
+        esac 
+    }
+    function py_subitem_install_pipenv(){
+        if command -v pipenv &>/dev/null; then
+            _BREAK_INFO=" pipenv已安装，无需重新安装！"
+        else
+            sys_update && app_install pipenv 
+            _BREAK_INFO=" pipenv安装成功！"
+        fi
+    }
+    function py_subitem_install_miniforge(){
+        if command -v conda &>/dev/null; then
+            _BREAK_INFO=" 系统已安装conda！"
+        else
+            local file="Miniforge3-$(uname)-$(uname -m).sh"
+            local url="https://github.com/conda-forge/miniforge/releases/latest/download/$file"
+            url=$(get_proxy_url $url)
 
-                _BREAK_INFO=" miniForge安装成功！"
-                if command -v curl &>/dev/null; then
-                    curl -L -O "${url}" && bash ${file}
-                elif command -v wget &>/dev/null; then
-                    wget "${url}" && bash ${file} 
-                else
-                    _BREAK_INFO=" 请先安装curl或wget！"
-                fi
+            _BREAK_INFO=" miniForge安装成功！"
+            if command -v curl &>/dev/null; then
+                curl -L -O "${url}" && bash ${file}
+            elif command -v wget &>/dev/null; then
+                wget "${url}" && bash ${file} 
+            else
+                _BREAK_INFO=" 请先安装curl或wget！"
             fi
-            ;;
-        4) 
-            _IS_BREAK="true"
-            if command -v conda &>/dev/null; then
-                _BREAK_INFO=" 系统已安装conda！"
-            else
-                local file="Miniconda3-latest-$(uname)-$(uname -m).sh"
-                local url="https://repo.anaconda.com/miniconda/$file"
-                url=$(get_proxy_url $url)
-                # check_ip_china
-                # [[ $_IS_CN -eq 1 ]] && url="${URL_PROXY}${url}"
+        fi 
+    }
+    function py_subitem_install_miniconda(){
+        if command -v conda &>/dev/null; then
+            _BREAK_INFO=" 系统已安装conda！"
+        else
+            local file="Miniconda3-latest-$(uname)-$(uname -m).sh"
+            local url="https://repo.anaconda.com/miniconda/$file"
+            url=$(get_proxy_url $url)
+            # check_ip_china
+            # [[ $_IS_CN -eq 1 ]] && url="${URL_PROXY}${url}"
 
-                _BREAK_INFO=" miniConda安装成功！"
-                if command -v curl &>/dev/null; then
-                    curl -L -O "${url}" && bash ${file}
-                elif command -v wget &>/dev/null; then
-                    wget "${url}" && bash ${file} 
-                else
-                    _BREAK_INFO=" 请先安装curl或wget！"
-                fi
+            _BREAK_INFO=" miniConda安装成功！"
+            if command -v curl &>/dev/null; then
+                curl -L -O "${url}" && bash ${file}
+            elif command -v wget &>/dev/null; then
+                wget "${url}" && bash ${file} 
+            else
+                _BREAK_INFO=" 请先安装curl或wget！"
             fi
-            ;;
-        21) 
-            _IS_BREAK="true"
-            if command -v pip &>/dev/null; then
-                local is_to_set=1
-                local url=""
-                local host=""
-                _BREAK_INFO=" 设置pip镜像源成功！"
-                print_items_list pip_sources_list[@] "pip镜像列表"
-                local CHOICE=$(echo -e "\n${BOLD}└─ 选择镜像源: ${PLAIN}")
-                read -rp "${CHOICE}" INPUT
-                case "${INPUT}" in
-                1) 
-                    url="https://pypi.org/simple"
-                    host="pypi.org"
-                    ;;
-                2) 
-                    url="https://mirrors.aliyun.com/simple"
-                    host="mirrors.aliyun.com"
-                    ;;
-                3) 
-                    url="https://mirrors.cloud.tencent.com/pypi/simple"
-                    host="mirrors.cloud.tencent.com"
-                    ;;
-                4) 
-                    url="https://pypi.tuna.tsinghua.edu.cn/simple"
-                    host="pypi.tuna.tsinghua.edu.cn"
-                    ;;
-                5) 
-                    url="https://pypi.mirrors.ustc.edu.cn/simple"
-                    host="pypi.mirrors.ustc.edu.cn"
-                    ;;
-                9) 
-                    local CHOICE=$(echo -e "\n${BOLD}└─ 请输入镜像源地址: \n ${PLAIN}")
-                    read -rp "${CHOICE}" INPUT 
-                    [[ -z "${INPUT}" ]] && url=$INPUT 
-                    ;;
-                0) 
-                    echo -e "\n$TIP 返回主菜单 ..."
-                    _IS_BREAK="false"
-                    is_to_set=0
-                    ;;
-                *)
-                    _BREAK_INFO=" 请输入正确选项！"
-                    is_to_set=0
-                    ;;
-                esac 
-
-                if [[ ${is_to_set} -eq 1 ]]; then
-                    # if [[ -f "/etc/pip.conf" ]]; then
-                    #     sed -i "s|index-url=.*|index-url=${url}|g" /etc/pip.conf
-                    # else
-                    #     echo "index-url=${url}" > /etc/pip.conf
-                    # fi
-                    [[ -n $url ]] && pip config set global.index-url  $url
-                    [[ -n $host ]] && pip config set global.trusted-host $host
-                    pip config set global.timeout 30
-                    pip config set global.disable-pip-version-check true
-                    _BREAK_INFO=" 设置pip镜像源成功: ${url}"
-                fi
-            else
-                _BREAK_INFO=" pip尚未安装！"
-            fi
-            ;;
-        22) 
-            _IS_BREAK="true"
-            if command -v conda &>/dev/null; then
-                function conda_sources_backup(){
-                    conda config --show-sources > conda_sources_backup.txt
-                }
-                function conda_sources_remove(){
-                    conda config --remove-key channels
-                }
-                function conda_sources_default(){
-                    conda config --remove-key channels
-                    conda config --add channels defaults
-                }
-
-                local is_to_set=1
-                local url=""
-                local host=""
-                _BREAK_INFO=" 设置conda镜像源成功！"
-
-                print_items_list conda_sources_list[@] "conda镜像列表"
-                local CHOICE=$(echo -e "\n${BOLD}└─ 选择镜像源: ${PLAIN}")
-                read -rp "${CHOICE}" INPUT
-                case "${INPUT}" in
-                1) 
-                    conda_sources_default
-                    _BREAK_INFO=" 设置Conda源为默认源！"
-                    ;;
-                2) 
-                    conda config --add channels http://mirrors.aliyun.com/anaconda/pkgs/main/
-                    conda config --add channels http://mirrors.aliyun.com/anaconda/pkgs/r/
-                    conda config --add channels http://mirrors.aliyun.com/anaconda/pkgs/msys2/
-                    conda config --set show_channel_urls yes
-                    conda clean -i 
-                    _BREAK_INFO=" 设置Conda源成功: 阿里云镜像！"
-                    ;;
-                3) 
-                    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
-                    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
-                    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
-                    conda config --set show_channel_urls yes
-                    conda clean -i 
-                    _BREAK_INFO=" 设置Conda源成功: 清华大学镜像！"
-                    ;;
-                4) 
-                    conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/main
-                    conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/r
-                    conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/msys2
-                    conda config --set show_channel_urls yes
-                    conda clean -i 
-                    _BREAK_INFO=" 设置Conda源成功: 中科大镜像！"
-                    ;;
-                0) 
-                    echo -e "\n$TIP 返回主菜单 ..."
-                    _IS_BREAK="false"
-                    is_to_set=0
-                    ;;
-                *)
-                    _BREAK_INFO=" 请输入正确选项！"
-                    is_to_set=0
-                    ;;
-                esac 
-
-            else
-                _BREAK_INFO=" conda尚未安装！"
-            fi
-            ;;
-        31) 
-            _IS_BREAK="true"
-            _BREAK_INFO=" dash安装成功！"
-            if command -v pip &>/dev/null; then
-                pip install dash 
-            elif command -v conda &>/dev/null; then
-                conda install dash 
-            else
-                _BREAK_INFO=" conda或pip未安装！"
-            fi
-            ;;
-        32) 
-            _IS_BREAK="true"
-            _BREAK_INFO=" Julia安装成功！"
-            if  command -v julia &>/dev/null; then
-                _BREAK_INFO=" julia已安装！"
-            else
-                if ! command -v jill &>/dev/null; then
-                    # echo -e "\n$TIP 先安装jill ..."
-                    if command -v pip &>/dev/null; then
-                        pip install jill
-                    else 
-                        echo -e "$ERROR  jill未安装, 请先安装pip！"
-                    fi
-                fi 
-                if command -v jill &>/dev/null; then
-                    echo -e "\n$TIP 安装Julia ..."
-                    jill install 
+        fi
+    }
+    function py_subitem_install_dash(){
+        _BREAK_INFO=" dash安装成功！"
+        if command -v pip &>/dev/null; then
+            pip install dash 
+        elif command -v conda &>/dev/null; then
+            conda install dash 
+        else
+            _BREAK_INFO=" conda或pip未安装！"
+        fi
+        
+    }
+    function py_subitem_install_julia(){
+        _BREAK_INFO=" Julia安装成功！"
+        if  command -v julia &>/dev/null; then
+            _BREAK_INFO=" julia已安装！"
+        else
+            if ! command -v jill &>/dev/null; then
+                # echo -e "\n$TIP 先安装jill ..."
+                if command -v pip &>/dev/null; then
+                    pip install jill
                 else 
-                    _BREAK_INFO=" jill未安装, Julia安装失败！"
+                    echo -e "$ERROR  jill未安装, 请先安装pip！"
                 fi
+            fi 
+            if command -v jill &>/dev/null; then
+                echo -e "\n$TIP 安装Julia ..."
+                jill install 
+            else 
+                _BREAK_INFO=" jill未安装, Julia安装失败！"
             fi
-            ;;
-        33) 
-            _IS_BREAK="true"
-            _BREAK_INFO=" gunicorn安装成功！"
-            if  command -v gunicorn &>/dev/null; then
-                _BREAK_INFO=" gunicorn已安装！"
+        fi
+    }
+    function py_subitem_install_gunicorn(){
+        _BREAK_INFO=" gunicorn安装成功！"
+        if  command -v gunicorn &>/dev/null; then
+            _BREAK_INFO=" gunicorn已安装！"
+        else
+            if command -v pip &>/dev/null; then
+                pip install gunicorn greenlet eventlet gevent
+            elif command -v conda &>/dev/null; then
+                conda install gunicorn greenlet eventlet gevent
             else
-                if command -v pip &>/dev/null; then
-                    pip install gunicorn greenlet eventlet gevent
-                elif command -v conda &>/dev/null; then
-                    conda install gunicorn greenlet eventlet gevent
-                else
-                    _BREAK_INFO=" pip或conda未安装！"
-                fi 
-            fi
-            ;;
-        34) 
-            _IS_BREAK="true"
-            _BREAK_INFO=" hypercorn安装成功！"
-            if  command -v hypercorn &>/dev/null; then
-                _BREAK_INFO=" hypercorn已安装！"
+                _BREAK_INFO=" pip或conda未安装！"
+            fi 
+        fi
+    }
+    function py_subitem_install_hypercorn(){
+        _BREAK_INFO=" hypercorn安装成功！"
+        if  command -v hypercorn &>/dev/null; then
+            _BREAK_INFO=" hypercorn已安装！"
+        else
+            if command -v pip &>/dev/null; then
+                pip install hypercorn 
+            elif command -v conda &>/dev/null; then
+                conda install hypercorn 
             else
-                if command -v pip &>/dev/null; then
-                    pip install hypercorn 
-                elif command -v conda &>/dev/null; then
-                    conda install hypercorn 
-                else
-                    _BREAK_INFO=" pip或conda未安装！"
-                fi 
-            fi
-            ;;
-        xx) 
-            sys_reboot
-            ;;
-        0) 
-            echo -e "\n$TIP 返回主菜单 ..."
-            break 
-            ;;
-        *)
-            _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！"
-            _IS_BREAK="true"
-            ;;
+                _BREAK_INFO=" pip或conda未安装！"
+            fi 
+        fi
+    }
+
+    while true; do
+        _IS_BREAK="true"
+        print_sub_item_menu_headinfo
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        case "${INPUT}" in
+        1 ) py_subitem_install_python ;;
+        2 ) py_subitem_install_pipenv ;;
+        3 ) py_subitem_install_miniforge ;;
+        4 ) py_subitem_install_miniconda ;;
+        21) py_subitem_set_source_pip ;;
+        22) py_subitem_set_source_conda ;;
+        31) py_subitem_install_dash ;;
+        32) py_subitem_install_julia ;;
+        33) py_subitem_install_gunicorn ;;
+        34) py_subitem_install_hypercorn ;;
+        xx) sys_reboot ;;
+        0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" && break ;;
+        *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
         esac
         case_end_tackle
     done
