@@ -1237,14 +1237,14 @@ function interactive_select_boolean() {
 ## 处理break，显示信息或直接跳过 
 function case_break_tacle() {
     _IS_BREAK=${_IS_BREAK:-"false"}
-    _BREAK_INFO=${_BREAK_INFO:-"操作完成"}
+    _BREAK_INFO=${_BREAK_INFO:-" 操作完成"}
 
     echo -e "\n${TIP}${_BREAK_INFO}${RESET}"
     if ${_IS_BREAK} == "true"; then
         echo "└─ 按任意键继续 ..."
         read -n 1 -s -r -p ""
     fi
-    _IS_BREAK="false"
+    _IS_BREAK="true"
     _BREAK_INFO="操作完成"
     # echo -e "${RESET}"
 }
