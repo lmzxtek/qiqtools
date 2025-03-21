@@ -6142,11 +6142,27 @@ function docker_management_menu(){
         echo -e "\n $TIP 添加1panel-v4v6完成.\n"
     }
     function docker_service_restart(){
-        # docker restart $dc_name
-        systemctl stop docker && systemctl start docker
+        if ! systemctl status ${{app_name} > /dev/null 2>&1; then
+            systemctl stop docker && systemctl start docker
+        else 
+            echo -e "\n$TIP 系统未安装docker服务！"
+        fi
     }
-    function docker_containers_rm_all(){
-        docker rm $(docker ps -a -q)
+    function docker_containers_rm_all(){        
+        local CHOICE=$(echo -e "\n${BOLD}└─ 是否删除所有容器? [Y/n] ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "${INPUT}" ]] && INPUT=Y # 回车默认为Y
+        case "${INPUT}" in
+        [Yy] | [Yy][Ee][Ss])
+            echo -e "\n$TIP 删除所有容器 ..."
+            docker rm $(docker ps -a -q)
+            echo -e "\n$TIP 删除所有容器成功！"
+            ;;
+        [Nn] | [Nn][Oo])
+            echo -e "\n$TIP 取消删除所有容器！"
+            ;;
+        *)  _BREAK_INFO=" 输入错误！" && _IS_BREAK="true" ;;
+        esac
     }
     function docker_con_stopall(){
         docker stop $(docker ps -q)
@@ -6169,9 +6185,10 @@ function docker_management_menu(){
         local dc_id=''
         local dc_con_items=(
             "1.停止容器"
-            "2.删除容器"
+            "2.重启容器"
             "3.查看容器"
-            "4.删除所有"
+            "4.删除容器"
+            "5.删除所有"
             "0.返回"
         )
 
@@ -6181,30 +6198,11 @@ function docker_management_menu(){
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
-            1) dc_id=$(docker_get_id) && [[ -n ${dc_id} ]] && docker stop $dc_id ;;
-            2) dc_id=$(docker_get_id) && [[ -n ${dc_id} ]] && docker rm $dc_id ;;
-            3) dc_id=$(docker_get_id) && [[ -n ${dc_id} ]] && docker stats $dc_id ;;
-            # 2) 
-            #     local CHOICE=$(echo -e "\n${BOLD}└─ 输入要删除的容器ID: ${PLAIN}")
-            #     read -rp "${CHOICE}" INPUT 
-            #     if [[ -z $INPUT ]]; then
-            #         echo -e "\n$WARN 请输入有效的容器ID！"
-            #     else 
-            #         local dc_id=$INPUT
-            #         docker rm $dc_id
-            #     fi
-            #     ;;
-            # 3) 
-            #     local CHOICE=$(echo -e "\n${BOLD}└─ 输入要查看的容器ID: ${PLAIN}")
-            #     read -rp "${CHOICE}" INPUT 
-            #     if [[ -z $INPUT ]]; then
-            #         echo -e "\n$WARN 请输入有效的容器ID！"
-            #     else 
-            #         local dc_id=$INPUT
-            #         docker containers stats $dc_id
-            #     fi
-            #     ;;
-            4)  docker_containers_rm_all ;;
+            1)  dc_id=$(docker_get_id) && [[ -n ${dc_id} ]] && docker stop $dc_id ;;
+            2)  dc_id=$(docker_get_id) && [[ -n ${dc_id} ]] && docker restart $dc_id ;;
+            3)  dc_id=$(docker_get_id) && [[ -n ${dc_id} ]] && docker stats $dc_id ;;
+            4)  dc_id=$(docker_get_id) && [[ -n ${dc_id} ]] && docker stop $dc_id && docker rm $dc_id ;;
+            5)  docker_containers_rm_all ;;
             0)  echo -e "\n$TIP 返回 ..." && _IS_BREAK="false" ;;
             *)  _BREAK_INFO=" 请输入有效的容器选项！" ;;
             esac 
@@ -6231,10 +6229,6 @@ function docker_management_menu(){
         33) docker_set_1ckl && _IS_BREAK="true"  && return  ;;
         34) docker_deploy_menu && _IS_BREAK="false"  && break ;;
         35) caddy_management_menu && _IS_BREAK="false"  && break ;;
-        # 41) docker stop ;;
-        # 42) docker_containers_list  ;;
-        # 43) docker stop ;;
-        # 44) docker_con_rmall  ;;
         xx) sys_reboot ;;
         0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false"  && return  ;;
         *)  _BREAK_INFO=" 请输入有效的选项序号！" && _IS_BREAK="true" ;;
