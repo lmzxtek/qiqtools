@@ -6040,69 +6040,86 @@ function docker_management_menu(){
             esac        
         fi
     }
-    function docker_enable_ipv6(){
-        echo -e "\n $TIP 开启容器IPv6网络"
-        local CONFIG_FILE="/etc/docker/daemon.json"
-        local REQUIRED_IPV6_CONFIG='{"ipv6": true, "fixed-cidr-v6": "2001:db8:1::/64"}'
+    function docker_manage_ipv6(){
+        function docker_add_ipv6(){
+            echo -e "\n $TIP 开启容器IPv6网络"
+            local CONFIG_FILE="/etc/docker/daemon.json"
+            local REQUIRED_IPV6_CONFIG='{"ipv6": true, "fixed-cidr-v6": "2001:db8:1::/64"}'
 
-        app_install jq
+            app_install jq
 
-        # 检查配置文件是否存在，如果不存在则创建文件并写入默认设置
-        if [ ! -f "$CONFIG_FILE" ]; then
-            echo "$REQUIRED_IPV6_CONFIG" | jq . > "$CONFIG_FILE"
-            systemctl restart docker
-        else
-            # 使用jq处理配置文件的更新
+            # 检查配置文件是否存在，如果不存在则创建文件并写入默认设置
+            if [ ! -f "$CONFIG_FILE" ]; then
+                echo "$REQUIRED_IPV6_CONFIG" | jq . > "$CONFIG_FILE"
+                systemctl restart docker
+            else
+                # 使用jq处理配置文件的更新
+                local ORIGINAL_CONFIG=$(<"$CONFIG_FILE")
+
+                # 检查当前配置是否已经有 ipv6 设置
+                local CURRENT_IPV6=$(echo "$ORIGINAL_CONFIG" | jq '.ipv6 // false')
+
+                # 更新配置，开启 IPv6
+                if [[ "$CURRENT_IPV6" == "false" ]]; then
+                    UPDATED_CONFIG=$(echo "$ORIGINAL_CONFIG" | jq '. + {ipv6: true, "fixed-cidr-v6": "2001:db8:1::/64"}')
+                else
+                    UPDATED_CONFIG=$(echo "$ORIGINAL_CONFIG" | jq '. + {"fixed-cidr-v6": "2001:db8:1::/64"}')
+                fi
+
+                # 对比原始配置与新配置
+                if [[ "$ORIGINAL_CONFIG" == "$UPDATED_CONFIG" ]]; then
+                    echo -e "${TIP} 当前已开启ipv6访问"
+                else
+                    echo "$UPDATED_CONFIG" | jq . > "$CONFIG_FILE"
+                    systemctl restart docker
+                fi
+            fi
+        }
+        function docker_disable_ipv6(){
+            echo -e "\n $TIP 关闭容器IPv6网络"
+            local CONFIG_FILE="/etc/docker/daemon.json"
+            app_install jq
+            # 检查配置文件是否存在
+            if [ ! -f "$CONFIG_FILE" ]; then
+                echo -e "${gl_hong}配置文件不存在${gl_bai}"
+                return
+            fi
+
+            # 读取当前配置
             local ORIGINAL_CONFIG=$(<"$CONFIG_FILE")
 
-            # 检查当前配置是否已经有 ipv6 设置
-            local CURRENT_IPV6=$(echo "$ORIGINAL_CONFIG" | jq '.ipv6 // false')
+            # 使用jq处理配置文件的更新
+            local UPDATED_CONFIG=$(echo "$ORIGINAL_CONFIG" | jq 'del(.["fixed-cidr-v6"]) | .ipv6 = false')
 
-            # 更新配置，开启 IPv6
-            if [[ "$CURRENT_IPV6" == "false" ]]; then
-                UPDATED_CONFIG=$(echo "$ORIGINAL_CONFIG" | jq '. + {ipv6: true, "fixed-cidr-v6": "2001:db8:1::/64"}')
-            else
-                UPDATED_CONFIG=$(echo "$ORIGINAL_CONFIG" | jq '. + {"fixed-cidr-v6": "2001:db8:1::/64"}')
-            fi
+            # 检查当前的 ipv6 状态
+            local CURRENT_IPV6=$(echo "$ORIGINAL_CONFIG" | jq -r '.ipv6 // false')
 
             # 对比原始配置与新配置
-            if [[ "$ORIGINAL_CONFIG" == "$UPDATED_CONFIG" ]]; then
-                echo -e "${TIP} 当前已开启ipv6访问"
+            if [[ "$CURRENT_IPV6" == "false" ]]; then
+                echo -e "${TIP}当前已关闭ipv6访问"
             else
                 echo "$UPDATED_CONFIG" | jq . > "$CONFIG_FILE"
-                systemctl restart docker
+                sytemctl restart docker
+                echo -e "${TIP}已成功关闭ipv6访问"
             fi
-        fi
+        }
+
+        generate_separator "=" 40
+        echo -e " 1.开启容器IPv6网络"
+        echo -e " 2.关闭容器IPv6网络"
+        echo -e " 0.返回"
+        generate_separator "=" 40
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        case "${INPUT}" in
+        1) docker_add_ipv6 ;;
+        2) docker_disable_ipv6 ;;
+        0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false"  && return  ;;
+        *)  _BREAK_INFO=" 请输入有效的选项序号！" && _IS_BREAK="true" ;;
+        esac
+        case_break_tacle
     }
-    function docker_disable_ipv6(){
-        echo -e "\n $TIP 关闭容器IPv6网络"
-        local CONFIG_FILE="/etc/docker/daemon.json"
-        app_install jq
-        # 检查配置文件是否存在
-        if [ ! -f "$CONFIG_FILE" ]; then
-            echo -e "${gl_hong}配置文件不存在${gl_bai}"
-            return
-        fi
-
-        # 读取当前配置
-        local ORIGINAL_CONFIG=$(<"$CONFIG_FILE")
-
-        # 使用jq处理配置文件的更新
-        local UPDATED_CONFIG=$(echo "$ORIGINAL_CONFIG" | jq 'del(.["fixed-cidr-v6"]) | .ipv6 = false')
-
-        # 检查当前的 ipv6 状态
-        local CURRENT_IPV6=$(echo "$ORIGINAL_CONFIG" | jq -r '.ipv6 // false')
-
-        # 对比原始配置与新配置
-        if [[ "$CURRENT_IPV6" == "false" ]]; then
-            echo -e "${TIP}当前已关闭ipv6访问"
-        else
-            echo "$UPDATED_CONFIG" | jq . > "$CONFIG_FILE"
-            sytemctl restart docker
-            echo -e "${TIP}已成功关闭ipv6访问"
-        fi
-    }
-    function docker_add_network_ipv6(){
+    function docker_add_1panel_v4v6(){
         echo -e "\n $TIP 添加1panel-v4v6之前，请先确保1Panel面板中开启了bridge网络的IPv6."
         docker network create --driver=bridge \
             --subnet=172.16.10.0/24 \
@@ -6152,8 +6169,8 @@ function docker_management_menu(){
         14) docker_show_info && docker network ls ;;
         31) docker_deploy_menu && _IS_BREAK="false"  && break ;;
         32) caddy_management_menu && _IS_BREAK="false"  && break ;;
-        33) docker_enable_ipv6  ;;
-        34) docker_add_network_ipv6 ;;
+        33) docker_manage_ipv6  ;;
+        34) docker_add_1panel_v4v6 ;;
         35) docker_set_1ckl && _IS_BREAK="true"  && return  ;;
         41) docker stop ;;
         42) docker_con_rm  ;;
