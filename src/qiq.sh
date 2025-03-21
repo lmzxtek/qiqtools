@@ -5205,11 +5205,13 @@ MENU_DOCKER_DEPLOY_ITEMS=(
     "7|IPTVd|$WHITE"
     "8|Docker-win|$WHITE"
     "9|Docker-mac|$WHITE"
+    "10|WeChat(web)|$WHITE"
     "………………………|$WHITE" 
-    "21|IT-Tools|$YELLOW" 
-    "22|Stirling PDF|$WHITE" 
-    "23|MyIP|$WHITE" 
-    "24|Neko|$WHITE" 
+    "21|Dash.|$WHITE" 
+    "22|MyIP|$WHITE" 
+    "23|Neko|$WHITE" 
+    "24|IT-Tools|$YELLOW" 
+    "25|Stirling PDF|$WHITE" 
 )
 function docker_deploy_menu(){
     function print_sub_item_menu_headinfo(){
@@ -5251,6 +5253,7 @@ function docker_deploy_menu(){
         local dc_name='ittools'
         local dc_imag=corentinth/it-tools:latest
         local dc_desc="IT-Tools常用工具箱"
+        local urlgit=''
         local domain=''
 
         local lfld="$base_root/$dc_name"
@@ -5258,8 +5261,9 @@ function docker_deploy_menu(){
         local fyml="$lfld/docker-compose.yml"
         local fcfg="$lfld/${dc_name}.conf"
 
-        ([[ -d "$fdat" ]] || mkdir -p $fdat) && cd $lfld
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) 
         [[ -f "$fyml"  ]] || touch $fyml
+        cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
@@ -5278,10 +5282,7 @@ EOF
 
         docker-compose up -d 
         dc_set_domain_reproxy $dc_port 
-        # domain=$(dc_get_domain ${dc_port}) 
-        # echo -e "\n$TIP 输入的域名为(ittools)： ${domain}\n"
-        # [[ -n "${domain}" ]] && caddy_add_reproxy "${domain}" '127.0.0.1' $dc_port 0 
-
+        
         local content=''
         content+="\nService     : ${dc_name}"
         content+="\nContainer   : ${dc_name}"
@@ -5289,6 +5290,7 @@ EOF
         [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
         [[ -n $domain ]]  && content+="\nDomain      : $domain  "
         [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+        [[ -n $urlgit ]]  && content+="\nGitHub      : $urlgit  "
 
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
@@ -5302,6 +5304,7 @@ EOF
         local dc_name='deeplx'
         local dc_imag=ghcr.io/owo-network/deeplx:latest
         local dc_desc="DeepLX(Free API)"
+        local urlgit=''
         local domain=''
 
         local lfld="$base_root/$dc_name"
@@ -5309,8 +5312,9 @@ EOF
         local fyml="$lfld/docker-compose.yml"
         local fcfg="$lfld/${dc_name}.conf"
 
-        ([[ -d "$fdat" ]] || mkdir -p $fdat) && cd $lfld
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) 
         [[ -f "$fyml"  ]] || touch $fyml
+        cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
@@ -5332,9 +5336,7 @@ EOF
 
         docker-compose up -d 
         dc_set_domain_reproxy $dc_port 
-        # domain=$(dc_set_domain_reproxy )
-        # [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
-
+        
         local content=''
         content+="\nService     : ${dc_name}"
         content+="\nContainer   : ${dc_name}"
@@ -5342,6 +5344,7 @@ EOF
         [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
         [[ -n $domain ]]  && content+="\nDomain      : $domain  "
         [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+        [[ -n $urlgit ]]  && content+="\nGitHub      : $urlgit  "
 
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
@@ -5354,6 +5357,7 @@ EOF
         local dc_name='sublinkx'
         local dc_imag=jaaksi/sublinkx
         local dc_desc="SubLinkX"
+        local urlgit=''
         local domain=''
 
         local lfld="$base_root/$dc_name"
@@ -5361,8 +5365,9 @@ EOF
         local fyml="$lfld/docker-compose.yml"
         local fcfg="$lfld/${dc_name}.conf"
 
-        ([[ -d "$fdat" ]] || mkdir -p $fdat) && cd $lfld
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) 
         [[ -f "$fyml"  ]] || touch $fyml
+        cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
@@ -5385,9 +5390,7 @@ EOF
 
         docker-compose up -d 
         dc_set_domain_reproxy $dc_port 
-        # domain=$(dc_set_domain_reproxy )
-        # [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
-
+        
         local content=''
         content+="\nService     : ${dc_name}"
         content+="\nContainer   : ${dc_name}"
@@ -5395,6 +5398,7 @@ EOF
         [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
         [[ -n $domain ]]  && content+="\nDomain      : $domain  "
         [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+        [[ -n $urlgit ]]  && content+="\nGitHub      : $urlgit  "
 
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
@@ -5407,6 +5411,7 @@ EOF
         local dc_name='aktools'
         local dc_imag=registry.cn-shanghai.aliyuncs.com/akfamily/aktools:1.8.95
         local dc_desc="AKTools"
+        local urlgit=''
         local domain=''
 
         local lfld="$base_root/$dc_name"
@@ -5414,8 +5419,9 @@ EOF
         local fyml="$lfld/docker-compose.yml"
         local fcfg="$lfld/${dc_name}.conf"
 
-        ([[ -d "$fdat" ]] || mkdir -p $fdat) && cd $lfld
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) 
         [[ -f "$fyml"  ]] || touch $fyml
+        cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
@@ -5441,9 +5447,7 @@ EOF
 
         docker-compose up -d 
         dc_set_domain_reproxy $dc_port 
-        # domain=$(dc_set_domain_reproxy )
-        # [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
-
+        
         local content=''
         content+="\nService     : ${dc_name}"
         content+="\nContainer   : ${dc_name}"
@@ -5451,6 +5455,7 @@ EOF
         [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
         [[ -n $domain ]]  && content+="\nDomain      : $domain  "
         [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+        [[ -n $urlgit ]]  && content+="\nGitHub      : $urlgit  "
 
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
@@ -5463,6 +5468,7 @@ EOF
         local dc_name='rustdesk'
         local dc_imag=rustdesk/rustdesk-server-s6:latest
         local dc_desc="RustDesk-Server"
+        local urlgit=''
         local domain=''
 
         local lfld="$base_root/$dc_name"
@@ -5470,8 +5476,9 @@ EOF
         local fyml="$lfld/docker-compose.yml"
         local fcfg="$lfld/${dc_name}.conf"
 
-        ([[ -d "$fdat" ]] || mkdir -p $fdat) && cd $lfld
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) 
         [[ -f "$fyml"  ]] || touch $fyml
+        cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
         # local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
@@ -5505,9 +5512,7 @@ EOF
 
         docker-compose up -d 
         dc_set_domain_reproxy $dc_port 
-        # domain=$(dc_set_domain_reproxy )
-        # [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
-
+        
         local content=''
         content+="\nService     : ${dc_name}"
         content+="\nContainer   : ${dc_name}"
@@ -5515,6 +5520,7 @@ EOF
         [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
         [[ -n $domain ]]  && content+="\nDomain      : $domain  "
         [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+        [[ -n $urlgit ]]  && content+="\nGitHub      : $urlgit  "
 
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
@@ -5527,6 +5533,7 @@ EOF
         local dc_name='lucky'
         local dc_imag=gdy666/lucky
         local dc_desc="Lucky"
+        local urlgit=''
         local domain=''
 
         local lfld="$base_root/$dc_name"
@@ -5534,8 +5541,9 @@ EOF
         local fyml="$lfld/docker-compose.yml"
         local fcfg="$lfld/${dc_name}.conf"
 
-        ([[ -d "$fdat" ]] || mkdir -p $fdat) && cd $lfld
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) 
         [[ -f "$fyml"  ]] || touch $fyml
+        cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
@@ -5555,9 +5563,7 @@ EOF
 
         docker-compose up -d 
         dc_set_domain_reproxy $dc_port 
-        # domain=$(dc_set_domain_reproxy )
-        # [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
-
+        
         local content=''
         content+="\nService     : ${dc_name}"
         content+="\nContainer   : ${dc_name}"
@@ -5565,6 +5571,7 @@ EOF
         [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
         [[ -n $domain ]]  && content+="\nDomain      : $domain  "
         [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+        [[ -n $urlgit ]]  && content+="\nGitHub      : $urlgit  "
 
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
@@ -5577,6 +5584,7 @@ EOF
         local dc_name='iptva'
         local dc_imag=youshandefeiyang/allinone
         local dc_desc="IPTv(Allinone)"
+        local urlgit=''
         local domain=''
 
         local lfld="$base_root/$dc_name"
@@ -5584,8 +5592,9 @@ EOF
         local fyml="$lfld/docker-compose.yml"
         local fcfg="$lfld/${dc_name}.conf"
 
-        ([[ -d "$fdat" ]] || mkdir -p $fdat) && cd $lfld
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) 
         [[ -f "$fyml"  ]] || touch $fyml
+        cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
@@ -5607,9 +5616,7 @@ EOF
 
         docker-compose up -d 
         dc_set_domain_reproxy $dc_port 
-        # domain=$(dc_set_domain_reproxy )
-        # [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
-
+        
         local content=''
         content+="\nService     : ${dc_name}"
         content+="\nContainer   : ${dc_name}"
@@ -5617,6 +5624,7 @@ EOF
         [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
         [[ -n $domain ]]  && content+="\nDomain      : $domain  "
         [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+        [[ -n $urlgit ]]  && content+="\nGitHub      : $urlgit  "
 
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
@@ -5629,6 +5637,7 @@ EOF
         local dc_name='iptvd'
         local dc_imag=doubebly/doube-itv:latest
         local dc_desc="IPTv(doubebly)"
+        local urlgit=''
         local domain=''
 
         local lfld="$base_root/$dc_name"
@@ -5636,8 +5645,9 @@ EOF
         local fyml="$lfld/docker-compose.yml"
         local fcfg="$lfld/${dc_name}.conf"
 
-        ([[ -d "$fdat" ]] || mkdir -p $fdat) && cd $lfld
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) 
         [[ -f "$fyml"  ]] || touch $fyml
+        cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
@@ -5659,9 +5669,7 @@ EOF
 
         docker-compose up -d 
         dc_set_domain_reproxy $dc_port 
-        # domain=$(dc_set_domain_reproxy )
-        # [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
-
+        
         local content=''
         content+="\nService     : ${dc_name}"
         content+="\nContainer   : ${dc_name}"
@@ -5669,6 +5677,7 @@ EOF
         [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
         [[ -n $domain ]]  && content+="\nDomain      : $domain  "
         [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+        [[ -n $urlgit ]]  && content+="\nGitHub      : $urlgit  "
 
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
@@ -5681,6 +5690,7 @@ EOF
         local dc_name='spdf'
         local dc_imag=frooodle/s-pdf:latest
         local dc_desc="Stirling PDF"
+        local urlgit=''
         local domain=''
 
         local lfld="$base_root/$dc_name"
@@ -5688,8 +5698,9 @@ EOF
         local fyml="$lfld/docker-compose.yml"
         local fcfg="$lfld/${dc_name}.conf"
 
-        ([[ -d "$fdat" ]] || mkdir -p $fdat) && cd $lfld
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) 
         [[ -f "$fyml"  ]] || touch $fyml
+        cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
@@ -5713,8 +5724,6 @@ EOF
 
         docker-compose up -d 
         dc_set_domain_reproxy $dc_port 
-        # domain=$(dc_set_domain_reproxy )
-        # [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
 
         local content=''
         content+="\nService     : ${dc_name}"
@@ -5723,6 +5732,7 @@ EOF
         [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
         [[ -n $domain ]]  && content+="\nDomain      : $domain  "
         [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+        [[ -n $urlgit ]]  && content+="\nGitHub      : $urlgit  "
 
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
@@ -5735,6 +5745,7 @@ EOF
         local dc_name='myip'
         local dc_imag=ghcr.io/jason5ng32/myip:latest
         local dc_desc="MyIP-IP Checking"
+        local urlgit=''
         local domain=''
 
         local lfld="$base_root/$dc_name"
@@ -5742,8 +5753,9 @@ EOF
         local fyml="$lfld/docker-compose.yml"
         local fcfg="$lfld/${dc_name}.conf"
 
-        ([[ -d "$fdat" ]] || mkdir -p $fdat) && cd $lfld
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) 
         [[ -f "$fyml"  ]] || touch $fyml
+        cd $lfld
 
         echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
@@ -5762,8 +5774,6 @@ EOF
 
         docker-compose up -d 
         dc_set_domain_reproxy $dc_port 
-        # domain=$(dc_set_domain_reproxy )
-        # [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
 
         local content=''
         content+="\nService     : ${dc_name}"
@@ -5772,6 +5782,128 @@ EOF
         [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
         [[ -n $domain ]]  && content+="\nDomain      : $domain  "
         [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+        [[ -n $urlgit ]]  && content+="\nGitHub      : $urlgit  "
+
+        echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
+        echo -e "$content" | tee $fcfg
+        
+        cd -  &>/dev/null # 返回原来目录 
+    }
+    function dc_deploy_dashdot(){    
+        local base_root="/home/dcc.d"
+        local dc_port=44009
+        local dc_name='dashdot'
+        local dc_imag=mauricenino/dashdot:latest
+        local dc_desc="Dash."
+        local urlgit=''
+        local domain=''
+
+        local lfld="$base_root/$dc_name"
+        local fdat="$base_root/$dc_name/data"
+        local fyml="$lfld/docker-compose.yml"
+        local fcfg="$lfld/${dc_name}.conf"
+
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) 
+        [[ -f "$fyml"  ]] || touch $fyml
+        cd $lfld
+
+        echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && dc_port=$INPUT
+
+        cat > "$fyml" << EOF
+services:
+    ${dc_name}:
+        container_name: ${dc_name}
+        image: $dc_imag
+        privileged: true
+        ports:
+            - '$dc_port:3001'
+        volumes:
+            - /:/mnt/host:ro
+        restart: unless-stopped
+EOF
+
+        docker-compose up -d 
+        dc_set_domain_reproxy $dc_port 
+
+        local content=''
+        content+="\nService     : ${dc_name}"
+        content+="\nContainer   : ${dc_name}"
+        [[ -n $WAN4 ]]    && content+="\nURL(IPV4)   : http://$WAN4:$dc_port"
+        [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
+        [[ -n $domain ]]  && content+="\nDomain      : $domain  "
+        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+        [[ -n $urlgit ]]  && content+="\nGitHub      : $urlgit  "
+
+        echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
+        echo -e "$content" | tee $fcfg
+        
+        cd -  &>/dev/null # 返回原来目录 
+    }
+    function dc_deploy_wechat(){    
+        local base_root="/home/dcc.d"
+        local dc_port=45800
+        local dc_vnc=45900
+        local dc_name='wechat'
+        local dc_imag=ricwang/docker-wechat:latest
+        local dc_desc="WeChat(web)"
+        local urlgit=''
+        local domain=''
+
+        local lfld="$base_root/$dc_name"
+        local fdat="$base_root/$dc_name/data"
+        local fyml="$lfld/docker-compose.yml"
+        local fcfg="$lfld/${dc_name}.conf"
+
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) 
+        [[ -f "$fyml"  ]] || touch $fyml
+        cd $lfld
+
+        echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入监听端口(默认为:${dc_port})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && dc_port=$INPUT
+
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入VNC端口(默认为:${dc_vnc})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && dc_vnc=$INPUT
+
+        cat > "$fyml" << EOF
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    volumes:
+      - ${fdat}:/root/downloads
+      - /dev/snd:/dev/snd
+      - ${lfld}/.xwechat:/root/.xwechat
+      - ${lfld}/xwechat_files:/root/xwechat_files
+    ports:
+      - "$dc_port:5800"
+      - "$dc_vnc:5900"
+    environment:
+      - LANG=zh_CN.UTF-8
+      - USER_ID=0
+      - GROUP_ID=0
+      - WEB_AUDIO=1
+      - TZ=Asia/Shanghai
+    privileged: true
+    restart: unless-stopped
+EOF
+
+        docker-compose up -d 
+        dc_set_domain_reproxy $dc_port 
+
+        local content=''
+        content+="\nService     : ${dc_name}"
+        content+="\nContainer   : ${dc_name}"
+        [[ -n $WAN4 ]]    && content+="\nURL(IPV4)   : http://$WAN4:$dc_port"
+        [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
+        [[ -n $domain ]]  && content+="\nDomain      : $domain  "
+        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+        [[ -n $urlgit ]]  && content+="\nGitHub      : $urlgit  "
 
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
@@ -5786,6 +5918,7 @@ EOF
         # local dc_imag=m1k1o/neko:firefox
         # local dc_imag=m1k1o/neko:chromium
         local dc_desc="Neko-Browser"
+        local urlgit='https://neko.m1k1o.net/#/getting-started/quick-start'
         local domain=''
 
         local lfld="$base_root/$dc_name"
@@ -5860,7 +5993,7 @@ EOF
         [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
         [[ -n $domain ]]  && content+="\nDomain      : $domain  "
         [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
-        [[ -n $dc_desc ]] && content+="\nGitHub : # https://neko.m1k1o.net/#/getting-started/quick-start  "
+        [[ -n $urlgit ]]  && content+="\nGitHub      : $urlgit  "
 
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
@@ -5875,6 +6008,7 @@ EOF
         local dc_imag=dockurr/windows
         local dc_desc="Docker(win)"
         local domain=''
+        local urlgit=''
 
         local lfld="$base_root/$dc_name"
         local fdat="$base_root/$dc_name/data"
@@ -5890,7 +6024,7 @@ EOF
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && dc_port=$INPUT
 
-        winver='2025'
+        macver='2025'
         echo -e ""
         echo -e "$PRIGHT 1.2025(Windows Server 2025)"
         echo -e "$PRIGHT 2.2022(Windows Server 2022)"
@@ -5903,13 +6037,13 @@ EOF
         read -rp "${CHOICE}" INPUT
         [[ -z "$INPUT" ]] && INPUT=1        
         case "${INPUT}" in
-        1) winver='2025' ;;
-        2) winver='2022' ;;
-        3) winver='2019' ;;
-        4) winver='win11' ;;
-        5) winver='win10' ;;
-        6) winver='tiny11' ;;
-        7) winver='tiny10' ;;
+        1) macver='2025' ;;
+        2) macver='2022' ;;
+        3) macver='2019' ;;
+        4) macver='win11' ;;
+        5) macver='win10' ;;
+        6) macver='tiny11' ;;
+        7) macver='tiny10' ;;
         *) echo -e "\n$WARN 输入错误[Y/n],设置为默认2025"  ;;
         esac
         
@@ -5962,7 +6096,7 @@ services:
     devices:
       - /dev/kvm
     environment:
-      VERSION: "${winver}"
+      VERSION: "${macver}"
       LANGUAGE: "${lang}"
       CPU_CORES: "${numcpu}"
       RAM_SIZE: "${memsize}"
@@ -6006,7 +6140,144 @@ EOF
         [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
         [[ -n $domain ]]  && content+="\nDomain      : $domain  "
         [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
-        [[ -n $dc_desc ]] && content+="\nGitHub : # https://neko.m1k1o.net/#/getting-started/quick-start  "
+        [[ -n $dc_desc ]] && content+="\nGitHub : # ${urlgit}  "
+
+        echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
+        echo -e "$content" | tee $fcfg
+        
+        cd -  &>/dev/null # 返回原来目录 
+    }
+    function dc_deploy_docker_mac(){    
+        local base_root="/home/dcc.d"
+        local dc_port=48009
+        local dc_name='docker_mac'
+        local dc_imag=dockurr/macos
+        local dc_desc="Docker(mac)"
+        local domain=''
+        local urlgit=''
+
+        local lfld="$base_root/$dc_name"
+        local fdat="$base_root/$dc_name/data"
+        local fyml="$lfld/docker-compose.yml"
+        local fcfg="$lfld/${dc_name}.conf"
+
+        ([[ -d "$fdat" ]] || mkdir -p $fdat) 
+        [[ -f "$fyml"  ]] || touch $fyml
+        cd $lfld
+
+        echo -e "\n $TIP 现在开始部署${dc_desc} ... \n"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入VNC监听端口(默认为:${dc_port})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && dc_port=$INPUT
+
+        macver='sonoma'
+        echo -e ""
+        echo -e "$PRIGHT 1.sonoma(MacOS Sonoma)"
+        echo -e "$PRIGHT 2.ventura(MacOS Ventura)"
+        echo -e "$PRIGHT 3.monterey(MacOS Monterey)"
+        echo -e "$PRIGHT 4.big-sur(MacOS Big Sur)"
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请选择MacOS版本(默认为: sonoma)]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] && INPUT=1        
+        case "${INPUT}" in
+        1) macver='sonoma' ;;
+        2) macver='ventura' ;;
+        3) macver='monterey' ;;
+        4) macver='big-sur' ;;
+        *) echo -e "\n$WARN 输入错误[Y/n],设置为默认sonoma"  ;;
+        esac
+        
+        # local lang="Chinese"
+        # echo -e "\n" " 可选择的语言 "
+        # echo -e "  " " 1.Chinese "
+        # echo -e "  " " 2.English "
+        # local CHOICE=$(echo -e "\n${BOLD}└─ 请选择Windows语言(默认为: Chinese)]: ${PLAIN}")
+        # read -rp "${CHOICE}" INPUT 
+        # [[ -z "$INPUT" ]] && INPUT=1 
+        # case "${INPUT}" in
+        # 1) lang='Chinese' ;;
+        # 2) lang='English' ;;
+        # *) echo -e "\n$WARN 输入错误[Y/n],设置为${lang}"  ;;
+        # esac
+        
+        local numcpu=4
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入CPU核心数(默认为:${numcpu})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && numcpu=$INPUT
+
+        local memsize=8
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入内存大小(默认为:${memsize}GB)]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && memsize=$INPUT
+
+        local disksize=42
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入硬盘大小(默认为:${disksize}GB)]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && disksize=$INPUT
+
+        # local user='dd'
+        # local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录账户(默认为:${user})]: ${PLAIN}")
+        # read -rp "${CHOICE}" INPUT
+        # [[ -n "$INPUT" ]] && user=$INPUT
+
+        # local pass='dd543212345'
+        # local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录密码(默认为:${pass})]: ${PLAIN}")
+        # read -rp "${CHOICE}" INPUT
+        # [[ -n "$INPUT" ]] && pass=$INPUT
+
+        cat > "$fyml" << EOF
+services:
+  ${dc_name}:
+    container_name: ${dc_name}
+    image: $dc_imag
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/kvm
+    environment:
+      VERSION: "${macver}"
+      LANGUAGE: "${lang}"
+      CPU_CORES: "${numcpu}"
+      RAM_SIZE: "${memsize}"
+      DISK_SIZE: "${disksize}"
+    volumes:
+      - $lfld/$dc_name/dcmac_disk:/storage
+      - $lfld/$dc_name/dcmac_share:/shared
+    ports:
+      - ${dc_port}:8006
+      - 5000:5000
+      - 3389:3389/tcp
+      - 3389:3389/udp
+    stop_grace_period: 2m
+    restart: unless-stopped
+EOF
+
+        local CHOICE=$(echo -e "\n${BOLD}└─ ${dc_name}配置文件已生成是否启动容器？[y/N]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "$INPUT" ]] &&  INPUT="N"
+        case "${INPUT}" in 
+        [Yy] | [Yy][Ee][Ss]) 
+            docker-compose up -d 
+            ;; 
+        [Nn] | [Nn][Oo]) 
+            echo -e "$TIP 手动启动容器: " 
+            echo -e "$TIP 配置目录: ${lfld}" 
+            echo -e "$TIP 配置文件: ${fyml}" 
+            echo -e "$TIP 运行命令: docker-compose up -d " 
+            ;;
+        *)  echo -e "\n$WARN 输入错误！" ;;
+        esac
+
+        dc_set_domain_reproxy $dc_port 
+
+        local content=''
+        content+="\nService     : ${dc_name}"
+        content+="\nContainer   : ${dc_name}"
+        [[ -n $WAN4 ]]    && content+="\nURL(IPV4)   : http://$WAN4:$dc_port"
+        [[ -n $WAN6 ]]    && content+="\nURL(IPV6)   : http://[$WAN6]:$dc_port"
+        [[ -n $domain ]]  && content+="\nDomain      : $domain  "
+        [[ -n $dc_desc ]] && content+="\nDescription : $dc_desc  "
+        [[ -n $dc_desc ]] && content+="\nGitHub : # ${urlgit}  "
 
         echo -e "\n$TIP ${dc_desc}部署信息如下：\n"
         echo -e "$content" | tee $fcfg
@@ -6028,10 +6299,14 @@ EOF
         5 ) dc_deploy_lucky  ;;
         6 ) dc_deploy_iptva  ;;
         7 ) dc_deploy_iptvd  ;;
-        21) dc_deploy_ittools  ;;
-        22) dc_deploy_spdf  ;;
-        23) dc_deploy_myip  ;;
-        24) dc_deploy_neko  ;;
+        8 ) dc_deploy_docker_win  ;;
+        9 ) dc_deploy_docker_mac  ;;
+        10) dc_deploy_wechat  ;;
+        21) dc_deploy_dashdot  ;;
+        22) dc_deploy_myip  ;;
+        23) dc_deploy_neko  ;;
+        24) dc_deploy_ittools  ;;
+        25) dc_deploy_spdf  ;;
         xx) sys_reboot ;;
         # 0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false"  && return  ;;
         0)  docker_management_menu && _IS_BREAK="false" && break  ;;

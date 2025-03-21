@@ -11,7 +11,7 @@ FTSS='\033[5m'         # 字体：闪烁
 
 VLATEST="${FCLS}${FTSS}NEW${FTCZ}" # 蓝色闪烁字体
 url_redir='https://sub.zwdk.org/qiq'
-url_script='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/src/qiqtools.sh'
+url_script='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/src/qiq.sh'
 url_update='https://raw.githubusercontent.com/lmzxtek/qiqtools/refs/heads/main/src/log.sh'
 
 clear
@@ -22,6 +22,7 @@ echoR " -=> 2025-03-21   v0.7.2" " $VLATEST"
 echoY "   1.日志文件接之前的版本"
 echoY "   2.测试DD脚本项"
 echoY "   3.修正测试项链接"
+echoY "   4.完善Docker部署"
 echoT "--------------------------------"
 echoR "" $(echoY "url") $(echoR ": $url_redir") 
 echoR "" $(echoY "url") $(echoR ": $url_script") 
