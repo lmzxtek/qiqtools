@@ -132,15 +132,24 @@ function permission_judgment() {
 
 # 设置脚本的快捷命令为 `qiq`
 function set_qiq_alias() {
+    local is_set=${1:-0}
     if [ $UID -ne 0 ]; then
         echo -e "\n$WARN 权限不足，请使用 Root 用户运行本脚本 \n"
     else
-        # echo -e "\n >>> 设置 qiq 快捷命令 ... "
-        if ! command -v qiq &>/dev/null; then
+        if command -v qiq &>/dev/null; then
+            echo -e "\n $WARN qiq快捷命令已设置: $(whereis qiq) \n"
+            if [[ $is_set -eq 1 ]]; then
+                local CHOICE=$(echo -e "\n${BOLD}└─ 是否更新快捷命令？[Y/n]: ${PLAIN}")
+                read -rp "${CHOICE}" INPUT
+                [[ -z "$INPUT" ]] &&  INPUT="Y"
+                if [[ $INPUT == [Yy] || $INPUT == [Yy][Ee][Ss] ]]; then
+                    rm -f /usr/local/bin/qiq
+                    ln -sf ~/qiq.sh /usr/local/bin/qiq
+                fi
+            fi
+        else
             echo -e "\n $WARN qiq 快捷命令未设置 ... \n"
             ln -sf ~/qiq.sh /usr/local/bin/qiq
-        else
-            echo -e "\n $WARN qiq快捷命令已设置: $(whereis qiq) \n"
         fi
     fi
 }
@@ -851,7 +860,7 @@ function check_ip_status() {
 function print_menu_head() {
     local n=${1:-35}    # 传入分割符重复次数, 默认35
     echo ""
-    local head=$(echo -e "${GREEN}♧♧♧${PLAIN}  ${CONSTSTR} ${BLUE}${SRC_VER}${PLAIN}  ${GREEN}♧♧♧${PLAIN}")
+    local head=$(echo -e "${YELLOW}♧♧♧${PLAIN}  ${CONSTSTR} ${BLUE}${SRC_VER}${PLAIN}  ${YELLOW}♧♧♧${PLAIN}")
     printf "%2s%s\n${RESET}" "" "$head"
     generate_separator "~|$AZURE" "$n" # 另一个分割线    
     print_warp_ip_info 4
@@ -6835,7 +6844,7 @@ function script_update(){
 
 #=================
 # 设置qiq快捷命令 
-set_qiq_alias
+set_qiq_alias 1
 # 初始化全局变量
 init_global_vars 
 # 检测系统IP地址
