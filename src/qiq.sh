@@ -853,8 +853,7 @@ function print_menu_head() {
     echo ""
     local head=$(echo -e "${GREEN}♧♧♧${PLAIN}  ${CONSTSTR} ${BLUE}${SRC_VER}${PLAIN}  ${GREEN}♧♧♧${PLAIN}")
     printf "%2s%s\n${RESET}" "" "$head"
-    generate_separator "-|$AZURE" "$n" # 另一个分割线
-    
+    generate_separator "~|$AZURE" "$n" # 另一个分割线    
     print_warp_ip_info 4
     print_warp_ip_info 6
     generate_separator "=|$YELLOW" "$n" # 另一个分割线
@@ -4908,7 +4907,7 @@ $domain {
 }
 EOF
 
-    echo -e "\n${BOLD}└─ 添加反代成功: ${PLAIN}$domain -> $ip:$port\n"
+    echo -e "\n${BOLD}└─ ${GREEN}添加反代成功: ${RED}${domain}${PLAIN} -> $ip:${BLUE}${port}${PLAIN}\n"
     ## 刷新Caddy配置信息，并重启Caddy，使反代生效 
     caddy_new_caddyfile
     caddy_reload
@@ -5332,8 +5331,9 @@ services:
 EOF
 
         docker-compose up -d 
-        domain=$(dc_set_domain_reproxy )
-        [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
+        dc_set_domain_reproxy $dc_port 
+        # domain=$(dc_set_domain_reproxy )
+        # [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
 
         local content=''
         content+="\nService     : ${dc_name}"
@@ -5384,8 +5384,9 @@ services:
 EOF
 
         docker-compose up -d 
-        domain=$(dc_set_domain_reproxy )
-        [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
+        dc_set_domain_reproxy $dc_port 
+        # domain=$(dc_set_domain_reproxy )
+        # [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
 
         local content=''
         content+="\nService     : ${dc_name}"
@@ -5439,8 +5440,9 @@ services:
 EOF
 
         docker-compose up -d 
-        domain=$(dc_set_domain_reproxy )
-        [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
+        dc_set_domain_reproxy $dc_port 
+        # domain=$(dc_set_domain_reproxy )
+        # [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
 
         local content=''
         content+="\nService     : ${dc_name}"
@@ -5502,8 +5504,9 @@ services:
 EOF
 
         docker-compose up -d 
-        domain=$(dc_set_domain_reproxy )
-        [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
+        dc_set_domain_reproxy $dc_port 
+        # domain=$(dc_set_domain_reproxy )
+        # [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
 
         local content=''
         content+="\nService     : ${dc_name}"
@@ -5551,8 +5554,9 @@ services:
 EOF
 
         docker-compose up -d 
-        domain=$(dc_set_domain_reproxy )
-        [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
+        dc_set_domain_reproxy $dc_port 
+        # domain=$(dc_set_domain_reproxy )
+        # [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
 
         local content=''
         content+="\nService     : ${dc_name}"
@@ -5602,8 +5606,9 @@ services:
 EOF
 
         docker-compose up -d 
-        domain=$(dc_set_domain_reproxy )
-        [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
+        dc_set_domain_reproxy $dc_port 
+        # domain=$(dc_set_domain_reproxy )
+        # [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
 
         local content=''
         content+="\nService     : ${dc_name}"
@@ -5653,8 +5658,9 @@ services:
 EOF
 
         docker-compose up -d 
-        domain=$(dc_set_domain_reproxy )
-        [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
+        dc_set_domain_reproxy $dc_port 
+        # domain=$(dc_set_domain_reproxy )
+        # [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
 
         local content=''
         content+="\nService     : ${dc_name}"
@@ -5706,8 +5712,9 @@ services:
 EOF
 
         docker-compose up -d 
-        domain=$(dc_set_domain_reproxy )
-        [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
+        dc_set_domain_reproxy $dc_port 
+        # domain=$(dc_set_domain_reproxy )
+        # [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
 
         local content=''
         content+="\nService     : ${dc_name}"
@@ -5754,8 +5761,9 @@ services:
 EOF
 
         docker-compose up -d 
-        domain=$(dc_set_domain_reproxy )
-        [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
+        dc_set_domain_reproxy $dc_port 
+        # domain=$(dc_set_domain_reproxy )
+        # [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
 
         local content=''
         content+="\nService     : ${dc_name}"
@@ -5809,13 +5817,17 @@ EOF
         *) echo -e "\n$WARN 输入错误[Y/n],设置为默认Edge浏览器内核"  ;;
         esac
         
-        pssuser=neko
+        local memsize=2
+        local CHOICE=$(echo -e "\n${BOLD}└─ 请输入内存大小(默认为:${memsize})]: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -n "$INPUT" ]] && memsize=$INPUT
+
+        local pssuser=neko
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入登录密码(默认为:${pssuser})]: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && pssuser=$INPUT
 
-
-        pssadmin=admin
+        local pssadmin=admin
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入管理员密码(默认为:${pssadmin})]: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -n "$INPUT" ]] && pssadmin=$INPUT
@@ -5825,22 +5837,23 @@ services:
     ${dc_name}:
         container_name: m1k1o/neko:${brkernel}
         image: $dc_imag
-        shm_size: "2gb"
+        shm_size: "${memsize}gb"
         environment:
             NEKO_SCREEN: 1920x1080@30
-            NEKO_PASSWORD: $pssuser
-            NEKO_PASSWORD_ADMIN: $pssadmin
+            NEKO_PASSWORD: ${pssuser}
+            NEKO_PASSWORD_ADMIN: ${pssadmin}
             NEKO_EPR: 52000-52100
             NEKO_ICELITE: 1
         ports:
-            - '$dc_port:8080'
+            - '${dc_port}:8080'
             - "52000-52100:52000-52100/udp"
         restart: always
 EOF
 
         docker-compose up -d 
-        domain=$(dc_set_domain_reproxy )
-        [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
+        dc_set_domain_reproxy $dc_port 
+        # domain=$(dc_set_domain_reproxy )
+        # [[ -n "${domain}" ]] && caddy_add_reproxy $domain '127.0.0.1' $dc_port 0 
 
         local content=''
         content+="\nService     : ${dc_name}"
