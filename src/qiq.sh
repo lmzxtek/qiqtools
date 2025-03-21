@@ -1513,7 +1513,7 @@ MENU_TEST_ITEMS=(
     " 1.ChatGPT解锁状态"
     " 2.Region流媒体状态"
     " 3.yeahwu流媒体状态"
-    " 4.Youtube地区检测"
+    " 4.流媒体地区限制检测"
     "………………………………………………………………" 
     "$BLUE 网络线路测速 $PLAIN"
     "11.三网测速(Superspeed)"
@@ -6128,6 +6128,7 @@ function docker_management_menu(){
     }
 
     while true; do
+        _IS_BREAK="true"
         print_sub_item_menu_headinfo
         local CHOICE=$(echo -e "\n${BOLD}└─ 请输入选项: ${PLAIN}")
         read -rp "${CHOICE}" INPUT
