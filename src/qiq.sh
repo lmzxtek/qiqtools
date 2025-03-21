@@ -4819,13 +4819,13 @@ function caddy_domain_list(){
     # ls -t /home/web/caddy | grep -v "default.conf" | sed 's/\.[^.]*$//'
     local dm_list=$(ls -t ${dir_caddy} | grep -v "default.conf" | sed 's/\.[^.]*$//')
     # clear
-    echo -e "$PRIGHT 站点列表\n${PLAIN}============================\n"
+    echo -e "$PRIGHT 站点列表\n${PLAIN}============================"
     echo "${list[@]}" | tr ' ' '\n' | nl -w2 -s'. '
 
     num=0
     for dm_file in $dm_list; do
         num+=1
-        printf " %2d.%-s\n"  ${num} "$dm_file"
+        printf " (%2d) %-s\n"  ${num} "$dm_file"
     done
     echo -e "\n${PLAIN}============================\n"
 
