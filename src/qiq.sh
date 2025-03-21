@@ -5226,7 +5226,7 @@ function docker_deploy_menu(){
                     echo -e "\n$TIP 输入域名为空，不进行反代！" 
                 else
                     domain=$INPUT
-                fi   
+                fi 
                 ;; 
             [Nn] | [Nn][Oo]) 
                 echo -e "\n$TIP 取消域名反代！" 
@@ -5279,6 +5279,7 @@ EOF
         docker-compose up -d 
         # domain=$(dc_get_domain ${dc_port})
         domain=$(dc_get_domain)
+        echo -e "\n$TIP 输入的域名为： ${domain}\n"
         [[ -n "${domain}" ]] && caddy_add_reproxy "${domain}" '127.0.0.1' $dc_port 0 
 
         local content=''
