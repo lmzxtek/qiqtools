@@ -6147,8 +6147,36 @@ function docker_management_menu(){
         else 
             echo -e "\n$TIP 系统未安装docker服务！"
         fi
+    } 
+    function docker_get_id(){
+        local head=${1:-'ID'}
+        local dc_id=''
+        local CHOICE=$(echo -e "\n${BOLD}└─ 输入${head}: ${PLAIN}")
+        read -rp "${CHOICE}" INPUT 
+        if [[ -n $INPUT ]]; then 
+            local dc_id=$INPUT 
+        else 
+            echo -e "\n$WARN 请输入有效的ID！"
+        fi
+        echo "${dc_id}"
     }
-    function docker_containers_rm_all(){        
+    function docker_images_rm_all(){
+        local CHOICE=$(echo -e "\n${BOLD}└─ 是否删除所有镜像? [Y/n] ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "${INPUT}" ]] && INPUT=Y # 回车默认为Y
+        case "${INPUT}" in
+        [Yy] | [Yy][Ee][Ss])
+            echo -e "\n$TIP 删除所有镜像 ..."
+            docker rmi -f $(docker images -q)
+            echo -e "\n$TIP 删除所有镜像成功！"
+            ;;
+        [Nn] | [Nn][Oo])
+            echo -e "\n$TIP 取消删除所有镜像！"
+            ;;
+        *)  _BREAK_INFO=" 输入错误！" && _IS_BREAK="true" ;;
+        esac
+    }
+    function docker_containers_rm_all(){
         local CHOICE=$(echo -e "\n${BOLD}└─ 是否删除所有容器? [Y/n] ${PLAIN}")
         read -rp "${CHOICE}" INPUT
         [[ -z "${INPUT}" ]] && INPUT=Y # 回车默认为Y
@@ -6164,47 +6192,90 @@ function docker_management_menu(){
         *)  _BREAK_INFO=" 输入错误！" && _IS_BREAK="true" ;;
         esac
     }
-    function docker_con_stopall(){
-        docker stop $(docker ps -q)
+    function docker_containers_stop_all(){
+        local CHOICE=$(echo -e "\n${BOLD}└─ 是否停止所有容器? [Y/n] ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "${INPUT}" ]] && INPUT=Y # 回车默认为Y
+        case "${INPUT}" in
+        [Yy] | [Yy][Ee][Ss])
+            echo -e "\n$TIP 停止所有容器 ..."
+            docker stop $(docker ps -q)
+            echo -e "\n$TIP 停止所有容器成功！"
+            ;;
+        [Nn] | [Nn][Oo])
+            echo -e "\n$TIP 取消停止所有容器！"
+            ;;
+        *)  _BREAK_INFO=" 输入错误！" && _IS_BREAK="true" ;;
+        esac
     }
     function docker_con_clean(){
-        docker system prune -af --volumes 
+        local CHOICE=$(echo -e "\n${BOLD}└─ 是否清理[容器/镜像/网络]? [Y/n] ${PLAIN}")
+        read -rp "${CHOICE}" INPUT
+        [[ -z "${INPUT}" ]] && INPUT=Y # 回车默认为Y
+        case "${INPUT}" in
+        [Yy] | [Yy][Ee][Ss])
+            echo -e "\n$TIP 清理容器 ..."
+            docker system prune -af --volumes 
+            echo -e "\n$TIP 清理成功！"
+            ;;
+        [Nn] | [Nn][Oo])
+            echo -e "\n$TIP 取消清理！"
+            ;;
+        *)  _BREAK_INFO=" 输入错误！" && _IS_BREAK="true" ;;
+        esac
     }
-    function docker_get_id(){
-        local dc_id=''
-        local CHOICE=$(echo -e "\n${BOLD}└─ 输入容器ID: ${PLAIN}")
-        read -rp "${CHOICE}" INPUT 
-        if [[ -n $INPUT ]]; then 
-            local dc_id=$INPUT 
-        else 
-            echo -e "\n$WARN 请输入有效的容器ID！"
-        fi
-        echo "${dc_id}"
+    function docker_imagess_list(){
+        local dc_name=''
+        local dc_items_list=(
+            "1.删除镜像"
+            "2.获取镜像"
+            "3.更新镜像"
+            "4.删除所有"
+            "0.返回"
+        )
+
+        while true; do
+            docker_show_images 
+            print_items_list dc_items_list[@] "镜像操作:"
+            local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
+            read -rp "${CHOICE}" INPUT
+            case "${INPUT}" in
+            1)  dc_name=$(docker_get_id '镜像名') && [[ -n ${dc_name} ]] && docker images rm $dc_name ;;
+            2)  dc_name=$(docker_get_id '镜像名') && [[ -n ${dc_name} ]] && docker pull $dc_name ;;
+            3)  dc_name=$(docker_get_id '镜像名') && [[ -n ${dc_name} ]] && docker pull $dc_name ;;
+            4)  docker_images_rm_all ;;
+            0)  echo -e "\n$TIP 返回 ..." && _IS_BREAK="false" && break ;;
+            *)  _BREAK_INFO=" 请输入有效选项！" ;;
+            esac 
+            case_end_tackle 
+        done 
     }
     function docker_containers_list(){
         local dc_id=''
-        local dc_con_items=(
+        local dc_items_list=(
             "1.删除容器"
             "2.停止容器"
             "3.重启容器"
             "4.查看容器"
             "5.删除所有"
+            "6.停止所有"
             "0.返回"
         )
 
         while true; do
             docker_show_containers 
-            print_items_list dc_con_items[@] "容器操作:"
+            print_items_list dc_items_list[@] "容器操作:"
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
             case "${INPUT}" in
-            1)  dc_id=$(docker_get_id) && [[ -n ${dc_id} ]] && docker stop $dc_id && docker rm $dc_id ;;
-            2)  dc_id=$(docker_get_id) && [[ -n ${dc_id} ]] && docker stop $dc_id ;;
-            3)  dc_id=$(docker_get_id) && [[ -n ${dc_id} ]] && docker restart $dc_id ;;
-            4)  dc_id=$(docker_get_id) && [[ -n ${dc_id} ]] && docker stats $dc_id ;;
+            1)  dc_id=$(docker_get_id "容器ID") && [[ -n ${dc_id} ]] && docker stop $dc_id && docker rm $dc_id ;;
+            2)  dc_id=$(docker_get_id "容器ID") && [[ -n ${dc_id} ]] && docker stop $dc_id ;;
+            3)  dc_id=$(docker_get_id "容器ID") && [[ -n ${dc_id} ]] && docker restart $dc_id ;;
+            4)  dc_id=$(docker_get_id "容器ID") && [[ -n ${dc_id} ]] && docker stats $dc_id ;;
             5)  docker_containers_rm_all ;;
+            6)  docker_containers_stop_all ;;
             0)  echo -e "\n$TIP 返回 ..." && _IS_BREAK="false" && break ;;
-            *)  _BREAK_INFO=" 请输入有效的容器选项！" ;;
+            *)  _BREAK_INFO=" 请输入有效选项！" ;;
             esac 
             case_end_tackle 
         done 
