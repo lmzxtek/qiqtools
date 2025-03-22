@@ -7,7 +7,7 @@
 #===============================================================================
 
 # 禁用进度条以提升下载速度
-$ProgressPreference = 'SilentlyContinue'
+# $ProgressPreference = 'SilentlyContinue'
 
 
 # 设置 PowerShell 输出编码，确保中文显示正常
@@ -266,7 +266,7 @@ function Software_install {
             "1" { Install-Software "7zip.7zip" "7zip" "https://www.7-zip.org/download.html" }
             "2" { Install-Software "Notepad++.Notepad++" "notepadplusplus" "https://notepad-plus-plus.org/downloads/" }
             "3" { Install-Software "Microsoft.VisualStudioCode" "vscode" "https://code.visualstudio.com/download" }
-            "0" { return }
+            "0" { break }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
     }
@@ -287,7 +287,7 @@ function System_Settings {
             "1" { Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; Write-Host "Execution policy set!"; Pause }
             "2" { Enable-OpenSSH }
             "3" { Set-DefaultShell-Pwsh }
-            "0" { return }
+            "0" { break }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
     }
@@ -409,7 +409,7 @@ function app_download{
             "2" { download_nekobox; }
             "3" { download_python3127; }
             "4" { download_powershell; }
-            "0" { exit }
+            "0" { break }
             default { Write-Host "Invalid input!" -ForegroundColor Red; }
         }
         # Pause 
@@ -462,7 +462,7 @@ function  main_menu {
             "4" { System_Settings }
             "5" { activate_win_office }
             "6" { Install-Python }
-            "0" { exit }
+            "0" { break }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
     }
