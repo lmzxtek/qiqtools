@@ -91,7 +91,7 @@ function Get-GitHubLatestRelease {
             $apiUrl += "/releases/latest"
 
             # 获取发布信息
-            Write-Host "正在获取仓库发布信息..." -ForegroundColor Cyan
+            Write-Host " 正在获取仓库发布信息..." -ForegroundColor Cyan
             $release = Invoke-RestMethod -Uri $apiUrl -Headers @{
                 "Accept" = "application/vnd.github.v3+json"
             }
@@ -362,48 +362,48 @@ function app_download{
         # $targetDir = get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         $url_dl = "https://alist.ywzsqx.top/d/a/apps/$file"
-        write-host "下载文件：$url_dl"
-        write-host "目标目录：$targetDir" -ForegroundColor Cyan
+        write-host "File URL  : $url_dl"
+        write-host "Target dir: $targetDir" -ForegroundColor Cyan
         # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
         Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
-        write-host "成功下载：$targetFilePath" -ForegroundColor Green
+        write-host "Success: $targetFilePath" -ForegroundColor Green
     }
     function download_nekobox{
         $file = "nekoray-4.0.1-2024-12-12-windows64.zip"
         # $targetDir = get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         $url_dl = "https://alist.ywzsqx.top/d/a/apps/$file"
-        write-host "下载文件：$url_dl"
-        write-host "目标目录：$targetDir" -ForegroundColor Cyan
+        write-host "File URL  : $url_dl"
+        write-host "Target dir: $targetDir" -ForegroundColor Cyan
         # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
         Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
-        write-host "成功下载：$targetFilePath" -ForegroundColor Green
+        write-host "Success: $targetFilePath" -ForegroundColor Green
     }
     function download_python3127{
         $file = "python-3.12.7-amd64.exe"
         # $targetDir = get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         $url_dl = "https://alist.ywzsqx.top/d/a/apps/$file"
-        write-host "下载文件：$url_dl"
-        write-host "目标目录：$targetDir" -ForegroundColor Cyan
+        write-host "File URL  : $url_dl"
+        write-host "Target dir: $targetDir" -ForegroundColor Cyan
         # Invoke-WebRequest -Uri $url_dl -OutFile $targetFilePath            # 
         Start-BitsTransfer -Source $url_dl -Destination  $targetFilePath   # 适合下载大文件或需要后台下载的场景
-        write-host "成功下载：$targetFilePath" -ForegroundColor Green
+        write-host "Success: $targetFilePath" -ForegroundColor Green
     }
     function download_powershell{
         $downloadedFile = Get-GitHubLatestRelease -RepositoryUrl "https://github.com/PowerShell/PowerShell"
         if ($downloadedFile) {
-            Write-Host "下载完成！文件路径：" -ForegroundColor Green
+            Write-Host " Download finished, file saved: " -ForegroundColor Green
             $downloadedFile.FullName
         }
         else {
-            Write-Host "下载失败！" -ForegroundColor Red
+            Write-Host " Download failed" -ForegroundColor Red
         }
     }
     # 菜单循环
     while ($true) {
         Show_Menu_app_download
-        $choice = Read-Host " 请选择 (1-9)"
+        $choice = Read-Host " Please select (1-9)"
         switch ($choice) {
             "1" { download_vc_redist64; }
             "2" { download_nekobox; }
@@ -413,7 +413,7 @@ function app_download{
             default { Write-Host "Invalid input!" -ForegroundColor Red; }
         }
         # Pause 
-        $null = Read-Host " 按 Enter 键继续  "
+        $null = Read-Host " Press Enter to continue  "
     }
     
 }
@@ -442,19 +442,19 @@ function  main_menu {
     function Show-Menu {
         Clear-Host
         Write-Host "========== Tool Menu ==========" -ForegroundColor Cyan
-        Write-Host "  1. 常用链接"
-        Write-Host "  2. 下载软件"  -ForegroundColor Green
-        Write-Host "  3. 安装软件"
-        Write-Host "  4. 系统设置"  -ForegroundColor Yellow
-        Write-Host "  5. 激活工具"  -ForegroundColor Blue 
-        Write-Host "  6. Python管理"  
-        Write-Host "  0. 退出"     -ForegroundColor Red
+        Write-Host "  1. Web Links"
+        Write-Host "  2. App Download"  -ForegroundColor Green
+        Write-Host "  3. App Install"
+        Write-Host "  4. Symtems Setting"  -ForegroundColor Yellow
+        Write-Host "  5. Activate Tool"  -ForegroundColor Blue 
+        Write-Host "  6. Python Management"  
+        Write-Host "  0. Exit"     -ForegroundColor Red
         Write-Host "===============================" -ForegroundColor Cyan
     }
     # 菜单循环
     while ($true) {
         Show-Menu
-        $choice = Read-Host "Enter your choice (1-4)"
+        $choice = Read-Host "Enter your choice (1-6)"
         switch ($choice) {
             "1" { print_web_links; Pause }
             "2" { app_download }
