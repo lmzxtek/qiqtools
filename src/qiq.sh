@@ -6809,7 +6809,7 @@ function docker_management_menu(){
         2 ) docker_uninstall ;;
         3 ) docker_clean ;;
         4 ) docker_service_restart ;;
-        11) docker_show_info && docker_show_containers && docker_show_images && docker_show_networks ;;
+        11) clear && docker_show_info && docker_show_containers && docker_show_images && docker_show_networks ;;
         12) docker_containers_list ;; 
         13) docker_images_list ;; 
         14) docker_network_list ;;
