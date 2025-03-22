@@ -49,7 +49,7 @@ _TAG_DEFAULT="\033[1;36m🌿${PLAIN}"
 
 
 # 颜色定义：\033比\e的兼容性更好 
-BLACK='\033[31m'
+BLACK='\033[30m'
 RED='\033[31m'
 GREEN='\033[32m'
 YELLOW='\033[33m'
@@ -184,6 +184,20 @@ function gradient_text() {
   echo "$result"
 }
 
+function init_global_vars(){
+    
+    blue_green_gradient=("118" "154" "82" "34" "36" "46" ) # 蓝色到绿色的渐变颜色代码
+    CONSTSTR='QiQ Tools'
+    CONSTSTR=$(gradient_text "${CONSTSTR}" blue_green_gradient[@])
+
+    NUM_SPLIT=${NUM_SPLIT:-4}           # 左右栏的宽度间隔
+    NUM_WIDTH=${NUM_WIDTH:-3}           # 序号最大宽度
+    MAX_COL_NUM=${MAX_COL_NUM:-24}      # 单栏字符串最大宽度，默认为24
+    ITEM_CAT_CHAR=${ITEM_CAT_CHAR:-'.'} # 序号与字符连接字符，默认为 '.'
+
+    MAX_SPLIT_CHAR_NUM=${MAX_SPLIT_CHAR_NUM:-35} # 最大分割字符数量，默认为35
+}
+
 
 ## 定义系统判定变量
 SYSTEM_DEBIAN="Debian"
@@ -225,20 +239,6 @@ File_GentooRelease=/etc/gentoo-release
 File_openKylinVersion=/etc/kylin-version/kylin-system-version.conf
 File_ProxmoxVersion=/etc/pve/.version
 
-
-function init_global_vars(){
-    
-    blue_green_gradient=("118" "154" "82" "34" "36" "46" ) # 蓝色到绿色的渐变颜色代码
-    CONSTSTR='QiQ Tools'
-    CONSTSTR=$(gradient_text "${CONSTSTR}" blue_green_gradient[@])
-
-    NUM_SPLIT=${NUM_SPLIT:-4}           # 左右栏的宽度间隔
-    NUM_WIDTH=${NUM_WIDTH:-3}           # 序号最大宽度
-    MAX_COL_NUM=${MAX_COL_NUM:-20}      # 单栏字符串最大宽度，默认为25
-    ITEM_CAT_CHAR=${ITEM_CAT_CHAR:-'.'} # 序号与字符连接字符，默认为 '.'
-
-    MAX_SPLIT_CHAR_NUM=${MAX_SPLIT_CHAR_NUM:-35} # 最大分割字符数量，默认为35
-}
 
 
 ## 收集系统信息
@@ -1637,7 +1637,7 @@ function system_test_menu(){
         31) curl -Lso- bench.sh | bash ;;
         32) curl -L https://gitlab.com/spiritysdx/za/-/raw/main/ecs.sh -o ecs.sh && chmod +x ecs.sh && bash ecs.sh ;;
         xx) sys_reboot ;;
-        0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" && return  0  ;;
+        0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false" && break ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
         esac
         case_end_tackle
@@ -5247,7 +5247,9 @@ function caddy_management_menu(){
         25) caddy_domain_list && caddy_alter_domain && caddy_domain_list ;;
         26) caddy_domain_list && caddy_del_domain && caddy_domain_list ;;
         27) caddy_domain_list && caddy_clean_all_domain && caddy_domain_list ;;
+        # 28) docker_management_menu && _IS_BREAK="false"  && continue  ;;
         28) docker_management_menu && _IS_BREAK="false"  && break  ;;
+        # 28) docker_management_menu && _IS_BREAK="false"  ;;
         xx) sys_reboot ;;
         0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK='false' && break ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
@@ -6371,8 +6373,8 @@ EOF
         24) dc_deploy_ittools  ;;
         25) dc_deploy_spdf  ;;
         xx) sys_reboot ;;
-        # 0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false"  && return  ;;
-        0)  docker_management_menu && _IS_BREAK="false" && break  ;;
+        0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false"  && break  ;;
+        # 0)  docker_management_menu && _IS_BREAK="false" && break  ;;
         *)  _BREAK_INFO=" 请输入正确的数字序号以选择你想使用的功能！" && _IS_BREAK="true" ;;
         esac
         case_end_tackle
@@ -6545,9 +6547,9 @@ function docker_management_menu(){
             2) bash <(curl -sSL https://linuxmirrors.cn/docker.sh) ;; 
             3) bash <(curl -sSL https://linuxmirrors.cn/docker.sh) -edu;; 
             4) bash <(curl -sSL https://linuxmirrors.cn/docker.sh) -abroad;; 
-            0) _IS_BREAK='false' && break;; 
-            *) echo -e "\n$WARN 输入错误,返回！" return 1  ;;
-            esac        
+            0) _IS_BREAK='false' ;; 
+            *) echo -e "\n$WARN 输入错误,返回！"  ;; 
+            esac 
         fi
     }    
     function docker_enable_ipv6(){
@@ -6623,8 +6625,8 @@ function docker_management_menu(){
         case "${INPUT}" in
         1) docker_enable_ipv6 ;;
         2) docker_disable_ipv6 ;;
-        0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false"  && return  ;;
-        *)  _BREAK_INFO=" 请输入有效的选项序号！" && _IS_BREAK="true" ;;
+        0) echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false"  && return  ;;
+        *) _BREAK_INFO=" 请输入有效的选项序号！" && _IS_BREAK="true" ;;
         esac
         case_end_tackle
     }
@@ -6813,9 +6815,12 @@ function docker_management_menu(){
         14) docker_network_list ;;
         31) docker_deploy_menu && _IS_BREAK="false"  && break ;;
         32) caddy_management_menu && _IS_BREAK="false"  && break ;;
-        33) docker_set_1ckl && _IS_BREAK="true"  && return  ;;
+        # 31) docker_deploy_menu && _IS_BREAK="false"  ;;
+        # 32) caddy_management_menu && _IS_BREAK="false"  && continue ;;
+        # 32) caddy_management_menu && _IS_BREAK="false" ;;
+        33) docker_set_1ckl && _IS_BREAK="true" ;;
         xx) sys_reboot ;;
-        0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false"  && return  ;;
+        0)  echo -e "\n$TIP 返回主菜单 ..." && _IS_BREAK="false"  && break  ;;
         *)  _BREAK_INFO=" 请输入有效的选项序号！" && _IS_BREAK="true" ;;
         esac
         case_end_tackle
@@ -6837,8 +6842,8 @@ MENU_MAIN_ITEMS=(
     "13|常用软件|$WHITE" 
     "14|其他脚本|$BLUE"
     "21|Caddy管理|$WHITE"
-    "22|Docker管理|$WHITE"
-    "23|Python管理|$YELLOW"
+    "22|Docker管理|$YELLOW"
+    "23|Python管理|$CYAN"
 )
 ## ======================================================
 function main_menu(){
