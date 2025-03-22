@@ -31,7 +31,8 @@ echo 4. Set PowerShell Execution Policy
 echo 5. Install 7-Zip
 echo 6. Install Notepad++
 echo 7. Install VS Code
-echo 8. Exit
+echo 8. Activate Windows/Office
+echo 0. Exit
 echo ==================================
 set /p choice=Enter your choice (1-8): 
 
@@ -42,7 +43,7 @@ if "%choice%"=="4" goto set_ps_policy
 if "%choice%"=="5" goto install_7zip
 if "%choice%"=="6" goto install_notepadpp
 if "%choice%"=="7" goto install_vscode
-if "%choice%"=="8" exit
+if "%choice%"=="0" exit
 echo Invalid input, please try again!
 pause
 goto menu

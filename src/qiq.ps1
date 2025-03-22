@@ -164,10 +164,11 @@ function Set-DefaultShell-Pwsh {
 function Show-Menu {
     Clear-Host
     Write-Host "========== Tool Menu ==========" -ForegroundColor Cyan
-    Write-Host "1. Python Management"
-    Write-Host "2. Common Software Installation"
-    Write-Host "3. System Settings"
-    Write-Host "0. Exit"
+    Write-Host "  1. Python Management"
+    Write-Host "  2. Install Software"
+    Write-Host "  3. System Settings"
+    Write-Host "  0. Exit"
+    Write-Host "===============================" -ForegroundColor Cyan
 }
 
 # 菜单循环
