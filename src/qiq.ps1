@@ -359,7 +359,7 @@ function app_download{
     }
     function download_vc_redist64{
         $file = "VC_redist.x64.exe"
-        # $targetDir = get_download_path $sfld
+        $targetDir = get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         $url_dl = "https://alist.ywzsqx.top/d/a/apps/$file"
         write-host "File URL  : $url_dl"
@@ -370,7 +370,7 @@ function app_download{
     }
     function download_nekobox{
         $file = "nekoray-4.0.1-2024-12-12-windows64.zip"
-        # $targetDir = get_download_path $sfld
+        $targetDir = get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         $url_dl = "https://alist.ywzsqx.top/d/a/apps/$file"
         write-host "File URL  : $url_dl"
@@ -381,7 +381,7 @@ function app_download{
     }
     function download_python3127{
         $file = "python-3.12.7-amd64.exe"
-        # $targetDir = get_download_path $sfld
+        $targetDir = get_download_path $sfld
         $targetFilePath = Join-Path -Path $targetDir -ChildPath $file
         $url_dl = "https://alist.ywzsqx.top/d/a/apps/$file"
         write-host "File URL  : $url_dl"
