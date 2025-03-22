@@ -9,7 +9,7 @@
 #   一键安装命令如下：
 #   $> wget -qO qiqtools.sh https://sub.zwdk.org/qiq && chmod +x qiqtools.sh && ./qiqtools.sh
 #   $> curl -sSL -o qiqtools.sh https://sub.zwdk.org/qiq && chmod +x qiqtools.sh && ./qiqtools.sh
-# 
+
 #   $> wget -qN https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiq.sh && chmod +x qiqtools.sh && ./qiqtools.sh
 #   $> curl -sS -O https://raw.gitcode.com/lmzxtek/qiqtools/raw/main/qiq.sh && chmod +x qiqtools.sh && ./qiqtools.sh
 #========================================================
@@ -234,7 +234,7 @@ function init_global_vars(){
 
     NUM_SPLIT=${NUM_SPLIT:-4}           # 左右栏的宽度间隔
     NUM_WIDTH=${NUM_WIDTH:-3}           # 序号最大宽度
-    MAX_COL_NUM=${MAX_COL_NUM:-25}      # 单栏字符串最大宽度，默认为25
+    MAX_COL_NUM=${MAX_COL_NUM:-20}      # 单栏字符串最大宽度，默认为25
     ITEM_CAT_CHAR=${ITEM_CAT_CHAR:-'.'} # 序号与字符连接字符，默认为 '.'
 
     MAX_SPLIT_CHAR_NUM=${MAX_SPLIT_CHAR_NUM:-35} # 最大分割字符数量，默认为35
@@ -590,12 +590,31 @@ function fill_array() {
     fi
 }
 
+## 菜单项按1栏显示
+function print_sub_items_1() {
+    # local items=("${@}")
+    local items=("${!1}")  # 传入数组
+    # local ncol=${2:-$MAX_COL_NUM} # 
+
+    local total_items=${#items[@]}
+    for ((i=0; i<total_items; i++)); do
+        local left_item=${items[i]}
+
+        # 解析左栏
+        IFS='|' read -r nn txt cc <<< "$left_item"
+        cc=${cc:-$RESET}  # 默认颜色
+        local txt_fmt="${cc}${ITEM_CAT_CHAR}${txt}${RESET}"
+
+        printf "%${NUM_WIDTH}d%-b\n" $nn "$txt_fmt"
+        # printf "%${NUM_WIDTH}d%-${ncol}b\n" $nn "$l_formatted"
+    done
+}
+
 ## 菜单项按2栏显示
-function print_sub_items() {
-    local items=("${@}")
-    # local items=("${!1}")  # 传入数组
-    # local is2check=${2:-0} # 是否检测无数个数
-    # [[ ${is2check} -eq 1 ]] && items=$(fill_array "${items[@]}")
+function print_sub_items_2() {
+    # local items=("${@}")
+    local items=("${!1}")  # 传入数组
+    local ncol=${2:-$MAX_COL_NUM} # 
 
     local total_items=${#items[@]}
     local half=$(( (total_items + 1) / 2 ))  # 计算左右分栏
@@ -613,8 +632,7 @@ function print_sub_items() {
         chinese_left=$(echo -n "$l_formatted" | grep -oP '[\p{Han}]' | wc -l)
         # 计算Emoji数量
         emoji_count=$(echo -n "$l_formatted" | grep -oP "[\x{1F600}-\x{1F64F}\x{1F300}-\x{1F5FF}]" | wc -l)
-        # adj_left_width=$((MAX_COL_NUM + chinese_left + emoji_count + chinese_left + emoji_count))
-        adj_left_width=$((MAX_COL_NUM + chinese_left + emoji_count))
+        adj_left_width=$((ncol + chinese_left + emoji_count))
 
         # adj_split_num=$((NUM_SPLIT - chinese_left - emoji_count ))
         if [[ $adj_split_num -lt 0 ]]; then 
@@ -626,7 +644,7 @@ function print_sub_items() {
             IFS='|' read -r r_num r_text r_color <<< "$right_item"
             r_color=${r_color:-$RESET}  # 默认颜色
             local r_formatted="${r_color}${ITEM_CAT_CHAR}$r_text$RESET"
-            printf "%${NUM_WIDTH}d%-${adj_left_width}b%${adj_split_num}s%${NUM_WIDTH}d%-${MAX_COL_NUM}b\n" \
+            printf "%${NUM_WIDTH}d%-${adj_left_width}b%${adj_split_num}s%${NUM_WIDTH}d%-${ncol}b\n" \
                     $l_num "$l_formatted" "" $r_num "$r_formatted"
         else
             local r_formatted=""
@@ -653,9 +671,14 @@ function print_items_list(){
 
 # 根据分割位置拆分数组，并用 n 个分割符号替换原始分割线
 function split_menu_items() {
-    local items=("${!1}")  # 传入数组
-    local n=${2:-40}    # 传入分割符重复次数, 默认40
-    
+    local items=("${!1}")                     # 传入数组
+    local is2check=${2:-1}                    # 是否检测元数个数: 当元素个数小于5时单栏显示，否则双栏显示
+    local ncol=${3:-$MAX_COL_NUM}             # 双栏最大宽度, 
+    local nmin_items=${4:-5}                  # 双栏最小元素
+    # local nsp=${4:-$MAX_SPLIT_CHAR_NUM}       # 分割符宽度, 
+
+    local nsp=$(( $ncol * 1 + $NUM_SPLIT * 3 ))
+    # nsp=$(( $ncol * 2 + $NUM_SPLIT ))
     local split_indices=($(get_split_list "${items[@]}"))
 
     local sub_list=()
@@ -664,12 +687,17 @@ function split_menu_items() {
     for split in "${split_indices[@]}"; do
         # 取出当前子列表
         sub_list=("${items[@]:start:split-start}")
-        
-        # 调用 print_sub_menu_items 进行子列表显示
-        print_sub_items "${sub_list[@]}"
+        local length=${#sub_list[@]}
+        if [[ ${is2check} -eq 1 && length -lt ${nmin_items} ]] ; then
+          # print_items_list sub_list[@] '' ''
+          print_sub_items_1 sub_list[@]
+        else 
+          # print_sub_items "${sub_list[@]}"
+          print_sub_items_2 sub_list[@] $ncol
+        fi 
         
         # 生成新的分割行
-        generate_separator "${items[split]}" "$n"
+        generate_separator "${items[split]}" "$nsp"
         
         start=$((split + 1))
     done
@@ -677,7 +705,13 @@ function split_menu_items() {
     # 处理最后一部分（如果还有剩余项）
     if [[ $start -lt ${#items[@]} ]]; then
         sub_list=("${items[@]:start}")
-        print_sub_items "${sub_list[@]}"
+        local length=${#sub_list[@]}
+        if [[ ${is2check} -eq 1 && length -lt ${nmin_items} ]] ; then
+          # print_items_list sub_list[@] '' ''
+          print_sub_items_1 sub_list[@]
+        else 
+          print_sub_items_2 sub_list[@] $ncol
+        fi 
     fi
 }
 
@@ -1573,7 +1607,6 @@ function system_test_menu(){
         clear 
         # print_menu_head $MAX_SPLIT_CHAR_NUM
         print_sub_head "▼ 性能测试 " $MAX_SPLIT_CHAR_NUM 1 1 
-        # split_menu_items MENU_TEST_ITEMS[@] $MAX_SPLIT_CHAR_NUM
         print_items_list MENU_TEST_ITEMS[@] ' ⚓ 性能测试脚本 '
         # print_main_menu_tail $MAX_SPLIT_CHAR_NUM
         print_sub_menu_tail $MAX_SPLIT_CHAR_NUM
@@ -1811,7 +1844,7 @@ function system_tools_menu(){
         clear 
         # print_menu_head $MAX_SPLIT_CHAR_NUM
         print_sub_head "▼ 系统工具 " $MAX_SPLIT_CHAR_NUM 1 0 
-        split_menu_items MENU_SYSTEM_TOOLS_ITEMS[@] $MAX_SPLIT_CHAR_NUM
+        split_menu_items MENU_SYSTEM_TOOLS_ITEMS[@] 
         # print_main_menu_tail $MAX_SPLIT_CHAR_NUM
         print_sub_menu_tail $MAX_SPLIT_CHAR_NUM
     }
@@ -2458,7 +2491,7 @@ EOF
             local num_split=40
             print_sub_head " DD系统 " $num_split 1 0 
             # print_items_list sys_dd_options[@] " ⚓ DD系统脚本选择:"
-            split_menu_items systems_list[@] $num_split
+            split_menu_items systems_list[@]
             print_sub_menu_tail $num_split
             local CHOICE=$(echo -e "\n${BOLD}└─ 请选择要DD的系统: ${PLAIN}")
             read -rp "${CHOICE}" INPUT
@@ -2964,7 +2997,7 @@ function commonly_tools_menu(){
         # local num_split=$MAX_SPLIT_CHAR_NUM
         local num_split=40
         print_sub_head "▼ 常用工具 " $num_split 1 0 
-        split_menu_items MENU_COMMONLY_TOOLS_ITEMS[@] $num_split
+        split_menu_items MENU_COMMONLY_TOOLS_ITEMS[@]
         # print_main_menu_tail $num_split
         print_sub_menu_tail $num_split
     }
@@ -3162,7 +3195,7 @@ function commonly_tools_menu(){
 
 
 # 常用面板和软件 
-MENU_MANAGEMENT_TOOLS_ITEMS=(
+MENU_SERVICE_TOOLS_ITEMS=(
     "1|1Panel|$YELLOW"
     "2|aaPanel|$WHITE"
     "3|Ajenti|$WHITE"
@@ -3197,14 +3230,14 @@ MENU_MANAGEMENT_TOOLS_ITEMS=(
     "50|Warp(@hamid)|$WHITE"
 )
 
-function management_tools_menu(){
+function service_tools_menu(){
     function print_sub_item_menu_headinfo(){
         clear 
         # print_menu_head $MAX_SPLIT_CHAR_NUM
         # local num_split=$MAX_SPLIT_CHAR_NUM
         local num_split=40
         print_sub_head "▼ 服务工具 " $num_split 1 0 
-        split_menu_items MENU_MANAGEMENT_TOOLS_ITEMS[@] $num_split
+        split_menu_items MENU_SERVICE_TOOLS_ITEMS[@] 1 30
         # print_main_menu_tail $num_split
         print_sub_menu_tail $num_split
     }
@@ -4127,7 +4160,7 @@ function other_scripts_menu(){
         # print_menu_head $MAX_SPLIT_CHAR_NUM
         local num_split=$MAX_SPLIT_CHAR_NUM
         print_sub_head "▼ 其他脚本 " $num_split 1 0 
-        split_menu_items MENU_OTHER_SCRIPTS_ITEMS[@] $num_split
+        split_menu_items MENU_OTHER_SCRIPTS_ITEMS[@]
         # print_main_menu_tail $num_split
         print_sub_menu_tail $num_split
     }
@@ -4373,7 +4406,7 @@ function python_management_menu(){
         local VERSION=$(python3 -V 2>&1 | awk '{print $2}')
         echo -e "\n $PRIGHT 当前Python: $VERSION\n"
         generate_separator "…|$AZURE" $num_split # 另一个分割线
-        split_menu_items MENU_PYTHON_ITEMS[@] $num_split
+        split_menu_items MENU_PYTHON_ITEMS[@]
         # print_main_menu_tail $num_split
         print_sub_menu_tail $num_split
     }
@@ -5189,7 +5222,7 @@ function caddy_management_menu(){
         # print_menu_head $MAX_SPLIT_CHAR_NUM
         local num_split=$MAX_SPLIT_CHAR_NUM
         print_sub_head "▼ Caddy管理 " $num_split 0 0 
-        split_menu_items MENU_CADDY_ITEMS[@] $num_split
+        split_menu_items MENU_CADDY_ITEMS[@]
         # print_main_menu_tail $num_split
         print_sub_menu_tail $num_split
     }
@@ -5249,7 +5282,7 @@ function docker_deploy_menu(){
         # print_menu_head $MAX_SPLIT_CHAR_NUM
         local num_split=$MAX_SPLIT_CHAR_NUM
         print_sub_head "▼ Docker部署 " $num_split 0 0 
-        split_menu_items MENU_DOCKER_DEPLOY_ITEMS[@] $num_split
+        split_menu_items MENU_DOCKER_DEPLOY_ITEMS[@] 
         # print_main_menu_tail $num_split
         print_sub_menu_tail $num_split
     }
@@ -6368,7 +6401,7 @@ function docker_management_menu(){
         # print_menu_head $MAX_SPLIT_CHAR_NUM
         local num_split=$MAX_SPLIT_CHAR_NUM
         print_sub_head "▼ Docker管理 " $num_split 0 0 
-        split_menu_items MENU_DOCKER_MANAGE_ITEMS[@] $num_split
+        split_menu_items MENU_DOCKER_MANAGE_ITEMS[@] 
         # print_main_menu_tail $num_split
         print_sub_menu_tail $num_split
     }
@@ -6800,7 +6833,7 @@ MENU_MAIN_ITEMS=(
     "4|系统清理|$GREEN"
     "………………………|$WHITE" 
     "11|系统工具|$GREEN"
-    "12|服务工具|$WHITE"
+    "12|服务工具|$YELLOW"
     "13|常用软件|$WHITE" 
     "14|其他脚本|$BLUE"
     "21|Caddy管理|$WHITE"
@@ -6813,7 +6846,7 @@ function main_menu(){
         clear 
         # 调用拆分函数
         print_menu_head $MAX_SPLIT_CHAR_NUM
-        split_menu_items MENU_MAIN_ITEMS[@] $MAX_SPLIT_CHAR_NUM
+        split_menu_items MENU_MAIN_ITEMS[@] 0
         print_main_menu_tail $MAX_SPLIT_CHAR_NUM
     }
 
@@ -6828,7 +6861,7 @@ function main_menu(){
         4)  sys_clean ;;
 
         11) system_tools_menu ;;
-        12) management_tools_menu ;;
+        12) service_tools_menu ;;
         13) commonly_tools_menu ;;
         14) other_scripts_menu ;;
 
