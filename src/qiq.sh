@@ -6426,7 +6426,7 @@ function docker_management_menu(){
     }
     ## 显示Docker版本信息
     function docker_show_info() {
-        echo -e "\n${BOLD} ┌─ Docker版本信息${PLAIN}"
+        echo -e "\n${BOLD} ┌─ Docker版本信息${PLAIN} ────"
         if [[ ! -x "$(command -v docker)" ]] ; then
             echo -e "$WARN  Docker环境未安装。"
         else
@@ -6437,26 +6437,26 @@ function docker_management_menu(){
         else
             docker-compose --version
         fi
-        echo -e "${BOLD} └───────────────────${PLAIN}"
+        echo -e "${BOLD} └─────────────────────${PLAIN}"
         # docker images
     }
     function docker_show_containers() {
         # docker_show_info
         echo -e "\n${BOLD} ┌─ Docker容器列表${PLAIN} ────"
         docker ps -a
-        echo -e "${BOLD} └───────────────────${PLAIN}"
+        echo -e "${BOLD} └─────────────────────${PLAIN}"
     }
     function docker_show_images() {
         # docker_show_info
         echo -e "\n${BOLD} ┌─ Docker镜像列表${PLAIN} ────"
         docker images
-        echo -e "${BOLD} └───────────────────${PLAIN}"
+        echo -e "${BOLD} └─────────────────────${PLAIN}"
     }
     function docker_show_networks() {
         # docker_show_info
         echo -e "\n${BOLD} ┌─ Docker容器网络${PLAIN} ────"
         docker network ls 
-        echo -e "${BOLD} └───────────────────${PLAIN}"
+        echo -e "${BOLD} └─────────────────────${PLAIN}"
     }
     
     # Docker清理不用的镜像和网络
