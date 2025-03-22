@@ -266,7 +266,7 @@ function Software_install {
             "1" { Install-Software "7zip.7zip" "7zip" "https://www.7-zip.org/download.html" }
             "2" { Install-Software "Notepad++.Notepad++" "notepadplusplus" "https://notepad-plus-plus.org/downloads/" }
             "3" { Install-Software "Microsoft.VisualStudioCode" "vscode" "https://code.visualstudio.com/download" }
-            "0" { break }
+            "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
     }
@@ -287,7 +287,7 @@ function System_Settings {
             "1" { Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; Write-Host "Execution policy set!"; Pause }
             "2" { Enable-OpenSSH }
             "3" { Set-DefaultShell-Pwsh }
-            "0" { break }
+            "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
     }
@@ -409,7 +409,7 @@ function app_download{
             "2" { download_nekobox; }
             "3" { download_python3127; }
             "4" { download_powershell; }
-            "0" { break }
+            "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; }
         }
         # Pause 
@@ -462,7 +462,7 @@ function  main_menu {
             "4" { System_Settings }
             "5" { activate_win_office }
             "6" { Install-Python }
-            "0" { break }
+            "0" { return }
             default { Write-Host "Invalid input!" -ForegroundColor Red; Pause }
         }
     }
